@@ -1,190 +1,91 @@
 import React, { useState, useEffect, useRef } from 'react';
-import useUrlParams from 'utils/UrlParamsProvider';
 import SortKind from 'containers/AggDropDown/SortKind';
 import CustomDropDown from 'containers/AggDropDown/CustomDrop';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { BeatLoader } from 'react-spinners';
-import * as R from 'remeda';
-import {
-  pipe,
-  map,
-  fromPairs,
-  keys,
-  defaultTo,
-  uniq,
-  dissoc
-} from 'ramda';
-import {
-  SuggestedLabelsQuery_crowdAggFacets_aggs,
-} from 'services/study/model/SuggestedLabelsQuery';
-import { displayFields } from 'utils/siteViewHelpers';
 import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation, setShowLoginModal } from '../../services/study/actions'
-import { insertCrowdKeyValueId, deleteCrowdKeyValueId} from '../../services/crowdKeys/actions'
-
+import { insertCrowdKeyValueId, deleteCrowdKeyValueId } from '../../services/crowdKeys/actions'
 
 interface Props {
   aggId?: string;
   nctId: string;
-
 }
 
 function WfIslandAggChild(props: Props) {
 
-
   const { aggId, nctId } = props;
   const dispatch = useDispatch();
-  const params = useUrlParams();
+  const emptySet = new Set();
 
-    const emptySet = new Set();
-    
-    const isLoading = useSelector((state: RootState) => state.study.isFetchingSuggestedLables);
-    const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
-    const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
-    const user = useSelector( (state: RootState) => state.user.current);
-    const isUpsertingLabel = useSelector((state:RootState) => state.study.isUpsertingLabel)
+  const isLoading = useSelector((state: RootState) => state.study.isFetchingSuggestedLables);
+  const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
+  const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
+  const user = useSelector((state: RootState) => state.user.current);
+  const isUpsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel)
 
 
-    let getCurrentAgg = () => {
-      let jsonConfig = islandConfig
-      return aggId && jsonConfig[aggId]
-    }
-    let currentAgg = getCurrentAgg();
-
+  let getCurrentAgg = () => {
+    let jsonConfig = islandConfig
+    return aggId && jsonConfig[aggId]
+  }
+  let currentAgg = getCurrentAgg();
 
   useEffect(() => {
-  dispatch(fetchSuggestedLabels(nctId));
+    dispatch(fetchSuggestedLabels(nctId, currentAgg.name));
   }, [dispatch, nctId])
 
   if (isLoading || !currentAgg) return <BeatLoader />;
   // if (error) return <Error message={error.message} />;
-  if (!suggestedLabels) return <BeatLoader/>;
-  const data = suggestedLabels.data
-  let meta: Record<string, string> = {};
-  try {
-    meta = JSON.parse(data.study?.wikiPage?.meta || '{}');
-  } catch (e) {
-    // console.log(`Error parsing meta: ${meta}`);
-  }
+  if (!suggestedLabels) return <BeatLoader />;
+  const crowdKeyValueData = suggestedLabels.data.crowd_key_value_ids
 
-  const labels = fromPairs(
-    keys(meta).map(key => [key, meta[key].split('|')])
-  );
+  let selectedCrowdValues = crowdKeyValueData.reduce((x, y, index) => ({ ...x, [index]: y.crowd_value }), {})
+  //console.log("🚀 ~ WfIslandAggChild ~ selectedCrowdValues", selectedCrowdValues);
 
-  const aggs = pipe(
-    map((agg: SuggestedLabelsQuery_crowdAggFacets_aggs) => {
-      const name = agg.name.substring(3);
-      const existingLabels = labels[name] || [];
-      return [
-        name,
-        agg.buckets.map(bucket => {
-          return [
-            defaultTo(bucket.key)(bucket.keyAsString),
-            existingLabels.includes(bucket.key),
-          ];
-        }),
-      ];
-    }),
-    // @ts-ignore
-    fromPairs
-    // @ts-ignore
-  )(data?.crowdAggFacets?.aggs || []);
-
+  let selectedValues = Object.values(selectedCrowdValues);
   const checkedValues = new Set(
-    aggs[currentAgg?.name].filter(([_, checked]) => checked).map(([value, _]) => value)
+    selectedValues
   );
 
   const handleSelect = (key, value) => {
-
-    if(!user || isUpsertingLabel){
+    if (!user || isUpsertingLabel) {
       !user && dispatch(setShowLoginModal(true))
-      return console.log(!user ? "Sorry, must be logged in to do this": "Sorry still upserting")
+      return console.log(!user ? "Sorry, must be logged in to do this" : "Sorry still upserting")
     }
-    // console.log(key, value)
-
-    // console.log(suggestedLabels)
-    const meta = JSON.parse(suggestedLabels.data.study?.wikiPage?.meta || '{}')
-    // console.log(meta)
-
     // console.log(checkedValues)
     let checked = checkedValues.has(key)
     // console.log("checked", checked)
     if (!checked) {
-
       // console.log(value, !value)
       if (!value) return;
       let val = value;
       // console.log(meta[currentAgg?.name])
       dispatch(insertCrowdKeyValueId(props.nctId, key, currentAgg.name, user.id, false, false))
 
-      // if (meta[currentAgg?.name]) {
-
-        
-      //   const oldVal = meta[currentAgg?.name];
-      //   const entries = oldVal.split('|').filter((x) => x !== val);
-      //   entries.push(key);
-      //   val = uniq(entries).join('|');
-      //   // console.log("VAl", val)
-
-      //   console.log("DISPATCH", user)
-      //   // dispatch(upsertLabelMutation(nctId, currentAgg?.name, val)); <--------------
-      // }else{
-      // //handles case where meta is empty 
-      // console.log("No META")
-
-
-      // // dispatch(upsertLabelMutation(nctId, currentAgg?.name, key));   <--------------
-      // }
-
-
       // console.log(nctId, currentAgg?.name, key)
-
-
-
     } else {
-      const currentValue = meta[currentAgg?.name];
-
-
-      // console.log(currentValue)
-      if (!currentValue) return null;
-
-      const newValue = uniq(
-        currentValue.split('|').filter((x) => x !== key)
-      ).join('|');
-
       dispatch(deleteCrowdKeyValueId(props.nctId, key, currentAgg.name))
-      
-      // if (newValue.length === 0) {
-      //   const newMeta = dissoc(key, meta);
-      //   console.log("REMOVE WHOLE FILTER META")
-      //   // console.log(currentAgg?.name, nctId)
-      //   // dispatch(deleteLabelMutation(nctId, currentAgg?.name));
-      // } else {
-      //   console.log("remove crowd Key")
-      //   // console.log(nctId, currentAgg?.name, newValue)
-
-      //   // dispatch(upsertLabelMutation(
-      //   //   nctId, currentAgg?.name, newValue
-      //   // ));
-      // }
     }
   }
-  // console.log(suggestedLabels.data.crowdAggFacets.aggs)
 
-  const currentAggBuckets = suggestedLabels.data.crowdAggFacets.aggs.filter(
-    fm => fm.name === `fm_${currentAgg?.name}`
-  )?.[0];
-  // console.log(currentAggBuckets)
-  const handleContainerToggle =()=>{
-    if(aggId){
+  const currentAggBucketsData = suggestedLabels.data.crowd_keys[0] ? suggestedLabels.data.crowd_keys[0]?.crowd_values : [];
+
+  let currentAggBuckets = [];
+  //@ts-ignore
+  currentAggBucketsData.map(a => currentAggBuckets.push({ "key": a.crowd_value, "docCount": null }));
+  //console.log("🚀 ~ WfIslandAggChild ~ currentAggBuckets!!!!!!!!", currentAggBuckets);
+
+  const handleContainerToggle = () => {
+    if (aggId) {
       islandConfig[aggId].defaultToOpen = !islandConfig[aggId].defaultToOpen
     }
   }
-  console.log(currentAgg)
+  //console.log(currentAgg)
   return (
     <>
       <CustomDropDown
-        buckets={currentAggBuckets.buckets || []}
+        buckets={currentAggBuckets || []}
         isPresearch={true}
         selectedKeys={checkedValues || emptySet}
         field={currentAgg}

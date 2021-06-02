@@ -36,8 +36,8 @@ interface CustomDropPanelProps {
   updater: AggFilterInputUpdater;
   loading: boolean;
   selectedItem: any;
-  disabled?:boolean;
-  allowsMissing?:boolean;
+  disabled?: boolean;
+  allowsMissing?: boolean;
 
 
 }
@@ -46,13 +46,13 @@ interface CustomDropPanelState {
 
 }
 
-const NoFiltersMessage = ()=>{
-  return( 
-  <>
-  <div className="no-filter">
-    <span>No Available Filters</span>
-  </div>
-  </>)
+const NoFiltersMessage = () => {
+  return (
+    <>
+      <div className="no-filter">
+        <span>No Available Filters</span>
+      </div>
+    </>)
 }
 class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPanelState> {
 
@@ -63,7 +63,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
   renderPreValue = (item) => {
     const { disabled } = this.props;
     if (this.props.field.display == "CHECKBOX" || this.props.field.display == "STRING") {
-      return this.props.isSelected(item) ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet" } ${disabled ? "disabled-check" : ""}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"} ${disabled ? "disabled-checkbox" : ""}`}></div>
+      return this.props.isSelected(item) ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"} ${disabled ? "disabled-check" : ""}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"} ${disabled ? "disabled-checkbox" : ""}`}></div>
     }
     return null
   };
@@ -92,14 +92,14 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
       default:
         text = bucketKeyValuePair ? `${bucketKeyValuePair.key} - ${bucketKeyValuePair.label}` : value.toString();
     }
-    return `${text} (${docCount})`;
+    return docCount ? `${text} (${docCount})` : `${text}`;
   }
   render() {
     const { disabled } = this.props;
 
- /*   if(this.props.buckets.length > 0) {
-     console.log(this.props.isPresearch,"CusDr Panel BUckets ", this.props.buckets)
-  } */
+    /*   if(this.props.buckets.length > 0) {
+        console.log(this.props.isPresearch,"CusDr Panel BUckets ", this.props.buckets)
+     } */
 
     const { hasMore, buckets, handleLoadMore, field, loading } = this.props
     const showAllowMissing = field.showAllowMissing;
@@ -166,114 +166,54 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
     }
     else if (this.props.field.display == "CHECKBOX" || this.props.field.display == "STRING") {
 
-    //  console.log(`RENDERING DROP PANEL   ${this.props.field.name}`, this.props.buckets);
+      //  console.log(`RENDERING DROP PANEL   ${this.props.field.name}`, this.props.buckets);
 
       //console.log("BUCKETS @ InfiniteScroll", this.props.field.name, this.props.buckets); 
-    
-      if (this.props.buckets[0] === undefined && this.props.buckets.length !== 0){
 
-        return   <BeatLoader />
+      if (this.props.buckets[0] === undefined && this.props.buckets.length !== 0) {
+
+        return <BeatLoader />
       }
-      if (this.props.buckets[0] ===undefined){
-        return  <NoFiltersMessage/>
+      if (this.props.buckets[0] === undefined) {
+        return <NoFiltersMessage />
       }
-      if(!showAllowMissing && this.props.buckets[0].key=="-99999999999" && this.props.buckets.length == 0){
-        return <NoFiltersMessage/>
+      if (!showAllowMissing && this.props.buckets[0].key == "-99999999999" && this.props.buckets.length == 0) {
+        return <NoFiltersMessage />
 
       }
       return (
         <>
-        {showAllowMissing && (
-          // <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()} >
-          <div className="select-item allow-missing" onClick={() => console.log("Need a new function, prev updater")} >
-            <div className="item-content">
-              {this.props.allowsMissing ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>}
+          {showAllowMissing && (
+            // <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()} >
+            <div className="select-item allow-missing" onClick={() => console.log("Need a new function, prev updater")} >
+              <div className="item-content">
+                {this.props.allowsMissing ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>}
 
-              <AllowMissingDropDownItem buckets={buckets} />
-            </div>
-          </div>
-        )}
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={this.props.handleLoadMore}
-          hasMore={this.props.hasMore}
-          useWindow={false}
-          loader={
-            <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
-              <BeatLoader key="loader" />
-            </div>
-          }>
-          {this.props.buckets
-            .filter(
-              bucket =>
-                !bucketKeyIsMissing(bucket) &&
-                (this.props.field.visibleOptions.length
-                  ? this.props.field.visibleOptions.includes(bucket.key)
-                  : true)
-            )
-            .map((item) => (
-              <div
-                key={item.key+'buckets'}
-                onClick={() => this.props.selectItem(item)}
-                className={
-                  this.props.selectedItem === item
-                    ? "selected select-item"
-                    : "select-item"
-                }
-              >
-                <div className={`item-content ${disabled ? "disabled-text" : ""}`}>
-                  {this.renderPreValue(item.key)}
-                  <span>{item.key} ({item.docCount})</span>
-                </div>
+                <AllowMissingDropDownItem buckets={buckets} />
               </div>
-            ))}
-        </InfiniteScroll>
-        </>
-      )
-    
-  }
-    else {
-      if (this.props.buckets[0] === undefined  && this.props.buckets.length !== 0){
-        return  <BeatLoader />
-      }
-      if (this.props.buckets.length == 0 || this.props.buckets[0] ===undefined){
-        return  <NoFiltersMessage/>
-      }
-      if(!showAllowMissing && this.props.buckets[0].key=="-99999999999" && this.props.buckets.length==1){
-        return <NoFiltersMessage/>
-
-      }
-      return (
-        <>
-        {showAllowMissing && this.props.allowsMissing && (
-          <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()}>
-            <AllowMissingDropDownItem buckets={buckets} className="item-content" />
-          </div>
-        )}
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={this.props.handleLoadMore}
-          hasMore={this.props.hasMore}
-          useWindow={false}
-          loader={
-            <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
-              <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />
             </div>
-          }>
-          {this.props.buckets && this.props.buckets
-            .filter(
-              bucket =>
-                !bucketKeyIsMissing(bucket) &&
-                (this.props.field.visibleOptions.length
-                  ? this.props.field.visibleOptions.includes(bucket.key)
-                  : true)
-            )
-            .map((item) => {
-              const bucketKeyValuePair = field.bucketKeyValuePairs ? find(propEq('key', item.key))(field.bucketKeyValuePairs) : false;
-              return (
-              this.props.isSelected(item.key) ? null :
+          )}
+          <InfiniteScroll
+            pageStart={0}
+            loadMore={this.props.handleLoadMore}
+            hasMore={this.props.hasMore}
+            useWindow={false}
+            loader={
+              <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
+                <BeatLoader key="loader" />
+              </div>
+            }>
+            {this.props.buckets
+              .filter(
+                bucket =>
+                  !bucketKeyIsMissing(bucket) &&
+                  (this.props.field.visibleOptions.length
+                    ? this.props.field.visibleOptions.includes(bucket.key)
+                    : true)
+              )
+              .map((item) => (
                 <div
-                  key={item.key+'buckets'}
+                  key={item.key + 'buckets'}
                   onClick={() => this.props.selectItem(item)}
                   className={
                     this.props.selectedItem === item
@@ -281,16 +221,76 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
                       : "select-item"
                   }
                 >
-                  <div className="item-content">
-                    {/* {this.renderPreValue(item.key)} */}
-                    <span>{this.renderValue(item, bucketKeyValuePair)}</span>
+                  <div className={`item-content ${disabled ? "disabled-text" : ""}`}>
+                    {this.renderPreValue(item.key)}
+                    <span>{item.key} {item.docCount ? `(${item.docCount})` : ""} </span>
                   </div>
                 </div>
+              ))}
+          </InfiniteScroll>
+        </>
+      )
+
+    }
+    else {
+      if (this.props.buckets[0] === undefined && this.props.buckets.length !== 0) {
+        return <BeatLoader />
+      }
+      if (this.props.buckets.length == 0 || this.props.buckets[0] === undefined) {
+        return <NoFiltersMessage />
+      }
+      if (!showAllowMissing && this.props.buckets[0].key == "-99999999999" && this.props.buckets.length == 1) {
+        return <NoFiltersMessage />
+
+      }
+      return (
+        <>
+          {showAllowMissing && this.props.allowsMissing && (
+            <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()}>
+              <AllowMissingDropDownItem buckets={buckets} className="item-content" />
+            </div>
+          )}
+          <InfiniteScroll
+            pageStart={0}
+            loadMore={this.props.handleLoadMore}
+            hasMore={this.props.hasMore}
+            useWindow={false}
+            loader={
+              <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
+                <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />
+              </div>
+            }>
+            {this.props.buckets && this.props.buckets
+              .filter(
+                bucket =>
+                  !bucketKeyIsMissing(bucket) &&
+                  (this.props.field.visibleOptions.length
+                    ? this.props.field.visibleOptions.includes(bucket.key)
+                    : true)
+              )
+              .map((item) => {
+                const bucketKeyValuePair = field.bucketKeyValuePairs ? find(propEq('key', item.key))(field.bucketKeyValuePairs) : false;
+                return (
+                  this.props.isSelected(item.key) ? null :
+                    <div
+                      key={item.key + 'buckets'}
+                      onClick={() => this.props.selectItem(item)}
+                      className={
+                        this.props.selectedItem === item
+                          ? "selected select-item"
+                          : "select-item"
+                      }
+                    >
+                      <div className="item-content">
+                        {/* {this.renderPreValue(item.key)} */}
+                        <span>{this.renderValue(item, bucketKeyValuePair)}</span>
+                      </div>
+                    </div>
                 )
               })}
           </InfiniteScroll>
         </>
-        )
+      )
     }
   }
 }
