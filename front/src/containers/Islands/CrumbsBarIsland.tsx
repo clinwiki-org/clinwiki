@@ -243,13 +243,15 @@ export default function CrumbsBarIsland(props: Props) {
     let aggFilterCounter = 0;
     for (const key in searchParams.aggFilters) {
       const agg = searchParams.aggFilters[key];
+      const cat = aggToField(agg.field, agg.field);
       yield (
         <AggCrumb
           grouping="aggFilters"
           agg={agg}
+          category={cat}
           key={`aggFilters${aggFilterCounter++}`}
           thisSiteView={thisSiteView}
-          searchParams={props.searchParams}
+          searchParams={searchParams}
           updateSearchParams={props.updateSearchParams}
           removeValueFromFilter={(term) => removeValueFromFilter(term, agg.field, false)}
           removeFilter={() => removeFilter(agg.field, false)}

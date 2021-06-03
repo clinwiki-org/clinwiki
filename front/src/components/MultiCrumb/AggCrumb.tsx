@@ -10,7 +10,10 @@ import CrumbWrapper from './CrumbWrapper';
 import { PresentSiteFragment } from 'services/site/model/PresentSiteFragment';
 import findFields from 'utils/aggs/findFields';
 import {  SearchParams  as SearchParamsType }  from '../../containers/SearchPage/shared';
-import {getMaxString, getMinString}  from '../../containers/Islands/IslandsUtils'
+import {getMaxString, getMinString}  from '../../containers/Islands/IslandsUtils';
+import { capitalize } from 'utils/helpers';
+
+
 interface AggCrumbProps {
   grouping: string;
   agg: AggFilterListItem;
@@ -19,6 +22,7 @@ interface AggCrumbProps {
   thisSiteView: PresentSiteFragment;
   removeValueFromFilter: any;
   removeFilter:any;
+  category: string;
 }
 
 interface AggCrumbState {}
@@ -79,15 +83,12 @@ class AggCrumb extends React.Component<AggCrumbProps, AggCrumbState> {
         <ValueCrumb label={label} onClick={(agg) => this.props.removeFilter(agg.field)} />
       )
     }
-    const field = findFields(agg.field, thisSiteView, false);
-    const title = field?.displayName;
+    const title = capitalize(this.props.category);
     return (
       <ListGroupItem className="filter-values">
         <CrumbWrapper>
           <i>
-            {grouping === 'crowdAggFilters'
-              ? title
-              : aggToField(agg.field, title)}
+            { title }
             :
           </i>
           {crumb}
