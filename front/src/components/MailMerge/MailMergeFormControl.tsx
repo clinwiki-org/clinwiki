@@ -7,12 +7,14 @@ import { GraphqlSchemaType } from './SchemaSelector';
 import { IslandConstructor } from './MailMergeView';
 import { useFragment } from './MailMergeFragment';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSampleStudy } from 'services/study/actions';
+import { fetchSampleStudy, fetchSampleStudyHasura  } from 'services/study/actions';
 import { getSampleStudyQuery, getSampleSearchQuery } from 'services/study/queries';
 import { RootState } from 'reducers';
-import { fetchIntrospection } from 'services/introspection/actions';
+import { fetchSearchParams, updateSearchParamsAction } from 'services/search/actions';
+// import { fetchIntrospection } from 'services/introspection/actions';
 //import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 import { introspectionQuery } from 'graphql/utilities';
+import { fetchHasuraIntrospection, fetchIntrospection } from 'services/introspection/actions';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;
@@ -29,7 +31,7 @@ type Mode = 'Study' | 'Search';
 function getClassForMode(mode: Mode) {
   switch (mode) {
     case 'Study':
-      return 'Study';
+      return 'ctgov_studies';
     case 'Search':
       return 'ElasticStudy';
       
@@ -43,11 +45,12 @@ interface MailMergeFormControlProps {
 }
 
 const default_nctid = 'NCT00004074';
-const default_hash = 'gELcp_Fb'
+const default_hash = '3de7185d'
 
 export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   const [nctId, setNctId] = useState(default_nctid);
   const [searchHash, setSearchHash] = useState(default_hash);
+  const searchParams = useSelector((state: RootState) => state.search.searchResults?.data.searchParams.searchParams);
   // const [mode, setMode] = useState<Mode>('Study');
   const mode = props.pageType
   let [nctOrSearchHash, setNctOrSearchHash] = useState(default_nctid);
@@ -56,24 +59,30 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
 
 
 
-  const introspection = useSelector((state: RootState) => state.introspection.introspection);
+  const introspection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
   const schemaType = getClassForMode(mode);
   const [fragmentName, fragment] = useFragment(schemaType, props.template);
   // const [fragmentName, fragment] = useFragment('Study', props.template);
   useEffect(() => {
     const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
-    dispatch(fetchIntrospection(QUERY));
+    dispatch(fetchHasuraIntrospection(QUERY));
   }, [dispatch, fragment, mode]);
 
   useEffect(() => {
+    console.log('get params call')
+    dispatch(fetchSearchParams(searchHash ?? ""));
+  }, [dispatch])
+
+  useEffect(() => {
+    console.log('GET SAMPLE QUERY', searchParams)
     const STUDY_QUERY = `${getSampleStudyQuery(fragmentName, fragment)}`
     const SEARCH_QUERY = `${getSampleSearchQuery(fragmentName, fragment)}`
-    dispatch(mode == "Study" ? fetchSampleStudy(nctId ?? "", STUDY_QUERY) : fetchSampleStudy(searchHash ?? "", SEARCH_QUERY));
-  }, [dispatch, fragment, mode]);
+    dispatch(mode == "Study" ? fetchSampleStudyHasura(nctId ?? "", STUDY_QUERY) : fetchSampleStudy(searchParams ?? "", SEARCH_QUERY));
+  }, [dispatch, fragment, mode, searchParams]);
 
-  const sample = useSelector((state: RootState) => state.study.sampleStudy);
+  const sample = useSelector((state: RootState) => state.study.hasuraSampleStudy);
 
-
+  console.log('HI FROM NORMAL MERGE CONTROL')
   if (!sample) {
     return <BeatLoader />;
   }

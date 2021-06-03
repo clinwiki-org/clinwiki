@@ -142,8 +142,11 @@ function graphqlToInternal(x: GraphqlSchemaType) {
 
   const typeMap: Record<string, IntrospectionType> = {};
   for (const t of x.types) typeMap[t.name] = t;
+  console.log('TYPEMAP', typeMap);
   let result: string[] = [];
+  console.log('schema selector', x)
   const rootType = typeMap[x.typeName];
+  console.log('ROOT TYPE', rootType)
   gqlObjToInternal('', rootType, typeMap, result, [rootType.name]);
   return result.sort();
 }

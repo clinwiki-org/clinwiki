@@ -116,7 +116,7 @@ function* deletePageViewHasura(action) {
 function* getSampleStudy(action) {
     try {
         let response = yield call(() =>
-            api.fetchSampleStudy(action.nctId, action.QUERY)
+            api.fetchSampleStudy(action.params, action.QUERY)
         );
         if (response) {
             yield put(actions.fetchSampleStudySuccess(response));

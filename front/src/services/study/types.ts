@@ -407,7 +407,7 @@ export interface fetchFacilitiesPageHasuraErrorAction {
 
 export interface FetchSampleStudySendAction {
     type: typeof FETCH_SAMPLE_STUDY_SEND;
-    nctId: any;
+    params: any;
     QUERY: any;
 }
 export interface FetchSampleStudySuccessAction {

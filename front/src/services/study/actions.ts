@@ -121,11 +121,11 @@ export const fetchFacilitiesPageHasuraError = (
 });
 
 export const fetchSampleStudy = (
-    nctId: string,
+    params: string,
     QUERY: any
 ): types.StudyActionTypes => ({
     type: types.FETCH_SAMPLE_STUDY_SEND,
-    nctId,
+    params,
     QUERY,
 });
 export const fetchSampleStudySuccess = (
