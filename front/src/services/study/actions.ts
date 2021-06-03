@@ -575,7 +575,7 @@ export const wikiPageUpdateHasuraMutation = (
     type: types.WIKI_PAGE_UPDATE_HASURA_MUTATION_SEND,
     nctId,
     text,
-    isWikiContent
+    isWikiContent,
 });
 export const wikiPageUpdateHasuraMutationSuccess = (
     payload: any
@@ -590,12 +590,12 @@ export const wikiPageUpdateHasuraMutationError = (
 });
 
 export const fetchSuggestedLabels = (
-    nctId: string
-    // crowdBucketsWanted: string[]
+    nctId: string,
+    crowdKey: string
 ): types.StudyActionTypes => ({
     type: types.FETCH_SUGGESTED_LABELS_SEND,
     nctId,
-    // crowdBucketsWanted,
+    crowdKey,
 });
 export const fetchSuggestedLabelsSuccess = (
     payload: any

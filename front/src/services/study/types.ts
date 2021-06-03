@@ -764,7 +764,7 @@ export interface wikiPageUpdateHasuraMutationErrorAction {
 export interface fetchSuggestedLabelsSendAction {
     type: typeof FETCH_SUGGESTED_LABELS_SEND;
     nctId: any;
-    // crowdBucketsWanted: any;
+    crowdKey: any;
 }
 
 export interface fetchSuggestedLabelsSuccessAction {

@@ -190,7 +190,7 @@ function* getStudyPageHasura(action) {
         );
         if (response) {
             yield put(actions.fetchStudyPageHasuraSuccess(response));
-            yield call(() => api.updateStudyViewLogCount(action.nctId));
+            //yield call(() => api.updateStudyViewLogCount(action.nctId));
         } else {
             yield put(actions.fetchStudyPageHasuraError(response.message));
         }
@@ -351,7 +351,7 @@ function* deleteReviewMutation(action) {
 function* getSuggestedLabels(action) {
     try {
         let response = yield call(() =>
-            api.fetchSuggestedLabels(action.nctId, action.crowdBucketsWanted)
+            api.fetchSuggestedLabels(action.nctId, action.crowdKey)
         );
         if (response) {
             yield put(actions.fetchSuggestedLabelsSuccess(response));
@@ -447,7 +447,11 @@ function* wikiPageUpdateHasuraMutation(action) {
     try {
         console.log('SAGA Hasura Wiki Update', action);
         let response = yield call(() =>
-            api.wikiPageUpdateHasuraMutation(action.nctId, action.text, action.isWikiContent),
+            api.wikiPageUpdateHasuraMutation(
+                action.nctId,
+                action.text,
+                action.isWikiContent
+            )
         );
         if (response) {
             console.log('SAGA RES Hasura Wiki Update', response);
