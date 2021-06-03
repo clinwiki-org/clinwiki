@@ -9,8 +9,8 @@ const CHECK_TABLE_TRIGGER_QUERY = "SELECT trigger_name FROM  information_schema.
 const TABLES_TO_MONITOR = [
     { name:'wiki_pages', callback: indexWikiPage },
     { name:'crowd_key_value_ids', callback: indexCrowdKeyValueIds },
-    { name:'crowd_keys', callback: indexCrowdKeys },
-    { name:'crowd_values', callback: indexCrowdValues},
+    // { name:'crowd_keys', callback: indexCrowdKeys },
+    // { name:'crowd_values', callback: indexCrowdValues},
 ];
 
 const handleTableEvent = async (data) => {

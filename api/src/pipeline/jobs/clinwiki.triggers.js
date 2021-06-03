@@ -28,12 +28,13 @@ export const indexCrowdKeyValueIds = async (payload) => {
             }
         }
     });
-
-    let indexData = esResults.body.hits.hits[0]._source;
+    console.log("ESRESULTS" + util.inspect(esResults, false, null, true)); 
+    let indexData = esResults.body.hits.hits[0]._source; 
+    let frontMatterKeys = indexData.front_matter_keys ? indexData.front_matter_keys : []
     const list = [{
-        nct_id: payload.crowd_key_value_id_association,
-        [`fm_${payload.crowd_key}`]: [...indexData[`fm_${payload.crowd_key}`], payload.crowd_value],
-        front_matter_keys : indexData.front_matter_keys.includes(payload.crowd_key) ? [payload.crowd_key ] : [...indexData.front_matter_keys, payload.crowd_key]
+        nct_id: payload.crowd_key_value_id_association, 
+        [`fm_${payload.crowd_key}`]: indexData[`fm_${payload.crowd_key}`] ? [...indexData[`fm_${payload.crowd_key}`], payload.crowd_value] : [payload.crowd_value],
+        front_matter_keys: frontMatterKeys.includes(payload.crowd_key) ? [payload.crowd_key] : [...indexData.front_matter_keys, payload.crowd_key]
         //Below values not added as no current use/development
         // user_id: payload.user_id,
         // verified: payload.verified,
