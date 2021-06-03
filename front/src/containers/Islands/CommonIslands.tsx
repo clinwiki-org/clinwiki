@@ -1,6 +1,6 @@
 import React from 'react';
 import { IslandConstructor } from 'components/MailMerge/MailMergeView';
-import WorkflowIsland from './WorkflowIsland';
+//import WorkflowIsland from './WorkflowIsland';
 import FacilityIsland from './FacilityIsland';
 import WikiPageIsland from './WikiPageIsland';
 import BackIsland from './BackIsland';
@@ -36,9 +36,9 @@ export const commonIslands = {
 
 export const studyIslands: Record<string, IslandConstructor> = {
   ...commonIslands,
-  workflow: (attributes: Record<string, string>, context?: any) => (
-    <WorkflowIsland name={attributes['name']} onChange={attributes['onChange']} nctId={context?.nct_id} />
-  ),
+  // workflow: (attributes: Record<string, string>, context?: any) => (
+  //   <WorkflowIsland name={attributes['name']} onChange={attributes['onChange']} nctId={context?.nct_id} />
+  // ),
   facility: (attributes: Record<string, string>, context?: any) => (
     <FacilityIsland nctId={context?.nct_id} />
   ),

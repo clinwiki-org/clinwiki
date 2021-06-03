@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { BeatLoader } from 'react-spinners';
-import WfIslandAggChild  from './WfIslandAggChild'
+import WfIslandAggChild from './WfIslandAggChild'
 import { fetchWorkFlowPage } from 'services/study/actions';
-import {  fetchIslandConfig } from 'services/search/actions'
+import { fetchIslandConfig } from 'services/search/actions'
 
 
 interface Props {
@@ -21,23 +21,23 @@ function IslandAggWrapper(props: Props) {
   const isFetchingFacetConfig = useSelector((state: RootState) => state.search.isFetchingFacetConfig);
   const isFetchingSearchParams = useSelector((state: RootState) => state.search.isFetchingSearchParams);
 
-  useEffect(() => {
-    dispatch(fetchWorkFlowPage( nctId || "" ));
-    }, [dispatch, nctId])
+  // useEffect(() => {  //! No Rails
+  //   dispatch(fetchWorkFlowPage( nctId || "" ));
+  //   }, [dispatch, nctId])
 
 
   useEffect(() => {
-    !islandConfig &&  !isFetchingFacetConfig && !isFetchingSearchParams && dispatch(fetchIslandConfig());
+    !islandConfig && !isFetchingFacetConfig && !isFetchingSearchParams && dispatch(fetchIslandConfig());
   }, [dispatch, islandConfig]);
 
-  if ( !aggId  || !islandConfig ) {
+  if (!aggId || !islandConfig) {
     return <BeatLoader />
   }
- 
+
   return (
     <WfIslandAggChild
-    aggId={props.aggId}
-    nctId={props.nctId || ""}
+      aggId={props.aggId}
+      nctId={props.nctId || ""}
     />
   );
 }
