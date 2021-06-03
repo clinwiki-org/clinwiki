@@ -329,6 +329,36 @@ div.DraftEditor-editorContainer{
  }
 }
 
+  ///TOOL TIPS
+
+  .tooltip {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background: rgba(0,0,0,.7);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+  
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    opacity: 0;
+    transition: .5s;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+    top: -20px;
+  }
+
+//// GRID WORK
 
 .grid-container{
   // display: flex;
