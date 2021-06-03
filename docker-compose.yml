@@ -1,6 +1,6 @@
 version: "3"
 services:
-  nginx-prod:
+  nginx:
     image: nginx:stable
     container_name: nginx
     build:
@@ -8,6 +8,10 @@ services:
       dockerfile: compose/Dockerfile
     volumes:
       - ./compose/nginx:/etc/nginx/conf.d 
+    depends_on:
+      - nodejs
+    ports:
+      - 80:80
   db:
     image: postgres:11.8
     container_name: clinwiki-db
@@ -47,11 +51,11 @@ services:
       - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
     ports:
       - 5601:5601
-  redis:
-    image: redis:5.0.5
-    container_name: redis
-    volumes:
-      - redis-data:/data
+  # redis:
+  #   image: redis:5.0.5
+  #   container_name: redis
+  #   volumes:
+  #     - redis-data:/data
   # clinwiki:
   #   image: cwlite
   #   build:
