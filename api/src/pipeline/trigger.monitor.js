@@ -57,9 +57,6 @@ export const initMonitorTriggers = async () => {
                 $function$
                 `;
 
-                console.log("NOTIFY FUNCTION");
-
-                console.log(CREATE_NOTIFY_FUNCTION_QUERY)
                 let createFunctionResults = await query(CREATE_NOTIFY_FUNCTION_QUERY,[]);
                 let deleteFunctionResults = await query(CREATE_DELETE_NOTIFY_FUNCTION_QUERY,[]);
 
@@ -78,15 +75,16 @@ export const initMonitorTriggers = async () => {
 //  WILL NEED TO RUN THIS DROP AFTER DEPLOYING TO HAVE CHANGES TAKE PLACE 
 
 // DROP TRIGGERS
-            // if(checkResults.rowCount == 3)     
-            // {
+            if(checkResults.rowCount == 2)     
+            {
+                console.log("About to Drop 2 triggers ")
             //    const DROP_DELETE_TRIGGER = `DROP TRIGGER ${deleteTriggerName} on ${table.name};`;
             //    const dropTriggerResults = await query(DROP_DELETE_TRIGGER);
-            //    const INSERT_DELETE_TRIGGER = `DROP TRIGGER ${insertTriggerName} on ${table.name};`;
-            //    const insertTriggerResults = await query(INSERT_DELETE_TRIGGER);
-            //    const UPDATE_DELETE_TRIGGER = `DROP TRIGGER ${updateTriggerName} on ${table.name};`;
-            //    const updateTriggerResults = await query(UPDATE_DELETE_TRIGGER);
-            // }
+               const INSERT_DELETE_TRIGGER = `DROP TRIGGER ${insertTriggerName} on ${table.name};`;
+               const insertTriggerResults = await query(INSERT_DELETE_TRIGGER);
+               const UPDATE_DELETE_TRIGGER = `DROP TRIGGER ${updateTriggerName} on ${table.name};`;
+               const updateTriggerResults = await query(UPDATE_DELETE_TRIGGER);
+            }
 
 // END DROP
         }
