@@ -121,7 +121,7 @@ export const fetchFacilitiesPageHasuraError = (
 });
 
 export const fetchSampleStudy = (
-    params: string,
+    params: any,
     QUERY: any
 ): types.StudyActionTypes => ({
     type: types.FETCH_SAMPLE_STUDY_SEND,

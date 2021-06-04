@@ -124,10 +124,8 @@ function* getSearchParams(action) {
                 camelCasedParams[camelCase(key)] = value;
             }
 
-            console.log('PARSED', parsedParams);
-            console.log('Cammeled', camelCasedParams);
+
             response.data.searchParams.searchParams = camelCasedParams;
-            console.log('Response', response);
             yield put(actions.fetchSearchParamsSuccess(response));
             yield put(actions.updateSearchParamsSuccess(action.hash));
             //need this to run to populate our recordsTotal for time being was quick and easy way but probs not ideal

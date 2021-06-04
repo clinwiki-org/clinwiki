@@ -33,3 +33,17 @@ export const fetchHasuraIntrospectionError = (message: string) : types.Introspec
     type: types.FETCH_HASURA_INTROSPECTION_ERROR,
     payload: { message }
 });  
+export const fetchNodeIntrospection = ( QUERY: any ) : types.IntrospectionActionTypes => ({
+    type: types.FETCH_NODE_INTROSPECTION_SEND,
+    QUERY
+});
+
+export const fetchNodeIntrospectionSuccess = (payload: IntrospectionQuery) : types.IntrospectionActionTypes => ({
+    type: types.FETCH_NODE_INTROSPECTION_SUCCESS,
+    payload
+});
+
+export const fetchNodeIntrospectionError = (message: string) : types.IntrospectionActionTypes => ({
+    type: types.FETCH_NODE_INTROSPECTION_ERROR,
+    payload: { message }
+});  

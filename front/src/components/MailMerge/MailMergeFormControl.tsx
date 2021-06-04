@@ -14,7 +14,7 @@ import { fetchSearchParams, updateSearchParamsAction } from 'services/search/act
 // import { fetchIntrospection } from 'services/introspection/actions';
 //import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 import { introspectionQuery } from 'graphql/utilities';
-import { fetchHasuraIntrospection, fetchIntrospection } from 'services/introspection/actions';
+import { fetchHasuraIntrospection, fetchIntrospection, fetchNodeIntrospection } from 'services/introspection/actions';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;
@@ -59,37 +59,42 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
 
 
 
-  const introspection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
+  const hasuraIntrospection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
+  const nodeIntrospection = useSelector((state: RootState) => state.introspection.nodeIntrospection);
   const schemaType = getClassForMode(mode);
   const [fragmentName, fragment] = useFragment(schemaType, props.template);
   // const [fragmentName, fragment] = useFragment('Study', props.template);
   useEffect(() => {
     const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
-    dispatch(fetchHasuraIntrospection(QUERY));
+    dispatch( mode == "Study" ? fetchHasuraIntrospection(QUERY) : fetchNodeIntrospection(QUERY));
   }, [dispatch, fragment, mode]);
 
   useEffect(() => {
-    console.log('get params call')
     dispatch(fetchSearchParams(searchHash ?? ""));
   }, [dispatch])
 
   useEffect(() => {
-    console.log('GET SAMPLE QUERY', searchParams)
     const STUDY_QUERY = `${getSampleStudyQuery(fragmentName, fragment)}`
     const SEARCH_QUERY = `${getSampleSearchQuery(fragmentName, fragment)}`
     dispatch(mode == "Study" ? fetchSampleStudyHasura(nctId ?? "", STUDY_QUERY) : fetchSampleStudy(searchParams ?? "", SEARCH_QUERY));
   }, [dispatch, fragment, mode, searchParams]);
 
   const sample = useSelector((state: RootState) => state.study.hasuraSampleStudy);
+  const sampleSearch = useSelector((state: RootState) => state.study.sampleStudy);
 
-  console.log('HI FROM NORMAL MERGE CONTROL')
-  if (!sample) {
+  if (!nodeIntrospection && mode == "Search") {
+    return <BeatLoader />;
+  }
+  if (!hasuraIntrospection && mode == "Study") {
+    return <BeatLoader />;
+  }
+  if (!sample && mode == "Study") {
+    return <BeatLoader />;
+  }
+  if (!sampleSearch && mode == "Search") {
     return <BeatLoader />;
   }
 
-  if (!introspection) {
-    return <BeatLoader />;
-  }
 
   // const schema : GraphqlSchemaType = {
   //   kind: 'graphql',
@@ -102,10 +107,10 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   //   typeName: 'Search',
   //   types: introspection.data.__schema.types,
   // };
-  const types = introspection.data.__schema.types;
+  const types = mode == "Study" ? hasuraIntrospection.data.__schema.types : nodeIntrospection.data.__schema.types  ;
   const searchData = () => {
     let studies: any[] = []
-    sample?.data?.search?.studies?.map((study, index) => {
+    sampleSearch?.data?.search?.studies?.map((study, index) => {
       studies.push({ ...study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' })
     })
     return studies
