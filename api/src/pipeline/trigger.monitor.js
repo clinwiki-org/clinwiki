@@ -22,24 +22,46 @@ export const initMonitorTriggers = async () => {
         try {
             const insertTriggerName = 'notify_pipeline_'+table.name+'_INSERT';
             const updateTriggerName = 'notify_pipeline_'+table.name+'_UPDATE';
+            const deleteTriggerName = 'notify_pipeline_'+table.name+'_DELETE';
+
             let checkResults = await query(CHECK_TABLE_TRIGGER_QUERY,[table.name]);
-            
+            console.log("TRIGGER COUNT", checkResults.rowCount)
             if(checkResults.rowCount === 0) {
                 logger.info('Creating triggers for '+table.name);
                 const functionName = 'notify_'+table.name+'_event()';
+                const deleteFunctionName = 'notify_'+table.name+'_delete_event()';
                 const eventName = table.name+'_event';
+                const something = '{"trigger": "delete" }'
+                const something2 = '{"trigger": "insert" }'
                 const CREATE_NOTIFY_FUNCTION_QUERY = `
                 CREATE OR REPLACE FUNCTION `+functionName+`
                     RETURNS trigger
                     LANGUAGE plpgsql
                 AS $function$
                 BEGIN
-                    PERFORM pg_notify('`+eventName+`', row_to_json(NEW)::text);
+                PERFORM pg_notify('`+eventName+`',json_build_array(to_json('`+something2+`'::text), row_to_json(NEW)::text) ::text);
                     RETURN NULL;
                 END;
                 $function$
                 `;
+
+                const CREATE_DELETE_NOTIFY_FUNCTION_QUERY = `
+                CREATE OR REPLACE FUNCTION `+deleteFunctionName+`
+                    RETURNS trigger
+                    LANGUAGE plpgsql
+                AS $function$
+                BEGIN
+                    PERFORM pg_notify('`+eventName+`',json_build_array(to_json('`+something+`'::text), row_to_json(OLD)::text) ::text);
+                    RETURN NULL;
+                END;
+                $function$
+                `;
+
+                console.log("NOTIFY FUNCTION");
+
+                console.log(CREATE_NOTIFY_FUNCTION_QUERY)
                 let createFunctionResults = await query(CREATE_NOTIFY_FUNCTION_QUERY,[]);
+                let deleteFunctionResults = await query(CREATE_DELETE_NOTIFY_FUNCTION_QUERY,[]);
 
                 const CREATE_TABLE_INSERT_TRIGGER_QUERY = `CREATE TRIGGER ${insertTriggerName} AFTER INSERT ON ${table.name} FOR EACH ROW EXECUTE PROCEDURE ${functionName};`;
                 const createInsertTriggerResults = await query(CREATE_TABLE_INSERT_TRIGGER_QUERY,[]);
@@ -47,9 +69,26 @@ export const initMonitorTriggers = async () => {
                 const CREATE_TABLE_UPDATE_TRIGGER_QUERY = "create trigger "+updateTriggerName+" after update on "+table.name+" for each row execute procedure "+functionName;
                 const createUpdateTriggerResults = await query(CREATE_TABLE_UPDATE_TRIGGER_QUERY,[]);
     
+                const CREATE_TABLE_DELETE_TRIGGER_QUERY = `CREATE TRIGGER ${deleteTriggerName} AFTER DELETE ON ${table.name} FOR EACH ROW EXECUTE PROCEDURE ${deleteFunctionName};`;
+                const createDeleteTriggerResults = await query(CREATE_TABLE_DELETE_TRIGGER_QUERY,[]);                
                 logger.info('Created triggers for '+table.name+' DONE');
 
             }
+
+//  WILL NEED TO RUN THIS DROP AFTER DEPLOYING TO HAVE CHANGES TAKE PLACE 
+
+// DROP TRIGGERS
+            // if(checkResults.rowCount == 3)     
+            // {
+            //    const DROP_DELETE_TRIGGER = `DROP TRIGGER ${deleteTriggerName} on ${table.name};`;
+            //    const dropTriggerResults = await query(DROP_DELETE_TRIGGER);
+            //    const INSERT_DELETE_TRIGGER = `DROP TRIGGER ${insertTriggerName} on ${table.name};`;
+            //    const insertTriggerResults = await query(INSERT_DELETE_TRIGGER);
+            //    const UPDATE_DELETE_TRIGGER = `DROP TRIGGER ${updateTriggerName} on ${table.name};`;
+            //    const updateTriggerResults = await query(UPDATE_DELETE_TRIGGER);
+            // }
+
+// END DROP
         }
         catch(err) {
             logger.error(err);

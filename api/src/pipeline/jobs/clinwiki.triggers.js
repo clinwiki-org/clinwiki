@@ -14,34 +14,66 @@ export const indexWikiPage = async (payload) => {
 
 export const indexCrowdKeyValueIds = async (payload) => {
     logger.debug('Indexing Crowd Key Values');
+    let rowInfo = JSON.parse(payload[1])
+    let triggerInfo = JSON.parse(payload[0])
 
-    // console.log("about to query for elastic doc")
+    console.log("about to query for elastic doc", rowInfo.crowd_key_value_id_association)
     let esResults = await elastic.query({
         "query": {
             "bool": {
                 "must": {
                     "simple_query_string": {
                         "fields": ["nct_id"],
-                        "query": payload.crowd_key_value_id_association
+                        "query": rowInfo.crowd_key_value_id_association
                     }
                 }
             }
         }
     });
-    console.log("ESRESULTS" + util.inspect(esResults, false, null, true)); 
-    let indexData = esResults.body.hits.hits[0]._source; 
-    let frontMatterKeys = indexData.front_matter_keys ? indexData.front_matter_keys : []
-    const list = [{
-        nct_id: payload.crowd_key_value_id_association, 
-        [`fm_${payload.crowd_key}`]: indexData[`fm_${payload.crowd_key}`] ? [...indexData[`fm_${payload.crowd_key}`], payload.crowd_value] : [payload.crowd_value],
-        front_matter_keys: frontMatterKeys.includes(payload.crowd_key) ? [payload.crowd_key] : [...indexData.front_matter_keys, payload.crowd_key]
-        //Below values not added as no current use/development
-        // user_id: payload.user_id,
-        // verified: payload.verified,
-        // approved: payload.approved,
-        // evidenced: payload.evidence
-    }];
-    await bulkUpdate(list);
+    // console.log("ESRESULTS" + util.inspect(esResults, false, null, true)); 
+    let indexData = esResults.body.hits.hits[0]._source;
+
+    if (triggerInfo.trigger == 'insert') {
+        let frontMatterKeys = indexData.front_matter_keys ? indexData.front_matter_keys : [];
+
+        const insertList = [{
+            nct_id: rowInfo.crowd_key_value_id_association,
+            [`fm_${rowInfo.crowd_key}`]: indexData[`fm_${rowInfo.crowd_key}`] ? [...indexData[`fm_${rowInfo.crowd_key}`], rowInfo.crowd_value] : [rowInfo.crowd_value],
+            front_matter_keys: frontMatterKeys.includes(rowInfo.crowd_key) ? [rowInfo.crowd_key] : [...frontMatterKeys, rowInfo.crowd_key]
+            //Below values not added as no current use/development
+            // user_id: payload.user_id,
+            // verified: payload.verified,
+            // approved: payload.approved,
+            // evidenced: payload.evidence
+        }];
+        console.log("INSERTING INTO INDEX")
+        await bulkUpdate(insertList);
+        return
+    } else if (triggerInfo.trigger == 'delete') {
+        console.log("DELETING FROM INDEX")
+
+
+        let frontMatterKeys = indexData.front_matter_keys;
+        let fmCrowdField = indexData[`fm_${rowInfo.crowd_key}`];
+        fmCrowdField = fmCrowdField.filter(x => x !== rowInfo.crowd_value);
+        frontMatterKeys = fmCrowdField.length == 0 ? frontMatterKeys.filter(x => x !== rowInfo.crowd_key) : frontMatterKeys;
+        
+        const deleteList = [{
+            nct_id: rowInfo.crowd_key_value_id_association,
+            [`fm_${rowInfo.crowd_key}`]: fmCrowdField,
+            front_matter_keys: frontMatterKeys,
+            //Below values not added as no current use/development
+            // user_id: payload.user_id,
+            // verified: payload.verified,
+            // approved: payload.approved,
+            // evidenced: payload.evidence
+        }];
+        await bulkUpdate(deleteList);
+        return
+    } else {
+        logger.error("HIT ELSE CASE")
+        return
+    }
 }
 
 // export const indexCrowdKeys = async (payload) => {
