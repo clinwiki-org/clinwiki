@@ -5,9 +5,11 @@ const util = require('util')
 
 export const indexWikiPage = async (payload) => {
     logger.debug('Indexing Wiki Page '+payload)
+    let rowInfo = JSON.parse(payload[1])
+
     const list = [{
-        nct_id: payload.nct_id,
-        wiki_text: payload.text
+        nct_id: rowInfo.nct_id,
+        wiki_text: rowInfo.text
     }];
     await bulkUpdate(list);
 };
