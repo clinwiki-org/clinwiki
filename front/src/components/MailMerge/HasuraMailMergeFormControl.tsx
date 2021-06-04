@@ -51,7 +51,7 @@ export default function HasuraMailMergeFormControl(props: HasuraMailMergeFormCon
     }, [dispatch, fragment]);
 
     const study = useSelector((state: RootState) => state.study.hasuraSampleStudy);
-
+    console.log('HI from HMMAILMERGE')
     if (!study || !introspection) {
         return <BeatLoader />;
     }

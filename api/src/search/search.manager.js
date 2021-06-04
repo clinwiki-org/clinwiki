@@ -98,7 +98,7 @@ export async function searchParams(args) {
 }
 export async function provisionSearchHash(args) {
     try {
-        logger.error('SERARCH_PAGE_HASH_MUTATION');
+        logger.info('SEARCH_PAGE_HASH_MUTATION');
         let paramString = JSON.stringify(args.input.params);
         const results = await query(QUERY_LONG_LINK, [paramString]);
         let hash_short;
