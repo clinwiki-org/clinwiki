@@ -347,7 +347,6 @@ function IslandAggChild(props: Props) {
       q: searchParams.q,
       bucketsWanted: [currentAgg.visibleOptions]
     };
-
     currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, [{ id: aggId, name: currentAgg.name }])) : !isFetchingAggBuckets && dispatch(fetchSearchPageOpenAggBuckets(variables, [{ id: aggId, name: currentAgg.name }]));
     handleLoadMoreResponse();
   }
@@ -392,12 +391,14 @@ function IslandAggChild(props: Props) {
     setSortKind(SortKind.Alpha);
     setBuckets([]);
     setHasMore(true);
+    handleLoadMore();
   }
   const toggleNumericSort = () => {
     setDesc(!desc);
     setSortKind(SortKind.Number);
     setBuckets([]);
     setHasMore(true);
+    handleLoadMore();
   }
   const handleFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
@@ -413,12 +414,6 @@ function IslandAggChild(props: Props) {
   useEffect(() => {
     handleLoadMoreResponse()
   }, [aggBuckets, crowdAggBuckets, currentAgg, aggId]);
-  useEffect(() => {
-    if (currentAgg.defaultToOpen) {
-
-      handleLoadMore()
-    }
-  }, [desc, sortKind]);
 
 
   const transformFilters = (
