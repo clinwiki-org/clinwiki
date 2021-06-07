@@ -336,7 +336,7 @@ div.DraftEditor-editorContainer{
     display: inline-block;
   }
   
-  .tooltip .tooltiptext {
+  .mm-tooltip .mm-tooltiptext {
     visibility: hidden;
     width: 120px;
     background: rgba(0,0,0,.7);
@@ -352,7 +352,7 @@ div.DraftEditor-editorContainer{
     transition: .5s;
   }
   
-  .tooltip:hover .tooltiptext {
+  .mm-tooltip:hover .mm-tooltiptext {
     visibility: visible;
     opacity: 1;
     top: -20px;
