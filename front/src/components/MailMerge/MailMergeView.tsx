@@ -56,7 +56,6 @@ function applyTemplate(
 ) {
   try {
     context = { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
-    //console.log("🚀 ~ context", context);
     return template(context);
   } catch (e) {
     return `#Template apply error:\n   ${e}`;
@@ -78,7 +77,6 @@ export default function MailMergeView(props: Props) {
   const dispatch = useDispatch();
   const showLoginModal = useSelector((state: RootState) => state.study.showLoginModal);
   const data = useSelector((state: RootState) => state.search.searchResults);
-  const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
 
 
   const searchParams = data?.data?.searchParams;

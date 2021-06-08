@@ -67,7 +67,7 @@ function WfIslandAggChild(props: Props) {
     }
   }
   let filteredArray = suggestedLabels.data.crowd_keys.filter(x=> x.crowd_key == currentAgg.name);
-  const currentAggBucketsData = filteredArray[0].crowd_value !==0 ?  filteredArray[0].crowd_values : [];
+  const currentAggBucketsData = filteredArray[0] ?  filteredArray[0].crowd_values : [];
 
   let currentAggBuckets = [];
   //@ts-ignore

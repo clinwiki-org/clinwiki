@@ -41,7 +41,7 @@ export default function GenericPageWrapper(props: Props) {
     const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
     const data = useSelector((state: RootState) => state.search.searchResults);
     const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
-
+    const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
     //Currently making assumption anything diplayed in our search route is of pageType study 
     //Ideally should be set from PageView but was having issues , response was not saving
     const pageType = match.path == "/search/" ? "Search" : "Study"
@@ -56,7 +56,7 @@ export default function GenericPageWrapper(props: Props) {
         // const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
         const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
         dispatch(pageType == "Study" ? fetchStudyPageHasura(props.arg ?? "", HASURA_STUDY_QUERY) : fetchSearchPageMM(searchParams.searchParams, SEARCH_QUERY));
-    }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data]);
+    }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data, suggestedLabels]);
 
 
     const searchData = () => {
