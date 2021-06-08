@@ -35,11 +35,11 @@ function WfIslandAggChild(props: Props) {
   if (isLoading || !currentAgg) return <BeatLoader />;
   // if (error) return <Error message={error.message} />;
   if (!suggestedLabels) return <BeatLoader />;
-  const crowdKeyValueData = suggestedLabels.data.crowd_key_value_ids
+  const crowdKeyValueData = suggestedLabels.data.crowd_key_value_ids.filter(x => x.crowd_key == currentAgg.name);
 //Believe this needs some work. Values being carried over
   let selectedCrowdValues = crowdKeyValueData.reduce((x, y, index) => ({ ...x, [index]: y.crowd_value }), {});
 
-  //console.log("🚀 ~ WfIslandAggChild ~ selectedCrowdValues", selectedCrowdValues);
+  // console.log("🚀 ~ WfIslandAggChild ~ selectedCrowdValues", selectedCrowdValues);
 
   let selectedValues = Object.values(selectedCrowdValues);
   const checkedValues = new Set(
