@@ -591,11 +591,11 @@ export const wikiPageUpdateHasuraMutationError = (
 
 export const fetchSuggestedLabels = (
     nctId: string,
-    crowdKey: string
+    crowdKeyArray: any[]
 ): types.StudyActionTypes => ({
     type: types.FETCH_SUGGESTED_LABELS_SEND,
     nctId,
-    crowdKey,
+    crowdKeyArray,
 });
 export const fetchSuggestedLabelsSuccess = (
     payload: any
