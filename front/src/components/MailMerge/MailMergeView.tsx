@@ -3,7 +3,7 @@ import Handlebars from 'handlebars';
 import useHandlebars from 'hooks/useHandlebars';
 import marked from 'marked';
 import HtmlToReact from 'html-to-react';
-import { setShowLoginModal } from 'services/study/actions';
+import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation, setShowLoginModal } from '../../services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { fetchIslandConfig, fetchSearchPageOpenCrowdAggBuckets, fetchSearchPageOpenAggBuckets } from 'services/search/actions'
@@ -56,7 +56,6 @@ function applyTemplate(
 ) {
   try {
     context = { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
-    //console.log("🚀 ~ context", context);
     return template(context);
   } catch (e) {
     return `#Template apply error:\n   ${e}`;
@@ -79,6 +78,7 @@ export default function MailMergeView(props: Props) {
   const showLoginModal = useSelector((state: RootState) => state.study.showLoginModal);
   const data = useSelector((state: RootState) => state.search.searchResults);
 
+
   const searchParams = data?.data?.searchParams;
   const params = useUrlParams();
 
@@ -91,6 +91,9 @@ export default function MailMergeView(props: Props) {
   ]);
   const aggIslandsCurrent = useRef({
     currentAggIsalnds: [] as any[]
+  })
+  const wfIslandsCurrent = useRef({
+    currentWFIsalnds: [] as any[]
   })
 
   const style = props.style
@@ -105,6 +108,9 @@ export default function MailMergeView(props: Props) {
       processNode: (node, children) => {
         if (node.name == "agg") {
           aggIslandsCurrent.current.currentAggIsalnds = [...aggIslandsCurrent.current.currentAggIsalnds, node.attribs]
+        }
+        if (node.name == "wfagg") {
+          wfIslandsCurrent.current.currentWFIsalnds = [...wfIslandsCurrent.current.currentWFIsalnds, node.attribs]
         }
         const create = props.islands?.[node.name];
         return (
@@ -127,9 +133,10 @@ export default function MailMergeView(props: Props) {
 
   useEffect(() => {
     !islandConfig && dispatch(fetchIslandConfig());
-  }, [dispatch])
+  }, [dispatch]);
+
   useEffect(() => {
-    let uniqueIds = uniq(aggIslandsCurrent.current.currentAggIsalnds);
+    let uniqueAggIds = uniq(aggIslandsCurrent.current.currentAggIsalnds); 
     let aggArray: any[] = [];
     let aggIdArray: any[] = [];
     let aggBucketsWanted: any[] = [];
@@ -139,7 +146,7 @@ export default function MailMergeView(props: Props) {
     let crowdBucketsWanted: any[] = [];
     let crowdAggSortArray: any[] = [];
 
-    islandConfig && uniqueIds.map((agg) => {
+    islandConfig && uniqueAggIds.map((agg) => {
       if (islandConfig[agg.id]?.defaultToOpen == true) {
         let sort = {
           id: islandConfig[agg.id].order.sortKind,
@@ -155,10 +162,10 @@ export default function MailMergeView(props: Props) {
         islandConfig[agg.id].aggKind == 'aggs' && aggBucketsWanted.push(islandConfig[agg.id].visibleOptions);
         islandConfig[agg.id].aggKind == 'aggs' && aggSortArray.push(sort);
       }
-    }, [dispatch])
+    });
 
 
-    if (crowdAggArray.length !== 0) {
+    if (searchParams && crowdAggArray.length !== 0) {
 
 
       const variables = {
@@ -175,7 +182,7 @@ export default function MailMergeView(props: Props) {
       };
       variables.agg[0] && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, crowdAggIdArray))
     }
-    if (aggArray.length !== 0) {
+    if ( searchParams && aggArray.length !== 0) {
 
       const variables2 = {
         ...searchParams.searchParams,
@@ -193,6 +200,30 @@ export default function MailMergeView(props: Props) {
     }
 
   }, [dispatch, islandConfig, searchParams])
+
+  useEffect(()=>{
+    let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds); 
+    let wfLabels: any[] = [];
+
+    console.log(uniqueWFIds);
+    console.log(islandConfig)
+    islandConfig && uniqueWFIds.map((WF) => {
+      console.log(WF)
+      if (islandConfig[WF.id]?.defaultToOpen == true) {
+        islandConfig[WF.id] && wfLabels.push(islandConfig[WF.id].name);
+      }
+    })
+  
+    console.log(wfLabels)
+
+    if(wfLabels){
+      //@ts-ignore
+      wfLabels[0] && dispatch(fetchSuggestedLabels(props.context?.nct_id, wfLabels));
+      
+    }
+
+    
+  }, [dispatch, islandConfig])
 
   const parser = new HtmlToReact.Parser();
   const reactElement = parser.parseWithInstructions(
