@@ -331,31 +331,30 @@ div.DraftEditor-editorContainer{
 
   ///TOOL TIPS
 
-  .tooltip {
+  .mm-tooltip {
     position: relative;
     display: inline-block;
   }
   
   .mm-tooltip .mm-tooltiptext {
     visibility: hidden;
-    width: 120px;
     background: rgba(0,0,0,.7);
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    padding: 5px 0;
-  
-    /* Position the tooltip */
     position: absolute;
     z-index: 1;
     opacity: 0;
     transition: .5s;
+    top: -4px;
+    right: -100px;
+    padding: 5px;
   }
   
   .mm-tooltip:hover .mm-tooltiptext {
     visibility: visible;
+    position: absolute;
     opacity: 1;
-    top: -20px;
   }
 
 //// GRID WORK
