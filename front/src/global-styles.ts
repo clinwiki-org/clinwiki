@@ -308,7 +308,7 @@ div.DraftEditor-editorContainer{
  }
 }
 
-.mm-card2{
+.mm-card2 {
   max-width: 350px;
   min-height: 350px;
   max-height: 350px;
@@ -318,7 +318,7 @@ div.DraftEditor-editorContainer{
   padding: 5px;
   display: flex;
   flex-wrap:wrap;
-  overflow: hidden;
+  position: relative;
   
   a {
     ${props => props.theme.button};
@@ -327,6 +327,13 @@ div.DraftEditor-editorContainer{
  .mail-merge {
    position: relative;
  }
+ 
+ .mm-card-inner {
+  //  overflow: hidden;
+   height: 100%;
+   width: 100%;
+ }
+
 }
 
   ///TOOL TIPS
@@ -334,6 +341,7 @@ div.DraftEditor-editorContainer{
   .mm-tooltip {
     position: relative;
     display: inline-block;
+    z-index: 10000;
   }
   
   .mm-tooltip .mm-tooltiptext {
@@ -346,8 +354,6 @@ div.DraftEditor-editorContainer{
     z-index: 1;
     opacity: 0;
     transition: .5s;
-    top: -4px;
-    right: -100px;
     padding: 5px;
   }
   
@@ -355,6 +361,24 @@ div.DraftEditor-editorContainer{
     visibility: visible;
     position: absolute;
     opacity: 1;
+  }
+
+  .mm-tooltip-tr {
+    top: -25px;
+    right: -60px;
+  }
+
+  .mm-tooltip-br{
+    right: -100px;
+  }
+
+  .mm-tooltip-bl{
+    left: -60px;
+  }
+
+  .mm-tooltip-tl{
+    left: -60px;
+    top: -25px;
   }
 
 //// GRID WORK
