@@ -106,6 +106,7 @@ function IslandAggChild(props: Props) {
   const isFetchingAggBuckets = useSelector((state: RootState) => state.search.isFetchingAggBuckets);
   const crowdAggBuckets = useSelector((state: RootState) => state.search.crowdAggBuckets);
   const isFetchingCrowdAggBuckets = useSelector((state: RootState) => state.search.isFetchingCrowdAggBuckets);
+  const isFetchingStudy = useSelector((state: RootState) => state.study.isFetchingStudy);
   const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams);
   const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
   const site = useSelector((state: RootState) => state.site.hasuraPresentSiteProvider.sites[0]);
@@ -114,7 +115,6 @@ function IslandAggChild(props: Props) {
   const match = useRouteMatch();
 
   const presentSiteView = site?.siteView;
-
 
 
 
@@ -172,9 +172,7 @@ function IslandAggChild(props: Props) {
   // );
   searchParamsCurrent.current = searchParams;
   let currentAgg = getCurrentAgg();
-  let grouping = currentAgg?.aggKind == "aggs" ? 'aggFilters' : 'crowdAggFilters'
-  // console.log("YOOO",currentAgg.name);
-  // console.log("Yo2",searchParams)
+  let grouping = currentAgg?.aggKind == "aggs" ? 'aggFilters' : 'crowdAggFilters';
   let aggValues = find(
     (x) => (x.field == currentAgg?.name),
     searchParams[grouping]
@@ -347,15 +345,16 @@ function IslandAggChild(props: Props) {
       q: searchParams.q,
       bucketsWanted: [currentAgg.visibleOptions]
     };
-    currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, [{ id: aggId, name: currentAgg.name }])) : !isFetchingAggBuckets && dispatch(fetchSearchPageOpenAggBuckets(variables, [{ id: aggId, name: currentAgg.name }]));
+    let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
+    currentAgg.aggKind === "crowdAggs" ? !shouldNotDispatch  && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, [{ id: aggId, name: currentAgg.name }])) : !shouldNotDispatch && dispatch(fetchSearchPageOpenAggBuckets(variables, [{ id: aggId, name: currentAgg.name }]));
     handleLoadMoreResponse();
   }
 
   const handleLoadMoreResponse = () => {
     let aggName = currentAgg!.name
-    let responseBuckets = currentAgg.aggKind === "crowdAggs" ? aggId && crowdAggBuckets?.aggs[aggId] : aggBuckets?.aggs[aggId!];
+    let responseBuckets = currentAgg.aggKind == "crowdAggs" && aggId ?  crowdAggBuckets?.aggs[aggId!] :  aggBuckets?.aggs[aggId!];
     let currentBuckets = buckets[0] === undefined ? [] : buckets
-    const allBuckets = currentBuckets.concat(responseBuckets);
+    const allBuckets = responseBuckets && responseBuckets.length !== 0 ?  currentBuckets.concat(responseBuckets) : [] ;
     let newBuckets = pipe(
       uniqBy<AggBucket>(prop('key')),
       sortBy<AggBucket>(prop('key'))
@@ -386,6 +385,17 @@ function IslandAggChild(props: Props) {
     // console.log(hasMore)
     setHasMore(hasMore);
   };
+
+  useEffect(() => {
+    setSortKind(currentAgg?.order?.sortKind == "count" ? SortKind.Alpha : SortKind.Number);
+    setDesc(currentAgg?.order?.desc);
+    // handleLoadMoreResponse()
+  }, [currentAgg]);
+
+  useEffect(() => {
+    handleLoadMoreResponse()
+  }, [aggBuckets, crowdAggBuckets,  aggId]);
+
   const toggleAlphaSort = () => {
     setDesc(!desc);
     setSortKind(SortKind.Alpha);
@@ -406,14 +416,7 @@ function IslandAggChild(props: Props) {
     setBuckets([]);
     setHasMore(true);
   };
-  useEffect(() => {
-    setSortKind(currentAgg?.order?.sortKind == "count" ? SortKind.Alpha : SortKind.Number);
-    setDesc(currentAgg?.order?.desc);
-  }, [currentAgg]);
 
-  useEffect(() => {
-    handleLoadMoreResponse()
-  }, [aggBuckets, crowdAggBuckets, currentAgg, aggId]);
 
 
   const transformFilters = (
@@ -536,7 +539,6 @@ function IslandAggChild(props: Props) {
 
     }
   }
-
   const filters = transformFilters(searchParams[grouping]);
   return (
     <>
@@ -565,6 +567,7 @@ function IslandAggChild(props: Props) {
         isOpen={currentAgg.defaultToOpen}
         fromAggField={false}
         allowsMissing={aggValues?.includeMissingFields}
+        disabled={ isFetchingStudy || isFetchingAggBuckets || isFetchingCrowdAggBuckets }
       />
     </>
   );

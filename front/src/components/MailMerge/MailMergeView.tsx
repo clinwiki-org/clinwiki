@@ -205,17 +205,12 @@ export default function MailMergeView(props: Props) {
     let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds); 
     let wfLabels: any[] = [];
 
-    console.log(uniqueWFIds);
-    console.log(islandConfig)
     islandConfig && uniqueWFIds.map((WF) => {
-      console.log(WF)
       if (islandConfig[WF.id]?.defaultToOpen == true) {
         islandConfig[WF.id] && wfLabels.push(islandConfig[WF.id].name);
       }
     })
   
-    console.log(wfLabels)
-
     if(wfLabels){
       //@ts-ignore
       wfLabels[0] && dispatch(fetchSuggestedLabels(props.context?.nct_id, wfLabels));
