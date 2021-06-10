@@ -17,6 +17,7 @@ import ResultLoader from './ResultLoader';
 import IslandAggWrapper from './IslandAggWrappper';
 import IslandAggWrapper2 from './WfIslandAggWrappper';
 import CrumbsBarIsland from './CrumbsBarIsland';
+import RandNumberLoader from './RandNumberLoader';
 
 /*
   Common island configuration for MailMerge pages
@@ -83,6 +84,9 @@ export const searchIslands: Record<string, IslandConstructor> = {
   ),
   resultsort: (attributes: Record<string, string>, context?: any) => (
     <ResultSort sortables={attributes['sortBy']} />
+  ),
+  randnumberloader: (attributes: Record<string, string>, context?: any) => (
+    <RandNumberLoader/>
   ),
   resultloader: (attributes: Record<string, string>, context?: any) => (
     <ResultLoader />
