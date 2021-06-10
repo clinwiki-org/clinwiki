@@ -337,6 +337,34 @@ div.DraftEditor-editorContainer{
 
 }
 
+.mm-card3 {
+  max-width: 350px;
+  min-height: 350px;
+  max-height: 350px;
+  margin: 15px;
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  background: #ffffff;
+  padding: 5px;
+  display: flex;
+  flex-wrap:wrap;
+  position: relative;
+  
+  a {
+    ${props => props.theme.button};
+  }
+
+ .mail-merge {
+   position: relative;
+ }
+ 
+ .mm-card-inner {
+  //  overflow: hidden;
+   height: 100%;
+   width: 100%;
+ }
+
+}
+
   ///TOOL TIPS
 
   .mm-tooltip {
