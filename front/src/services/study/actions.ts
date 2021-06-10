@@ -89,10 +89,12 @@ export const updatePageViewHasura = (
     input,
 });
 export const updatePageViewHasuraSuccess = (
-    payload: any
+    payload: any,
+    updatePageViewSuccessMessage: string
 ): types.StudyActionTypes => ({
     type: types.UPDATE_PAGE_VIEW_HASURA_SUCCESS,
     payload,
+    updatePageViewSuccessMessage
 });
 export const updatePageViewHasuraError = (
     message: string
@@ -318,10 +320,12 @@ export const updatePageView = (
     input,
 });
 export const updatePageViewSuccess = (
-    payload: any
+    payload: any,
+    updatePageViewSuccessMessage: string
 ): types.StudyActionTypes => ({
     type: types.UPDATE_PAGE_VIEW_SUCCESS,
     payload,
+    updatePageViewSuccessMessage
 });
 export const updatePageViewError = (
     message: string

@@ -69,6 +69,7 @@
     "react-spinners": "^0.8.3",
     "react-stars": "^2.2.5",
     "react-table": "6.8.6",
+    "react-toastify": "^7.0.4",
     "react-transition-group": "^4.4.1",
     "react-virtualized": "^9.21.2",
     "reactstrap": "^8.4.1",

@@ -73,6 +73,7 @@ const initialState: types.StudyState = {
     isFetchingEditReview: false,
     editReview: undefined,
     showLoginModal: false,
+    updatePageViewSuccessMessage: ""
 };
 
 const studyReducer = (
@@ -162,14 +163,17 @@ const studyReducer = (
                 isUpdatingPageViewHasura: true,
             };
         case types.UPDATE_PAGE_VIEW_HASURA_SUCCESS:
+            console.log('REDUCER', action.payload)
             return {
                 ...state,
                 isUpdatingPageViewHasura: false,
+                updatePageViewSuccessMessage: action.updatePageViewSuccessMessage
             };
         case types.UPDATE_PAGE_VIEW_HASURA_ERROR:
             return {
                 ...state,
                 isUpdatingPageViewHasura: false,
+                // updatePageViewErrorMessage: "Apologies, your save has failed, try again or contact clinwiki support.",
             };
         case types.FETCH_FACILITIES_PAGE_HASURA_SEND:
             return {
