@@ -67,6 +67,9 @@ label {
   background: ${props => props.theme.crumbs2.crumbBackground2};
   color: ${props => props.theme.crumbs2.crumbFont2} !important;
   line-height: 1.85em;
+  .mail-merge-island{
+    display: inline-block;
+  }
 }
 .crumb-container3 {
   border: 2px solid ${props => props.theme.crumbs3.crumbBackground3};
