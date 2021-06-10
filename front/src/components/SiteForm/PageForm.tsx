@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { FormControl, DropdownButton, MenuItem, Checkbox } from 'react-bootstrap';
 import styled from 'styled-components';
 import { useState } from 'react';
@@ -10,12 +10,27 @@ import { studyIslands } from 'containers/Islands/CommonIslands'
 import { updatePageView, deletePageView, updatePageViewHasura } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { capitalize, camelCase } from '../../utils/helpers'
+import Toast from 'components/Toast';
 import HasuraMailMergeFormControl from 'components/MailMerge/HasuraMailMergeFormControl';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {RootState} from 'reducers';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
 `;
+
+
+// const ToastContainer = styled.div`
+//   position: absolute;
+//   bottom: 0;
+//   left: 0;
+//   width: 100%;
+//   padding: 20px;
+// `;
+
 type Mode = "Study" | "Search";
+
 interface Props {
   siteId: number;
   page: any;
@@ -62,6 +77,7 @@ export default function PageForm(props: Props) {
   const [mode, setMode] = useState(intToStringPageType(page?.page_type));
   const theme = useTheme();
   let [nctOrSearchHash, setNctOrSearchHash] = useState(default_nctid);
+  const pageViewSaveSuccessMessage = useSelector((state: RootState) => state.study.updatePageViewSuccessMessage);
 
   const stringToIntPageType = (pageType: any) => {
     if (pageType === 'study' || 0) return 0
@@ -84,6 +100,16 @@ export default function PageForm(props: Props) {
     if (type === 'hasuraStudy') { title = "Hasura Study" }
     return title;
   };
+
+  const handleSavePageView = () => {
+    dispatch(updatePageViewHasura(props.siteId, input))
+  }
+
+  useEffect(() => {
+    if (pageViewSaveSuccessMessage) {
+    toast(pageViewSaveSuccessMessage);
+    }
+  },[pageViewSaveSuccessMessage])
 
   const selectedMailMergeType =
     pageType === 'hasuraStudy' ?
@@ -120,6 +146,8 @@ export default function PageForm(props: Props) {
 
   return (
     <div style={{ padding: '10px' }}>
+      
+      <ToastContainer/>
       <label>Url</label>
       {formControl('Url', url, setUrl)}
       <label>Default?</label>
@@ -168,7 +196,7 @@ export default function PageForm(props: Props) {
       {selectedMailMergeType}
       <hr />
       <ThemedButton
-        onClick={_ => dispatch(updatePageViewHasura(props.siteId, input))}
+        onClick={_ => handleSavePageView()}
         style={{ margin: '10px' }}>
         Save '{url}'
       </ThemedButton>
