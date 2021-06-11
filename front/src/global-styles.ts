@@ -67,6 +67,9 @@ label {
   background: ${props => props.theme.crumbs2.crumbBackground2};
   color: ${props => props.theme.crumbs2.crumbFont2} !important;
   line-height: 1.85em;
+  .mail-merge-island{
+    display: inline-block;
+  }
 }
 .crumb-container3 {
   border: 2px solid ${props => props.theme.crumbs3.crumbBackground3};
@@ -308,7 +311,7 @@ div.DraftEditor-editorContainer{
  }
 }
 
-.mm-card2{
+.mm-card2 {
   max-width: 350px;
   min-height: 350px;
   max-height: 350px;
@@ -318,6 +321,7 @@ div.DraftEditor-editorContainer{
   padding: 5px;
   display: flex;
   flex-wrap:wrap;
+  position: relative;
   overflow: hidden;
   
   a {
@@ -327,35 +331,86 @@ div.DraftEditor-editorContainer{
  .mail-merge {
    position: relative;
  }
+ 
+ .mm-card-inner {
+  //  overflow: hidden;
+   height: 100%;
+   width: 100%;
+ }
+
+}
+
+.mm-card3 {
+  max-width: 350px;
+  min-height: 350px;
+  max-height: 350px;
+  margin: 15px;
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  background: #ffffff;
+  padding: 5px;
+  display: flex;
+  flex-wrap:wrap;
+  position: relative;
+  
+  a {
+    ${props => props.theme.button};
+  }
+
+ .mail-merge {
+   position: relative;
+ }
+ 
+ .mm-card-inner {
+  //  overflow: hidden;
+   height: 100%;
+   width: 100%;
+ }
+
 }
 
   ///TOOL TIPS
 
-  .tooltip {
+  .mm-tooltip {
     position: relative;
     display: inline-block;
+    z-index: 10000;
   }
   
   .mm-tooltip .mm-tooltiptext {
     visibility: hidden;
-    width: 120px;
     background: rgba(0,0,0,.7);
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    padding: 5px 0;
-  
-    /* Position the tooltip */
     position: absolute;
     z-index: 1;
     opacity: 0;
     transition: .5s;
+    padding: 5px;
   }
   
   .mm-tooltip:hover .mm-tooltiptext {
     visibility: visible;
+    position: absolute;
     opacity: 1;
-    top: -20px;
+  }
+
+  .mm-tooltip-tr {
+    top: -25px;
+    right: -60px;
+  }
+
+  .mm-tooltip-br{
+    right: -100px;
+  }
+
+  .mm-tooltip-bl{
+    left: -60px;
+  }
+
+  .mm-tooltip-tl{
+    left: -60px;
+    top: -25px;
   }
 
 //// GRID WORK

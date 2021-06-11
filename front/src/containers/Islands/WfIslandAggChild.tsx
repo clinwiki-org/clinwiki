@@ -31,17 +31,15 @@ function WfIslandAggChild(props: Props) {
   }
   let currentAgg = getCurrentAgg();
 
-  useEffect(() => {
-    dispatch(fetchSuggestedLabels(nctId, currentAgg.name));
-  }, [dispatch, nctId])
 
   if (isLoading || !currentAgg) return <BeatLoader />;
   // if (error) return <Error message={error.message} />;
   if (!suggestedLabels) return <BeatLoader />;
-  const crowdKeyValueData = suggestedLabels.data.crowd_key_value_ids
+  const crowdKeyValueData = suggestedLabels.data.crowd_key_value_ids.filter(x => x.crowd_key == currentAgg.name);
+//Believe this needs some work. Values being carried over
+  let selectedCrowdValues = crowdKeyValueData.reduce((x, y, index) => ({ ...x, [index]: y.crowd_value }), {});
 
-  let selectedCrowdValues = crowdKeyValueData.reduce((x, y, index) => ({ ...x, [index]: y.crowd_value }), {})
-  //console.log("🚀 ~ WfIslandAggChild ~ selectedCrowdValues", selectedCrowdValues);
+  // console.log("🚀 ~ WfIslandAggChild ~ selectedCrowdValues", selectedCrowdValues);
 
   let selectedValues = Object.values(selectedCrowdValues);
   const checkedValues = new Set(
@@ -68,13 +66,13 @@ function WfIslandAggChild(props: Props) {
       dispatch(deleteCrowdKeyValueId(props.nctId, key, currentAgg.name))
     }
   }
-
-  const currentAggBucketsData = suggestedLabels.data.crowd_keys[0] ? suggestedLabels.data.crowd_keys[0]?.crowd_values : [];
+  let filteredArray = suggestedLabels.data.crowd_keys.filter(x=> x.crowd_key == currentAgg.name);
+  const currentAggBucketsData = filteredArray[0] ?  filteredArray[0].crowd_values : [];
 
   let currentAggBuckets = [];
   //@ts-ignore
   currentAggBucketsData.map(a => currentAggBuckets.push({ "key": a.crowd_value, "docCount": null }));
-  //console.log("🚀 ~ WfIslandAggChild ~ currentAggBuckets!!!!!!!!", currentAggBuckets);
+  // console.log("🚀 ~ WfIslandAggChild ~ currentAggBuckets!!!!!!!!", currentAggBuckets);
 
   const handleContainerToggle = () => {
     if (aggId) {

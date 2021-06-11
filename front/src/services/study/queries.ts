@@ -487,12 +487,13 @@ query HasuraFacilitiesPageQuery($nctId: String!) {
 `;
 
 export const CROWD_VALUES_QUERY = `
-query CrowdValuesQuery($crowdKeyValueId: String!, $crowdKey: String) {
-  crowd_key_value_ids(where: {_and: {crowd_key_value_id_association: {_eq: $crowdKeyValueId}, crowd_key: {_eq: $crowdKey}}}) {
+query CrowdValuesQuery($crowdKeyValueId: String!, $crowdKey: [String]) {
+  crowd_key_value_ids(where: {_and: {crowd_key_value_id_association: {_eq: $crowdKeyValueId}, crowd_key: {_in: $crowdKey}}}) {
     crowd_value
     crowd_key
   }
-  crowd_keys(where: {crowd_key: {_eq: $crowdKey}}) {
+  crowd_keys(where: {crowd_key: {_in: $crowdKey}}) {
+    crowd_key
     crowd_values {
       crowd_value
     }

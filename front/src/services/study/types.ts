@@ -308,6 +308,7 @@ export interface StudyState {
     bulkQueryUpdate: any;
     isBulkListUpdating: boolean;
     showLoginModal: boolean;
+    updatePageViewSuccessMessage: string;
 }
 
 export interface StudyDataError {
@@ -383,12 +384,14 @@ export interface UpdatePageViewHasuraSendAction {
 
 export interface UpdatePageViewHasuraSuccessAction {
     type: typeof UPDATE_PAGE_VIEW_HASURA_SUCCESS;
-    payload: PageViewsQuery;
+    updatePageViewSuccessMessage: string;
+    payload: any
 }
 
 export interface UpdatePageViewHasuraErrorAction {
     type: typeof UPDATE_PAGE_VIEW_HASURA_ERROR;
-    payload: any;
+    // payload: any;
+    payload: any
 }
 export interface fetchFacilitiesPageHasuraSendAction {
     type: typeof FETCH_FACILITIES_PAGE_HASURA_SEND;
@@ -559,6 +562,7 @@ export interface UpdatePageViewSendAction {
 export interface UpdatePageViewSuccessAction {
     type: typeof UPDATE_PAGE_VIEW_SUCCESS;
     payload: PageViewsQuery;
+    updatePageViewSuccessMessage: string;
 }
 
 export interface UpdatePageViewErrorAction {
@@ -764,7 +768,7 @@ export interface wikiPageUpdateHasuraMutationErrorAction {
 export interface fetchSuggestedLabelsSendAction {
     type: typeof FETCH_SUGGESTED_LABELS_SEND;
     nctId: any;
-    crowdKey: any;
+    crowdKeyArray: any[];
 }
 
 export interface fetchSuggestedLabelsSuccessAction {

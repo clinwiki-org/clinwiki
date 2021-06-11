@@ -152,8 +152,8 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
     } else {
       sections = [
         { path: '/main', value: 'Main' },
-        { path: '/siteviews', value: 'Views' },
-        { path: '/study', value: 'Study' },
+        // { path: '/siteviews', value: 'Views' },
+        // { path: '/study', value: 'Study' },
         { path: '/page', value: 'Page' },
       ];
     }

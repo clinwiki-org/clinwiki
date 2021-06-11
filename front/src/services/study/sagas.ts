@@ -7,6 +7,7 @@ import { fetchSearchParams } from '../search/actions';
 import * as api from './api';
 
 const getCurrentPageViews = state => state.study.pageViews.data.site.pageViews;
+const delay = time => new Promise(resolve => setTimeout(resolve, time));
 
 const getCurrentPageViewsHasura = state =>
     state.study.pageViewsHasura.data.site.pageViewsHasura; //TODO CHeck path to redux store pageViews HASURA
@@ -78,9 +79,13 @@ function* updatePageViewHasura(action) {
             let response2 = yield call(() =>
                 api.fetchPageViewsHasura(siteIdObj)
             );
+            //we should only call this one time, need to figure out what's going on here.
             yield put(actions.fetchPageViewHasuraSuccess(response));
             yield put(actions.fetchPageViewsHasuraSuccess(response2));
-            yield put(actions.updatePageViewHasuraSuccess(updateResponse));
+            yield put(actions.updatePageViewHasuraSuccess(updateResponse, "Save successful"));
+            yield call(delay, 500)
+            yield put(actions.updatePageViewHasuraSuccess(updateResponse, "")); 
+            
         } else {
             yield put(
                 actions.updatePageViewHasuraError(updateResponse.message)
@@ -351,7 +356,7 @@ function* deleteReviewMutation(action) {
 function* getSuggestedLabels(action) {
     try {
         let response = yield call(() =>
-            api.fetchSuggestedLabels(action.nctId, action.crowdKey)
+            api.fetchSuggestedLabels(action.nctId, action.crowdKeyArray)
         );
         if (response) {
             yield put(actions.fetchSuggestedLabelsSuccess(response));
@@ -656,7 +661,7 @@ function* updatePageView(action) {
 
             yield put(actions.fetchPageViewSuccess(response));
             yield put(actions.fetchPageViewsSuccess(response2));
-            yield put(actions.updatePageViewSuccess(updateResponse));
+            yield put(actions.updatePageViewSuccess(updateResponse, "FO"));
         } else {
             yield put(actions.updatePageViewError(updateResponse.message));
         }
