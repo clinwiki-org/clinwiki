@@ -45,3 +45,15 @@ export const getStarColor = rank => {
   }
   return;
 };
+
+export const isAdmin = (user) => {
+  if(user && user.roles) {
+    for(let i=0;i<user.roles.length;i++) {
+      const role = user.roles[i];
+      if(role.name === 'admin') {
+        return true;
+      }
+    }
+  }
+  return false;
+};

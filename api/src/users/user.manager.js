@@ -246,3 +246,15 @@ async function createNewUser(email, password, defaultQueryString, pictureUrl) {
     //console.log(newUser.rows[0] !== null);
     return newUser.rows[0];
 }
+
+export function isAdmin(user) {
+    if(user && user.roles) {
+        for(let i=0;i<user.roles.length;i++) {
+            const role = user.roles[i];
+            if(role.name === 'admin') {
+                return true;
+            }
+        }
+    }
+    return false;
+}

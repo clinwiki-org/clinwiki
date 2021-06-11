@@ -7,6 +7,7 @@ import introspectionSagas from 'services/introspection/sagas';
 import hasuraSiteSagas from 'services/hasuraSite/sagas';
 import crowdKeysSagas from 'services/crowdKeys/sagas';
 import hasuraFacilitySagas from 'services/hasuraFacility/sagas';
+import adminSagas from 'services/admin/sagas';
 
 export default function* sagas() {
   yield spawn(userSagas);
@@ -17,4 +18,5 @@ export default function* sagas() {
   yield spawn(hasuraSiteSagas);
   yield spawn(crowdKeysSagas);
   yield spawn(hasuraFacilitySagas);
+  yield spawn(adminSagas);
 }

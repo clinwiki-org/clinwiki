@@ -9,6 +9,7 @@ import searchReducer from 'services/search/reducer';
 import studyReducer from 'services/study/reducer';
 import introspectionReducer from 'services/introspection/reducer';
 import crowdKeysReducer from 'services/crowdKeys/reducer';
+import adminReducer from 'services/admin/reducer';
 
 const rootReducer = (history : History) => combineReducers({
     router: connectRouter(history),
@@ -20,6 +21,7 @@ const rootReducer = (history : History) => combineReducers({
     hasuraSite: hasuraSiteReducer,
     crowdKeys: crowdKeysReducer,
     hasuraFacility: hasuraFacilityReducer,
+    adminReducer: adminReducer
 });
 
 export default rootReducer;

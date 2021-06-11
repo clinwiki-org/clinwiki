@@ -7,6 +7,7 @@ import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import { UserFragment } from 'services/user/model/UserFragment';
+import {isAdmin} from 'utils/auth';
 // import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 
 
@@ -293,8 +294,7 @@ const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps
             <ThemedDropDownItem onClick={handleProfileClick}>
               Profile
                   </ThemedDropDownItem>
-            {user &&
-              user.roles.includes('admin') && (
+            { isAdmin(user) ?  (
                 <>
                 <ThemedDropDownItem onClick={handleWorkflowsClick}>
                   Workflows
@@ -302,8 +302,12 @@ const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps
                 <ThemedDropDownItem onClick={handleAggIslandsClick}>
                   Agg Islands
                 </ThemedDropDownItem>
+                <ThemedDropDownItem onClick={() => {
+                  closeMenuDropdown();
+                  history.push('/reindex');
+                }}>Reindex</ThemedDropDownItem>
                 </>
-              )}
+              ) : null}
             {/* {renderAdminMenuItems(data?.site)} */}
             <ThemedDropDownItem onClick={() => {
               closeMenuDropdown();
