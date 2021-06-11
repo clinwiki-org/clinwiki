@@ -1,7 +1,8 @@
 import userResolver from './users/user.resolver';
 import searchResolver from './search/search.resolver';
+import adminResolver from './admin/admin.resolver';
 
-const rootResolver = combineResolvers(userResolver,searchResolver);
+const rootResolver = combineResolvers(userResolver,searchResolver,adminResolver);
 
 
 function combineResolvers() {

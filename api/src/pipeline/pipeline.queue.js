@@ -4,6 +4,7 @@ import {reindexWikiPage} from './jobs/reindex.job';
 import {aactStudyReindex} from './jobs/aact.job';
 import {geocodeStudies} from './jobs/geocode.job';
 import {initMonitorTriggers} from './trigger.monitor';
+import {wikiPageReindex,crowdKeyReindex} from './jobs/clinwiki.job';
 const util = require('util')
 
 const POLL_QUERY = 'select * from pipeline_queue order by created_at asc';
@@ -15,7 +16,9 @@ export const JOB_TYPES = {
     AACT_CONDITIONS_REINDEX: 'AACT_CONDITIONS_REINDEX',
     WIKI_TEXT_REINDIX_2ND_PASS: 'WIKI_TEXT_REINDIX_2ND_PASS',
     WIKI_TEXT_REINDEX: 'WIKI_TEXT_REINDEX',
+    WIKI_TEXT_BULK_REINDIX: 'WIKI_TEXT_BULK_REINDIX',
     WIKI_PAGE_EDIT_REINDEX: 'WIKI_PAGE_EDIT_REINDEX',
+    CROWD_KEY_BULK_REINDEX: 'CROWD_KEY_BULK_REINDEX',
     GEOCODE_LOCATIONS: 'GEOCODE_LOCATIONS'
 };
 let IS_RUNNING = false;
@@ -70,6 +73,12 @@ const runJob = async (job) => {
                 break;
             case JOB_TYPES.GEOCODE_LOCATIONS:
                 await geocodeStudies(JSON.parse(job.payload));
+                break;
+            case JOB_TYPES.WIKI_TEXT_BULK_REINDIX:
+                await wikiPageReindex(JSON.parse(job.payload));
+                break;
+            case JOB_TYPES.CROWD_KEY_BULK_REINDEX:
+                await crowdKeyReindex(JSON.parse(job.payload));
                 break;
             default:
                 logger.error('Unknown job type: '+job.job_type);

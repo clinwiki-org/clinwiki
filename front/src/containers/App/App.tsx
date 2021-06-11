@@ -28,6 +28,7 @@ import MMTest from 'components/MailMerge/MMTestComponent'
 import HasuraMMTest from 'components/MailMerge/HasuraMMTestComponent'
 import GenericPageWrapper from 'containers/GenericPage/GenericPageWrapper';
 import HasuraGenericPage from 'containers/HasuraGenericPage/HasuraGenericPage.';
+import Reindex from 'containers/Reindex';
 
 interface AppProps {
   history: History;
@@ -86,6 +87,7 @@ class App extends React.PureComponent<AppProps> {
                 <Route path="/update_password" component={UpdatePassword} />
                 <Route path="/mmtest" component={MMTest} />
                 <Route path="/hasurammtest" component={HasuraMMTest} />
+                <Route path="/reindex" component={Reindex} />
                 <Route component={NotFoundPage} />
               </Switch>
             </div>

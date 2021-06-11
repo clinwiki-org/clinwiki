@@ -1168,6 +1168,8 @@ type Mutation {
   upsertReview(input: UpsertReviewInput!): UpsertReviewPayload
   upsertWikiLabel(input: UpsertWikiLabelInput!): UpsertWikiLabelPayload
   upsertWikiTag(input: UpsertWikiTagInput!): UpsertWikiTagPayload
+  reindexAll: String
+  reindexStudy(input: String): String
 }
 
 type OverallOfficial {

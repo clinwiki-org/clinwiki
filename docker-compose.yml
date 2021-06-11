@@ -1,17 +1,17 @@
 version: "3"
 services:
-  nginx:
-    image: nginx:stable
-    container_name: nginx
-    build:
-      context: .
-      dockerfile: compose/Dockerfile
-    volumes:
-      - ./compose/nginx:/etc/nginx/conf.d 
-    depends_on:
-      - nodejs
-    ports:
-      - 80:80
+  # nginx:
+  #   image: nginx:stable
+  #   container_name: nginx
+  #   build:
+  #     context: .
+  #     dockerfile: compose/Dockerfile
+  #   volumes:
+  #     - ./compose/nginx:/etc/nginx/conf.d 
+  #   depends_on:
+  #     - nodejs
+  #   ports:
+  #     - 80:80
   db:
     image: postgres:11.8
     container_name: clinwiki-db
@@ -42,15 +42,15 @@ services:
         hard: -1
     volumes:
       - es-data:/usr/share/elasticsearch/data/
-  kibana:
-    image: docker.elastic.co/kibana/kibana:6.8.0
-    container_name: kibana
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elastic:9200/
-      - ELASTICSEARCH_USERNAME=elastic
-      - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
-    ports:
-      - 5601:5601
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:6.8.0
+  #   container_name: kibana
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://elastic:9200/
+  #     - ELASTICSEARCH_USERNAME=elastic
+  #     - ELASTICSEARCH_PASSWORD=$ELASTIC_PASSWORD
+  #   ports:
+  #     - 5601:5601
   # redis:
   #   image: redis:5.0.5
   #   container_name: redis
@@ -97,25 +97,25 @@ services:
   #     - elastic
   #     - redis
   #   command: bundle exec sidekiq -C config/sidekiq.yml
-  nodejs:
-    image: keymetrics/pm2:14-alpine
-    env_file:
-      - .env
-    build:
-      context: .
-      dockerfile: api/Dockerfile
-    command: npm start
-    container_name: nodejs
-    volumes:
-      - .:/api
-    ports:
-      - 8088:8088
-    environment:
-      - DATABASE_URL_NODE=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432
-      - SEARCHBOX_URL_NODE=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
-    depends_on:
-      - db
-      - elastic
+  # nodejs:
+  #   image: keymetrics/pm2:14-alpine
+  #   env_file:
+  #     - .env
+  #   build:
+  #     context: .
+  #     dockerfile: api/Dockerfile
+  #   command: npm start
+  #   container_name: nodejs
+  #   volumes:
+  #     - .:/api
+  #   ports:
+  #     - 8088:8088
+  #   environment:
+  #     - DATABASE_URL_NODE=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432
+  #     - SEARCHBOX_URL_NODE=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
+  #   depends_on:
+  #     - db
+  #     - elastic
   data-pipeline:
     image: keymetrics/pm2:14-alpine
     env_file:
