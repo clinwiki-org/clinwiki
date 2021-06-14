@@ -36,6 +36,7 @@ services:
             - http.cors.allow-credentials=true
             - xpack.security.enabled=true
             - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+            - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
         ulimits:
             memlock:
                 soft: -1
