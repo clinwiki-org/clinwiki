@@ -95,6 +95,7 @@ export const crowdKeyReindex = async (payload) => {
     const idList = payload.list;
     const results = await getBulkCrowdKeys(idList);
                 
+    console.log("In Crwod-reindex")
     //let crowdKeys = [];
     // for(let i=0;i<results.rowCount;i++) {
     //     const crowdKey = results.rows[i];                    
@@ -116,7 +117,11 @@ export const crowdKeyReindex = async (payload) => {
     }
 
     let crowdKeys = [...crowdMap.values()]
-    await bulkUpdate(crowdKeys);
+    console.log("Mapping values, about to bulk update")
+    let response = await bulkUpdate(crowdKeys);
+
+    console.log("_____________________");
+    console.log(util.inspect(response, false, null, true));
     logger.info("Bulk update complete.");
 }
 
