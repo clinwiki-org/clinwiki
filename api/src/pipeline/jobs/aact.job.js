@@ -49,7 +49,10 @@ export const aactStudyReindex = async (payload) => {
         studies.push(study);
     }
     logger.info("Sending bulk update of "+idList.length);
-    await bulkUpsert(studies);
+    let response = await bulkUpsert(studies);
+    console.log("-------------------");
+    console.log("Bulk Upsert Response")
+    console.log(util.inspect(response, false, null, true));
     await sendBriefSummaries(idList);
     await sendConditions(idList);
     //await enqueueJob(JOB_TYPES.GEOCODE_LOCATIONS,{studies: idList});
