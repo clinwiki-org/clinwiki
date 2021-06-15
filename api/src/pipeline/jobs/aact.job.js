@@ -49,6 +49,7 @@ export const aactStudyReindex = async (payload) => {
         studies.push(study);
     }
     logger.info("Sending bulk update of "+idList.length);
+    console.log(util.inspect(studies, false, null, true));
     let response = await bulkUpsert(studies);
     console.log("-------------------");
     console.log("Bulk Upsert Response")
