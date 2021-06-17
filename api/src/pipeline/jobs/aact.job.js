@@ -42,6 +42,7 @@ export const aactStudyReindex = async (payload) => {
     const idList = payload.studies;
 
     const results = await getBulkStudies(idList);
+    //  console.log(util.inspect(results, false, null, true))
                 
     let studies = [];
     for(let i=0;i<results.rowCount;i++) {
@@ -49,14 +50,14 @@ export const aactStudyReindex = async (payload) => {
         studies.push(study);
     }
     logger.info("Sending bulk update of "+idList.length);
-    console.log(util.inspect(studies, false, null, true));
+    console.log(util.inspect(studies, false, null, true ))
     let response = await bulkUpsert(studies);
     console.log("-------------------");
     console.log("Bulk Upsert Response")
     console.log(util.inspect(response, false, null, true));
     await sendBriefSummaries(idList);
     await sendConditions(idList);
-    //await enqueueJob(JOB_TYPES.GEOCODE_LOCATIONS,{studies: idList});
+    await enqueueJob(JOB_TYPES.GEOCODE_LOCATIONS,{studies: idList});
     logger.info("Bulk update complete.");
 
 }
@@ -73,6 +74,8 @@ const getAllStudiesToIndex = async () => {
 
 const getSingleStudyToIndex = async (nctId) => {
     const rs = await queryAACT(REINDEX_STUDY_QUERY,[nctId]);
+    console.log(">>>>>>>>>>>>>>>>>>");
+    console.log(util.inspect(rs, false, null,true));
     return rs.rows.map( row => row.nct_id);
 };
 
@@ -163,6 +166,7 @@ export const aactReindexSingleStudyJob = async (nctId) => {
 
             const studyIds = await getSingleStudyToIndex(nctId);
             logger.debug("Number of studies to index: "+studyIds.length);
+             console.log(util.inspect(studyIds, false, null, true))
             const bulkList = chunkList(studyIds,CHUNK_SIZE);
 
             for(let j=0;j<bulkList.length;j++) {
