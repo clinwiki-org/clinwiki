@@ -1,11 +1,8 @@
 {
     "name": "required_for_heroku_buildpack",
-    "engines": {
-        "node": "10.x",
-        "yarn": "1.x"
-    },
-    "scripts": {
-        "heroku-postbuild": "./front/scripts/build"
+        "scripts": {
+        "build":"./heroku-build.sh",
+        "start":"cd api && npm start"
     },
     "dependencies": {}
 }

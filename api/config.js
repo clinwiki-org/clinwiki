@@ -1,7 +1,7 @@
 let config = {};
 
 export const loadConfig = () => {
-  config.port = process.env.NODE_PORT || 8088;
+  config.port = process.env.PORT || 8088;
   config.postgresUrl = process.env.DATABASE_URL_NODE || 'changeme';
   config.aactUrl = process.env.DATABASE_URL_NODE || 'changeme';
   config.searchboxUrl = process.env.SEARCHBOX_URL_NODE || 'changeme';
