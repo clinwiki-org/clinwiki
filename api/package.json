@@ -5,12 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./server.js --exec babel-node",
-    "build": "babel . -d dist --ignore spec.js,node_modules",
+    "build": "babel . -d dist --ignore spec.js,node_modules --max_old_space_size=4096",
     "serve": "node dist/server.js",
     "start_babel": "babel-node --preset @babel/preset-env ./server.js ",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
-    "pipeline-start": "nodemon ./src/pipeline/worker.js --exec babel-node --inspect",
+    "pipeline-start": "nodemon ./src/pipeline/worker.js --exec babel-node --inspect --max_old_space_size=4096",
     "db-migration-new": "dotenv -e ../.env db-migrate create $npm_config_name",
     "db-migration-up": "dotenv -e ../.env db-migrate up --config ./database.json"
   },

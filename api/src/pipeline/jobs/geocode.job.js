@@ -24,7 +24,9 @@ export const geocodeStudies = async payload => {
     logger.info('Geocoding study location facilities ' + facilities.rowCount);
     for (let i = 0; i < facilities.rowCount; i++) {
         try {
+            console.log("----------FACILITY---------");
             const facility = facilities.rows[i];
+            console.log(util.inspect(facility, false, null, true))
             let results = await query(
                 'select id from facility_locations where name=$1 and city=$2 and state=$3 and zip=$4 and country=$5',
                 [
@@ -38,6 +40,7 @@ export const geocodeStudies = async payload => {
 
             let facilityLocationId;
             if (results.rowCount === 0) {
+                console.log("In ZERO CONDITIONAL");
                 // New location. Create a record.
                 let insertResults = await query(
                     'insert into facility_locations (name,city,state,zip,country) values ($1,$2,$3,$4,$5) RETURNING id',
@@ -51,28 +54,47 @@ export const geocodeStudies = async payload => {
                 );
                 facilityLocationId = insertResults.rows[0].id;
             } else {
+                console.log("IN ELSE CONDITIONAL");
                 facilityLocationId = results.rows[0].id;
+                console.log("ID",facilityLocationId)
             }
 
             // Now figure out if we need to geocode this location
             let location = await findOrCreateByName(facility.name);
-
+            console.log("Location to follow:");
+            console.log(util.inspect(location, false, null, true));
             if (!location.checked) {
+                console.log("Location Not checked")
                 location = geocodeLocation(location);
             }
 
             if (location.partial_match) {
+                console.log("Location Partial match")
                 let zipName = `${location.city} ${location.state} ${location.zip} ${location.country} `;
                 let zip = await findOrCreateByName(zipName);
                 if (!zip.checked) {
+                    console.log("No zip");
                     zip = geocodeLocation(zip);
                 }
                 if (zip.partial_match) {
+                    console.log("Zip partial");
                     await query(
                         'update facility_locations set status=$1 where id=$2',
                         ['bad', facilityLocationId]
                     );
+//Had to add this to index even on partial matches since we deleted our index
+//May have to be commented out after reindex is ran on staging 
+                    addFacilityToStudyMap(facilityMap, {
+                        nct_id: facility.nct_id,
+                        name: facility.name,
+                        city: facility.city,
+                        state: facility.state,
+                        country: facility.country,
+                        latitude: location.latitude,
+                        longitude: location.longitude,
+                    });
                 } else {
+                    console.log("ELSE");
                     await query(
                         'update facility_locations set latitude=$1, longitude=$2, status=$3 where id=$3',
                         [zip.latitude, zip.longitude, 'zip', facilityLocationId]
@@ -84,7 +106,8 @@ export const geocodeStudies = async payload => {
                     });
                 }
             } else {
-                await query(
+                console.log("ELSE ELSE")
+               let response = await query(
                     'update facility_locations set latitude=$1, longitude=$2, status=$3 where id=$4',
                     [
                         location.latitude,
@@ -93,6 +116,10 @@ export const geocodeStudies = async payload => {
                         facilityLocationId,
                     ]
                 );
+                console.log("RESPONSE");
+                console.log(response);
+                console.log("FFFFFFs")
+                console.log(facility)
                 addFacilityToStudyMap(facilityMap, {
                     nct_id: facility.nct_id,
                     name: facility.name,
@@ -108,15 +135,23 @@ export const geocodeStudies = async payload => {
         }
     }
 
+    console.log("MAP before spread", facilityMap)
     // Now send the map to Elasticsearch
     const listToUpdate = [...facilityMap.values()];
+    console.log(listToUpdate)
     await bulkUpdate(listToUpdate);
     logger.info('Finished geocoding study locations');
 };
 
 const addFacilityToStudyMap = (map, facility) => {
+    console.log("In Add facility Locations")
+    console.log("Map" + util.inspect(map, false, null, true))
+    console.log("Facility" + util.inspect(facility, false, null, true))
     let found = map.get(facility.nct_id);
+    console.log("FOUND");
+    console.log(found);
     if (!found) {
+        console.log("IN NOT FOUND")
         found = {
             nct_id: facility.nct_id,
             facility_names: [],
@@ -130,21 +165,33 @@ const addFacilityToStudyMap = (map, facility) => {
     found.facility_states.push(facility.state);
     found.facility_cities.push(facility.city);
     found.facility_countries.push(facility.country);
-    found.locations.push({ lat: facility.latitude, lon: facility.longitude });
+    //Seems like part of the issue was that the object was mismatched to the expected type when facility.latitude and/or longitude was undefined
+    // locations would send as [{}] was expecting something more like [{lat: undefined, lon: undefined}]
+    facility.latitude && facility.longitude && found.locations.push({ lat: facility.latitude, lon: facility.longitude });
+
+    console.log("POST FOUND" + util.inspect(found, false, null, true));
     map.set(facility.nct_id, found);
+    console.log("Post MAP" + util.inspect(map, false, null, true));
 };
 
 const findOrCreateByName = async name => {
+    console.log("IN FIND OR CREATE")
     let locations = await query('select * from locations where name=$1', [
         name,
     ]);
+    console.log("Locations here: ")
+    console.log(util.inspect(locations.rowCount, false, null, true));
     if (locations.rowCount !== 0) {
+        ("if locations not 0")
         return locations.rows[0];
     }
+    console.log("Some other place")
+    
     const location = await query(
         'insert into locations (name) values ($1) RETURNING *',
         [name]
     );
+    console.log(util.inspect(location, false,null, true));
     return location.rows[0];
 };
 
