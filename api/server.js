@@ -94,6 +94,8 @@ app.use('/graphql',graphqlMiddleware);
 // });
 app.use(express.static(path.join(__dirname,'../front/build')));
 
+app.use('*', (req,res) => res.sendFile(path.resolve('front','build','index.html')));
+
 app.use(function(error,req,res,next){
   //console.log("ERROR: "+error,error.stack);
   logger.error((error.status || 500)+' - '+error.message+' - '+req.originalUrl+' - '+req.method+' - '+req.ip+' - '+error.stack,);
