@@ -37,14 +37,24 @@ export const geocodeStudies = async payload => {
                     facility.country,
                 ]
             );
-            logger.info('FACILITY RESULTS', results)
-            let facilityLocationId;
-            let facilityLocation = {
-                latitude: results.rows[0].latitude,
-                longitude: results.rows[0].longitude,
-            }
-            logger.info('FACILITY LAT', facilityLocation)
+            logger.info('RESULTS SITUATION', results)
             if (results.rowCount === 0) {
+                results = await query(
+                    'select id from facility_locations where name=$1 and city=$2 and state=$3 and country=$4 and zip=$5',
+                    [
+                        facility.name,
+                        facility.city,
+                        facility.state,
+                        facility.country,
+                        facility.zip
+                    ]
+                );
+                logger.info('FACILITY RESULTS', results)
+            }
+            let facilityLocationId;
+            let facilityLocation;
+            if (results.rowCount === 0) {
+     
                 console.log("In ZERO CONDITIONAL");
                 // New location. Create a record.
                 let insertResults = await query(
@@ -60,6 +70,12 @@ export const geocodeStudies = async payload => {
                 facilityLocationId = insertResults.rows[0].id;
                 logger.info('FACILITY ID', facilityLocationId)
             } else {
+
+                facilityLocation = {
+                    latitude: results.rows[0].latitude || "",
+                    longitude: results.rows[0].longitude || "",
+                }
+                logger.info('FACILITY LAT', facilityLocation)
                 console.log("IN ELSE CONDITIONAL");
                 facilityLocationId = results.rows[0].id;
                 logger.info('FACILITY ID', facilityLocationId)
@@ -97,8 +113,8 @@ export const geocodeStudies = async payload => {
                         city: facility.city,
                         state: facility.state,
                         country: facility.country,
-                        latitude: facilityLocation.latitude,
-                        longitude: facilityLocation.longitude,
+                        latitude: facilityLocation.latitude || "",
+                        longitude: facilityLocation.longitude || "",
                     });
                 }
                 if (zip.partial_match) {
@@ -115,8 +131,8 @@ export const geocodeStudies = async payload => {
                         city: facility.city,
                         state: facility.state,
                         country: facility.country,
-                        latitude: facilityLocation.latitude,
-                        longitude: facilityLocation.longitude,
+                        latitude: facilityLocation.latitude || "",
+                        longitude: facilityLocation.longitude || "",
                     });
                 } else {
                     console.log("ELSE");
@@ -130,8 +146,8 @@ export const geocodeStudies = async payload => {
                         city: facility.city,
                         state: facility.state,
                         country: facility.country,
-                        latitude: facilityLocation.latitude,
-                        longitude: facilityLocation.longitude
+                        latitude: facilityLocation.latitude || "",
+                        longitude: facilityLocation.longitude || ""
                     });
                 }
             } else {
