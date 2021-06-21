@@ -12,8 +12,8 @@ export const clinwikiJob = async (nctIdList) => {
         const wikiPageIds = await getWikiPagesIdsByNctId(nctIdList);
         logger.debug('WIKI PAGE IDS', wikiPageIds )
         //const studyIds = ['NCT00001431'];
-        logger.debug("Number of wiki pages to index: "+wikiPageIds.rows.length);
-        const bulkWikiList = chunkList(wikiPageIds.rows,CHUNK_SIZE);
+        logger.debug("Number of wiki pages to index: "+wikiPageIds.length);
+        const bulkWikiList = chunkList(wikiPageIds,CHUNK_SIZE);
 
         for(let j=0;j<bulkWikiList.length;j++) {
             const idList = bulkWikiList[j];
@@ -58,7 +58,7 @@ const getWikiPagesIdsByNctId = async (idList) => {
     const wikiQuery = 'select id from wiki_pages where nct_id in ('+params.join(',')+')';
     logger.info('WIKI PAGES TO INDEx', idList)
     const rs = await query(wikiQuery,idList);
-    return rs;
+    return rs.rows.map(row => row.id);
 }
 
 const getCrowdKeysToIndex = async (idList) => {
@@ -95,6 +95,7 @@ const esWikiPage = (row) => {
 
 export const crowdKeyReindex = async (payload) => {
     const idList = payload.list;
+    console.log('IDLIST from CROWD KEY INDEX', idList)
     const results = await getBulkCrowdKeys(idList);
                 
     console.log("In Crwod-reindex")

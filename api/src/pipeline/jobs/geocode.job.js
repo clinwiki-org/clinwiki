@@ -28,6 +28,7 @@ export const geocodeStudies = async payload => {
             const facility = facilities.rows[i];
             console.log(util.inspect(facility, false, null, true))
             logger.info('FACILITY FROM GEOCODE', facility)
+            //// ADDED THIS QUERY TO GET LOCATIONS FROM FACILITY LOCATIONS
             let results = await query(
                 'select id, latitude, longitude from facility_locations where name=$1 and city=$2 and state=$3 and country=$4 and latitude IS NOT NULL',
                 [
@@ -38,6 +39,8 @@ export const geocodeStudies = async payload => {
                 ]
             );
             logger.info('RESULTS SITUATION', results)
+
+            /// IF WE DON"T GET LOCATIONS WE RUN A DIFF QUERY (there must be a better way to do this)
             if (results.rowCount === 0) {
                 results = await query(
                     'select id from facility_locations where name=$1 and city=$2 and state=$3 and country=$4 and zip=$5',
@@ -54,7 +57,7 @@ export const geocodeStudies = async payload => {
             let facilityLocationId;
             let facilityLocation;
             if (results.rowCount === 0) {
-     
+                /// if both queries turn up nada we will insert to the facility_locations table
                 console.log("In ZERO CONDITIONAL");
                 // New location. Create a record.
                 let insertResults = await query(
