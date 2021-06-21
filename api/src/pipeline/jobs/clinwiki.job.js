@@ -4,7 +4,7 @@ import {bulkUpdate} from '../../search/elastic';
 import {JOB_TYPES,enqueueJob} from '../pipeline.queue';
 const util = require('util')
 
-const CHUNK_SIZE = 1000;
+const CHUNK_SIZE = 10;
 
 export const clinwikiJob = async (nctIdList) => {
     try {
