@@ -195,6 +195,7 @@ const translateFilterTerm = async (agg,isCrowdAgg) => {
         return await translateRangeTerm(agg,isCrowdAgg);
     }
     if(agg.lat || agg.long || agg.radius || agg.zipcode) {
+        console.log('AGG EXISTS', agg)
         return await translateGeoLoc(agg,isCrowdAgg);
     }
     return translateValueTerms(agg,isCrowdAgg);
@@ -226,15 +227,17 @@ const translateGeoLoc = async (agg,isCrowdAgg) => {
     let latitude = agg.lat;
     let longitude = agg.long;
     let field = agg.field;
+    console.log('in TRANSLATE GEO', agg)
     if(agg.zipcode) {
-        const loc = zg.zip2geo('27540');
+        const loc = await zg.zip2geo(agg.zipcode);
+        console.log('ZIP CODE TO LAT', loc)
         latitude = loc.latitude;
         longitude = loc.longitude;
         field = isCrowdAgg ? 'fm_locations' : 'locations'; // This is a hack because of bad data that had 'location' as the field.
     }
     let query = await esb.geoDistanceQuery()
         .field(field)
-        .distance(agg.radius+'km')
+        .distance(agg.radius+'mi')
         .geoPoint(esb.geoPoint().lat(latitude).lon(longitude));
     return query;
 }

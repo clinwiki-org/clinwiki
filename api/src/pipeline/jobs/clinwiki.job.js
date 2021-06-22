@@ -4,13 +4,13 @@ import {bulkUpdate} from '../../search/elastic';
 import {JOB_TYPES,enqueueJob} from '../pipeline.queue';
 const util = require('util')
 
-const CHUNK_SIZE = 1000;
+const CHUNK_SIZE = 10;
 
 export const clinwikiJob = async (nctIdList) => {
     try {
         logger.info('Starting Clinwiki Job');
-
         const wikiPageIds = await getWikiPagesIdsByNctId(nctIdList);
+        logger.debug('WIKI PAGE IDS', wikiPageIds )
         //const studyIds = ['NCT00001431'];
         logger.debug("Number of wiki pages to index: "+wikiPageIds.length);
         const bulkWikiList = chunkList(wikiPageIds,CHUNK_SIZE);
@@ -40,6 +40,7 @@ export const clinwikiJob = async (nctIdList) => {
 
 export const wikiPageReindex = async (payload) => {
     const idList = payload.list;
+    logger.info('ID LIST FOR WIKIS', idList)
     const results = await getBulkWikiPages(idList);
                 
     let wikiPages = [];
@@ -55,8 +56,9 @@ export const wikiPageReindex = async (payload) => {
 const getWikiPagesIdsByNctId = async (idList) => {
     let params = idList.map( (id,index) => '$'+(index+1));
     const wikiQuery = 'select id from wiki_pages where nct_id in ('+params.join(',')+')';
+    logger.info('WIKI PAGES TO INDEx', idList)
     const rs = await query(wikiQuery,idList);
-    return rs;
+    return rs.rows.map(row => row.id);
 }
 
 const getCrowdKeysToIndex = async (idList) => {
@@ -93,6 +95,7 @@ const esWikiPage = (row) => {
 
 export const crowdKeyReindex = async (payload) => {
     const idList = payload.list;
+    console.log('IDLIST from CROWD KEY INDEX', idList)
     const results = await getBulkCrowdKeys(idList);
                 
     console.log("In Crwod-reindex")

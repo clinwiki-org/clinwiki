@@ -1,18 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import { AggBucket } from '../SearchPage/Types';
-import { FormControl } from 'react-bootstrap';
-import styled from 'styled-components';
-import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
+import React, { useEffect, useState } from 'react';
 import { find, findIndex } from 'ramda';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { AggBucket } from '../SearchPage/Types';
+import { FormControl } from 'react-bootstrap';
 import { RootState } from 'reducers';
+import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
+import styled from 'styled-components';
 import { updateSearchParamsAction } from 'services/search/actions';
 
 interface DistanceDropDownOptionsProps {
   buckets: Array<AggBucket>;
-  isSelected: ()=> boolean;
+  isSelected: () => boolean;
   field: SiteViewFragment_search_aggs_fields;
-  useDefaultRadius: ()=> void;
+  useDefaultRadius: () => void;
   zipcode: string;
   searchResultData: any;
 }
@@ -65,13 +66,13 @@ function DistanceDropDownOptions(props:
       }
 
       searchParams['aggFilters'].push(locationFilter)
-      let newParams = { ...searchParams, q: JSON.parse(searchParams.q), aggFilters: searchParams["aggFilters"] }
+      let newParams = { ...searchParams, aggFilters: searchParams["aggFilters"] }
       dispatch(updateSearchParamsAction(newParams));
     }
 
     let index = findIndex((x) => x.field == "location", searchParams["aggFilters"])
     searchParams['aggFilters'][index].radius = radius
-    let newParams = { ...searchParams, q: JSON.parse(searchParams.q), aggFilters: searchParams["aggFilters"] }
+    let newParams = { ...searchParams, aggFilters: searchParams["aggFilters"] }
     dispatch(updateSearchParamsAction(newParams));
 
   }
@@ -84,50 +85,47 @@ function DistanceDropDownOptions(props:
   } = props;
 
 
-    let activeOptions: string[] = [];
+  let activeOptions: string[] = [];
 
-    const changeDropDownOption = async e => {
-      e.preventDefault();
-     setRadius(e.target.value);
-      changeRadius(
-          e.target.value);
+  const changeDropDownOption = async e => {
+    e.preventDefault();
+    setRadius(e.target.value);
+    changeRadius(
+      e.target.value);
 
-      activeOptions.forEach(o => {
-        removeFilter(o);
-      });
+    activeOptions.forEach(o => {
+      removeFilter(o);
+    });
+  };
 
+  const checkOption = (bucket, field) => {
+    if (props.isSelected()) {
+      activeOptions.push(bucket);
+      if (radius !== activeOptions[0]) {
 
-    };
+        setRadius(activeOptions[0])
+      }
+    }
 
-    const checkOption = (bucket, field) => {
-      if (props.isSelected()) {
-        activeOptions.push(bucket);
-        if (radius !== activeOptions[0]) {
-          
-            setRadius( activeOptions[0])
-          }
-        }
-
-      
-      return (
-        <option key={bucket} value={bucket}>
-          {`${bucket} miles`}
-        </option>
-      );
-    };
     return (
-      <div className="dropDownFacet">
-        <StyledFormControl
-          componentClass={'select'}
-          value={-1}
-          onChange={e => changeDropDownOption(e)}>
-          <option disabled value={-1} key={-1}>
-            {`${radius} miles`}
-          </option>
-          {buckets.map(bucket => checkOption(bucket, field))}
-        </StyledFormControl>
-      </div>
+      <option key={bucket} value={bucket}>
+        {`${bucket} miles`}
+      </option>
     );
+  };
+  return (
+    <div className="dropDownFacet">
+      <StyledFormControl
+        componentClass={'select'}
+        value={-1}
+        onChange={e => changeDropDownOption(e)}>
+        <option disabled value={-1} key={-1}>
+          {`${radius} miles`}
+        </option>
+        {buckets.map(bucket => checkOption(bucket, field))}
+      </StyledFormControl>
+    </div>
+  );
 }
 
 export default DistanceDropDownOptions;

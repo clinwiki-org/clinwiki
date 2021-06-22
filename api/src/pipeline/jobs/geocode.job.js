@@ -27,19 +27,37 @@ export const geocodeStudies = async payload => {
             console.log("----------FACILITY---------");
             const facility = facilities.rows[i];
             console.log(util.inspect(facility, false, null, true))
+            logger.info('FACILITY FROM GEOCODE', facility)
+            //// ADDED THIS QUERY TO GET LOCATIONS FROM FACILITY LOCATIONS
             let results = await query(
-                'select id from facility_locations where name=$1 and city=$2 and state=$3 and zip=$4 and country=$5',
+                'select id, latitude, longitude from facility_locations where name=$1 and city=$2 and state=$3 and country=$4 and latitude IS NOT NULL',
                 [
                     facility.name,
                     facility.city,
                     facility.state,
-                    facility.zip,
                     facility.country,
                 ]
             );
+            logger.info('RESULTS SITUATION', results)
 
-            let facilityLocationId;
+            /// IF WE DON"T GET LOCATIONS WE RUN A DIFF QUERY (there must be a better way to do this)
             if (results.rowCount === 0) {
+                results = await query(
+                    'select id from facility_locations where name=$1 and city=$2 and state=$3 and country=$4 and zip=$5',
+                    [
+                        facility.name,
+                        facility.city,
+                        facility.state,
+                        facility.country,
+                        facility.zip
+                    ]
+                );
+                // logger.info('FACILITY RESULTS', results)
+            }
+            let facilityLocationId;
+            let facilityLocation;
+            if (results.rowCount === 0) {
+                /// if both queries turn up nada we will insert to the facility_locations table
                 console.log("In ZERO CONDITIONAL");
                 // New location. Create a record.
                 let insertResults = await query(
@@ -53,19 +71,36 @@ export const geocodeStudies = async payload => {
                     ]
                 );
                 facilityLocationId = insertResults.rows[0].id;
+                // logger.info('FACILITY ID', facilityLocationId)
             } else {
+
+                facilityLocation = {
+                    latitude: results.rows[0].latitude || "",
+                    longitude: results.rows[0].longitude || "",
+                }
+                // logger.info('FACILITY LAT', facilityLocation)
                 console.log("IN ELSE CONDITIONAL");
                 facilityLocationId = results.rows[0].id;
-                console.log("ID",facilityLocationId)
+                logger.info('FACILITY ID', facilityLocationId)
+                // console.log("ID",facilityLocationId)
             }
 
             // Now figure out if we need to geocode this location
             let location = await findOrCreateByName(facility.name);
-            console.log("Location to follow:");
-            console.log(util.inspect(location, false, null, true));
+            // console.log("Location to follow:");
+            // console.log(util.inspect(location, false, null, true));
             if (!location.checked) {
                 console.log("Location Not checked")
                 location = geocodeLocation(location);
+                addFacilityToStudyMap(facilityMap, {
+                    nct_id: facility.nct_id,
+                    name: facility.name,
+                    city: facility.city,
+                    state: facility.state,
+                    country: facility.country,
+                    latitude: facilityLocation.latitude,
+                    longitude: facilityLocation.longitude,
+                });
             }
 
             if (location.partial_match) {
@@ -75,9 +110,18 @@ export const geocodeStudies = async payload => {
                 if (!zip.checked) {
                     console.log("No zip");
                     zip = geocodeLocation(zip);
+                    addFacilityToStudyMap(facilityMap, {
+                        nct_id: facility.nct_id,
+                        name: facility.name,
+                        city: facility.city,
+                        state: facility.state,
+                        country: facility.country,
+                        latitude: facilityLocation.latitude || "",
+                        longitude: facilityLocation.longitude || "",
+                    });
                 }
                 if (zip.partial_match) {
-                    console.log("Zip partial");
+                    console.log("Zip PARTIAL", location);
                     await query(
                         'update facility_locations set status=$1 where id=$2',
                         ['bad', facilityLocationId]
@@ -90,8 +134,8 @@ export const geocodeStudies = async payload => {
                         city: facility.city,
                         state: facility.state,
                         country: facility.country,
-                        latitude: location.latitude,
-                        longitude: location.longitude,
+                        latitude: facilityLocation.latitude || "",
+                        longitude: facilityLocation.longitude || "",
                     });
                 } else {
                     console.log("ELSE");
@@ -101,8 +145,12 @@ export const geocodeStudies = async payload => {
                     );
                     addFacilityToStudyMap(facilityMap, {
                         nct_id: facility.nct_id,
-                        latitude: zip.latitude,
-                        longitude: zip.longitude,
+                        name: facility.name,
+                        city: facility.city,
+                        state: facility.state,
+                        country: facility.country,
+                        latitude: facilityLocation.latitude || "",
+                        longitude: facilityLocation.longitude || ""
                     });
                 }
             } else {
@@ -116,8 +164,7 @@ export const geocodeStudies = async payload => {
                         facilityLocationId,
                     ]
                 );
-                console.log("RESPONSE");
-                console.log(response);
+          
                 console.log("FFFFFFs")
                 console.log(facility)
                 addFacilityToStudyMap(facilityMap, {
@@ -126,15 +173,15 @@ export const geocodeStudies = async payload => {
                     city: facility.city,
                     state: facility.state,
                     country: facility.country,
-                    latitude: location.latitude,
-                    longitude: location.longitude,
+                    latitude: facilityLocation.latitude,
+                    longitude: facilityLocation.longitude,
                 });
             }
         } catch (err) {
             console.log(err);
         }
     }
-
+    
     console.log("MAP before spread", facilityMap)
     // Now send the map to Elasticsearch
     const listToUpdate = [...facilityMap.values()];
@@ -146,7 +193,7 @@ export const geocodeStudies = async payload => {
 const addFacilityToStudyMap = (map, facility) => {
     console.log("In Add facility Locations")
     console.log("Map" + util.inspect(map, false, null, true))
-    console.log("Facility" + util.inspect(facility, false, null, true))
+    console.log("Facility in AFTSM" + util.inspect(facility, false, null, true))
     let found = map.get(facility.nct_id);
     console.log("FOUND");
     console.log(found);
@@ -169,9 +216,9 @@ const addFacilityToStudyMap = (map, facility) => {
     // locations would send as [{}] was expecting something more like [{lat: undefined, lon: undefined}]
     facility.latitude && facility.longitude && found.locations.push({ lat: facility.latitude, lon: facility.longitude });
 
-    console.log("POST FOUND" + util.inspect(found, false, null, true));
+    // console.log("POST FOUND" + util.inspect(found, false, null, true));
     map.set(facility.nct_id, found);
-    console.log("Post MAP" + util.inspect(map, false, null, true));
+    // console.log("Post MAP" + util.inspect(map, false, null, true));
 };
 
 const findOrCreateByName = async name => {
@@ -180,7 +227,7 @@ const findOrCreateByName = async name => {
         name,
     ]);
     console.log("Locations here: ")
-    console.log(util.inspect(locations.rowCount, false, null, true));
+    // console.log(util.inspect(locations.rowCount, false, null, true));
     if (locations.rowCount !== 0) {
         ("if locations not 0")
         return locations.rows[0];
@@ -191,11 +238,12 @@ const findOrCreateByName = async name => {
         'insert into locations (name) values ($1) RETURNING *',
         [name]
     );
-    console.log(util.inspect(location, false,null, true));
+    // console.log(util.inspect(location, false,null, true));
     return location.rows[0];
 };
 
 const geocodeLocation = async location => {
+    console.log('GEO LOCATING', location )
     let result;
     if (process.env.GOOGLE_MAPS_API_KEY) {
         try {
