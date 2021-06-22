@@ -433,7 +433,7 @@ function* bucketFilter(action) {
 
 
         // Better error handling could be done here 
-          let response =currentAgg.aggKind== "crowdAggs" ? yield getSearchPageOpenCrowdAggBuckets({searchParams: variables, crowdAggIdArray: [{id:action.id, name: currentAgg.name}]}): yield getSearchPageOpenAggBuckets({searchParams: variables})
+          let response =currentAgg.aggKind== "crowdAggs" ? yield getSearchPageOpenCrowdAggBuckets({searchParams: variables, crowdAggIdArray: [{id:action.id, name: currentAgg.name}]}): yield getSearchPageOpenAggBuckets({searchParams: variables, aggIdArray: [{id:action.id, name: currentAgg.name}]})
 
     } catch (err) {
         console.log(err);
