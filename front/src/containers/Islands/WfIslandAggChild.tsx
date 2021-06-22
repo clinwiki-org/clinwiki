@@ -35,7 +35,7 @@ function WfIslandAggChild(props: Props) {
   if (isLoading || !currentAgg) return <BeatLoader />;
   // if (error) return <Error message={error.message} />;
   if (!suggestedLabels) return <BeatLoader />;
-  const crowdKeyValueData = suggestedLabels.data.crowd_key_value_ids.filter(x => x.crowd_key == currentAgg.name);
+  const crowdKeyValueData = suggestedLabels?.data?.crowd_key_value_ids.filter(x => x.crowd_key == currentAgg.name) || [];
 //Believe this needs some work. Values being carried over
   let selectedCrowdValues = crowdKeyValueData.reduce((x, y, index) => ({ ...x, [index]: y.crowd_value }), {});
 
@@ -66,8 +66,8 @@ function WfIslandAggChild(props: Props) {
       dispatch(deleteCrowdKeyValueId(props.nctId, key, currentAgg.name))
     }
   }
-  let filteredArray = suggestedLabels.data.crowd_keys.filter(x=> x.crowd_key == currentAgg.name);
-  const currentAggBucketsData = filteredArray[0] ?  filteredArray[0].crowd_values : [];
+  let filteredArray = suggestedLabels?.data?.crowd_keys.filter(x=> x.crowd_key == currentAgg.name);
+  const currentAggBucketsData = filteredArray && filteredArray[0] ?  filteredArray[0].crowd_values : [];
 
   let currentAggBuckets = [];
   //@ts-ignore

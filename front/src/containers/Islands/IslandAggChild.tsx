@@ -4,7 +4,7 @@ import useUrlParams from 'utils/UrlParamsProvider';
 import SortKind from 'containers/AggDropDown/SortKind';
 import CustomDropDown from 'containers/AggDropDown/CustomDrop';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleAgg, updateSearchParamsAction } from 'services/search/actions'
+import { toggleAgg, updateSearchParamsAction, updateBucketsFilter } from 'services/search/actions'
 import { RootState } from 'reducers';
 import { fetchSearchPageAggBuckets, fetchSearchPageCrowdAggBuckets } from 'services/search/actions';
 import { SearchQuery, SearchParams } from '../SearchPage/shared';
@@ -91,7 +91,6 @@ function IslandAggChild(props: Props) {
   const [desc, setDesc] = useState(true);
   const [sortKind, setSortKind] = useState(SortKind.Alpha);
   const [buckets, setBuckets] = useState([]);
-  const [aggFilter, setFilter] = useState('');
   const [hasMore, setHasMore] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [showLabel, setShowLabel] = useState(false);
@@ -103,6 +102,7 @@ function IslandAggChild(props: Props) {
   const data = useSelector((state: RootState) => state.search.searchResults);
   // const aggsList = useSelector((state : RootState ) => state.search.aggs);
   const aggBuckets = useSelector((state: RootState) => state.search.aggBuckets);
+  const aggBucketsFilter = useSelector((state: RootState) => state.search.aggBucketFilter);
   const isFetchingAggBuckets = useSelector((state: RootState) => state.search.isFetchingAggBuckets);
   const crowdAggBuckets = useSelector((state: RootState) => state.search.crowdAggBuckets);
   const isFetchingCrowdAggBuckets = useSelector((state: RootState) => state.search.isFetchingCrowdAggBuckets);
@@ -331,7 +331,6 @@ function IslandAggChild(props: Props) {
   const handleLoadMore = () => {
     let aggSort = handleSort(desc, sortKind);
 
-
     const variables = {
       ...searchParams,
       url: paramsUrl.sv,
@@ -340,7 +339,7 @@ function IslandAggChild(props: Props) {
       agg: [currentAgg.name],
       pageSize: PAGE_SIZE,
       page: getFullPagesCount(buckets) + 1,
-      aggOptionsFilter: aggFilter,
+      aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId],
       aggOptionsSort: aggSort,
       q: searchParams.q,
       bucketsWanted: [currentAgg.visibleOptions]
@@ -410,9 +409,8 @@ function IslandAggChild(props: Props) {
     setHasMore(true);
     handleLoadMore();
   }
-  const handleFilterChange = (e: React.FormEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
-    setFilter(value);
+  const handleFilterChange = (value: string) => {
+    aggId && dispatch(updateBucketsFilter(aggId, value));
     setBuckets([]);
     setHasMore(true);
   };
@@ -530,7 +528,7 @@ function IslandAggChild(props: Props) {
         agg: [currentAgg.name],
         pageSize: PAGE_SIZE,
         page: getFullPagesCount(buckets) + 1,
-        aggOptionsFilter: aggFilter,
+        aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId],
         aggOptionsSort: aggSort,
         q: searchParams.q,
         bucketsWanted: [currentAgg.visibleOptions]
