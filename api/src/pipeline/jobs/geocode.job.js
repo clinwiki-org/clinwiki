@@ -52,7 +52,7 @@ export const geocodeStudies = async payload => {
                         facility.zip
                     ]
                 );
-                logger.info('FACILITY RESULTS', results)
+                // logger.info('FACILITY RESULTS', results)
             }
             let facilityLocationId;
             let facilityLocation;
@@ -71,14 +71,14 @@ export const geocodeStudies = async payload => {
                     ]
                 );
                 facilityLocationId = insertResults.rows[0].id;
-                logger.info('FACILITY ID', facilityLocationId)
+                // logger.info('FACILITY ID', facilityLocationId)
             } else {
 
                 facilityLocation = {
                     latitude: results.rows[0].latitude || "",
                     longitude: results.rows[0].longitude || "",
                 }
-                logger.info('FACILITY LAT', facilityLocation)
+                // logger.info('FACILITY LAT', facilityLocation)
                 console.log("IN ELSE CONDITIONAL");
                 facilityLocationId = results.rows[0].id;
                 logger.info('FACILITY ID', facilityLocationId)
@@ -87,8 +87,8 @@ export const geocodeStudies = async payload => {
 
             // Now figure out if we need to geocode this location
             let location = await findOrCreateByName(facility.name);
-            console.log("Location to follow:");
-            console.log(util.inspect(location, false, null, true));
+            // console.log("Location to follow:");
+            // console.log(util.inspect(location, false, null, true));
             if (!location.checked) {
                 console.log("Location Not checked")
                 location = geocodeLocation(location);
@@ -218,7 +218,7 @@ const addFacilityToStudyMap = (map, facility) => {
 
     // console.log("POST FOUND" + util.inspect(found, false, null, true));
     map.set(facility.nct_id, found);
-    console.log("Post MAP" + util.inspect(map, false, null, true));
+    // console.log("Post MAP" + util.inspect(map, false, null, true));
 };
 
 const findOrCreateByName = async name => {
@@ -238,11 +238,12 @@ const findOrCreateByName = async name => {
         'insert into locations (name) values ($1) RETURNING *',
         [name]
     );
-    console.log(util.inspect(location, false,null, true));
+    // console.log(util.inspect(location, false,null, true));
     return location.rows[0];
 };
 
 const geocodeLocation = async location => {
+    console.log('GEO LOCATING', location )
     let result;
     if (process.env.GOOGLE_MAPS_API_KEY) {
         try {
