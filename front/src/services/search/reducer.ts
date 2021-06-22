@@ -28,6 +28,7 @@ const initialState: types.SearchState = {
     searchExport: undefined,
     isExportingToCsv: false,
     expanders: undefined,
+    aggBucketFilter: undefined
 };
 
 const searchReducer = (
@@ -388,6 +389,13 @@ const searchReducer = (
                 ...state,
                 isExportingToCsv: false,
             };
+        case types.BUCKET_FILTER:
+            let obj = {};
+            obj[action.id] = action.bucketsFilter;
+            return{
+                ...state,
+                aggBucketFilter: obj
+            }
         case types.TOGGLE_AGG:
             let newIslandConfig =
                 state.islandConfig || ({} as IslandConfigQuery);
@@ -423,6 +431,7 @@ const searchReducer = (
                 };
             }
         default:
+            console.log("defaulting")
             return { ...state };
     }
 };

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { Checkbox, FormControl } from 'react-bootstrap';
 import { AggBucket } from '../SearchPage/Types';
 import SortKind from './SortKind';
@@ -34,22 +34,23 @@ interface FilterProps {
   showLabel: boolean;
 }
 
-class Filter extends React.Component<FilterProps> {
-  render() {
-    const {
-      filter,
-      desc,
-      sortKind,
-      selectAll,
-      checkSelect,
-      checkboxValue,
-      removeSelectAll,
-      showLabel,
-      setShowLabel,
-      handleFilterChange,
-      toggleAlphaSort,
-      toggleNumericSort,
-    } = this.props;
+function Filter (props: FilterProps) {
+  const {
+    desc,
+    sortKind,
+    selectAll,
+    checkSelect,
+    checkboxValue,
+    removeSelectAll,
+    showLabel,
+    setShowLabel,
+    handleFilterChange,
+    toggleAlphaSort,
+    toggleNumericSort,
+  } = props;
+
+  const [filter, setFilter] = useState('')
+
     return (
       <div
         style={{
@@ -92,12 +93,14 @@ class Filter extends React.Component<FilterProps> {
           type="text"
           placeholder="filter..."
           value={filter}
-          onChange={handleFilterChange}
+          onChange={(e)=> {
+            setFilter(e.target.value)
+            handleFilterChange(e.target.value)
+          }}
           style={{ flex: 4, marginTop: '4px' }}
         />
       </div>
     );
   }
-}
 
 export default Filter;

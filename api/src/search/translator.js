@@ -145,10 +145,10 @@ export const translateOpenCrowdAggBuckets = async (criteria, bucketsWanted) => {
     let requestBody = esb.requestBodySearch().query( boolQuery ).from(0).size(100);
     
     const json = requestBody.toJSON();
-    injectOpenCrowdAggBuckets(criteria,json,true, bucketsWanted);
 
+    let result = injectOpenCrowdAggBuckets(criteria,json,true, bucketsWanted);
 
-    return json;
+    return result;
 }
 
 export const translateOpenAggBuckets = async (criteria, bucketsWanted) => {
@@ -397,7 +397,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
     const aggListSize = 25;
     const aggKeys = criteria.agg;
     let innerAggs = {};
-    
+
     aggKeys.map((aggKey, index) => {
         let sort = [];
         let sortOrder = criteria.aggOptionsSort[index] && criteria.aggOptionsSort[index].desc ? "desc" : "asc"
@@ -412,6 +412,19 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
             }
         }
         let includedValues = bucketsWanted[index].values.join('|');
+        let filterBuckets = criteria.aggOptionsFilter || "";
+        let elasticFilterValues = "";
+        if (filterBuckets !== "") {
+            let newArray = [];
+            var s = filterBuckets;
+            for (var i = 0; i < s.length; i++) {
+                newArray.push(s.charAt(i));
+            }
+            newArray.map((char) => {
+                console.log("Current Character", char)
+                elasticFilterValues = (elasticFilterValues + `[${char.toUpperCase()}${char.toLowerCase()}]`)
+            });
+        }
 
         bucketsWanted[index].values.length !== 0 ?
 
@@ -420,7 +433,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                     field: `fm_${aggKey}`,
                     size: 1000000,
                     missing: '-99999999999',
-                    include: includedValues
+                    include: elasticFilterValues ?  `(${includedValues})\u0026(.*${elasticFilterValues}.*)` : includedValues
 
                 },
                 aggs: {
@@ -440,6 +453,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                     field: `fm_${aggKey}`,
                     size: 1000000,
                     missing: '-99999999999',
+                    include:elasticFilterValues !== "" ? `(.*${elasticFilterValues}.*)` : `.*`
                 },
                 aggs: {
                     agg_bucket_sort: {
@@ -474,7 +488,8 @@ aggKeys.map(aggKey=>{
 
 })
     
-    json.aggs = innerAggs;       
+    json.aggs = innerAggs;  
+    return json     
 }
 function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
     let aggs = {};
@@ -484,7 +499,7 @@ function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
 
     aggKeys.map((aggKey, index) => {
         let sort = [];
-        let sortOrder = criteria.aggOptionsSort[index].desc ? "desc" : "asc"
+        let sortOrder = criteria.aggOptionsSort[index] && criteria.aggOptionsSort[index].desc ? "desc" : "asc"
         let countSort = {
             _count: {
                 order: sortOrder
@@ -496,15 +511,26 @@ function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
             }
         }
         let includedValues = bucketsWanted[index].values.join('|');
-
+        let filterBuckets = criteria.aggOptionsFilter || "";
+        let elasticFilterValues = "";
+        if (filterBuckets !== "") {
+            let newArray = [];
+            var s = filterBuckets;
+            for (var i = 0; i < s.length; i++) {
+                newArray.push(s.charAt(i));
+            }
+            newArray.map((char) => {
+                console.log("Current Character", char)
+                elasticFilterValues = (elasticFilterValues + `[${char.toUpperCase()}${char.toLowerCase()}]`)
+            });
+        }
         bucketsWanted[index].values.length !== 0 ?
             (innerAggs[aggKey] = {
                 terms: {
                     field: aggKey,
                     size: 1000000,
                     missing: '-99999999999',
-                    include: includedValues
-                },
+                    include: elasticFilterValues ?  `(${includedValues})\u0026(.*${elasticFilterValues}.*)` : includedValues                },
                 aggs: {
                     agg_bucket_sort: {
                         bucket_sort: {
@@ -556,5 +582,6 @@ aggKeys.map(aggKey=>{
 
 })
     
-    json.aggs = innerAggs;       
+    json.aggs = innerAggs;
+    return json;       
 }

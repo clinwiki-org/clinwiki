@@ -87,6 +87,8 @@ export const EXPORT_T0_CSV_SEND = 'EXPORT_TO_CSV_SEND';
 export const EXPORT_T0_CSV_SUCCESS = 'EXPORT_TO_CSV_SUCCESS';
 export const EXPORT_T0_CSV_ERROR = 'EXPORT_TO_CSV_ERROR';
 
+export const BUCKET_FILTER = 'BUCKET_FILTER';
+
 export const TOGGLE_AGG = 'TOGGLE_AGG';
 export const TOGGLE_EXPANDER = 'TOGGLE_EXPANDER';
 
@@ -116,6 +118,7 @@ export interface SearchState {
     searchExport: any;
     isExportingToCsv: boolean;
     expanders: any;
+    aggBucketFilter: any;
 }
 export interface SearchDataError {
     message: string;
@@ -376,6 +379,11 @@ export interface toggleExpander {
     id: any;
     collapsed: boolean;
 }
+export interface updateBucketsFilter {
+    type: typeof BUCKET_FILTER;
+    id: string;
+    bucketsFilter: string;
+}
 export type SearchActionTypes =
     | FetchSearchPageAggsSendAction
     | FetchSearchPageAggsSuccessAction
@@ -436,4 +444,5 @@ export type SearchActionTypes =
     | ExportToCsvSuccessAction
     | ExportToCsvErrorAction
     | toggleAgg
-    | toggleExpander;
+    | toggleExpander
+    | updateBucketsFilter;
