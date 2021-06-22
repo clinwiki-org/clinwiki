@@ -7,6 +7,10 @@ import { camelCase, sentanceCase } from 'utils/helpers';
 
 const getCurrentSavedSearches = state =>
     state.search.savedSearches.data.saved_searches;
+const getCurrentSearcheParams = state =>
+    state.search.searchResults.data.searchParams;
+const getCurrentIslands = state =>
+    state.search.islandConfig;
 
 function* getSearchPageAggs(action) {
     try {
@@ -407,6 +411,34 @@ function* toggleAgg(action) {
         console.log(err);
     }
 }
+function* bucketFilter(action) {
+    try {
+        const currentSearchParams = yield select(getCurrentSearcheParams);
+        const currentIslands = yield select(getCurrentIslands);
+        
+        let currentAgg = currentIslands[action.id];
+       
+        const variables = {
+            ...currentSearchParams.searchParams,
+            url: "",
+            configType: 'presearch',
+            returnAll: false,
+            agg: [currentAgg.name],
+            pageSize: 25,
+            page: 1,
+            aggOptionsFilter: action.bucketsFilter,
+            aggOptionsSort: [{id: "key", desc: false}],
+            bucketsWanted: [currentAgg.visibleOptions]
+          };
+
+
+        // Better error handling could be done here 
+          let response =currentAgg.aggKind== "crowdAggs" ? yield getSearchPageOpenCrowdAggBuckets({searchParams: variables, crowdAggIdArray: [{id:action.id, name: currentAgg.name}]}): yield getSearchPageOpenAggBuckets({searchParams: variables})
+
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
@@ -439,4 +471,5 @@ export default function* userSagas() {
     yield takeLatest(types.SEARCH_EXPORT_SEND, getSearchExport);
     yield takeLatest(types.EXPORT_T0_CSV_SEND, exportToCsv);
     yield takeLatest(types.TOGGLE_AGG, toggleAgg);
+    yield takeLatest(types.BUCKET_FILTER, bucketFilter)
 }
