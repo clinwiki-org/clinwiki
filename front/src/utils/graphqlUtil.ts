@@ -52,7 +52,7 @@ export const getGraphQLMigrationURL = () => {
     ) {
         return `http://${window.location.hostname}:8088/graphql`;
     }
-    return `http://${window.location.hostname}:8088/graphql`;
+    return `http://${window.location.hostname}/graphql`;
 };
 
 /* export const callHasuraAACT = (
