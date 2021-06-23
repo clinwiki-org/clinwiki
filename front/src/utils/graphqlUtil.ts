@@ -39,7 +39,7 @@ export const get_gql_url = () => {
         typeof window === 'undefined' ||
         window.location.hostname.includes('localhost')
     ) {
-        return `http://${window.location.hostname}:3000/graphql`;
+        return `https://${window.location.hostname}:3000/graphql`;
     }
     return '/graphql';
 };
@@ -50,9 +50,9 @@ export const getGraphQLMigrationURL = () => {
         typeof window === 'undefined' ||
         window.location.hostname.includes('localhost')
     ) {
-        return `http://${window.location.hostname}:8088/graphql`;
+        return `https://${window.location.hostname}:8088/graphql`;
     }
-    return `http://${window.location.hostname}:8088/graphql`;
+    return `https://${window.location.hostname}:8088/graphql`;
 };
 
 /* export const callHasuraAACT = (
