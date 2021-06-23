@@ -350,6 +350,7 @@ function IslandAggChild(props: Props) {
   }
 
   const handleLoadMoreResponse = () => {
+    console.log('AGG BUCKETS', aggBuckets)
     let aggName = currentAgg!.name
     let responseBuckets = currentAgg.aggKind == "crowdAggs" && aggId ?  crowdAggBuckets?.aggs[aggId!] :  aggBuckets?.aggs[aggId!];
     let currentBuckets = buckets[0] === undefined ? [] : buckets

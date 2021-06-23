@@ -59,6 +59,7 @@ const searchReducer = (
                 isFetchingAggBuckets: true,
             };
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SUCCESS:
+         
             return {
                 ...state,
                 isFetchingAggBuckets: false,
@@ -431,7 +432,6 @@ const searchReducer = (
                 };
             }
         default:
-            console.log("defaulting")
             return { ...state };
     }
 };
