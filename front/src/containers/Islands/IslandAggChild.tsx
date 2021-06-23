@@ -61,7 +61,7 @@ interface Props {
 
 }
 
-function IslandAggChild(props: Props) {
+const IslandAggChild = (props: Props) => {
 
   const { aggId } = props;
   const dispatch = useDispatch();
@@ -178,7 +178,7 @@ function IslandAggChild(props: Props) {
     searchParams[grouping]
   );
   //helper functions\
-
+  console.log('CURRENT AGG', currentAgg)
   const getFullPagesCount = buckets => Math.floor(length(buckets) / PAGE_SIZE);
   const handleSort = (desc: boolean, sortKind: SortKind) => {
     switch (sortKind) {
@@ -570,4 +570,4 @@ function IslandAggChild(props: Props) {
     </>
   );
 }
-export default IslandAggChild;
+export default React.memo(IslandAggChild);

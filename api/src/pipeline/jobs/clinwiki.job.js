@@ -99,6 +99,7 @@ export const crowdKeyReindex = async (payload) => {
     const results = await getBulkCrowdKeys(idList);
                 
     console.log("In Crwod-reindex")
+    console.log('results', results)
     //let crowdKeys = [];
     // for(let i=0;i<results.rowCount;i++) {
     //     const crowdKey = results.rows[i];                    
