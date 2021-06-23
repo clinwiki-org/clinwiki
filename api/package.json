@@ -1,5 +1,6 @@
 {
   "name": "server",
+  "hompage": "http://clinwiki-node.herokuapp.com/",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
