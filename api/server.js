@@ -96,7 +96,7 @@ app.use(express.static(path.join(__dirname, " ",'../front/build')));
 
 // app.use('*', (req,res) => res.sendFile(path.resolve('front','build','index.html')));
 app.use((req, res, next) => {
-  res.sendFile(path.join(__dirname, "..", "../front/build", "index.html"));
+  res.sendFile(path.resolve(__dirname, 'front','build','index.html'));
 });
 
 app.use(function(error,req,res,next){
