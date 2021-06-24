@@ -50,9 +50,9 @@ export const getGraphQLMigrationURL = () => {
         typeof window === 'undefined' ||
         window.location.hostname.includes('localhost')
     ) {
-        return `https://${window.location.hostname}:8088/graphql`;
+        return `https://${window.location.hostname}/graphql`;
     }
-    return `https://${window.location.hostname}:8088/graphql`;
+    return `https://${window.location.hostname}/graphql`;
 };
 
 /* export const callHasuraAACT = (
