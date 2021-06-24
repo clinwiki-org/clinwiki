@@ -52,7 +52,35 @@ export const getGraphQLMigrationURL = () => {
     ) {
         return `http://${window.location.hostname}:8088/graphql`;
     }
-    return `http://${window.location.hostname}:8088/graphql`;
+    if (  window.location.hostname.includes('staging') ||window.location.hostname.includes('experimental')  ) {
+        return `http://${window.location.hostname}:8088/graphql`;
+    }
+    else {
+    return `http://${window.location.hostname}/graphql`;
+    }
+  /// testing 
+    // @ts-ignore
+//     let testObj = {
+//         location: {
+//             hostname: 'https://als.clinwiki.org/study/NCT00136500?hash=35JYzCx9&sv=cards&pv=study&'
+//         }
+//     };
+//     // testObj.location.hostname = 'localhost:3000'
+//     if (
+//         typeof testObj === 'undefined' ||
+//         testObj.location.hostname.includes('localhost')
+//     ) {
+//         console.log('hitting a')
+//         return `http://${testObj.location.hostname}:8088/graphql`;
+//     }
+//     if (  testObj.location.hostname.includes('staging') ||testObj.location.hostname.includes('experimental')  ) {
+//         console.log('hitting b')
+//         return `http://${testObj.location.hostname}:8088/graphql`;
+//     }
+//     else {
+//         console.log('hitting c')
+//     return `http://${testObj.location.hostname}/graphql`;
+//     }
 };
 
 /* export const callHasuraAACT = (
