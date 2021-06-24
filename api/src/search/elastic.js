@@ -109,7 +109,7 @@ export const bulkUpdate = async (list) => {
             .set('Authorization','Basic '+ encode)
             .set('Content-Type', 'application/json')
             .send(body).then(response =>{ 
-                console.log(response)
+                // console.log(response)
                 return response.body
             });
     }

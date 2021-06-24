@@ -2,6 +2,7 @@ import logger from '../../util/logger';
 import {query} from '../../util/db';
 import {bulkUpdate} from '../../search/elastic';
 import {JOB_TYPES,enqueueJob} from '../pipeline.queue';
+import moment from 'moment';
 const util = require('util')
 
 const CHUNK_SIZE = 10;
@@ -71,6 +72,7 @@ const getCrowdKeysToIndex = async (idList) => {
 
 
 const getBulkWikiPages = async (idList) => {
+    console.log("BULK WIKI PAGES")
     let params = idList.map( (id,index) => '$'+(index+1));
     const wikiQuery = 'select * from wiki_pages where id in ('+params.join(',')+')';
     const rs = await query(wikiQuery,idList);
@@ -90,6 +92,10 @@ const esWikiPage = (row) => {
     let es = {};
     es.nct_id = row.nct_id;
     es.wiki_text = row.text;
+    let currentTime = Date.now();
+    let formattedTime = moment(currentTime).format('YYYY-MM-DD');
+    es.indexed_at = formattedTime
+    console.log('DATE NOW', es)
     return es;
 }
 
