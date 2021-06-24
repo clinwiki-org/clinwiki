@@ -70,7 +70,7 @@ export function microMailMerge(template = '', context?: object | null) {
   return template;
 }
 
-export default function MailMergeView(props: Props) {
+const MailMergeView = (props: Props) => {
   let aggIslands: any[] = [];
 
   useHandlebars();
@@ -236,3 +236,5 @@ export default function MailMergeView(props: Props) {
     </div>
   );
 }
+
+export default React.memo(MailMergeView)
