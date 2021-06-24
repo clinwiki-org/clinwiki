@@ -17,7 +17,8 @@ const QUERY_NEW_HASH = `insert into short_links (short,long, created_at, updated
 const crypto = require('crypto');
 
 export async function search(args) {
-    logger.info('ARGS:', + args)
+    logger.info('ARGS!:', + args)
+    
     try {
         // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         const translated = await translateSearch(args.params, true);
