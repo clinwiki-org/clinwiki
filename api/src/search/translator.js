@@ -248,7 +248,7 @@ const getFieldName = (agg,isCrowdAgg) => {
 
 
 function injectAggs(criteria,json) {
-
+console.log('agg injecting')
     let aggList = [];
     criteria.aggFilters.map( af => {
         let t = {};
@@ -284,6 +284,7 @@ function injectAggs(criteria,json) {
     });
 
     let crowdAggList = [];
+     console.log('CROWD AGG FILTERS', criteria.crowdAggFilters)
     criteria.crowdAggFilters.map( af => {
         if(af.gte || af.lte){
             return
@@ -351,6 +352,7 @@ function injectAggs(criteria,json) {
 
 
 function injectCrowdAggBuckets(criteria,json,usePrefix) {
+    console.log('CROWD AGGING')
     let aggs = {};
     const aggKey = usePrefix ? 'fm_'+criteria.agg : criteria.agg;
 

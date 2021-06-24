@@ -12,9 +12,9 @@ export const query = async (body) => {
             index: config.elasticIndex,
             body
         };
-        //console.log(util.inspect(payload, false, null, true /* enable colors */))
+        console.log(util.inspect(payload.body, false, null, true /* enable colors */))
         const results = await connection.search(payload);
-        //console.log(util.inspect(results, false, null, true /* enable colors */))
+        console.log(util.inspect('ELATIC RESULTS', results, false, null, true /* enable colors */))
         return results;
     }
     catch(err) {

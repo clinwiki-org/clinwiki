@@ -23,7 +23,6 @@ export async function search(args) {
         const translated = await translateSearch(args.params, true);
         // console.log("-------------->  ELASTIC SEARCH QUERY <------------- " + util.inspect(translated, false, null, true))
         let esResults = await elastic.query(translated);
-
         const studies = esResults.body.hits.hits
             .filter(study => (study._source.nct_id ? true : false))
             .map(study => esToGraphql(study));
@@ -34,7 +33,6 @@ export async function search(args) {
             const agg = aggToGraphql(key, value);
             aggs.push(agg);
         }
-        // console.log(studies)
         return {
             recordsTotal: esResults.body.hits.total,
             studies,
@@ -128,11 +126,13 @@ export async function provisionSearchHash(args) {
 
 export async function openCrowdAggBuckets(args) {
     try {
+        console.log('ARGS CROWD BUCKETS WANTED', args.bucketsWanted)
         const translated = await translateOpenCrowdAggBuckets(
             args.params,
             args.bucketsWanted
         );
         let esResults = await elastic.query(translated);
+        console.log('SEARCH MANAGER', esResults.body.aggregations.fm_tags)
         // console.log("TRANSLATED OPEN Crowd Buckets" + util.inspect(translated, true, null, false))
         const studies = esResults.body.hits.hits.map(study =>
             esToGraphql(study)
@@ -168,6 +168,7 @@ export async function openCrowdAggBuckets(args) {
     }
 }
 export async function openAggBuckets(args) {
+    console.log('ARGS AGG BUCKETS WANTED', args.bucketsWanted)
     try {
         const translated = await translateOpenAggBuckets(
             args.params,
