@@ -13,6 +13,7 @@ export const query = async (body) => {
             body
         };
         console.log('QUERY PAYLOAD', payload);
+        console.log('QUERY PAYLOAD', payload.body.query.bool);
         const results = await connection.search(payload);
         console.log(util.inspect('------ELASTIC RESULTS------', results, false, null, true /* enable colors */))
         return results;
@@ -30,7 +31,7 @@ const getConnection = () => {
     const client = new Client({
         node: config.searchboxUrl
     });
-    console.log('CONNETCT', client )
+    logger.info('CONNETCT', client )
     return client;
 };
 
@@ -74,7 +75,7 @@ export const bulkUpsert = async (list) => {
             .set('Authorization','Basic '+ encode)
             .set('Content-Type', 'application/json')
             .send(body).then(response => {
-                console.log('BULK UPSERT REPONSE ELASTIC', response)
+                logger.info('BULK UPSERT REPONSE ELASTIC', response)
                return response.body
             });
         
@@ -105,7 +106,7 @@ export const bulkUpdate = async (list) => {
         });
 
         const url = Url(config.searchboxUrl);
-        console.log('ELASTIC URL', url)
+        logger.info('ELASTIC URL', url)
         let encode = Buffer.from(url.username+':'+url.password)
             .toString('base64');
         const elasticUrl = url.protocol+'//'+url.host+'/_bulk';
@@ -114,7 +115,7 @@ export const bulkUpdate = async (list) => {
             .set('Authorization','Basic '+ encode)
             .set('Content-Type', 'application/json')
             .send(body).then(response =>{ 
-                console.log('-------------- ELASTIC RESPONSE - BULK UPDATE ------------', response.body)
+                logger.info('-------------- ELASTIC RESPONSE - BULK UPDATE ------------', response.body)
                 return response.body
             });
     }
