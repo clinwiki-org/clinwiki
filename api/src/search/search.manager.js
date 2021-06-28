@@ -152,6 +152,9 @@ export async function openCrowdAggBuckets(args) {
                             finalBuckets.push(bucket);
                         }
                     }
+                    console.log(
+                        'FINAL BUCKETS CROWD AGGS', finalBuckets
+                    )
                 });
                 aggs.push({ ...agg, buckets: finalBuckets });
                 i++;
@@ -194,6 +197,9 @@ export async function openAggBuckets(args) {
                             finalBuckets.push(bucket);
                         }
                     }
+                    console.log(
+                        'FINAL BUCKETS AGGS', finalBuckets
+                    )
                 });
                 aggs.push({ ...agg, buckets: finalBuckets });
                 i++;

@@ -13,7 +13,8 @@ export const query = async (body) => {
             body
         };
         console.log('QUERY PAYLOAD', payload);
-        console.log('QUERY PAYLOAD', payload.body.query.bool);
+        // console.log('QUERY PAYLOAD', payload.body.query.bool);
+        logger.info(util.inspect(payload, false, null, true /* enable colors */))
         const results = await connection.search(payload);
         console.log(util.inspect('------ELASTIC RESULTS------', results, false, null, true /* enable colors */))
         return results;
