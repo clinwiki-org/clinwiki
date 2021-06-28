@@ -3,7 +3,7 @@
         "scripts": {
         "build":"./heroku-build.sh",
         "start":"cd api && npm start",
-        "pipeline-start": "cd front & npm run pipeline-start"
+        "pipeline-start": "cd api && npm run pipeline-start"
     },
     "dependencies": {}
 }
