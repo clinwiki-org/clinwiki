@@ -5,7 +5,7 @@ import {query} from '../../util/db';
 import moment from 'moment';
 const util = require('util')
 
-const CHUNK_SIZE = 10;
+const CHUNK_SIZE = 20;
 
 export const clinwikiJob = async nctIdList => {
     try {
@@ -121,22 +121,26 @@ export const crowdKeyReindex = async payload => {
     let crowdMap = new Map();
     for (let i = 0; i < results.rowCount; i++) {
         const crowdKeyRow = results.rows[i];
-
+        console.log('CROWD ROW', crowdKeyRow)
         let ckStudy = crowdMap.get(crowdKeyRow.crowd_key_value_id_association);
+        console.log('CKSTUDY', ckStudy)
         if (!ckStudy) {
             ckStudy = { nct_id: crowdKeyRow.crowd_key_value_id_association };
             ckStudy.front_matter_keys = [];
         }
         // ckStudy['fm_' + crowdKeyRow.crowd_key] =  ckStudy['fm_' + crowdKeyRow.crowd_key];
-        
         /// we need to do something similar to this.
-
+        console.log(crowdKeyRow)
+        console.log(ckStudy)
         console.log('PRE PUSH', ckStudy['fm_' + crowdKeyRow.crowd_key])
-        //@ts-ignore
-        let newValue = crowdKeyRow.crowd_value 
-        ckStudy['fm_' + crowdKeyRow.crowd_key].push(crowdKeyRow.crowd_value)
-        console.log('WHAT THE FUCK IS THIS', ckStudy['fm_' + crowdKeyRow.crowd_key]) 
-        
+   
+        // ckStudy['fm_' + crowdKeyRow.crowd_key] ? ckStudy['fm_' + crowdKeyRow.crowd_key].push(crowdKeyRow.crowd_value) : ckStudy['fm_' + crowdKeyRow.crowd_key] = [crowdKeyRow.crowd_value];
+        if (ckStudy['fm_' + crowdKeyRow.crowd_key]) {
+            ckStudy['fm_' + crowdKeyRow.crowd_key].push(crowdKeyRow.crowd_value)
+        } else {
+            console.log('IM ELSING IN THIS FOOL', ckStudy)
+            ckStudy['fm_' + crowdKeyRow.crowd_key] = [crowdKeyRow.crowd_value];
+        }
         if (ckStudy.front_matter_keys.indexOf(crowdKeyRow.crowd_key) === -1) {
             ckStudy.front_matter_keys.push(crowdKeyRow.crowd_key);
         }
