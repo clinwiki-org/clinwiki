@@ -396,6 +396,7 @@ function injectCrowdAggBuckets(criteria,json,usePrefix) {
     json.aggs = aggs;       
 }
 function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
+    console.log('BUCKETS WANTED', bucketsWanted)
     let aggs = {};
     const aggListSize = 25;
     const aggKeys = criteria.agg;
@@ -456,7 +457,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                     field: `fm_${aggKey}`,
                     size: 1000000,
                     missing: '-99999999999',
-                    include:elasticFilterValues !== "" ? `(.*${elasticFilterValues}.*)` : `.*`
+                    // include: elasticFilterValues !== "" ? `(.*${elasticFilterValues}.*)` : `.*`
                 },
                 aggs: {
                     agg_bucket_sort: {

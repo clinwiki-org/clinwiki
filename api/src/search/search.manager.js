@@ -134,7 +134,7 @@ export async function openCrowdAggBuckets(args) {
             args.bucketsWanted
         );
         let esResults = await elastic.query(translated);
-        // console.log("TRANSLATED OPEN Crowd Buckets" + util.inspect(translated, true, null, false))
+        console.log("TRANSLATED OPEN Crowd Buckets" + util.inspect(esResults.body.aggregations, true, null, false))
         const studies = esResults.body.hits.hits.map(study =>
             esToGraphql(study)
         );
@@ -175,6 +175,7 @@ export async function openAggBuckets(args) {
             args.bucketsWanted
         );
         let esResults = await elastic.query(translated);
+        console.log("TRANSLATED OPEN AGG Buckets" + util.inspect(esResults.body.aggregations, true, null, false))
         const studies = esResults.body.hits.hits.map(study =>
             esToGraphql(study)
         );

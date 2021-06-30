@@ -111,7 +111,7 @@ export const crowdKeyReindex = async payload => {
     const results = await getBulkCrowdKeys(idList);
                 
     console.log("In Crwod-reindex")
-    console.log('results', results)
+    console.log('CROWD KEY RESULTS', results)
     //let crowdKeys = [];
     // for(let i=0;i<results.rowCount;i++) {
     //     const crowdKey = results.rows[i];
@@ -127,15 +127,25 @@ export const crowdKeyReindex = async payload => {
             ckStudy = { nct_id: crowdKeyRow.crowd_key_value_id_association };
             ckStudy.front_matter_keys = [];
         }
-        ckStudy['fm_' + crowdKeyRow.crowd_key] = crowdKeyRow.crowd_value;
+        // ckStudy['fm_' + crowdKeyRow.crowd_key] =  ckStudy['fm_' + crowdKeyRow.crowd_key];
+        
+        /// we need to do something similar to this.
+
+        console.log('PRE PUSH', ckStudy['fm_' + crowdKeyRow.crowd_key])
+        //@ts-ignore
+        let newValue = crowdKeyRow.crowd_value 
+        ckStudy['fm_' + crowdKeyRow.crowd_key].push(crowdKeyRow.crowd_value)
+        console.log('WHAT THE FUCK IS THIS', ckStudy['fm_' + crowdKeyRow.crowd_key]) 
+        
         if (ckStudy.front_matter_keys.indexOf(crowdKeyRow.crowd_key) === -1) {
             ckStudy.front_matter_keys.push(crowdKeyRow.crowd_key);
         }
         crowdMap.set(crowdKeyRow.crowd_key_value_id_association, ckStudy);
+        console.log('CROWD MAP', crowdMap)
     }
-
+    
     let crowdKeys = [...crowdMap.values()];
-    console.log('Mapping values, about to bulk update');
+    console.log('Mapping values, about to bulk update', crowdKeys);
     let response = await bulkUpdate(crowdKeys);
 
     console.log('_____________________');
@@ -154,3 +164,5 @@ const getBulkCrowdKeys = async idList => {
 };
 
 export default clinwikiJob;
+
+
