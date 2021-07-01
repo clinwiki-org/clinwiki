@@ -248,7 +248,7 @@ const getFieldName = (agg,isCrowdAgg) => {
 
 
 function injectAggs(criteria,json) {
-
+console.log('agg injecting')
     let aggList = [];
     criteria.aggFilters.map( af => {
         let t = {};
@@ -284,6 +284,7 @@ function injectAggs(criteria,json) {
     });
 
     let crowdAggList = [];
+     console.log('CROWD AGG FILTERS', criteria.crowdAggFilters)
     criteria.crowdAggFilters.map( af => {
         if(af.gte || af.lte){
             return
@@ -351,6 +352,7 @@ function injectAggs(criteria,json) {
 
 
 function injectCrowdAggBuckets(criteria,json,usePrefix) {
+    console.log('CROWD AGGING')
     let aggs = {};
     const aggKey = usePrefix ? 'fm_'+criteria.agg : criteria.agg;
 
@@ -457,7 +459,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                     field: `fm_${aggKey}`,
                     size: 1000000,
                     missing: '-99999999999',
-                    // include: elasticFilterValues !== "" ? `(.*${elasticFilterValues}.*)` : `.*`
+                    include: elasticFilterValues !== "" ? `(.*${elasticFilterValues}.*)` : `.*`
                 },
                 aggs: {
                     agg_bucket_sort: {
@@ -491,10 +493,10 @@ aggKeys.map(aggKey=>{
     }
 
 })
-    
     json.aggs = innerAggs;  
     return json     
 }
+
 function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
     let aggs = {};
     const aggListSize = 25;
