@@ -1,11 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
-import SortKind from 'containers/AggDropDown/SortKind';
-import CustomDropDown from 'containers/AggDropDown/CustomDrop';
+import * as FontAwesome from 'react-fontawesome';
+
+import { FormControl, Panel } from 'react-bootstrap';
+// import aggToField from 'utils/aggs/aggToField';
+// import { capitalize } from 'utils/helpers';
+import {
+  PresearchTitle,
+  ThemedPresearchHeader,
+} from 'components/StyledComponents';
+import React, { useEffect, useRef, useState } from 'react';
+import RichTextEditor, { EditorValue } from 'react-rte';
+import { deleteCrowdKeyValueId, insertCrowdKeyValueId } from '../../services/crowdKeys/actions'
+import { deleteLabelMutation, fetchSuggestedLabels, setShowLoginModal, upsertLabelMutation } from '../../services/study/actions'
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'reducers';
+
 import { BeatLoader } from 'react-spinners';
-import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation, setShowLoginModal } from '../../services/study/actions'
-import { insertCrowdKeyValueId, deleteCrowdKeyValueId } from '../../services/crowdKeys/actions'
+import CustomDropDown from 'containers/AggDropDown/CustomDrop';
+import { RootState } from 'reducers';
+import SortKind from 'containers/AggDropDown/SortKind';
+import ThemedButton from 'components/StyledComponents/index';
 
 interface Props {
   aggId?: string;
@@ -24,6 +36,7 @@ function WfIslandAggChild(props: Props) {
   const user = useSelector((state: RootState) => state.user.current);
   const isUpsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel)
 
+  const [editorText, setEditorText] = useState('EDITOR Text!');
 
   let getCurrentAgg = () => {
     let jsonConfig = islandConfig
@@ -36,7 +49,7 @@ function WfIslandAggChild(props: Props) {
   // if (error) return <Error message={error.message} />;
   if (!suggestedLabels) return <BeatLoader />;
   const crowdKeyValueData = suggestedLabels?.data?.crowd_key_value_ids.filter(x => x.crowd_key == currentAgg.name) || [];
-//Believe this needs some work. Values being carried over
+  //Believe this needs some work. Values being carried over
   let selectedCrowdValues = crowdKeyValueData.reduce((x, y, index) => ({ ...x, [index]: y.crowd_value }), {});
 
   // console.log("🚀 ~ WfIslandAggChild ~ selectedCrowdValues", selectedCrowdValues);
@@ -66,8 +79,8 @@ function WfIslandAggChild(props: Props) {
       dispatch(deleteCrowdKeyValueId(props.nctId, key, currentAgg.name))
     }
   }
-  let filteredArray = suggestedLabels?.data?.crowd_keys.filter(x=> x.crowd_key == currentAgg.name);
-  const currentAggBucketsData = filteredArray && filteredArray[0] ?  filteredArray[0].crowd_values : [];
+  let filteredArray = suggestedLabels?.data?.crowd_keys.filter(x => x.crowd_key == currentAgg.name);
+  const currentAggBucketsData = filteredArray && filteredArray[0] ? filteredArray[0].crowd_values : [];
 
   let currentAggBuckets = [];
   //@ts-ignore
@@ -79,6 +92,65 @@ function WfIslandAggChild(props: Props) {
       islandConfig[aggId].defaultToOpen = !islandConfig[aggId].defaultToOpen
     }
   }
+
+  const handleEditorText = (e: any) => {
+    setEditorText(e.currentTarget.value);
+  };
+
+  const handleEditSubmit = () => {
+    console.log("EDIT!!!!!!!!!!!")
+    let content = editorText;
+
+    //   dispatch(updateCrowdKeyValueId(props.nctId, key, currentAgg.name))
+
+  };
+
+  if (currentAgg.display === "TEXT_EDITOR") {
+    console.log("🚀 ~ WfIslandAggChild ~ currentAgg", currentAgg);
+
+    let configuredLabel = currentAgg?.displayName || '';
+    //const ThemedTitle = isPresearch ? PresearchTitle : ThemedFacetTitle
+
+
+    return (
+
+      <Panel>
+        <ThemedPresearchHeader>
+          <PresearchTitle style={{ textAlign: "center" }} >
+
+            {configuredLabel.toUpperCase()}
+          </PresearchTitle>
+        </ThemedPresearchHeader>
+        <Panel.Body>
+          <FormControl
+            style={{ minHeight: '150px', maxWidth: "auto" }}
+            componentClass="textarea"
+            defaultValue={editorText || ''}
+            onChange={handleEditorText}
+          />
+        </Panel.Body>
+        <ThemedButton
+          onClick={() => { handleEditSubmit(); }}
+          //disabled={editorTextState === editorTextData}
+          style={{ margin: '7px' }}>
+          Save <FontAwesome name="save" />
+        </ThemedButton>
+      </Panel>
+
+
+    )
+  }
+
+  // <Panel>
+  //   <Panel.Body>
+  //     <RichTextEditor
+  //       //readOnly={readOnly}
+  //       onChange={handleRichEditorChange}
+  //       value={richEditorText || RichTextEditor.createEmptyValue()}
+  //     />
+  //   </Panel.Body>
+  // </Panel>
+
   //console.log(currentAgg)
   return (
     <>
