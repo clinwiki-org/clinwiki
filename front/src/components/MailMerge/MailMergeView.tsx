@@ -77,8 +77,11 @@ const MailMergeView = (props: Props) => {
   const dispatch = useDispatch();
   const showLoginModal = useSelector((state: RootState) => state.study.showLoginModal);
   const data = useSelector((state: RootState) => state.search.searchResults);
-
-
+  const isFetchingAggBuckets = useSelector((state: RootState) => state.search.isFetchingAggBuckets);
+  const isFetchingCrowdAggBuckets = useSelector((state: RootState) => state.search.isFetchingCrowdAggBuckets);
+  const isFetchingStudy = useSelector((state: RootState) => state.study.isFetchingStudy);
+  const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams);
+  const searchHash = useSelector((state: RootState ) => state.search.searchHash );
   const searchParams = data?.data?.searchParams;
   const params = useUrlParams();
 
@@ -136,6 +139,7 @@ const MailMergeView = (props: Props) => {
   }, [dispatch]);
 
   useEffect(() => {
+    // Duplicate code// Refactor // IslandsAggChild is other file
     let uniqueAggIds = uniq(aggIslandsCurrent.current.currentAggIsalnds); 
     let aggArray: any[] = [];
     let aggIdArray: any[] = [];
@@ -154,18 +158,18 @@ const MailMergeView = (props: Props) => {
         };
 
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggArray.push(islandConfig[agg.id].name);
-        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggIdArray.push({ id: agg.id, name: islandConfig[agg.id].name });
+        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggIdArray.push({ id: agg.id,  name :islandConfig[agg.id].name  });
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdBucketsWanted.push(islandConfig[agg.id].visibleOptions);
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggSortArray.push(sort);
         islandConfig[agg.id].aggKind == 'aggs' && aggArray.push(islandConfig[agg.id].name);
-        islandConfig[agg.id].aggKind == 'aggs' && aggIdArray.push({ id: agg.id, name: islandConfig[agg.id].name });
+        islandConfig[agg.id].aggKind == 'aggs' && aggIdArray.push({ id: agg.id, name :islandConfig[agg.id].name });
         islandConfig[agg.id].aggKind == 'aggs' && aggBucketsWanted.push(islandConfig[agg.id].visibleOptions);
         islandConfig[agg.id].aggKind == 'aggs' && aggSortArray.push(sort);
       }
     });
 
 
-    if (searchParams && crowdAggArray.length !== 0) {
+    if (searchParams && crowdAggArray.length !== 0 ||  searchParams && aggArray.length !== 0) {
 
 
       const variables = {
@@ -173,33 +177,22 @@ const MailMergeView = (props: Props) => {
         url: params.sv,
         configType: 'presearch',
         returnAll: false,
-        agg: crowdAggArray,
-        aggOptionsSort: crowdAggSortArray,
-        pageSize: 100,
-        page: 1,
-        q: searchParams.searchParams.q,
-        bucketsWanted: crowdBucketsWanted,
-      };
-      variables.agg[0] && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, crowdAggIdArray))
-    }
-    if ( searchParams && aggArray.length !== 0) {
-
-      const variables2 = {
-        ...searchParams.searchParams,
-        url: params.sv,
-        configType: 'presearch',
-        returnAll: false,
         agg: aggArray,
+        crowdAgg: crowdAggArray,
         aggOptionsSort: aggSortArray,
+        crowdAggOptionsSort: crowdAggSortArray,
         pageSize: 100,
         page: 1,
         q: searchParams.searchParams.q,
-        bucketsWanted: aggBucketsWanted
+        aggBucketsWanted: aggBucketsWanted,
+        crowdBucketsWanted: crowdBucketsWanted
+
       };
-      variables2.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables2, aggIdArray))
+      let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
+      !shouldNotDispatch && variables.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables, aggIdArray, crowdAggIdArray))
     }
 
-  }, [dispatch, islandConfig, searchParams])
+  }, [dispatch, islandConfig, searchHash, searchParams])
 
   useEffect(()=>{
     let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds); 

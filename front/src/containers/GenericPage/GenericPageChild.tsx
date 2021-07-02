@@ -51,6 +51,13 @@ export default function GenericPageWrapper(props: Props) {
 
     useEffect(() => {
         let searchParams = pageType == "Search" ? { ...data.data.searchParams } : null;
+
+
+        // Hardcoded these 3 for testing need to build dynamycally @TO-DO
+        let crowdBucketsWanted: any[] = ["fm_Mutations Targeted'","fm_Brain Tumor Status"];
+        let aggBucketsWanted: any[] = ["facility_states"];
+
+        searchParams = {...searchParams, crowdBucketsWanted, aggBucketsWanted }
         //let searchParams = pageType == "Search" ? { ...data.data.searchParams.searchParams } : null;
         const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(hasuraFragmentName, hasuraFragment)}`
         // const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`

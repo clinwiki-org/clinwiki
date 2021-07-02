@@ -94,6 +94,7 @@ function* getSearchPageOpenCrowdAggBuckets(action) {
 }
 function* getSearchPageOpenAggBuckets(action) {
     try {
+        console.log(action)
         let response = yield call(() =>
             api.fetchSearchPageOpenAggBuckets(action.searchParams)
         );
@@ -102,6 +103,8 @@ function* getSearchPageOpenAggBuckets(action) {
                 actions.fetchSearchPageOpenAggBucketsSuccess({
                     ...response,
                     aggIdArray: action.aggIdArray,
+                    crowdAggIdArray: action.crowdAggIdArray,
+                    activeAgg: action.activeAgg,
                 })
             );
         } else {
@@ -433,7 +436,8 @@ function* bucketFilter(action) {
 
 
         // Better error handling could be done here 
-          let response =currentAgg.aggKind== "crowdAggs" ? yield getSearchPageOpenCrowdAggBuckets({searchParams: variables, crowdAggIdArray: [{id:action.id, name: currentAgg.name}]}): yield getSearchPageOpenAggBuckets({searchParams: variables, aggIdArray: [{id:action.id, name: currentAgg.name}]})
+        //@@@ BRIAN COME BACK HEREEEE  Commented out didn't seem to affect anything, possible duplicate @TO-DO
+        //   let response =currentAgg.aggKind== "crowdAggs" ? yield getSearchPageOpenCrowdAggBuckets({searchParams: variables, crowdAggIdArray: [{id:action.id, name: currentAgg.name}]}): yield getSearchPageOpenAggBuckets({searchParams: variables, aggIdArray: [{id:action.id, name: currentAgg.name}]})
 
     } catch (err) {
         console.log(err);

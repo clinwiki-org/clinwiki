@@ -92,11 +92,13 @@ export const fetchSearchPageOpenCrowdAggBucketsError = (
 });
 export const fetchSearchPageOpenAggBuckets = (
     searchParams: any,
-    aggIdArray: any
+    aggIdArray: any,
+    crowdAggIdArray: any,
 ): types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND,
     searchParams,
     aggIdArray,
+    crowdAggIdArray,
 });
 
 export const fetchSearchPageOpenAggBucketsSuccess = (

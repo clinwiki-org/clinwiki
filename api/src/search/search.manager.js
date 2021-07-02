@@ -27,17 +27,9 @@ export async function search(args) {
         const studies = esResults.body.hits.hits
             .filter(study => (study._source.nct_id ? true : false))
             .map(study => esToGraphql(study));
-        let aggs = [];
-        for (const [key, value] of Object.entries(
-            esResults.body.aggregations
-        )) {
-            const agg = aggToGraphql(key, value);
-            aggs.push(agg);
-        }
         return {
             recordsTotal: esResults.body.hits.total,
             studies,
-            aggs,
         };
     } catch (err) {
         logger.error('Error running search: ' + err);
@@ -93,7 +85,7 @@ export async function searchParams(args) {
             searchParams: JSON.stringify(parsedParams),
         };
     } catch (err) {
-        logger.error('Error running search: ' + err);
+        logger.error('Error running searchParams: ' + err);
     }
 }
 export async function provisionSearchHash(args) {
@@ -121,63 +113,20 @@ export async function provisionSearchHash(args) {
 
         return { searchHash: { short: short } };
     } catch (err) {
-        logger.error('Error running search: ' + err);
+        logger.error('Error running provisionSearchHash: ' + err);
     }
 }
 
-export async function openCrowdAggBuckets(args) {
-    try {
-        console.log('ARGS CROWD BUCKETS WANTED', args.bucketsWanted)
-        const translated = await translateOpenCrowdAggBuckets(
-            args.params,
-            args.bucketsWanted
-        );
-        let esResults = await elastic.query(translated);
-        console.log('SEARCH MANAGER', esResults.body.aggregations.fm_tags)
-        // console.log("TRANSLATED OPEN Crowd Buckets" + util.inspect(translated, true, null, false))
-        const studies = esResults.body.hits.hits.map(study =>
-            esToGraphql(study)
-        );
-        let aggs = [];
-        let i = 0;
-        for (const [key, value] of Object.entries(
-            esResults.body.aggregations
-        )) {
-            const agg = aggToGraphql2(key, value);
-            if (args.bucketsWanted[i].values.length !== 0) {
-                let finalBuckets = [];
-                agg.buckets.map(bucket => {
-                    for (const key of args.bucketsWanted[i].values) {
-                        if (key == bucket.key) {
-                            finalBuckets.push(bucket);
-                        }
-                    }
-                    console.log(
-                        'FINAL BUCKETS CROWD AGGS', finalBuckets
-                    )
-                });
-                aggs.push({ ...agg, buckets: finalBuckets });
-                i++;
-            } else {
-                aggs.push(agg);
-                i++;
-            }
-        }
-        return {
-            recordsTotal: esResults.body.hits.total,
-            aggs: aggs,
-        };
-    } catch (err) {
-        logger.error(err);
-    }
-}
 export async function openAggBuckets(args) {
-    console.log('ARGS AGG BUCKETS WANTED', args.bucketsWanted)
+    console.log('ARGS AGG BUCKETS ', args)
     try {
         const translated = await translateOpenAggBuckets(
             args.params,
-            args.bucketsWanted
+            args.aggBucketsWanted,
+            args.crowdBucketsWanted
+
         );
+        console.log("TRANSLATED", translated)
         let esResults = await elastic.query(translated);
         console.log("TRANSLATED OPEN AGG Buckets" + util.inspect(esResults.body.aggregations, true, null, false))
         const studies = esResults.body.hits.hits.map(study =>
@@ -185,30 +134,16 @@ export async function openAggBuckets(args) {
         );
         let aggs = [];
         let i = 0;
+        let j = 0;
         // console.log("TRANSLATED OPEN  Buckets" + util.inspect(translated,false,null,true))
         for (const [key, value] of Object.entries(
             esResults.body.aggregations
         )) {
             const agg = aggToGraphql2(key, value);
-            if (args.bucketsWanted[i].values.length !== 0) {
-                let finalBuckets = [];
-                agg.buckets.map(bucket => {
-                    for (const key of args.bucketsWanted[i].values) {
-                        if (key == bucket.key) {
-                            finalBuckets.push(bucket);
-                        }
-                    }
-                    console.log(
-                        'FINAL BUCKETS AGGS', finalBuckets
-                    )
-                });
-                aggs.push({ ...agg, buckets: finalBuckets });
-                i++;
-            } else {
-                aggs.push(agg);
-                i++;
-            }
+            aggs.push(agg);
+            i++;
         }
+        console.log("CHECK HERE", aggs)
         return {
             recordsTotal: esResults.body.hits.total,
             aggs: aggs,

@@ -3,19 +3,6 @@ const esb = require('elastic-builder');
 const zg = require('zip2geo');
 const util = require('util');
 
-const ENABLED_AGGS = [
-    'average_rating', 'overall_status', 'facility_states', 'conditions',
-    'facility_cities', 'facility_names', 'facility_countries', 'study_type', 'sponsors',
-    'browse_condition_mesh_terms', 'phase', 'rating_dimensions',
-    'browse_interventions_mesh_terms', 'interventions_mesh_terms',
-    'front_matter_keys', 'start_date', 'wiki_page_edits.email', 'wiki_page_edits.created_at',
-    'reactions.kind', 'indexed_at', 'last_update_posted_date',
-    'last_changed_date',  'number_of_arms', 'study_views_count',
-    'number_of_groups', 'why_stopped', 'results_first_submitted_date',
-    'plan_to_share_ipd', 'design_outcome_measures',
-    'location'
-  ];
-
 
 export const translateSearch = async (criteria,includeSize,lastDate) => {
 
@@ -51,7 +38,6 @@ export const translateSearch = async (criteria,includeSize,lastDate) => {
     }
     
     let json = requestBody.toJSON();
-    injectAggs(criteria,json);
 
 
     console.log(  util.inspect(criteria,true, null, false));
@@ -151,8 +137,9 @@ export const translateOpenCrowdAggBuckets = async (criteria, bucketsWanted) => {
     return result;
 }
 
-export const translateOpenAggBuckets = async (criteria, bucketsWanted) => {
+export const translateOpenAggBuckets = async (criteria, aggBucketsWanted, crowdBucketsWanted) => {
 
+    console.log("tOAB" , criteria);
     let boolQuery = esb.boolQuery();
     boolQuery.must(esb.simpleQueryStringQuery('*'));
     await translateAggFilters(criteria.aggFilters,boolQuery,false);
@@ -172,7 +159,8 @@ export const translateOpenAggBuckets = async (criteria, bucketsWanted) => {
     // Create the aggs and crowd aggs
     let requestBody = esb.requestBodySearch().query( boolQuery ).from(0).size(100);
     const json = requestBody.toJSON();
-    injectOpenAggBuckets(criteria,json,true, bucketsWanted);
+    injectOpenAggBuckets(criteria,json,true, aggBucketsWanted);
+    injectOpenCrowdAggBuckets(criteria,json,true, crowdBucketsWanted);
 
 
     return json;
@@ -247,109 +235,6 @@ const getFieldName = (agg,isCrowdAgg) => {
 }
 
 
-function injectAggs(criteria,json) {
-console.log('agg injecting')
-    let aggList = [];
-    criteria.aggFilters.map( af => {
-        let t = {};
-        if(af.field == 'location'){
-            return
-        }
-        if(af.gte || af.lte){
-            return
-        }
-        t[af.field] = {value: af.values[0]};
-
-        aggList.push({
-            bool: {
-                filter: [
-                    {
-                        bool: {
-                            should: [
-                                {
-                                    bool: {
-                                        filter: [
-                                            {
-                                                term: t
-                                            }
-                                        ]
-                                    }
-                                }                                
-                            ]
-                        }
-                    }
-                ]
-            }
-        });
-    });
-
-    let crowdAggList = [];
-     console.log('CROWD AGG FILTERS', criteria.crowdAggFilters)
-    criteria.crowdAggFilters.map( af => {
-        if(af.gte || af.lte){
-            return
-        }
-        crowdAggList.push({
-            bool: {
-                filter: [
-                    {
-                        bool: {
-                            should: [
-                                {
-                                    bool: {
-                                        filter: [
-                                            {
-                                                term: {
-                                                    fm_tags: {
-                                                        value: af.values[0]
-                                                    }
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }                                
-                            ]
-                        }
-                    }
-                ]
-            }
-        });
-    });
-
-    let aggs = {};
-    ENABLED_AGGS.forEach( enabledAgg => {
-
-        let bucketAgg = {};
-        bucketAgg[enabledAgg] = {
-            "terms":{
-               "field":enabledAgg,
-               "size":10
-            }
-         };
-
-        aggs[enabledAgg] = {
-            filter: {
-                bool: {
-                    must: [
-                        {
-                            bool: {
-                                must: aggList
-                            }
-                        },
-                        {
-                            bool: {
-                                must: crowdAggList
-                            }
-                        }
-                    ]
-                }
-            },
-            aggs: bucketAgg
-        }
-    });
-    json.aggs = aggs;       
-}
-
 
 function injectCrowdAggBuckets(criteria,json,usePrefix) {
     console.log('CROWD AGGING')
@@ -397,16 +282,16 @@ function injectCrowdAggBuckets(criteria,json,usePrefix) {
     
     json.aggs = aggs;       
 }
-function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
-    console.log('BUCKETS WANTED', bucketsWanted)
+function injectOpenCrowdAggBuckets(criteria,json,usePrefix, crowdBucketsWanted) {
+    console.log('BUCKETS WANTED', crowdBucketsWanted)
     let aggs = {};
     const aggListSize = 25;
-    const aggKeys = criteria.agg;
+    const crowdAggKeys = criteria.crowdAgg;
     let innerAggs = {};
 
-    aggKeys.map((aggKey, index) => {
+    crowdAggKeys.map((aggKey, index) => {
         let sort = [];
-        let sortOrder = criteria.aggOptionsSort[index] && criteria.aggOptionsSort[index].desc ? "desc" : "asc"
+        let sortOrder = criteria.crowdAggOptionsSort[index] && criteria.crowdAggOptionsSort[index].desc ? "desc" : "asc"
         let countSort = {
             _count: {
                 order: sortOrder
@@ -417,7 +302,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 order: sortOrder
             }
         }
-        let includedValues = bucketsWanted[index].values.join('|');
+        let includedValues = crowdBucketsWanted[index]?.values.join('|');
         let filterBuckets = criteria.aggOptionsFilter || "";
         let elasticFilterValues = "";
         if (filterBuckets !== "") {
@@ -432,7 +317,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
             });
         }
 
-        bucketsWanted[index].values.length !== 0 ?
+        crowdBucketsWanted[index]?.values.length !== 0 ?
 
             (innerAggs[`fm_${aggKey}`] = {
                 terms: {
@@ -448,7 +333,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                             from:criteria.page * aggListSize -  25,
                             size:aggListSize,
                             sort: [
-                                criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
+                                criteria.crowdAggOptionsSort[index]?.id == "count" ? countSort : alphaSort
                             ]
                         }
                     }
@@ -467,7 +352,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                             from:criteria.page * aggListSize -  25,
                             size:aggListSize,
                             sort: [
-                                criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
+                                criteria.crowdAggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]
                         }
                     }
@@ -475,29 +360,31 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
             })
 
     })
-
-aggKeys.map(aggKey=>{
-    aggs[`fm_${aggKey}`] = {
-        filter:{
-            bool:{
-               must:[
-                  {
-                     bool:{
-                        must:[]
-                     }
-                  }
-               ]
-            }
-         },
-        aggs: innerAggs
-    }
-
-})
-    json.aggs = innerAggs;  
+    
+    crowdAggKeys.map(aggKey=>{
+        aggs[`fm_${aggKey}`] = {
+            filter:{
+                bool:{
+                   must:[
+                      {
+                         bool:{
+                            must:[]
+                         }
+                      }
+                   ]
+                }
+             },
+            aggs: innerAggs
+        }
+    
+    })
+    // console.log("Inner Aggs B4", json.aggs)
+    json.aggs ? json.aggs = {...json.aggs, ...innerAggs}:json.aggs = innerAggs;
+    // console.log("Inner Aggs AFTER", json.aggs)
     return json     
 }
 
-function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
+function injectOpenAggBuckets(criteria,json,usePrefix, aggBucketsWanted) {
     let aggs = {};
     const aggListSize = 25;
     const aggKeys = criteria.agg;
@@ -516,7 +403,8 @@ function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 order: sortOrder
             }
         }
-        let includedValues = bucketsWanted[index].values.join('|');
+        console.log("Buckets Wanted", aggBucketsWanted)
+        let includedValues = aggBucketsWanted[index].values.join('|');
         let filterBuckets = criteria.aggOptionsFilter || "";
         let elasticFilterValues = "";
         if (filterBuckets !== "") {
@@ -530,7 +418,7 @@ function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 elasticFilterValues = (elasticFilterValues + `[${char.toUpperCase()}${char.toLowerCase()}]`)
             });
         }
-        bucketsWanted[index].values.length !== 0 ?
+        aggBucketsWanted[index].values.length !== 0 ?
             (innerAggs[aggKey] = {
                 terms: {
                     field: aggKey,
@@ -587,7 +475,8 @@ aggKeys.map(aggKey=>{
     }
 
 })
-    
+    // console.log("Inner Aggs B4", json.aggs)
     json.aggs = innerAggs;
+    // console.log("Inner Aggs AFTER", json.aggs)
     return json;       
 }

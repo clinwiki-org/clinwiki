@@ -39,6 +39,7 @@ import {
   reject,
   view,
   remove,
+  uniq
 } from 'ramda';
 import { AggFilterInput } from 'types/globalTypes';
 import {
@@ -116,6 +117,18 @@ const IslandAggChild = (props: Props) => {
 
   const presentSiteView = site?.siteView;
 
+  const aggIslandsCurrent = useRef({
+    currentAggIsalnds: [] as any[],
+
+  })
+  for (const [key, value] of Object.entries(islandConfig)) {
+    //@ts-ignore
+    if(value.defaultToOpen){
+      aggIslandsCurrent.current.currentAggIsalnds = [...aggIslandsCurrent.current.currentAggIsalnds, key];  
+    }
+  }
+  let uniqueAggIds = uniq(aggIslandsCurrent.current.currentAggIsalnds); 
+
 
 
   const updateSearchParams = (value) => {
@@ -178,7 +191,6 @@ const IslandAggChild = (props: Props) => {
     searchParams[grouping]
   );
   //helper functions\
-  console.log('CURRENT AGG', currentAgg)
   const getFullPagesCount = buckets => Math.floor(length(buckets) / PAGE_SIZE);
   const handleSort = (desc: boolean, sortKind: SortKind) => {
     switch (sortKind) {
@@ -329,28 +341,59 @@ const IslandAggChild = (props: Props) => {
   }
 
   const handleLoadMore = () => {
+    let aggArray: any[] = [];
+    let aggIdArray: any[] = [];
+    let aggBucketsWanted: any[] = [];
+    let aggSortArray: any[] = [];
+    let crowdAggArray: any[] = [];
+    let crowdAggIdArray: any[] = [];
+    let crowdBucketsWanted: any[] = [];
+    let crowdAggSortArray: any[] = [];
+    let newIds = [...uniqueAggIds, aggId]
+    newIds.map((agg) => {
+      if (islandConfig[agg]?.defaultToOpen == true) {
+        let sort = {
+          id: islandConfig[agg].order.sortKind,
+          desc: islandConfig[agg].order.desc
+        };
+        islandConfig[agg].aggKind == 'crowdAggs' && crowdAggArray.push(islandConfig[agg].name);
+        islandConfig[agg].aggKind == 'crowdAggs' && crowdAggIdArray.push({ id: agg,  name :islandConfig[agg].name });
+        islandConfig[agg].aggKind == 'crowdAggs' && crowdBucketsWanted.push(islandConfig[agg].visibleOptions);
+        islandConfig[agg].aggKind == 'crowdAggs' && crowdAggSortArray.push(sort);
+        islandConfig[agg].aggKind == 'aggs' && aggArray.push(islandConfig[agg].name);
+        islandConfig[agg].aggKind == 'aggs' && aggIdArray.push({ id: agg, name:islandConfig[agg].name });
+        islandConfig[agg].aggKind == 'aggs' && aggBucketsWanted.push(islandConfig[agg].visibleOptions);
+        islandConfig[agg].aggKind == 'aggs' && aggSortArray.push(sort);
+      }
+    });
+    
     let aggSort = handleSort(desc, sortKind);
-
+    let requestedAggs = currentAgg.aggKind =="crowdAggs" ? [...aggArray] : [...aggArray, currentAgg.name];
+    let requestedCrowdAggs =  currentAgg.aggKind =="crowdAggs" ? [...crowdAggArray, currentAgg.name]:[...crowdAggArray];
+    console.log("IN HLM", currentAgg.name)
     const variables = {
       ...searchParams,
       url: paramsUrl.sv,
       configType: 'presearch',
       returnAll: false,
-      agg: [currentAgg.name],
+      agg: uniq(requestedAggs) ,
+      crowdAgg: uniq(requestedCrowdAggs) ,
       pageSize: PAGE_SIZE,
       page: getFullPagesCount(buckets) + 1,
-      aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId],
-      aggOptionsSort: aggSort,
+      aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId] || "" ,
+      aggOptionsSort: aggSortArray,
+      crowdAggOptionsSort: crowdAggSortArray,
       q: searchParams.q,
-      bucketsWanted: [currentAgg.visibleOptions]
-    };
+      aggBucketsWanted: aggBucketsWanted,
+      crowdBucketsWanted: crowdBucketsWanted
+        };
     let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
-    currentAgg.aggKind === "crowdAggs" ? !shouldNotDispatch  && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, [{ id: aggId, name: currentAgg.name }])) : !shouldNotDispatch && dispatch(fetchSearchPageOpenAggBuckets(variables, [{ id: aggId, name: currentAgg.name }]));
+     !shouldNotDispatch && dispatch(fetchSearchPageOpenAggBuckets(variables, aggIdArray, crowdAggIdArray));
     handleLoadMoreResponse();
   }
 
   const handleLoadMoreResponse = () => {
-    console.log('AGG BUCKETS', aggBuckets)
+    // console.log('AGG BUCKETS', aggBuckets)
     let aggName = currentAgg!.name
     let responseBuckets = currentAgg.aggKind == "crowdAggs" && aggId ?  crowdAggBuckets?.aggs[aggId!] :  aggBuckets?.aggs[aggId!];
     let currentBuckets = buckets[0] === undefined ? [] : buckets
@@ -381,18 +424,21 @@ const IslandAggChild = (props: Props) => {
       )(allBuckets) as AggBucket[];
     }
     newBuckets && setBuckets(newBuckets);
-    const hasMore = length(buckets) !== length(newBuckets);
-    // console.log(hasMore)
+    //This hasMore logic may need some work
+    const hasMore = length(newBuckets) >=25 ?  true : length(allBuckets) !== length(newBuckets)  ;
+    console.log(currentAgg.name, hasMore)
+    console.log(buckets, newBuckets, allBuckets)
     setHasMore(hasMore);
   };
 
-  useEffect(() => {
-    setSortKind(currentAgg?.order?.sortKind == "count" ? SortKind.Alpha : SortKind.Number);
-    setDesc(currentAgg?.order?.desc);
-    // handleLoadMoreResponse()
-  }, [currentAgg]);
+  // useEffect(() => {
+  //   setSortKind(currentAgg?.order?.sortKind == "count" ? SortKind.Alpha : SortKind.Number);
+  //   setDesc(currentAgg?.order?.desc);
+  //   // handleLoadMoreResponse()
+  // }, [currentAgg]);
 
   useEffect(() => {
+
     handleLoadMoreResponse()
   }, [aggBuckets, crowdAggBuckets,  aggId]);
 
@@ -517,24 +563,65 @@ const IslandAggChild = (props: Props) => {
     }
   };
 
-  const handleContainerToggle = () => {
+  const handleContainerToggle =async() => {
     if (aggId) {
-      dispatch(toggleAgg(aggId, islandConfig[aggId], searchParams))
+      dispatch(toggleAgg(aggId, islandConfig[aggId], searchParams));
+//Need to possibly handle this in the saga instead @TO-DO
+
+      // let aggArray: any[] = [];
+      // let aggIdArray: any[] = [];
+      // let aggBucketsWanted: any[] = [];
+      // let aggSortArray: any[] = [];
+      // let crowdAggArray: any[] = [];
+      // let crowdAggIdArray: any[] = [];
+      // let crowdBucketsWanted: any[] = [];
+      // let crowdAggSortArray: any[] = [];
+  
+    //  await  uniqueAggIds.map((agg) => {
+    //     if (islandConfig[agg]?.defaultToOpen == true) {
+    //         let sort = {
+    //         id: islandConfig[agg].order.sortKind,
+    //         desc: islandConfig[agg].order.desc
+    //       };
+          
+    //       islandConfig[agg].aggKind == 'crowdAggs' && crowdAggArray.push(islandConfig[agg].name);
+    //       islandConfig[agg].aggKind == 'crowdAggs' && crowdAggIdArray.push({ id: agg, name: islandConfig[agg].name });
+    //       islandConfig[agg].aggKind == 'crowdAggs' && crowdBucketsWanted.push(islandConfig[agg].visibleOptions);
+    //       islandConfig[agg].aggKind == 'crowdAggs' && crowdAggSortArray.push(sort);
+    //       islandConfig[agg].aggKind == 'aggs' && aggArray.push(islandConfig[agg].name);
+    //       islandConfig[agg].aggKind == 'aggs' && aggIdArray.push({ id: agg, name: islandConfig[agg].name });
+    //       islandConfig[agg].aggKind == 'aggs' && aggBucketsWanted.push(islandConfig[agg].visibleOptions);
+    //       islandConfig[agg].aggKind == 'aggs' && aggSortArray.push(sort);
+    //     }
+    //   });
+
+    //   let requestedAggs = currentAgg.aggKind =="crowdAggs" ? [...aggArray] : [...aggArray, currentAgg.name];
+    //   let requestedCrowdAggs =  currentAgg.aggKind =="crowdAggs" ? [...crowdAggArray, currentAgg.name]:[...crowdAggArray];
+  
+
       let aggSort = handleSort(desc, sortKind);
-      const variables = {
-        ...searchParams,
-        url: paramsUrl.sv,
-        configType: 'presearch',
-        returnAll: false,
-        agg: [currentAgg.name],
-        pageSize: PAGE_SIZE,
-        page: getFullPagesCount(buckets) + 1,
-        aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId],
-        aggOptionsSort: aggSort,
-        q: searchParams.q,
-        bucketsWanted: [currentAgg.visibleOptions]
-      };
-      currentAgg.aggKind === "crowdAggs" ? !isFetchingCrowdAggBuckets && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, [{ id: aggId, name: currentAgg.name }])) : !isFetchingAggBuckets && dispatch(fetchSearchPageOpenAggBuckets(variables, [{ id: aggId, name: currentAgg.name }]));
+
+      //Might need to manually add some things as the togle happens right before this 
+      // const variables = {
+      //   ...searchParams,
+      //   url: paramsUrl.sv,
+      //   configType: 'presearch',
+      //   returnAll: false,
+      //   agg: uniq(requestedAggs) ,
+      //   crowdAgg: uniq(requestedCrowdAggs) ,
+      //   pageSize: PAGE_SIZE,
+      //   page: getFullPagesCount(buckets) + 1,
+      //   aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId] || "" ,
+      //   aggOptionsSort: aggSortArray,
+      //   crowdAggOptionsSort: crowdAggSortArray,
+      //   q: searchParams.q,
+      //   aggBucketsWanted: aggBucketsWanted,
+      //   crowdBucketsWanted: crowdBucketsWanted
+      //     };
+
+          let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
+
+          // !shouldNotDispatch && dispatch(fetchSearchPageOpenAggBuckets(variables, aggIdArray, crowdAggIdArray));
 
     }
   }

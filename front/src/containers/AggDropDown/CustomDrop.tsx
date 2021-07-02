@@ -292,7 +292,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
   dropDown = () => {
     if (this.props.field.display == "CRUMBS_ONLY") return
-    this.props.handleLoadMore();
+    // this.props.handleLoadMore();
     this.setState((prevState) => ({
       showItems: !prevState.showItems,
       showAdditionalCrumbs: !prevState.showItems
