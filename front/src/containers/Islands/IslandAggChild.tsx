@@ -387,8 +387,10 @@ const IslandAggChild = (props: Props) => {
       aggBucketsWanted: aggBucketsWanted,
       crowdBucketsWanted: crowdBucketsWanted
         };
-    let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
-     !shouldNotDispatch && dispatch(fetchSearchPageOpenAggBuckets(variables, aggIdArray, crowdAggIdArray));
+        //@TO-DO DISPATCH ONLY IF ACTIVE AGG
+        
+    // let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
+    // !shouldNotDispatch && dispatch(fetchSearchPageOpenAggBuckets(variables, aggIdArray, crowdAggIdArray));
     handleLoadMoreResponse();
   }
 
@@ -426,8 +428,8 @@ const IslandAggChild = (props: Props) => {
     newBuckets && setBuckets(newBuckets);
     //This hasMore logic may need some work
     const hasMore = length(newBuckets) >=25 ?  true : length(allBuckets) !== length(newBuckets)  ;
-    console.log(currentAgg.name, hasMore)
-    console.log(buckets, newBuckets, allBuckets)
+    // console.log(currentAgg.name, hasMore)
+    // console.log(buckets, newBuckets, allBuckets)
     setHasMore(hasMore);
   };
 

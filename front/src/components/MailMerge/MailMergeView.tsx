@@ -189,7 +189,8 @@ const MailMergeView = (props: Props) => {
 
       };
       let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
-      !shouldNotDispatch && variables.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables, aggIdArray, crowdAggIdArray))
+      // !shouldNotDispatch && 
+      variables.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables, aggIdArray, crowdAggIdArray))
     }
 
   }, [dispatch, islandConfig, searchHash, searchParams])
