@@ -121,9 +121,9 @@ export const crowdKeyReindex = async payload => {
     let crowdMap = new Map();
     for (let i = 0; i < results.rowCount; i++) {
         const crowdKeyRow = results.rows[i];
-        console.log('CROWD ROW', crowdKeyRow)
+ 
         let ckStudy = crowdMap.get(crowdKeyRow.crowd_key_value_id_association);
-        console.log('CKSTUDY', ckStudy)
+
         if (!ckStudy) {
             ckStudy = { nct_id: crowdKeyRow.crowd_key_value_id_association };
             ckStudy.front_matter_keys = [];
@@ -138,22 +138,20 @@ export const crowdKeyReindex = async payload => {
         if (ckStudy['fm_' + crowdKeyRow.crowd_key]) {
             ckStudy['fm_' + crowdKeyRow.crowd_key].push(crowdKeyRow.crowd_value)
         } else {
-            console.log('IM ELSING IN THIS FOOL', ckStudy)
             ckStudy['fm_' + crowdKeyRow.crowd_key] = [crowdKeyRow.crowd_value];
         }
         if (ckStudy.front_matter_keys.indexOf(crowdKeyRow.crowd_key) === -1) {
             ckStudy.front_matter_keys.push(crowdKeyRow.crowd_key);
         }
         crowdMap.set(crowdKeyRow.crowd_key_value_id_association, ckStudy);
-        console.log('CROWD MAP', crowdMap)
+
     }
     
     let crowdKeys = [...crowdMap.values()];
-    console.log('Mapping values, about to bulk update', crowdKeys);
     let response = await bulkUpdate(crowdKeys);
 
     console.log('_____________________');
-    console.log(util.inspect(response, false, null, true));
+    // console.log(util.inspect(response, false, null, true));
     logger.info('Bulk update complete.');
 };
 
