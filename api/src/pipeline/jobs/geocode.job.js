@@ -227,7 +227,7 @@ const findOrCreateByName = async name => {
         name,
     ]);
     console.log("Locations here: ")
-    // console.log(util.inspect(locations.rowCount, false, null, true));
+    console.log(util.inspect(locations, false, null, true));
     if (locations.rowCount !== 0) {
         ("if locations not 0")
         return locations.rows[0];
