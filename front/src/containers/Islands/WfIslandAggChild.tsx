@@ -9,7 +9,7 @@ import {
 } from 'components/StyledComponents';
 import React, { useEffect, useRef, useState } from 'react';
 import RichTextEditor, { EditorValue } from 'react-rte';
-import { deleteCrowdKeyValueId, insertCrowdKeyValueId } from '../../services/crowdKeys/actions'
+import { deleteCrowdKeyValueId, insertCrowdKeyValueId, updateCrowdKeyValueId } from '../../services/crowdKeys/actions'
 import { deleteLabelMutation, fetchSuggestedLabels, setShowLoginModal, upsertLabelMutation } from '../../services/study/actions'
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -22,21 +22,21 @@ import ThemedButton from 'components/StyledComponents/index';
 interface Props {
   aggId?: string;
   nctId: string;
+  suggestedLabels: any;
 }
 
 function WfIslandAggChild(props: Props) {
 
-  const { aggId, nctId } = props;
+  const { aggId, nctId, suggestedLabels } = props;
   const dispatch = useDispatch();
   const emptySet = new Set();
 
   const isLoading = useSelector((state: RootState) => state.study.isFetchingSuggestedLables);
-  const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
   const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
   const user = useSelector((state: RootState) => state.user.current);
   const isUpsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel)
 
-  const [editorText, setEditorText] = useState('EDITOR Text!');
+  //console.log("suggestedLabels", suggestedLabels)
 
   let getCurrentAgg = () => {
     let jsonConfig = islandConfig
@@ -44,11 +44,35 @@ function WfIslandAggChild(props: Props) {
   }
   let currentAgg = getCurrentAgg();
 
+  const crowdKeyValueData = suggestedLabels?.data?.crowd_key_value_ids.filter(x => x.crowd_key == currentAgg.name) || [];
+
+  let crowdKeyValueTitle = null;
+
+  if (currentAgg.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
+    console.log("🚀 ~ WfIslandAggChild ~ crowdKeyValueData", crowdKeyValueData);
+    crowdKeyValueTitle = crowdKeyValueData[0].crowd_value
+    console.log("CROWD KEY Title!!!", crowdKeyValueTitle)
+  }
+
+
+
+  const [editorText, setEditorText] = useState(crowdKeyValueTitle ? crowdKeyValueTitle : "Enter title value");
+
+
+  useEffect(() => {
+    if (currentAgg.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
+      //console.log("🚀 ~ WfIslandAggChild ~ crowdKeyValueData", crowdKeyValueData);
+      // setEditorText(crowdKeyValueData[0].crowd_value)
+      setEditorText(crowdKeyValueData[0].crowd_value)
+    }
+  }, [suggestedLabels]);
 
   if (isLoading || !currentAgg) return <BeatLoader />;
   // if (error) return <Error message={error.message} />;
-  if (!suggestedLabels) return <BeatLoader />;
-  const crowdKeyValueData = suggestedLabels?.data?.crowd_key_value_ids.filter(x => x.crowd_key == currentAgg.name) || [];
+
+  // if (!suggestedLabels) return <BeatLoader />;
+  // const crowdKeyValueData = suggestedLabels?.data?.crowd_key_value_ids.filter(x => x.crowd_key == currentAgg.name) || [];
+
   //Believe this needs some work. Values being carried over
   let selectedCrowdValues = crowdKeyValueData.reduce((x, y, index) => ({ ...x, [index]: y.crowd_value }), {});
 
@@ -58,6 +82,10 @@ function WfIslandAggChild(props: Props) {
   const checkedValues = new Set(
     selectedValues
   );
+
+
+
+
 
   const handleSelect = (key, value) => {
     if (!user || isUpsertingLabel) {
@@ -95,18 +123,37 @@ function WfIslandAggChild(props: Props) {
 
   const handleEditorText = (e: any) => {
     setEditorText(e.currentTarget.value);
+    //console.log(editorText)
   };
 
   const handleEditSubmit = () => {
-    console.log("EDIT!!!!!!!!!!!")
-    let content = editorText;
+    if (!user || isUpsertingLabel) {
+      !user && dispatch(setShowLoginModal(true))
+      return console.log(!user ? "Sorry, must be logged in to do this" : "Sorry still saving value")
+    }
 
-    //   dispatch(updateCrowdKeyValueId(props.nctId, key, currentAgg.name))
+    //console.log("EDIT!!!!!!!!!!!", editorText)
 
+    //console.log("CROWD KEY Data!!!!!!!!!!!", crowdKeyValueData)
+    if (crowdKeyValueData.length === 1) {
+      let idToUpdate = crowdKeyValueData[0].id
+      let updatedContent = editorText;
+      dispatch(updateCrowdKeyValueId(idToUpdate, updatedContent, props.nctId))
+      return;
+    }
+    //dispatch(insertCrowdKeyValueId(props.nctId, editorText, currentAgg.name, user.id, false, false))
   };
 
   if (currentAgg.display === "TEXT_EDITOR") {
-    console.log("🚀 ~ WfIslandAggChild ~ currentAgg", currentAgg);
+    //console.log("🚀 ~ WfIslandAggChild ~ currentAgg", currentAgg);
+
+    let editorValue = editorText;
+
+    if (currentAgg.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
+      //console.log("🚀 ~ WfIslandAggChild ~ crowdKeyValueData", crowdKeyValueData);
+      // setEditorText(crowdKeyValueData[0].crowd_value)
+      editorValue = crowdKeyValueData[0].crowd_value
+    }
 
     let configuredLabel = currentAgg?.displayName || '';
     //const ThemedTitle = isPresearch ? PresearchTitle : ThemedFacetTitle
@@ -125,13 +172,14 @@ function WfIslandAggChild(props: Props) {
           <FormControl
             style={{ minHeight: '150px', maxWidth: "auto" }}
             componentClass="textarea"
-            defaultValue={editorText || ''}
+            defaultValue={editorValue || ''}
             onChange={handleEditorText}
+            disabled={!user}
           />
         </Panel.Body>
         <ThemedButton
           onClick={() => { handleEditSubmit(); }}
-          //disabled={editorTextState === editorTextData}
+          disabled={!user} //{editorTextState === editorTextData}
           style={{ margin: '7px' }}>
           Save <FontAwesome name="save" />
         </ThemedButton>
