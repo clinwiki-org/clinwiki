@@ -512,7 +512,7 @@ class AggKeyValuePairsDropDown extends React.Component<AggKeyValuePairsDropDownP
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchAggBuckets: (searchParams) => dispatch(fetchSearchPageAggBuckets(searchParams)),
+  // fetchAggBuckets: (searchParams) => dispatch(fetchSearchPageAggBuckets(searchParams)),
   fetchCrowdAggBuckets: (searchParams) => dispatch(fetchSearchPageCrowdAggBuckets(searchParams)),
 })
 

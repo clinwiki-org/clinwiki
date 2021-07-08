@@ -12,6 +12,8 @@ export const FETCH_SEARCH_PAGE_AGGS_SEND = 'FETCH_SEARCH_PAGE_AGGS_SEND';
 export const FETCH_SEARCH_PAGE_AGGS_SUCCESS = 'FETCH_SEARCH_PAGE_AGGS_SUCCESS';
 export const FETCH_SEARCH_PAGE_AGGS_ERROR = 'FETCH_SEARCH_PAGE_AGGS_ERROR';
 
+export const FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND_NEW =
+    'FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND_NEW';
 export const FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND =
     'FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND';
 export const FETCH_SEARCH_PAGE_AGG_BUCKETS_SUCCESS =
@@ -142,6 +144,7 @@ export interface FetchSearchPageAggsErrorAction {
 export interface FetchSearchPageAggBucketsSendAction {
     type: typeof FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND;
     searchParams: any;
+    aggId: any;
 }
 
 export interface FetchSearchPageAggBucketsSuccessAction {
@@ -171,8 +174,8 @@ export interface FetchSearchPageCrowdAggBucketsErrorAction {
 export interface FetchSearchPageOpenAggBucketsSendAction {
     type: typeof FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND;
     searchParams: any;
-    aggIdArray: any;
-    crowdAggIdArray: any;
+    // aggIdArray: any;
+    // crowdAggIdArray: any;
 }
 
 export interface FetchSearchPageOpenAggBucketsSuccessAction {

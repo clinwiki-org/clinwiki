@@ -59,7 +59,7 @@ const searchReducer = (
                 isFetchingAggBuckets: true,
             };
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SUCCESS:
-         
+         console.log(action)
             return {
                 ...state,
                 isFetchingAggBuckets: false,
@@ -67,7 +67,7 @@ const searchReducer = (
                     ...state.aggBuckets,
                     aggs: {
                         ...state.aggBuckets?.aggs,
-                        [action.payload.name]: action.payload.buckets,
+                        [action.payload.aggId]: action.payload.buckets.buckets,
                     },
                 },
             };

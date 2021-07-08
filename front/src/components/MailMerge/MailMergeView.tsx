@@ -6,11 +6,12 @@ import HtmlToReact from 'html-to-react';
 import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation, setShowLoginModal } from '../../services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
-import { fetchIslandConfig, fetchSearchPageOpenCrowdAggBuckets, fetchSearchPageOpenAggBuckets } from 'services/search/actions'
+import { fetchIslandConfig, fetchSearchPageOpenCrowdAggBuckets, fetchSearchPageOpenAggBuckets, fetchSearchPageAggBuckets } from 'services/search/actions'
 import useUrlParams from 'utils/UrlParamsProvider';
 import LoginModal from 'components/LoginModal';
 import { uniq } from 'ramda';
 import { FieldDisplay, FilterKind } from '../../services/site/model/InputTypes';
+import { forEach } from 'remeda';
 
 export type IslandConstructor = (
   attributes: Record<string, string>,
@@ -172,25 +173,68 @@ const MailMergeView = (props: Props) => {
     if (searchParams && crowdAggArray.length !== 0 ||  searchParams && aggArray.length !== 0) {
 
 
+      // const variables = {
+      //   ...searchParams.searchParams,
+      //   url: params.sv,
+      //   configType: 'presearch',
+      //   returnAll: false,
+      //   agg: aggArray,
+      //   crowdAgg: crowdAggArray,
+      //   aggOptionsSort: aggSortArray,
+      //   crowdAggOptionsSort: crowdAggSortArray,
+      //   pageSize: 100,
+      //   page: 1,
+      //   q: searchParams.searchParams.q,
+      //   aggBucketsWanted: aggBucketsWanted,
+      //   crowdBucketsWanted: crowdBucketsWanted
+
+      // };
+      crowdAggArray.forEach((agg, i)=>{
+
       const variables = {
         ...searchParams.searchParams,
         url: params.sv,
         configType: 'presearch',
         returnAll: false,
-        agg: aggArray,
-        crowdAgg: crowdAggArray,
-        aggOptionsSort: aggSortArray,
-        crowdAggOptionsSort: crowdAggSortArray,
+        agg: `fm_${agg}`,
+        // crowdAgg: crowdAggArray,
+        // aggOptionsSort: aggSortArray,
+        crowdAggOptionsSort: crowdAggSortArray[i],
         pageSize: 100,
         page: 1,
         q: searchParams.searchParams.q,
-        aggBucketsWanted: aggBucketsWanted,
-        crowdBucketsWanted: crowdBucketsWanted
-
+        aggBucketsWanted: crowdBucketsWanted[i]
+        // crowdBucketsWanted: 
+        
       };
+
       let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
       // !shouldNotDispatch && 
-      variables.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables, aggIdArray, crowdAggIdArray))
+      dispatch(fetchSearchPageAggBuckets(variables, crowdAggIdArray[i].id ))
+      });
+      aggArray.forEach((agg, i)=>{
+
+      const variables = {
+        ...searchParams.searchParams,
+        url: params.sv,
+        configType: 'presearch',
+        returnAll: false,
+        agg: agg,
+        // crowdAgg: crowdAggArray,
+        aggOptionsSort: aggSortArray[i],
+        // crowdAggOptionsSort: crowdAggSortArray[i],
+        pageSize: 100,
+        page: 1,
+        q: searchParams.searchParams.q,
+        aggBucketsWanted: aggBucketsWanted[i]
+        // crowdBucketsWanted: 
+        
+      };
+
+      let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
+      // !shouldNotDispatch && 
+      dispatch(fetchSearchPageAggBuckets(variables, aggIdArray[i].id ))
+      });
     }
 
   }, [dispatch, islandConfig, searchHash, searchParams])

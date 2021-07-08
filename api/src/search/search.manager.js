@@ -152,6 +152,42 @@ export async function openAggBuckets(args) {
         logger.error(err);
     }
 }
+export async function aggBuckets(args) {
+    console.log('ARGS AGG BUCKETS ', args)
+    try {
+        const translated = await translateOpenAggBuckets(
+            args.params,
+            args.aggBucketsWanted,
+            args.crowdBucketsWanted
+
+        );
+        console.log("TRANSLATED", translated)
+        let esResults = await elastic.query(translated);
+        console.log("TRANSLATED AGG Buckets" + util.inspect(esResults.body.aggregations, true, null, false))
+        const studies = esResults.body.hits.hits.map(study =>
+            esToGraphql(study)
+        );
+        let aggs = [];
+        let i = 0;
+        let j = 0;
+        // console.log("TRANSLATED OPEN  Buckets" + util.inspect(translated,false,null,true))
+        for (const [key, value] of Object.entries(
+            esResults.body.aggregations
+        )) {
+            const agg = aggToGraphql2(key, value[key]);
+
+            aggs.push(agg);
+            i++;
+        }
+        console.log("CHECK HERE", aggs)
+        return {
+            recordsTotal: esResults.body.hits.total,
+            aggs: aggs,
+        };
+    } catch (err) {
+        logger.error(err);
+    }
+}
 
 function esToGraphql(study) {
     let obj = keysToCamel(study._source);

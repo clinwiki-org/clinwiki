@@ -1,4 +1,4 @@
-import { call, put, takeLatest, select } from 'redux-saga/effects';
+import { call, put, takeLatest, select, takeLeading, takeEvery } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import * as types from './types';
 import * as actions from './actions';
@@ -29,16 +29,16 @@ function* getSearchPageAggs(action) {
 }
 
 function* getSearchPageAggBuckets(action) {
-    //    console.log("SAGA SP Agg Buckets", action);
+       console.log("SAGA SP Agg Buckets", action);
     try {
         let response = yield call(() =>
-            api.fetchSearchPageAggBuckets(action.searchParams)
+            api.fetchSearchPageAggBuckets(action.searchParams, action.aggId)
         );
         if (response) {
             let nameBuckets = response.data.aggBuckets.aggs.filter(
                 agg => agg.name === action.searchParams.agg
             )[0];
-            yield put(actions.fetchSearchPageAggBucketsSuccess(nameBuckets));
+            yield put(actions.fetchSearchPageAggBucketsSuccess({buckets: nameBuckets,aggId: action.aggId}));
         } else {
             yield put(actions.fetchSearchPageAggBucketsError(response.message));
         }
@@ -446,7 +446,7 @@ function* bucketFilter(action) {
 
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
-    yield takeLatest(
+    yield takeEvery(
         types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND,
         getSearchPageAggBuckets
     );

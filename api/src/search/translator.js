@@ -142,8 +142,8 @@ export const translateOpenAggBuckets = async (criteria, aggBucketsWanted, crowdB
     console.log("tOAB" , criteria);
     let boolQuery = esb.boolQuery();
     boolQuery.must(esb.simpleQueryStringQuery('*'));
-    await translateAggFilters(criteria.aggFilters,boolQuery,false);
-    await translateAggFilters(criteria.crowdAggFilters,boolQuery,true);
+    await translateAggFilters(criteria.aggFilters,boolQuery,false, criteria.agg);
+    await translateAggFilters(criteria.crowdAggFilters,boolQuery,true, criteria.agg);
 
     if(criteria.q.key === 'AND' && criteria.q.children) {
         criteria.q.children.forEach( child => {
@@ -159,25 +159,27 @@ export const translateOpenAggBuckets = async (criteria, aggBucketsWanted, crowdB
     // Create the aggs and crowd aggs
     let requestBody = esb.requestBodySearch().query( boolQuery ).from(0).size(100);
     const json = requestBody.toJSON();
-    injectOpenAggBuckets(criteria,json,true, aggBucketsWanted);
-    injectOpenCrowdAggBuckets(criteria,json,true, crowdBucketsWanted);
+    // injectOpenAggBuckets(criteria,json,true, aggBucketsWanted);
+    injectCrowdAggBuckets(criteria,json,true, crowdBucketsWanted);
 
 
     return json;
 }
 
 
-const translateAggFilters = async (aggFilters,boolQuery,isCrowdAgg) => {
-    if(aggFilters) {
-        for(let i=0;i<aggFilters.length;i++) {
+const translateAggFilters = async (aggFilters, boolQuery, isCrowdAgg, currentAgg) => {
+    if (aggFilters) {
+        for (let i = 0; i < aggFilters.length; i++) {
             let agg = aggFilters[i];
-            let tf = await translateFilterTerm(agg,isCrowdAgg);
-            await boolQuery.must(tf);
+            if (isCrowdAgg ? currentAgg !== `fm_${agg.field}` : currentAgg !== agg.field) {
+                let tf = await translateFilterTerm(agg, isCrowdAgg, currentAgg);
+                await boolQuery.must(tf);
+            }
         }
     }
 };
 
-const translateFilterTerm = async (agg,isCrowdAgg) => {
+const translateFilterTerm = async (agg,isCrowdAgg, currentAgg) => {
     if(agg.gte || agg.lte || agg.gt || agg.lt) {        
         // This is a range term
         return await translateRangeTerm(agg,isCrowdAgg);
@@ -186,7 +188,9 @@ const translateFilterTerm = async (agg,isCrowdAgg) => {
         console.log('AGG EXISTS', agg)
         return await translateGeoLoc(agg,isCrowdAgg);
     }
-    return translateValueTerms(agg,isCrowdAgg);
+    if ( isCrowdAgg ? currentAgg !== `fm_${agg.field}`: currentAgg !==  agg.field){
+        return translateValueTerms(agg,isCrowdAgg, currentAgg);
+    }
 };
 
 const translateRangeTerm = async (agg,isCrowdAgg) => {
@@ -200,15 +204,15 @@ const translateRangeTerm = async (agg,isCrowdAgg) => {
     return query;
 };
 
-const translateValueTerms = (agg,isCrowdAgg) => {
+const translateValueTerms = (agg,isCrowdAgg, currentAgg) => {
     let list = [];
-    agg.values.forEach( val => {
-        let valQuery = esb.termQuery(getFieldName(agg,isCrowdAgg),val);
+        agg.values.forEach( val => {
+            let valQuery = esb.termQuery(getFieldName(agg,isCrowdAgg),val);
         
-        list.push(valQuery); 
-    });
-    let bq = esb.boolQuery().should(list);
-    return bq;
+            list.push(valQuery); 
+        });
+        let bq = esb.boolQuery().should(list);
+        return bq;
 }
 
 const translateGeoLoc = async (agg,isCrowdAgg) => {    
@@ -231,7 +235,7 @@ const translateGeoLoc = async (agg,isCrowdAgg) => {
 }
 
 const getFieldName = (agg,isCrowdAgg) => {
-    return isCrowdAgg ? 'fm_'+agg.field : agg.field;
+    return isCrowdAgg ? `fm_${agg.field}` : agg.field;
 }
 
 
@@ -239,7 +243,7 @@ const getFieldName = (agg,isCrowdAgg) => {
 function injectCrowdAggBuckets(criteria,json,usePrefix) {
     console.log('CROWD AGGING')
     let aggs = {};
-    const aggKey = usePrefix ? 'fm_'+criteria.agg : criteria.agg;
+    const aggKey = usePrefix ? criteria.agg : criteria.agg;
 
     let innerAggs = {};
     innerAggs[aggKey] = {

@@ -397,7 +397,8 @@ const IslandAggChild = (props: Props) => {
   const handleLoadMoreResponse = () => {
     // console.log('AGG BUCKETS', aggBuckets)
     let aggName = currentAgg!.name
-    let responseBuckets = currentAgg.aggKind == "crowdAggs" && aggId ?  crowdAggBuckets?.aggs[aggId!] :  aggBuckets?.aggs[aggId!];
+    // let responseBuckets = currentAgg.aggKind == "crowdAggs" && aggId ?  crowdAggBuckets?.aggs[aggId!] :  aggBuckets?.aggs[aggId!];
+    let responseBuckets =   aggBuckets?.aggs[aggId!];
     let currentBuckets = buckets[0] === undefined ? [] : buckets
     const allBuckets = responseBuckets && responseBuckets.length !== 0 ?  currentBuckets.concat(responseBuckets) : [] ;
     let newBuckets = pipe(
@@ -442,7 +443,7 @@ const IslandAggChild = (props: Props) => {
   useEffect(() => {
 
     handleLoadMoreResponse()
-  }, [aggBuckets, crowdAggBuckets,  aggId]);
+  }, [aggBuckets,  aggId]);
 
   const toggleAlphaSort = () => {
     setDesc(!desc);
@@ -655,7 +656,7 @@ const IslandAggChild = (props: Props) => {
         isOpen={currentAgg.defaultToOpen}
         fromAggField={false}
         allowsMissing={aggValues?.includeMissingFields}
-        disabled={ isFetchingStudy || isFetchingAggBuckets || isFetchingCrowdAggBuckets }
+        disabled={ isFetchingStudy || isFetchingAggBuckets }
       />
     </>
   );
