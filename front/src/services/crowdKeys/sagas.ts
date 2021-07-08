@@ -1,8 +1,10 @@
-import { fetchSuggestedLabels } from './../study/actions';
-import { call, put, select, takeLatest } from 'redux-saga/effects';
-import * as api from './api';
 import * as actions from './actions';
+import * as api from './api';
 import * as types from './types';
+
+import { call, put, select, takeLatest } from 'redux-saga/effects';
+
+import { fetchSuggestedLabels } from './../study/actions';
 
 const getCurrentSuggestedLabels = state => state.study.suggestedLabels;
 
@@ -23,7 +25,7 @@ function* insertCrowdKeyValueId(action) {
         );
         //console.log(action)
         if (updateResponse?.data?.insert_crowd_key_value_ids) {
-            let crowdKeysArray =currentKeys.map(a => a.crowd_key);     
+            let crowdKeysArray = currentKeys.map(a => a.crowd_key);
             yield put(
                 fetchSuggestedLabels(action.crowdKeyValueId, crowdKeysArray)
             );
@@ -54,7 +56,7 @@ function* deleteCrowdKeyValueId(action) {
         );
         //console.log('response = ', updateResponse);
         if (updateResponse?.data?.delete_crowd_key_value_ids) {
-            let crowdKeysArray =currentKeys.map(a => a.crowd_key);
+            let crowdKeysArray = currentKeys.map(a => a.crowd_key);
             yield put(
                 fetchSuggestedLabels(action.crowdKeyValueId, crowdKeysArray)
             );
@@ -72,6 +74,37 @@ function* deleteCrowdKeyValueId(action) {
     }
 }
 
+function* updateCrowdKeyValueId(action) {
+    const currentLabels = yield select(getCurrentSuggestedLabels);
+    const currentKeys = currentLabels.data.crowd_keys;
+    try {
+        //console.log("updateCrowdKeyValueId called in hasiraSite/sagas", action);
+        let updateResponse = yield call(() =>
+            api.updateCrowdKeyValueId(
+                action.crowdKeyValueIdPK,
+                action.crowdValue
+            )
+        );
+        console.log('update CKVID res', updateResponse);
+        if (updateResponse?.data?.update_crowd_key_value_ids_by_pk) {
+            let crowdKeysArray = currentKeys.map(a => a.crowd_key);
+            yield put(
+                fetchSuggestedLabels(action.crowdKeyValueId, crowdKeysArray)
+            );
+            yield put(
+                actions.updateCrowdKeyValueIdSuccess(updateResponse.data)
+            );
+        } else {
+            yield put(
+                actions.updateCrowdKeyValueIdError(updateResponse.message)
+            );
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.updateCrowdKeyValueIdError(err.message));
+    }
+}
+
 export default function* hasuraSagas() {
     yield takeLatest(
         types.INSERT_CROWD_KEY_VALUE_ID_SEND,
@@ -80,5 +113,9 @@ export default function* hasuraSagas() {
     yield takeLatest(
         types.DELETE_CROWD_KEY_VALUE_ID_SEND,
         deleteCrowdKeyValueId
+    );
+    yield takeLatest(
+        types.UPDATE_CROWD_KEY_VALUE_ID_SEND,
+        updateCrowdKeyValueId
     );
 }

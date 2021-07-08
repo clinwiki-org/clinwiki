@@ -1,26 +1,28 @@
-import * as React from 'react';
-import { FieldDisplay } from '../../services/site/model/InputTypes';
-import styled from 'styled-components';
-import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import * as FontAwesome from 'react-fontawesome';
-import { BeatLoader } from 'react-spinners';
 import * as InfiniteScroll from 'react-infinite-scroller';
+import * as React from 'react';
+
+import {
+  find,
+  findIndex,
+  propEq
+} from 'ramda';
+
 import {
   AggBucket,
 } from '../SearchPage/Types';
-import {
-  propEq,
-  findIndex,
-  find
-} from 'ramda';
-import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
-import LocationAgg from './LocationAgg';
-import RangeSelector from './RangeSelector';
-import TwoLevelPieChart from './TwoLevelPieChart';
-import BarChartComponent from './BarChart'
-import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import AllowMissingDropDownItem from './AllowMissingDropDownItem';
+import BarChartComponent from './BarChart'
+import { BeatLoader } from 'react-spinners';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
+import LocationAgg from './LocationAgg';
+import RangeSelector from './RangeSelector';
+import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
+import TwoLevelPieChart from './TwoLevelPieChart';
+import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
+import styled from 'styled-components';
+import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 interface CustomDropPanelProps {
   field: SiteViewFragment_search_aggs_fields | any;
   buckets: AggBucket[];
@@ -96,14 +98,14 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
   }
   render() {
     const { disabled } = this.props;
-    
+
     /*   if(this.props.buckets.length > 0) {
       console.log(this.props.isPresearch,"CusDr Panel BUckets ", this.props.buckets)
     } */
-    
+
     const { hasMore, buckets, handleLoadMore, field, loading } = this.props
     const showAllowMissing = field.showAllowMissing;
-    console.log('BUCKETS FROM PANEL', buckets)
+    //console.log('BUCKETS FROM PANEL', buckets)
     //if (!this.props.isOpen) return
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
