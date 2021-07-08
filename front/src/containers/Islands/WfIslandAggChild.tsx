@@ -36,8 +36,6 @@ function WfIslandAggChild(props: Props) {
   const user = useSelector((state: RootState) => state.user.current);
   const isUpsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel)
 
-  //console.log("suggestedLabels", suggestedLabels)
-
   let getCurrentAgg = () => {
     let jsonConfig = islandConfig
     return aggId && jsonConfig[aggId]
@@ -45,19 +43,13 @@ function WfIslandAggChild(props: Props) {
   let currentAgg = getCurrentAgg();
 
   const crowdKeyValueData = suggestedLabels?.data?.crowd_key_value_ids.filter(x => x.crowd_key == currentAgg.name) || [];
-
   let crowdKeyValueTitle = null;
 
   if (currentAgg.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
-    console.log("🚀 ~ WfIslandAggChild ~ crowdKeyValueData", crowdKeyValueData);
     crowdKeyValueTitle = crowdKeyValueData[0].crowd_value
-    console.log("CROWD KEY Title!!!", crowdKeyValueTitle)
   }
 
-
-
   const [editorText, setEditorText] = useState(crowdKeyValueTitle ? crowdKeyValueTitle : "Enter title value");
-
 
   useEffect(() => {
     if (currentAgg.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
@@ -82,10 +74,6 @@ function WfIslandAggChild(props: Props) {
   const checkedValues = new Set(
     selectedValues
   );
-
-
-
-
 
   const handleSelect = (key, value) => {
     if (!user || isUpsertingLabel) {
@@ -113,7 +101,6 @@ function WfIslandAggChild(props: Props) {
   let currentAggBuckets = [];
   //@ts-ignore
   currentAggBucketsData.map(a => currentAggBuckets.push({ "key": a.crowd_value, "docCount": null }));
-  // console.log("🚀 ~ WfIslandAggChild ~ currentAggBuckets!!!!!!!!", currentAggBuckets);
 
   const handleContainerToggle = () => {
     if (aggId) {
@@ -131,26 +118,18 @@ function WfIslandAggChild(props: Props) {
       !user && dispatch(setShowLoginModal(true))
       return console.log(!user ? "Sorry, must be logged in to do this" : "Sorry still saving value")
     }
-
-    //console.log("EDIT!!!!!!!!!!!", editorText)
-
-    //console.log("CROWD KEY Data!!!!!!!!!!!", crowdKeyValueData)
     if (crowdKeyValueData.length === 1) {
       let idToUpdate = crowdKeyValueData[0].id
       let updatedContent = editorText;
       dispatch(updateCrowdKeyValueId(idToUpdate, updatedContent, props.nctId))
       return;
     }
-    //dispatch(insertCrowdKeyValueId(props.nctId, editorText, currentAgg.name, user.id, false, false))
+    dispatch(insertCrowdKeyValueId(props.nctId, editorText, currentAgg.name, user.id, false, false))
   };
 
   if (currentAgg.display === "TEXT_EDITOR") {
-    //console.log("🚀 ~ WfIslandAggChild ~ currentAgg", currentAgg);
-
     let editorValue = editorText;
-
     if (currentAgg.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
-      //console.log("🚀 ~ WfIslandAggChild ~ crowdKeyValueData", crowdKeyValueData);
       // setEditorText(crowdKeyValueData[0].crowd_value)
       editorValue = crowdKeyValueData[0].crowd_value
     }
@@ -158,9 +137,7 @@ function WfIslandAggChild(props: Props) {
     let configuredLabel = currentAgg?.displayName || '';
     //const ThemedTitle = isPresearch ? PresearchTitle : ThemedFacetTitle
 
-
     return (
-
       <Panel>
         <ThemedPresearchHeader>
           <PresearchTitle style={{ textAlign: "center" }} >
@@ -184,8 +161,6 @@ function WfIslandAggChild(props: Props) {
           Save <FontAwesome name="save" />
         </ThemedButton>
       </Panel>
-
-
     )
   }
 
