@@ -1,18 +1,19 @@
-import { last } from 'ramda';
 import * as types from './types';
 
-import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
-import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 import {
-    CreateSiteInput,
-    UpdateSiteInput,
-    CreateSiteViewInput,
     CopySiteViewInput,
-    UpdateSiteViewInput,
+    CreateSiteInput,
+    CreateSiteViewInput,
     DeleteSiteViewInput,
+    UpdateSiteInput,
+    UpdateSiteViewInput,
 } from 'services/site/model/InputTypes';
-import { SiteFragment as SiteProviderQuery } from 'services/site/model/SiteFragment';
+
+import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 import { PresentSiteFragment as PresentSiteProviderQuery } from 'services/site/model/PresentSiteFragment';
+import { SiteFragment as SiteProviderQuery } from 'services/site/model/SiteFragment';
+import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
+import { last } from 'ramda';
 
 export const fetchAdminUserSite = (): types.SiteActionTypes => ({
     type: types.FETCH_ADMIN_SITE_VIEW_SEND,
@@ -97,10 +98,12 @@ export const fetchPresentSiteProviderError = (
 });
 
 export const fetchHasuraPresentSiteProvider = (
+    history?: any,
     url?: string
 ): types.SiteActionTypes =>
     //console.log("ACTION Present Site Provider", url),
     ({
+        history,
         type: types.FETCH_HASURA_PRESENT_SITE_PROVIDER_SEND,
         url,
     });

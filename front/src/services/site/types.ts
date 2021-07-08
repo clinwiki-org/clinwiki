@@ -1,17 +1,18 @@
-import { SiteFragment as SiteProviderQuery } from 'services/site/model/SiteFragment';
+import {
+    CopySiteViewInput,
+    CreateSiteViewInput,
+    DeleteSiteViewInput,
+    UpdateSiteViewInput,
+} from 'services/site/model/InputTypes';
 import {
     CreateSiteInput,
     UpdateSiteInput,
 } from 'services/site/model/InputTypes';
-import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
+
 import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 import { PresentSiteFragment as PresentSiteProviderQuery } from 'services/site/model/PresentSiteFragment';
-import {
-    CreateSiteViewInput,
-    UpdateSiteViewInput,
-    DeleteSiteViewInput,
-    CopySiteViewInput,
-} from 'services/site/model/InputTypes';
+import { SiteFragment as SiteProviderQuery } from 'services/site/model/SiteFragment';
+import { SitesPageQuery } from 'services/site/model/SitesPageQuery';
 
 export const FETCH_ADMIN_SITE_VIEW_SEND = 'FETCH_ADMIN_SITE_VIEW_SEND';
 export const FETCH_ADMIN_SITE_VIEW_SUCCESS = 'FETCH_ADMIN_SITE_VIEW_SUCCESS';
@@ -154,6 +155,7 @@ export interface FetchPresentSiteProviderErrorAction {
 
 export interface FetchHasuraPresentSiteProviderSendAction {
     type: typeof FETCH_HASURA_PRESENT_SITE_PROVIDER_SEND;
+    history?: any;
     id?: number;
     url?: string;
 }
