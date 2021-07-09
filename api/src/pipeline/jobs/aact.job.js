@@ -3,6 +3,7 @@ import {queryAACT} from '../../util/db';
 import {bulkUpsert,bulkUpdate} from '../../search/elastic';
 import {JOB_TYPES,enqueueJob} from '../pipeline.queue';
 import {clinwikiJob} from './clinwiki.job';
+import moment from 'moment';
 const util = require('util')
 
 const STUDIES_TO_INDEX_QUERY = "select nct_id from studies where updated_at > localtimestamp - INTERVAL '1 day'";
@@ -46,7 +47,10 @@ export const aactStudyReindex = async (payload) => {
                 
     let studies = [];
     for(let i=0;i<results.rowCount;i++) {
-        const study = results.rows[i];
+        let study = results.rows[i];
+        let currentTime = Date.now();
+        let formattedTime = moment(currentTime).format('YYYY-MM-DD HH:mm:ssZ');
+        study.indexed_at = formattedTime
         studies.push(study);
     }
     logger.info("Sending bulk update of "+idList.length);

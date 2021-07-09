@@ -98,9 +98,6 @@ const esWikiPage = row => {
     let es = {};
     es.nct_id = row.nct_id;
     es.wiki_text = row.text;
-    let currentTime = Date.now();
-    let formattedTime = moment(currentTime).format('YYYY-MM-DD');
-    es.indexed_at = formattedTime
     console.log('DATE NOW', es)
     return es;
 };
