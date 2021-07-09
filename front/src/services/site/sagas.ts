@@ -1,7 +1,8 @@
-import { call, put, takeLatest, select } from 'redux-saga/effects';
-import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
+import * as types from './types';
+
+import { call, put, select, takeLatest } from 'redux-saga/effects';
 
 const getCurrentSites = state => state.site.sitesData.me;
 const getCurrentSiteViews = state => state.site.siteProvider.site.siteViews;
@@ -78,6 +79,12 @@ function* getHasuraPresentSiteProvider(action) {
             api.fetchHasuraPresentSiteProvider(action.id, action.url)
         );
         if (response) {
+            if (response.errors) {
+                //console.log('HasuraPresentSite ERROR', response.errors[0]);
+                localStorage.removeItem('jwt');
+                action.history.push('/sign_in');
+                window.location.reload();
+            }
             yield put(
                 actions.fetchHasuraPresentSiteProviderSuccess(response.data)
             );
@@ -88,7 +95,7 @@ function* getHasuraPresentSiteProvider(action) {
             );
         }
     } catch (err) {
-        console.log(err);
+        console.log('HasuraPresentSite response ERROR', err);
         yield put(actions.fetchHasuraPresentSiteProviderError(err.message));
     }
 }

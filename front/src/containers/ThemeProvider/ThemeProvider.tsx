@@ -1,10 +1,13 @@
 import * as React from 'react';
+
+import { fetchHasuraPresentSiteProvider, fetchPresentSiteProvider } from 'services/site/actions';
 //import PresentSiteProvider from 'containers/PresentSiteProvider';
 import { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchHasuraPresentSiteProvider, fetchPresentSiteProvider } from 'services/site/actions';
-import { RootState } from 'reducers';
+
 import { BeatLoader } from 'react-spinners';
+import { RootState } from 'reducers';
+import { useHistory } from 'react-router-dom';
 
 // This type is really long but I don't think we'll have to change it very often
 export interface Theme {
@@ -271,9 +274,11 @@ export const ProvideTheme = ({ children }) => {
     subdomain = "default"
   }
 
+  const history = useHistory();
+
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(fetchHasuraPresentSiteProvider(subdomain));
+    dispatch(fetchHasuraPresentSiteProvider(history, subdomain));
     dispatch(fetchPresentSiteProvider(undefined, urlFinal));
   }, [])
 
