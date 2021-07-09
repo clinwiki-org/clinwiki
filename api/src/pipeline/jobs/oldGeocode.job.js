@@ -3,9 +3,6 @@ import { query, queryAACT } from '../../util/db';
 import { Client } from '@googlemaps/google-maps-services-js';
 import { bulkUpdate } from '../../search/elastic';
 import logger from '../../util/logger';
-
-const zg = require('zip2geo');
-
 const util = require('util');
 
 let IS_RUNNING = false;
@@ -51,46 +48,30 @@ export const geocodeStudies = async payload => {
                         facility.zip,
                     ]
                 );
-
-                const zipToGeoLoc = await zg.zip2geo(facility.zip);
-                //!  NOTE: If facility has no Zip Code loc will return undefined. Need to handle no Zip case later.
-                console.log('🚀 ~ ZIPTOGEO LOC', zipToGeoLoc);
-
                 // logger.info('FACILITY RESULTS', results)
             }
             let facilityLocationId;
             let facilityLocation;
             if (results.rowCount === 0) {
-                /// if both queries turn up 0nada we will insert to the facility_locations table
+                /// if both queries turn up nada we will insert to the facility_locations table
                 console.log('In ZERO CONDITIONAL');
                 // New location. Create a record.
-
-                const zipToGeoLoc = await zg.zip2geo(facility.zip);
-                //!  NOTE: If facility has no Zip Code loc will return undefined. Need to handle no Zip case later.
-                console.log('🚀 ~ ZIPTOGEO LOC', zipToGeoLoc);
-
                 let insertResults = await query(
-                    'insert into facility_locations (name,city,state,zip,country,latitude,longitude) values ($1,$2,$3,$4,$5,$6,$7) RETURNING id',
+                    'insert into facility_locations (name,city,state,zip,country) values ($1,$2,$3,$4,$5) RETURNING id',
                     [
                         facility.name,
                         facility.city,
                         facility.state,
                         facility.zip,
                         facility.country,
-                        zipToGeoLoc.latitude,
-                        zipToGeoLoc.longitude,
                     ]
                 );
                 facilityLocationId = insertResults.rows[0].id;
                 // logger.info('FACILITY ID', facilityLocationId)
             } else {
                 facilityLocation = {
-                    latitude:
-                        results.rows[0].latitude || zipToGeoLoc.latitude || '',
-                    longitude:
-                        results.rows[0].longitude ||
-                        zipToGeoLoc.longitude ||
-                        '',
+                    latitude: results.rows[0].latitude || '',
+                    longitude: results.rows[0].longitude || '',
                 };
                 // logger.info('FACILITY LAT', facilityLocation)
                 console.log('IN ELSE CONDITIONAL');
@@ -99,36 +80,98 @@ export const geocodeStudies = async payload => {
                 // console.log("ID",facilityLocationId)
             }
 
-            let latitude =
-                results.rows[0].latitude || zipToGeoLoc.latitude || '';
-            let longitude =
-                results.rows[0].longitude || zipToGeoLoc.longitude || '';
-
             // Now figure out if we need to geocode this location
-            //! let location = await findOrCreateByName(facility.name);
+            let location = await findOrCreateByName(facility.name);
             // console.log("Location to follow:");
             // console.log(util.inspect(location, false, null, true));
+            if (!location.checked) {
+                console.log('Location Not checked');
+                location = geocodeLocation(location);
+                addFacilityToStudyMap(facilityMap, {
+                    nct_id: facility.nct_id,
+                    name: facility.name,
+                    city: facility.city,
+                    state: facility.state,
+                    country: facility.country,
+                    latitude: facilityLocation.latitude,
+                    longitude: facilityLocation.longitude,
+                });
+            }
 
-            console.log('NO LONGER THE ELSE');
-            //console.log('🚀 ~ ZIPTOGEO LOC', loc);
-            console.log('🚀 ~THE Facility *************', facility);
+            if (location.partial_match) {
+                console.log('Location Partial match');
+                let zipName = `${location.city} ${location.state} ${location.zip} ${location.country} `;
+                let zip = await findOrCreateByName(zipName);
+                if (!zip.checked) {
+                    console.log('No zip');
+                    zip = geocodeLocation(zip);
+                    addFacilityToStudyMap(facilityMap, {
+                        nct_id: facility.nct_id,
+                        name: facility.name,
+                        city: facility.city,
+                        state: facility.state,
+                        country: facility.country,
+                        latitude: facilityLocation.latitude || '',
+                        longitude: facilityLocation.longitude || '',
+                    });
+                }
+                if (zip.partial_match) {
+                    console.log('Zip PARTIAL', location);
+                    await query(
+                        'update facility_locations set status=$1 where id=$2',
+                        ['bad', facilityLocationId]
+                    );
+                    //Had to add this to index even on partial matches since we deleted our index
+                    //May have to be commented out after reindex is ran on staging
+                    addFacilityToStudyMap(facilityMap, {
+                        nct_id: facility.nct_id,
+                        name: facility.name,
+                        city: facility.city,
+                        state: facility.state,
+                        country: facility.country,
+                        latitude: facilityLocation.latitude || '',
+                        longitude: facilityLocation.longitude || '',
+                    });
+                } else {
+                    console.log('ELSE');
+                    await query(
+                        'update facility_locations set latitude=$1, longitude=$2, status=$3 where id=$3',
+                        [zip.latitude, zip.longitude, 'zip', facilityLocationId]
+                    );
+                    addFacilityToStudyMap(facilityMap, {
+                        nct_id: facility.nct_id,
+                        name: facility.name,
+                        city: facility.city,
+                        state: facility.state,
+                        country: facility.country,
+                        latitude: facilityLocation.latitude || '',
+                        longitude: facilityLocation.longitude || '',
+                    });
+                }
+            } else {
+                console.log('ELSE ELSE');
+                let response = await query(
+                    'update facility_locations set latitude=$1, longitude=$2, status=$3 where id=$4',
+                    [
+                        location.latitude,
+                        location.longitude,
+                        'good',
+                        facilityLocationId,
+                    ]
+                );
 
-            let response = await query(
-                'update facility_locations set latitude=$1, longitude=$2, status=$3 where id=$4',
-                [latitude, longitude, 'good', facilityLocationId]
-            );
-
-            console.log('FFFFFFs');
-            console.log(facility);
-            addFacilityToStudyMap(facilityMap, {
-                nct_id: facility.nct_id,
-                name: facility.name,
-                city: facility.city,
-                state: facility.state,
-                country: facility.country,
-                latitude: facilityLocation.latitude,
-                longitude: facilityLocation.longitude,
-            });
+                console.log('FFFFFFs');
+                console.log(facility);
+                addFacilityToStudyMap(facilityMap, {
+                    nct_id: facility.nct_id,
+                    name: facility.name,
+                    city: facility.city,
+                    state: facility.state,
+                    country: facility.country,
+                    latitude: facilityLocation.latitude,
+                    longitude: facilityLocation.longitude,
+                });
+            }
         } catch (err) {
             console.log(err);
         }
