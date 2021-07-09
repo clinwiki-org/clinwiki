@@ -353,7 +353,7 @@ const IslandAggChild = (props: Props) => {
       agg: currentAgg.aggKind =="crowdAggs" ? `fm_${currentAgg.name}`: currentAgg.name ,
       pageSize: PAGE_SIZE,
       page: getFullPagesCount(buckets) + 1,
-      aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId] || "" ,
+      aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId].bucketFilter || "" ,
       aggOptionsSort: [{id: sortKind== 1 ? "count" : "key", desc: desc}],
       q: searchParams.q,
       aggBucketsWanted: currentAgg.visibleOptions,
@@ -562,7 +562,7 @@ const IslandAggChild = (props: Props) => {
         pageSize: PAGE_SIZE,
         page: getFullPagesCount(buckets) + 1,
         aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId].bucketFilter || "" ,
-        aggOptionsSort: aggSort,
+        aggOptionsSort: [{id: sortKind== 1 ? "count" : "key", desc: desc}],
         q: searchParams.q,
         aggBucketsWanted: currentAgg.visibleOptions,
           };
