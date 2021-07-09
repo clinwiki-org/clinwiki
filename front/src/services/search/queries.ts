@@ -172,13 +172,13 @@ export const SEARCH_PAGE_AGG_BUCKETS_QUERY = `
     $url: String
     $configType: String
     $returnAll: Boolean
-    $bucketsWanted: [String!]
+    $aggBucketsWanted: VisibleOptions!
   ) {
     aggBuckets(
       url: $url
       configType: $configType
       returnAll: $returnAll
-      bucketsWanted: $bucketsWanted
+      aggBucketsWanted: $aggBucketsWanted
       params: {
         agg: $agg
         q: $q

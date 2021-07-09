@@ -420,24 +420,22 @@ function* bucketFilter(action) {
         const currentIslands = yield select(getCurrentIslands);
         
         let currentAgg = currentIslands[action.id];
-       
         const variables = {
             ...currentSearchParams.searchParams,
             url: "",
             configType: 'presearch',
             returnAll: false,
-            agg: [currentAgg.name],
+            agg: currentAgg.aggKind== "crowdAggs" ? `fm_${currentAgg.name}` : currentAgg.name,
             pageSize: 25,
             page: 1,
-            aggOptionsFilter: action.bucketsFilter,
-            aggOptionsSort: [{id: "key", desc: false}],
-            bucketsWanted: [currentAgg.visibleOptions]
+            aggOptionsFilter: action.bucketsState.bucketFilter,
+            aggOptionsSort: [{id: action.bucketsState.sortKind == 1 ? "count" : "key", desc: action.bucketsState.desc}],
+            aggBucketsWanted: currentAgg.visibleOptions
           };
 
 
         // Better error handling could be done here 
-        //@@@ BRIAN COME BACK HEREEEE  Commented out didn't seem to affect anything, possible duplicate @TO-DO
-        //   let response =currentAgg.aggKind== "crowdAggs" ? yield getSearchPageOpenCrowdAggBuckets({searchParams: variables, crowdAggIdArray: [{id:action.id, name: currentAgg.name}]}): yield getSearchPageOpenAggBuckets({searchParams: variables, aggIdArray: [{id:action.id, name: currentAgg.name}]})
+          let response =yield getSearchPageAggBuckets({searchParams: variables, aggId: action.id}) //: yield getSearchPageOpenAggBuckets({searchParams: variables, aggIdArray: [{id:action.id, name: currentAgg.name}]})
 
     } catch (err) {
         console.log(err);

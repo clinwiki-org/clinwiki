@@ -393,11 +393,16 @@ const searchReducer = (
                 isExportingToCsv: false,
             };
         case types.BUCKET_FILTER:
-            let obj = {};
-            obj[action.id] = action.bucketsFilter;
+            let obj = {...state.aggBucketFilter};
+            let tempIslandConfig = state.islandConfig  || ({} as IslandConfigQuery);
+            
+            obj[action.id] = action.bucketsState;
+            tempIslandConfig[action.id].order = {sortKind : action.bucketsState.sortKind == 0 ? "key": "count", desc: action.bucketsState.desc}
+
             return{
                 ...state,
-                aggBucketFilter: obj
+                aggBucketFilter: obj,
+                islandConfig: tempIslandConfig 
             }
         case types.TOGGLE_AGG:
             let newIslandConfig =

@@ -388,12 +388,12 @@ export const toggleExpander = (
     id,
     collapsed,
 });
-export const updateBucketsFilter = (
+export const updateBucketsState = (
     id: string,
-    bucketsFilter: string,
+    bucketsState: any,
 ): types.SearchActionTypes => (
     {
     type: types.BUCKET_FILTER,
     id,
-    bucketsFilter,
+    bucketsState,
 });

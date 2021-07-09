@@ -4,7 +4,7 @@ import useUrlParams from 'utils/UrlParamsProvider';
 import SortKind from 'containers/AggDropDown/SortKind';
 import CustomDropDown from 'containers/AggDropDown/CustomDrop';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleAgg, updateSearchParamsAction, updateBucketsFilter } from 'services/search/actions'
+import { toggleAgg, updateSearchParamsAction, updateBucketsState } from 'services/search/actions'
 import { RootState } from 'reducers';
 import { fetchSearchPageAggBuckets, fetchSearchPageCrowdAggBuckets } from 'services/search/actions';
 import { SearchQuery, SearchParams } from '../SearchPage/shared';
@@ -89,10 +89,8 @@ const IslandAggChild = (props: Props) => {
 
 
 
-  const [desc, setDesc] = useState(true);
-  const [sortKind, setSortKind] = useState(SortKind.Alpha);
   const [buckets, setBuckets] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [showLabel, setShowLabel] = useState(false);
   const [checkboxValue, setCheckboxValue] = useState(false);
@@ -190,10 +188,13 @@ const IslandAggChild = (props: Props) => {
     (x) => (x.field == currentAgg?.name),
     searchParams[grouping]
   );
+
+  const desc = currentAgg.order.desc
+  const sortKind =  currentAgg?.order?.sortKind == "count" ? SortKind.Number : SortKind.Alpha
   //helper functions\
   const getFullPagesCount = buckets => Math.floor(length(buckets) / PAGE_SIZE);
-  const handleSort = (desc: boolean, sortKind: SortKind) => {
-    switch (sortKind) {
+  const handleSort = (desc: boolean, sortKindVar: SortKind) => {
+    switch (sortKindVar) {
       case SortKind.Alpha:
         return [{ id: 'key', desc: !desc }];
       case SortKind.Number:
@@ -341,56 +342,23 @@ const IslandAggChild = (props: Props) => {
   }
 
   const handleLoadMore = () => {
-    let aggArray: any[] = [];
-    let aggIdArray: any[] = [];
-    let aggBucketsWanted: any[] = [];
-    let aggSortArray: any[] = [];
-    let crowdAggArray: any[] = [];
-    let crowdAggIdArray: any[] = [];
-    let crowdBucketsWanted: any[] = [];
-    let crowdAggSortArray: any[] = [];
-    let newIds = [...uniqueAggIds, aggId]
-    newIds.map((agg) => {
-      if (islandConfig[agg]?.defaultToOpen == true) {
-        let sort = {
-          id: islandConfig[agg].order.sortKind,
-          desc: islandConfig[agg].order.desc
-        };
-        islandConfig[agg].aggKind == 'crowdAggs' && crowdAggArray.push(islandConfig[agg].name);
-        islandConfig[agg].aggKind == 'crowdAggs' && crowdAggIdArray.push({ id: agg,  name :islandConfig[agg].name });
-        islandConfig[agg].aggKind == 'crowdAggs' && crowdBucketsWanted.push(islandConfig[agg].visibleOptions);
-        islandConfig[agg].aggKind == 'crowdAggs' && crowdAggSortArray.push(sort);
-        islandConfig[agg].aggKind == 'aggs' && aggArray.push(islandConfig[agg].name);
-        islandConfig[agg].aggKind == 'aggs' && aggIdArray.push({ id: agg, name:islandConfig[agg].name });
-        islandConfig[agg].aggKind == 'aggs' && aggBucketsWanted.push(islandConfig[agg].visibleOptions);
-        islandConfig[agg].aggKind == 'aggs' && aggSortArray.push(sort);
-      }
-    });
     
     let aggSort = handleSort(desc, sortKind);
-    let requestedAggs = currentAgg.aggKind =="crowdAggs" ? [...aggArray] : [...aggArray, currentAgg.name];
-    let requestedCrowdAggs =  currentAgg.aggKind =="crowdAggs" ? [...crowdAggArray, currentAgg.name]:[...crowdAggArray];
     console.log("IN HLM", currentAgg.name)
     const variables = {
       ...searchParams,
       url: paramsUrl.sv,
       configType: 'presearch',
       returnAll: false,
-      agg: uniq(requestedAggs) ,
-      crowdAgg: uniq(requestedCrowdAggs) ,
+      agg: currentAgg.aggKind =="crowdAggs" ? `fm_${currentAgg.name}`: currentAgg.name ,
       pageSize: PAGE_SIZE,
       page: getFullPagesCount(buckets) + 1,
       aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId] || "" ,
-      aggOptionsSort: aggSortArray,
-      crowdAggOptionsSort: crowdAggSortArray,
+      aggOptionsSort: aggSort,
       q: searchParams.q,
-      aggBucketsWanted: aggBucketsWanted,
-      crowdBucketsWanted: crowdBucketsWanted
+      aggBucketsWanted: currentAgg.visibleOptions,
         };
-        //@TO-DO DISPATCH ONLY IF ACTIVE AGG
-        
-    // let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
-    // !shouldNotDispatch && dispatch(fetchSearchPageOpenAggBuckets(variables, aggIdArray, crowdAggIdArray));
+     dispatch(fetchSearchPageAggBuckets(variables, props.aggId));
     handleLoadMoreResponse();
   }
 
@@ -403,42 +371,38 @@ const IslandAggChild = (props: Props) => {
     const allBuckets = responseBuckets && responseBuckets.length !== 0 ?  currentBuckets.concat(responseBuckets) : [] ;
     let newBuckets = pipe(
       uniqBy<AggBucket>(prop('key')),
-      sortBy<AggBucket>(prop('key'))
+      sortBy<AggBucket>(prop('key')),
+      reverse
     )(allBuckets);
 
     if (!desc && sortKind === SortKind.Alpha) {
       newBuckets = pipe(
         uniqBy<AggBucket>(prop('key')),
         sortBy(prop('key')),
-        reverse
       )(allBuckets) as AggBucket[];
     }
     if (desc && sortKind === SortKind.Number) {
-      newBuckets = pipe(
-        uniqBy(prop('key')),
-        sortBy<AggBucket>(prop('docCount'))
-      )(allBuckets) as AggBucket[];
-    }
-    if (!desc && sortKind === SortKind.Number) {
       newBuckets = pipe(
         uniqBy(prop('key')),
         sortBy<AggBucket>(prop('docCount')),
         reverse
       )(allBuckets) as AggBucket[];
     }
+    if (!desc && sortKind === SortKind.Number) {
+      newBuckets = pipe(
+        uniqBy(prop('key')),
+        sortBy<AggBucket>(prop('docCount')),
+      )(allBuckets) as AggBucket[];
+    }
     newBuckets && setBuckets(newBuckets);
     //This hasMore logic may need some work
-    const hasMore = length(newBuckets) >=25 ?  true : length(allBuckets) !== length(newBuckets)  ;
+    const hasMore = length(newBuckets) >=25 && length(allBuckets) >=25 ?  true : length(allBuckets) !== length(newBuckets)  ;
+    // OLD CHECK:   const hasMore = length(buckets) !== length(newBuckets);
     // console.log(currentAgg.name, hasMore)
     // console.log(buckets, newBuckets, allBuckets)
     setHasMore(hasMore);
   };
 
-  // useEffect(() => {
-  //   setSortKind(currentAgg?.order?.sortKind == "count" ? SortKind.Alpha : SortKind.Number);
-  //   setDesc(currentAgg?.order?.desc);
-  //   // handleLoadMoreResponse()
-  // }, [currentAgg]);
 
   useEffect(() => {
 
@@ -446,23 +410,36 @@ const IslandAggChild = (props: Props) => {
   }, [aggBuckets,  aggId]);
 
   const toggleAlphaSort = () => {
-    setDesc(!desc);
-    setSortKind(SortKind.Alpha);
+    aggId && dispatch(updateBucketsState(aggId, {
+      bucketFilter: aggBucketsFilter && aggBucketsFilter[aggId] && aggBucketsFilter[aggId].bucketFilter || "",
+      sortKind: SortKind.Alpha,
+      desc: !desc
+
+    }));
     setBuckets([]);
     setHasMore(true);
-    handleLoadMore();
   }
   const toggleNumericSort = () => {
-    setDesc(!desc);
-    setSortKind(SortKind.Number);
+    // console.log("IN TOGGLE")
+    aggId && dispatch(updateBucketsState(aggId, {
+      bucketFilter: aggBucketsFilter && aggBucketsFilter[aggId] && aggBucketsFilter[aggId].bucketFilter || "",
+      sortKind: SortKind.Number,
+      desc: !desc
+
+    }));
     setBuckets([]);
     setHasMore(true);
-    handleLoadMore();
   }
   const handleFilterChange = (value: string) => {
-    aggId && dispatch(updateBucketsFilter(aggId, value));
+    aggId && dispatch(updateBucketsState(aggId, {
+      bucketFilter: value,
+      sortKind: sortKind,
+      desc
+
+    }));
     setBuckets([]);
     setHasMore(true);
+    // handleLoadMore();
   };
 
 
@@ -571,60 +548,28 @@ const IslandAggChild = (props: Props) => {
       dispatch(toggleAgg(aggId, islandConfig[aggId], searchParams));
 //Need to possibly handle this in the saga instead @TO-DO
 
-      // let aggArray: any[] = [];
-      // let aggIdArray: any[] = [];
-      // let aggBucketsWanted: any[] = [];
-      // let aggSortArray: any[] = [];
-      // let crowdAggArray: any[] = [];
-      // let crowdAggIdArray: any[] = [];
-      // let crowdBucketsWanted: any[] = [];
-      // let crowdAggSortArray: any[] = [];
-  
-    //  await  uniqueAggIds.map((agg) => {
-    //     if (islandConfig[agg]?.defaultToOpen == true) {
-    //         let sort = {
-    //         id: islandConfig[agg].order.sortKind,
-    //         desc: islandConfig[agg].order.desc
-    //       };
-          
-    //       islandConfig[agg].aggKind == 'crowdAggs' && crowdAggArray.push(islandConfig[agg].name);
-    //       islandConfig[agg].aggKind == 'crowdAggs' && crowdAggIdArray.push({ id: agg, name: islandConfig[agg].name });
-    //       islandConfig[agg].aggKind == 'crowdAggs' && crowdBucketsWanted.push(islandConfig[agg].visibleOptions);
-    //       islandConfig[agg].aggKind == 'crowdAggs' && crowdAggSortArray.push(sort);
-    //       islandConfig[agg].aggKind == 'aggs' && aggArray.push(islandConfig[agg].name);
-    //       islandConfig[agg].aggKind == 'aggs' && aggIdArray.push({ id: agg, name: islandConfig[agg].name });
-    //       islandConfig[agg].aggKind == 'aggs' && aggBucketsWanted.push(islandConfig[agg].visibleOptions);
-    //       islandConfig[agg].aggKind == 'aggs' && aggSortArray.push(sort);
-    //     }
-    //   });
-
-    //   let requestedAggs = currentAgg.aggKind =="crowdAggs" ? [...aggArray] : [...aggArray, currentAgg.name];
-    //   let requestedCrowdAggs =  currentAgg.aggKind =="crowdAggs" ? [...crowdAggArray, currentAgg.name]:[...crowdAggArray];
-  
 
       let aggSort = handleSort(desc, sortKind);
 
       //Might need to manually add some things as the togle happens right before this 
-      // const variables = {
-      //   ...searchParams,
-      //   url: paramsUrl.sv,
-      //   configType: 'presearch',
-      //   returnAll: false,
-      //   agg: uniq(requestedAggs) ,
-      //   crowdAgg: uniq(requestedCrowdAggs) ,
-      //   pageSize: PAGE_SIZE,
-      //   page: getFullPagesCount(buckets) + 1,
-      //   aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId] || "" ,
-      //   aggOptionsSort: aggSortArray,
-      //   crowdAggOptionsSort: crowdAggSortArray,
-      //   q: searchParams.q,
-      //   aggBucketsWanted: aggBucketsWanted,
-      //   crowdBucketsWanted: crowdBucketsWanted
-      //     };
+
+      const variables = {
+        ...searchParams,
+        url: paramsUrl.sv,
+        configType: 'presearch',
+        returnAll: false,
+        agg: currentAgg.aggKind =="crowdAggs" ? `fm_${currentAgg.name}`: currentAgg.name ,
+        pageSize: PAGE_SIZE,
+        page: getFullPagesCount(buckets) + 1,
+        aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId] || "" ,
+        aggOptionsSort: aggSort,
+        q: searchParams.q,
+        aggBucketsWanted: currentAgg.visibleOptions,
+          };
 
           let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
 
-          // !shouldNotDispatch && dispatch(fetchSearchPageOpenAggBuckets(variables, aggIdArray, crowdAggIdArray));
+          !shouldNotDispatch && dispatch(fetchSearchPageAggBuckets(variables, props.aggId));
 
     }
   }
@@ -642,7 +587,7 @@ const IslandAggChild = (props: Props) => {
         onCheckBoxToggle={handleCheckboxToggle}
         handleSelectAll={() => selectAll(currentAgg!.name)}
         filter={filter}
-        desc={desc}
+        desc={!desc}
         sortKind={sortKind}
         selectAll={checkboxValue}
         checkSelect={() => setCheckboxValue(checkboxValue)}

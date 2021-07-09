@@ -122,9 +122,7 @@ export async function openAggBuckets(args) {
     try {
         const translated = await translateOpenAggBuckets(
             args.params,
-            args.aggBucketsWanted,
-            args.crowdBucketsWanted
-
+            args.aggBucketsWanted
         );
         console.log("TRANSLATED", translated)
         let esResults = await elastic.query(translated);
@@ -158,7 +156,6 @@ export async function aggBuckets(args) {
         const translated = await translateOpenAggBuckets(
             args.params,
             args.aggBucketsWanted,
-            args.crowdBucketsWanted
 
         );
         console.log("TRANSLATED", translated)

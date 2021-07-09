@@ -11,7 +11,7 @@ const searchResolver = {
     },
     aggBuckets: async (args, context) => {
         //console.log('##### AGGBUCKETS'+util.inspect(args, false, null, true));
-        const results = await SearchManager.aggBuckets(args);
+        const results = await SearchManager.openAggBuckets(args);
         return results;
     },
     crowdAggBuckets: async (args, context) => {

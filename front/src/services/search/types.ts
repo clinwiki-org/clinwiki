@@ -386,7 +386,7 @@ export interface toggleExpander {
 export interface updateBucketsFilter {
     type: typeof BUCKET_FILTER;
     id: string;
-    bucketsFilter: string;
+    bucketsState: any;
 }
 export type SearchActionTypes =
     | FetchSearchPageAggsSendAction

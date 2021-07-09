@@ -199,7 +199,7 @@ const MailMergeView = (props: Props) => {
         agg: `fm_${agg}`,
         // crowdAgg: crowdAggArray,
         // aggOptionsSort: aggSortArray,
-        crowdAggOptionsSort: crowdAggSortArray[i],
+        aggOptionsSort: crowdAggSortArray[i],
         pageSize: 100,
         page: 1,
         q: searchParams.searchParams.q,
