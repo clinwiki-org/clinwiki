@@ -223,7 +223,7 @@ const MailMergeView = (props: Props) => {
         // crowdAgg: crowdAggArray,
         aggOptionsSort: aggSortArray[i],
         // crowdAggOptionsSort: crowdAggSortArray[i],
-        pageSize: 100,
+        pageSize: 25,
         page: 1,
         q: searchParams.searchParams.q,
         aggBucketsWanted: aggBucketsWanted[i]
