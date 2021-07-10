@@ -26,7 +26,9 @@ const aactJob = async () => {
             for(let j=0;j<bulkList.length;j++) {
                 const idList = bulkList[j];
                 // Queue these up for reindexing
-                await enqueueJob(JOB_TYPES.AACT_STUDY_REINDEX,{studies: idList});                
+                await enqueueJob(JOB_TYPES.AACT_STUDY_REINDEX,{studies: idList});     
+                // Now queue up reindex of clinwiki
+                await clinwikiJob(idList);           
             }
 
             logger.info('Job AACT Finished.')
@@ -161,7 +163,9 @@ export const aactReindexAllJob = async () => {
         IS_RUNNING = false;
     }
 };
-
+//aactReindexSingleStudyJob should be only place for an update so no jobs get missed - bulk should call this iterively
+//refactor this for efficiency if bulk update of multiple is really needed
+//bulk and all call this instead
 export const aactReindexSingleStudyJob = async (nctId) => {
     try {
         if(!IS_RUNNING) {
