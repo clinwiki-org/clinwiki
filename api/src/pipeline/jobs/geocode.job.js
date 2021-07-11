@@ -30,7 +30,7 @@ export const geocodeStudies = async payload => {
 			' from ctgov.facilities f ' +
 			' left outer join public.facility_locations fl ' + 
 			' on f."name" = fl."name" and f.city = fl.city and f.state = fl.state and f.zip = fl.zip and f.country = fl.country ' + 
-			' where f.country=$1 and f.nct_id in (' + 
+			' where (f.country=$1 OR f.country !=$1) and f.nct_id in (' + 
             params.join(',') +
             ') ' +
             ' ORDER BY f.nct_id';
