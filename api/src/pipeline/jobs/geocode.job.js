@@ -54,7 +54,7 @@ export const geocodeStudies = async payload => {
                 country: facility.country,
                 //not sure lat/lon handle null, so keeping with prior code that added || ''
                 latitude: facility.latitude || '',
-                longitude: facility.longitude | '',
+                longitude: facility.longitude || '',
             });
 
         } catch (err) {
