@@ -51,7 +51,7 @@ export const aactStudyReindex = async (payload) => {
     for(let i=0;i<results.rowCount;i++) {
         let study = results.rows[i];
         let currentTime = Date.now();
-        let formattedTime = moment(currentTime).format('YYYY-MM-DD HH:mm:ssZ');
+        let formattedTime = moment(currentTime).format('YYYY-MM-DD');
         study.indexed_at = formattedTime
         studies.push(study);
     }
