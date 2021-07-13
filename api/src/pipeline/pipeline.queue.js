@@ -40,7 +40,7 @@ const createQueueTable = async () => {
 }
 
 export const serveQueue = async () => {
-    //logger.info('Serving pipeline queue');
+    // logger.info('Serving pipeline queue');
     if(!IS_RUNNING) {
         IS_RUNNING = true;
         try {

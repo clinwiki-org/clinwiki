@@ -127,9 +127,9 @@ export const crowdKeyReindex = async payload => {
         }
         // ckStudy['fm_' + crowdKeyRow.crowd_key] =  ckStudy['fm_' + crowdKeyRow.crowd_key];
         /// we need to do something similar to this.
-        console.log(crowdKeyRow)
-        console.log(ckStudy)
-        console.log('PRE PUSH', ckStudy['fm_' + crowdKeyRow.crowd_key])
+        // console.log(crowdKeyRow)
+        // console.log(ckStudy)
+        // console.log('PRE PUSH', ckStudy['fm_' + crowdKeyRow.crowd_key])
    
         // ckStudy['fm_' + crowdKeyRow.crowd_key] ? ckStudy['fm_' + crowdKeyRow.crowd_key].push(crowdKeyRow.crowd_value) : ckStudy['fm_' + crowdKeyRow.crowd_key] = [crowdKeyRow.crowd_value];
         if (ckStudy['fm_' + crowdKeyRow.crowd_key]) {
