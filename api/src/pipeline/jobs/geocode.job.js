@@ -27,13 +27,15 @@ export const geocodeStudies = async payload => {
         //don't limit by country because name, city, state, country all have to index regardless
         //order by so bulk processes nct_ids together ()
             ' select f.nct_id , f."name" , f.city , f.state , f.zip , f.country , fl.latitude , fl.longitude , fl.status ' +
-			' from ctgov.facilities f ' +
+			' from facilities f ' +
 			' left outer join public.facility_locations fl ' + 
 			' on f."name" = fl."name" and f.city = fl.city and f.state = fl.state and f.zip = fl.zip and f.country = fl.country ' + 
 			' where (f.country=$1 OR f.country !=$1) and f.nct_id in (' + 
             params.join(',') +
             ') ' +
             ' ORDER BY f.nct_id';
+
+
             // 'select * from facilities where country=$1 and nct_id in (' +
             // params.join(',') +
             // ') ';
@@ -43,8 +45,8 @@ export const geocodeStudies = async payload => {
         try {
             const facility = facilities.rows[i];
 
-            console.log(util.inspect(facility, false, null, true));
-            logger.info('jumping to format row to index', facility);
+            // console.log(util.inspect(facility, false, null, true));
+            // logger.info('jumping to format row to index', facility);
             //facility objec/row now has lat/lon
             addFacilityToStudyMap(facilityMap, {
                 nct_id: facility.nct_id,
@@ -62,25 +64,26 @@ export const geocodeStudies = async payload => {
         }
     }
 
-    console.log('MAP before spread', facilityMap);
+    // console.log('MAP before spread', facilityMap);
     // Now send the map to Elasticsearch
     const listToUpdate = [...facilityMap.values()];
-    console.log(listToUpdate);
+    // console.log("******************************************************")
+    // console.log(listToUpdate);
     await bulkUpdate(listToUpdate);
     logger.info('Finished geocoding study locations');
 };
 
 const addFacilityToStudyMap = (map, facility) => {
-    console.log('In Add facility Locations');
-    console.log('Map' + util.inspect(map, false, null, true));
-    console.log(
-        'Facility in AFTSM' + util.inspect(facility, false, null, true)
-    );
+    // console.log('In Add facility Locations');
+    // console.log('Map' + util.inspect(map, false, null, true));
+    // console.log(
+    //     'Facility in AFTSM' + util.inspect(facility, false, null, true)
+    // );
     let found = map.get(facility.nct_id);
-    console.log('FOUND');
-    console.log(found);
+    // console.log('FOUND');
+    // console.log(found);
     if (!found) {
-        console.log('IN NOT FOUND');
+        // console.log('IN NOT FOUND');
         found = {
             nct_id: facility.nct_id,
             facility_names: [],

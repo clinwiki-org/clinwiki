@@ -90,7 +90,7 @@ export const bulkUpsert = async (list) => {
 };
 
 export const bulkUpdate = async (list) => {
-    console.log("B4 Body" + util.inspect(list, false, null, true));
+    // console.log("B4 Body" + util.inspect(list, false, null, true));
     try {
         let body = '';
         list.forEach( doc => {
