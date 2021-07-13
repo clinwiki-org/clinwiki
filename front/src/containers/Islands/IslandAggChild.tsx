@@ -4,9 +4,8 @@ import useUrlParams from 'utils/UrlParamsProvider';
 import SortKind from 'containers/AggDropDown/SortKind';
 import CustomDropDown from 'containers/AggDropDown/CustomDrop';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleAgg, updateSearchParamsAction, updateBucketsState } from 'services/search/actions'
+import { toggleAgg, updateSearchParamsAction, updateBucketsState, fetchSearchPageAggBuckets} from 'services/search/actions'
 import { RootState } from 'reducers';
-import { fetchSearchPageAggBuckets, fetchSearchPageCrowdAggBuckets } from 'services/search/actions';
 import { SearchQuery, SearchParams } from '../SearchPage/shared';
 import { SortInput } from 'types/globalTypes';
 import {
@@ -89,7 +88,6 @@ const IslandAggChild = (props: Props) => {
 
 
 
-  const [buckets, setBuckets] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [showLabel, setShowLabel] = useState(false);
@@ -340,8 +338,9 @@ const IslandAggChild = (props: Props) => {
     toggleFilter(bucketKey)
 
   }
+  const buckets = aggBuckets?.aggs[aggId!] || []
+  const handleLoadMore = (e) => {
 
-  const handleLoadMore = () => {
     
     let aggSort = handleSort(desc, sortKind);
     console.log("IN HLM", currentAgg.name)
@@ -359,54 +358,49 @@ const IslandAggChild = (props: Props) => {
       aggBucketsWanted: currentAgg.visibleOptions,
         };
      dispatch(fetchSearchPageAggBuckets(variables, props.aggId));
-    handleLoadMoreResponse();
   }
 
   const handleLoadMoreResponse = () => {
-    // console.log('AGG BUCKETS', aggBuckets)
     let aggName = currentAgg!.name
     // let responseBuckets = currentAgg.aggKind == "crowdAggs" && aggId ?  crowdAggBuckets?.aggs[aggId!] :  aggBuckets?.aggs[aggId!];
-    let responseBuckets =   aggBuckets?.aggs[aggId!];
-    let currentBuckets = buckets[0] === undefined ? [] : buckets
-    const allBuckets = responseBuckets && responseBuckets.length !== 0 ?  currentBuckets.concat(responseBuckets) : [] ;
     let newBuckets = pipe(
       uniqBy<AggBucket>(prop('key')),
       sortBy<AggBucket>(prop('key')),
       reverse
-    )(allBuckets);
+    )(buckets);
 
     if (!desc && sortKind === SortKind.Alpha) {
       newBuckets = pipe(
         uniqBy<AggBucket>(prop('key')),
         sortBy(prop('key')),
-      )(allBuckets) as AggBucket[];
+      )(buckets) as AggBucket[];
     }
     if (desc && sortKind === SortKind.Number) {
       newBuckets = pipe(
         uniqBy(prop('key')),
         sortBy<AggBucket>(prop('docCount')),
         reverse
-      )(allBuckets) as AggBucket[];
+      )(buckets) as AggBucket[];
     }
     if (!desc && sortKind === SortKind.Number) {
       newBuckets = pipe(
         uniqBy(prop('key')),
         sortBy<AggBucket>(prop('docCount')),
-      )(allBuckets) as AggBucket[];
+      )(buckets) as AggBucket[];
     }
-    newBuckets && setBuckets(newBuckets);
+    // newBuckets && setBuckets(newBuckets);
+    // updateSearchPageAggs(newBuckets)
     //This hasMore logic may need some work
-    const hasMore = length(newBuckets) >=25 && length(allBuckets) >=25 ?  true : length(allBuckets) !== length(newBuckets)  ;
+    let modValue = buckets.length % PAGE_SIZE //length(newBuckets) >=25 && length(buckets) >=25 ?  true : length(buckets) !== length(newBuckets)  ;
+    const hasMore = modValue == 0
     // OLD CHECK:   const hasMore = length(buckets) !== length(newBuckets);
-    // console.log(currentAgg.name, hasMore)
-    // console.log(buckets, newBuckets, allBuckets)
     setHasMore(hasMore);
   };
 
 
   useEffect(() => {
 
-    handleLoadMoreResponse()
+    aggBuckets && handleLoadMoreResponse()
   }, [aggBuckets,  aggId]);
 
   const toggleAlphaSort = () => {
@@ -416,7 +410,7 @@ const IslandAggChild = (props: Props) => {
       desc: !desc
 
     }));
-    setBuckets([]);
+    // setBuckets([]);
     setHasMore(true);
   }
   const toggleNumericSort = () => {
@@ -427,7 +421,7 @@ const IslandAggChild = (props: Props) => {
       desc: !desc
 
     }));
-    setBuckets([]);
+    // setBuckets([]);
     setHasMore(true);
   }
   const handleFilterChange = (value: string) => {
@@ -437,7 +431,7 @@ const IslandAggChild = (props: Props) => {
       desc
 
     }));
-    setBuckets([]);
+    // setBuckets([]);
     setHasMore(true);
     // handleLoadMore();
   };

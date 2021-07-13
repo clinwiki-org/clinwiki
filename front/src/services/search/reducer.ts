@@ -67,7 +67,7 @@ const searchReducer = (
                     ...state.aggBuckets,
                     aggs: {
                         ...state.aggBuckets?.aggs,
-                        [action.payload.aggId]: action.payload.buckets.buckets,
+                        [action.payload.aggId]: action.payload.buckets,
                     },
                 },
             };

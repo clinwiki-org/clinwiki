@@ -11,6 +11,8 @@ const getCurrentSearcheParams = state =>
     state.search.searchResults.data.searchParams;
 const getCurrentIslands = state =>
     state.search.islandConfig;
+const getCurrentAggBuckets = state =>
+    state.search.aggBuckets;
 
 function* getSearchPageAggs(action) {
     try {
@@ -30,7 +32,11 @@ function* getSearchPageAggs(action) {
 
 function* getSearchPageAggBuckets(action) {
        console.log("SAGA SP Agg Buckets", action);
+       let currentBuckets = [];
+       const allBuckets = yield select(getCurrentAggBuckets); 
+
     try {
+        currentBuckets = allBuckets && allBuckets.aggs[action.aggId] ;
         let response = yield call(() =>
             api.fetchSearchPageAggBuckets(action.searchParams, action.aggId)
         );
@@ -38,7 +44,15 @@ function* getSearchPageAggBuckets(action) {
             let nameBuckets = response.data.aggBuckets.aggs.filter(
                 agg => agg.name === action.searchParams.agg
             )[0];
-            yield put(actions.fetchSearchPageAggBucketsSuccess({buckets: nameBuckets,aggId: action.aggId}));
+            if(allBuckets && currentBuckets){
+                if(action.searchParams.page == 1 ){
+                    yield put(actions.fetchSearchPageAggBucketsSuccess({buckets: nameBuckets.buckets,aggId: action.aggId}));
+                }else{
+                    yield put(actions.fetchSearchPageAggBucketsSuccess({buckets: currentBuckets.concat(nameBuckets.buckets),aggId: action.aggId}));
+                }
+            }else{
+                yield put(actions.fetchSearchPageAggBucketsSuccess({buckets: nameBuckets.buckets,aggId: action.aggId}));
+            }
         } else {
             yield put(actions.fetchSearchPageAggBucketsError(response.message));
         }
