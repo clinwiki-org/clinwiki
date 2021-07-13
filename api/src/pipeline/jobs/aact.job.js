@@ -56,11 +56,11 @@ export const aactStudyReindex = async (payload) => {
         studies.push(study);
     }
     logger.info("Sending bulk update of "+idList.length);
-    console.log(util.inspect(studies, false, null, true ))
+    // console.log(util.inspect(studies, false, null, true ))
     let response = await bulkUpsert(studies);
-    console.log("-------------------");
-    console.log("Bulk Upsert Response")
-    console.log(util.inspect(response, false, null, true));
+    // console.log("-------------------");
+    // console.log("Bulk Upsert Response")
+    // console.log(util.inspect(response, false, null, true));
     await sendBriefSummaries(idList);
     await sendConditions(idList);
     await enqueueJob(JOB_TYPES.GEOCODE_LOCATIONS,{studies: idList});
@@ -81,7 +81,7 @@ const getAllStudiesToIndex = async () => {
 const getSingleStudyToIndex = async (nctId) => {
     const rs = await queryAACT(REINDEX_STUDY_QUERY,[nctId]);
     console.log(">>>>>>>>>>>>>>>>>>");
-    console.log(util.inspect(rs, false, null,true));
+    // console.log(util.inspect(rs, false, null,true));
     return rs.rows.map( row => row.nct_id);
 };
 

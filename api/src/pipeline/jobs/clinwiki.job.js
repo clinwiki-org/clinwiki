@@ -11,9 +11,9 @@ export const clinwikiJob = async nctIdList => {
     try {
         logger.info('Starting Clinwiki Job');
         const wikiPageIds = await getWikiPagesIdsByNctId(nctIdList);
-        logger.debug('WIKI PAGE IDS', wikiPageIds);
+        // logger.debug('WIKI PAGE IDS', wikiPageIds);
         //const studyIds = ['NCT00001431'];
-        logger.debug('Number of wiki pages to index: ' + wikiPageIds.length);
+        // logger.debug('Number of wiki pages to index: ' + wikiPageIds.length);
         const bulkWikiList = chunkList(wikiPageIds, CHUNK_SIZE);
 
         for (let j = 0; j < bulkWikiList.length; j++) {
@@ -44,7 +44,7 @@ export const clinwikiJob = async nctIdList => {
 
 export const wikiPageReindex = async payload => {
     const idList = payload.list;
-    logger.info('ID LIST FOR WIKIS', idList);
+    // logger.info('ID LIST FOR WIKIS', idList);
     const results = await getBulkWikiPages(idList);
 
     let wikiPages = [];
@@ -61,7 +61,7 @@ const getWikiPagesIdsByNctId = async idList => {
     let params = idList.map((id, index) => '$' + (index + 1));
     const wikiQuery =
         'select id from wiki_pages where nct_id in (' + params.join(',') + ')';
-    logger.info('WIKI PAGES TO INDEx', idList);
+    // logger.info('WIKI PAGES TO INDEx', idList);
     const rs = await query(wikiQuery, idList);
     return rs.rows.map(row => row.id);
 };
@@ -72,7 +72,7 @@ const getCrowdKeysToIndex = async idList => {
         'select id from crowd_key_value_ids where crowd_key_value_id_association in (' +
         params.join(',') +
         ')';
-    logger.debug(wikiQuery);
+    // logger.debug(wikiQuery);
     const rs = await query(wikiQuery, idList);
     return rs.rows.map(row => row.id);
 };
@@ -98,17 +98,17 @@ const esWikiPage = row => {
     let es = {};
     es.nct_id = row.nct_id;
     es.wiki_text = row.text;
-    console.log('DATE NOW', es)
+    // console.log('DATE NOW', es)
     return es;
 };
 
 export const crowdKeyReindex = async payload => {
     const idList = payload.list;
-    console.log('IDLIST from CROWD KEY INDEX', idList);
+    // console.log('IDLIST from CROWD KEY INDEX', idList);
     const results = await getBulkCrowdKeys(idList);
                 
-    console.log("In Crwod-reindex")
-    console.log('CROWD KEY RESULTS', results)
+    // console.log("In Crwod-reindex")
+    // console.log('CROWD KEY RESULTS', results)
     //let crowdKeys = [];
     // for(let i=0;i<results.rowCount;i++) {
     //     const crowdKey = results.rows[i];
@@ -147,7 +147,7 @@ export const crowdKeyReindex = async payload => {
     let crowdKeys = [...crowdMap.values()];
     let response = await bulkUpdate(crowdKeys);
 
-    console.log('_____________________');
+    // console.log('_____________________');
     // console.log(util.inspect(response, false, null, true));
     logger.info('Bulk update complete.');
 };
