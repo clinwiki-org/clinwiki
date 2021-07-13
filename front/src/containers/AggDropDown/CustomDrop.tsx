@@ -1,37 +1,40 @@
-import * as React from 'react';
-import { FieldDisplay } from '../../services/site/model/InputTypes';
-import styled from 'styled-components';
-import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import * as FontAwesome from 'react-fontawesome';
-import { BeatLoader } from 'react-spinners';
 import * as InfiniteScroll from 'react-infinite-scroller';
-import { connect } from 'react-redux';
+import * as React from 'react';
+
 import {
+  PresearchTitle,
+  ThemedFacetAgg,
+  ThemedFacetHeader,
+  ThemedFacetTitle,
   ThemedPresearchCard,
   ThemedPresearchHeader,
-  PresearchTitle,
-  ThemedFacetHeader,
-  ThemedFacetAgg,
-  ThemedFacetTitle,
 } from 'components/StyledComponents';
-import Filter from './Filter';
-import SortKind from './SortKind';
+import {
+  find,
+  findIndex,
+  propEq
+} from 'ramda';
+
 import {
   AggBucket,
 } from '../SearchPage/Types';
-import aggToField from 'utils/aggs/aggToField';
-import { capitalize } from 'utils/helpers';
-import {
-  propEq,
-  findIndex,
-  find
-} from 'ramda';
-import withTheme from 'containers/ThemeProvider';
-import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
+import { BeatLoader } from 'react-spinners';
 import CustomDropCrumbs from './CustomDropCrumbs';
 import CustomDropPanel from './CustomDropPanel';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
+import Filter from './Filter';
+import HtmlToReact from 'html-to-react';
+import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
+import SortKind from './SortKind';
+import aggToField from 'utils/aggs/aggToField';
+import { capitalize } from 'utils/helpers';
+import { connect } from 'react-redux';
 import { settings } from 'cluster';
+import styled from 'styled-components';
+import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
+import withTheme from 'containers/ThemeProvider';
 
 interface CustomDropDownProps {
   field: SiteViewFragment_search_aggs_fields | any;
@@ -60,9 +63,9 @@ interface CustomDropDownProps {
   fromAggField: boolean;
   updater: AggFilterInputUpdater;
   disabled?: boolean;
-  allowsMissing?:boolean;
-  searchResultData:any;
-  isUpdatingParams:boolean;
+  allowsMissing?: boolean;
+  searchResultData: any;
+  isUpdatingParams: boolean;
 }
 interface CustomDropDownState {
   buckets?: AggBucket[],
@@ -316,7 +319,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
       return
     }
     if (this.props.field.display == "LESS_THAN_DROP_DOWN") {
-    this.setState({ selectedItems: [{ start: null, end: item.key }] },
+      this.setState({ selectedItems: [{ start: null, end: item.key }] },
         () => this.onChangeRange())
       return
     }
@@ -366,23 +369,23 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
       ))
       this.setState({ selectedItems: selectedKeysPlaceHolders });
     }
-    if(this.props.field.display == "GREATER_THAN_DROP_DOWN"){
-      this.setState({ selectedItems: [{start: this.props.updater.input?.gte, end : this.props.updater.input?.lte}] });
+    if (this.props.field.display == "GREATER_THAN_DROP_DOWN") {
+      this.setState({ selectedItems: [{ start: this.props.updater.input?.gte, end: this.props.updater.input?.lte }] });
     }
-    if(this.props.field.display == "LOCATION"){
-      
-      let searchParams= this.props.searchResultData?.data?.searchParams.searchParams
+    if (this.props.field.display == "LOCATION") {
+
+      let searchParams = this.props.searchResultData?.data?.searchParams.searchParams
       const aggSettings = find(
         (x) => x.field == "location",
         searchParams["aggFilters"]
       );
 
       if (!aggSettings) return;
-      this.setState({ selectedItems: [{zipcode: aggSettings.zipcode, radius : aggSettings.radius, lat : aggSettings.lat, long : aggSettings.long}] });
+      this.setState({ selectedItems: [{ zipcode: aggSettings.zipcode, radius: aggSettings.radius, lat: aggSettings.lat, long: aggSettings.long }] });
     }
   };
-  componentDidUpdate(prevProps,prevState){
-    if(this.props.selectedKeys !== prevProps.selectedKeys || this.props.selectedKeys[0] ){
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.selectedKeys !== prevProps.selectedKeys || this.props.selectedKeys[0]) {
       let selectedKeysPlaceHolders: any[] = [];
       this.props.selectedKeys.forEach(o => (
         selectedKeysPlaceHolders.push({ key: o, docCount: null })
@@ -390,21 +393,21 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
       this.setState({ selectedItems: selectedKeysPlaceHolders })
     }
-    if (prevProps.isOpen !== this.props.isOpen){
-      this.setState({showItems : this.props.isOpen})
+    if (prevProps.isOpen !== this.props.isOpen) {
+      this.setState({ showItems: this.props.isOpen })
     }
-    if(this.props.field.display == "GREATER_THAN_DROP_DOWN"  && prevState.selectedItems == this.state.selectedItems){
-      this.setState({ selectedItems: [{start: this.props.updater.input?.gte, end : this.props.updater.input?.lte}] })
+    if (this.props.field.display == "GREATER_THAN_DROP_DOWN" && prevState.selectedItems == this.state.selectedItems) {
+      this.setState({ selectedItems: [{ start: this.props.updater.input?.gte, end: this.props.updater.input?.lte }] })
     }
-    if(this.props.field.display == "LOCATION"  && prevState.selectedItems == this.state.selectedItems){ 
-      let searchParams= this.props.searchResultData?.data?.searchParams.searchParams
+    if (this.props.field.display == "LOCATION" && prevState.selectedItems == this.state.selectedItems) {
+      let searchParams = this.props.searchResultData?.data?.searchParams.searchParams
       const aggSettings = find(
         (x) => x.field == "location",
         searchParams["aggFilters"]
       );
 
       if (!aggSettings) return;
-      this.setState({ selectedItems: [{zipcode: aggSettings.zipcode, radius : aggSettings.radius, lat : aggSettings.lat, long : aggSettings.long}] });
+      this.setState({ selectedItems: [{ zipcode: aggSettings.zipcode, radius: aggSettings.radius, lat: aggSettings.lat, long: aggSettings.long }] });
     }
   }
 
@@ -413,7 +416,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     this.setState({ selectedItems: rangeArray })
   }
   handleLocation = (location) => {
-    this.setState({ selectedItems: [{zipcode: location[0], radius : location[3], lat : location[1], long : location[2]}] })
+    this.setState({ selectedItems: [{ zipcode: location[0], radius: location[3], lat: location[1], long: location[2] }] })
   }
   renderFilter = () => {
     if (this.props.fromAggField || this.props.field.showFilterToolbar == true || this.props.field.showFilterToolbar == null) {
@@ -439,8 +442,8 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     return
   }
 
-  
-    isSelected = (key: string): boolean =>
+
+  isSelected = (key: string): boolean =>
     this.props.selectedKeys && this.props.selectedKeys.has(key);
   render() {
     const ThemedContainer = this.props.isPresearch ? ThemedPresearchCard : ThemedFacetAgg
@@ -450,6 +453,12 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     let configuredLabel = this.props.field?.displayName || '';
     const title = aggToField(this.props.field.name, configuredLabel);
     const showAllowMissing = this.props.field.showAllowMissing;
+
+    const parser = new HtmlToReact.Parser();
+    const reactElementTitle = parser.parse(configuredLabel)
+
+    // Using the aggtoField function {capitalize(title)}
+
 
     if (this.props.buckets == undefined && this.props.isOpen) {
       return <BeatLoader />
@@ -464,16 +473,16 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
               {/* {this.props.aggKind === 'crowdAggs'
                        ? configuredLabel
                        : title}         */}
-              {capitalize(title)}
-              {this.props.field.display == "CRUMBS_ONLY" ? (null) : (<FontAwesome name={icon} style={{ display: 'flex', marginLeft: 'auto' }} />)}            
+              {reactElementTitle}
+              {this.props.field.display == "CRUMBS_ONLY" ? (null) : (<FontAwesome name={icon} style={{ display: 'flex', marginLeft: 'auto' }} />)}
             </ThemedTitle>
             {this.props.isPresearch ? (
               <div className='select-box--crumbs'>
-                 <CustomDropCrumbs 
-                 field = { this.props.field } 
-                 selectedItems = {this.state.selectedItems}
-                 isSelected={this.isSelected}
-                 selectItem={this.selectItem} />
+                <CustomDropCrumbs
+                  field={this.props.field}
+                  selectedItems={this.state.selectedItems}
+                  isSelected={this.isSelected}
+                  selectItem={this.selectItem} />
                 {showAllowMissing && this.props.allowsMissing && (
                   <div className='select-box--crumb-container'>
                     {'Allow Missing'}
@@ -497,24 +506,24 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
           <div
             style={{ display: this.state.showItems ? "block" : "none" }}
 
-            className={`${this.props.isPresearch ? "select-box--buckets-presearch" : "select-box--buckets-facet" } ${this.props.disabled ? "disabled-cursor" : ""}`}
+            className={`${this.props.isPresearch ? "select-box--buckets-presearch" : "select-box--buckets-facet"} ${this.props.disabled ? "disabled-cursor" : ""}`}
           >
-            <CustomDropPanel 
-            buckets={this.props.buckets} 
-            field={this.props.field}
-            handleLoadMore={this.props.handleLoadMore}
-            hasMore={this.props.hasMore}
-            isOpen={this.props.isOpen}
-            handleRange={this.handleRange}
-            loading={this.state.loading}
-            selectItem={this.selectItem}
-            isSelected={this.isSelected}
-            handleLocation={this.handleLocation}
-            onCheckBoxToggle={this.props.onCheckBoxToggle}
-            selectedItem={this.state.selectedItem}
-            isPresearch={this.props.isPresearch}
-            disabled={this.props.disabled}
-            allowsMissing={this.props.allowsMissing}
+            <CustomDropPanel
+              buckets={this.props.buckets}
+              field={this.props.field}
+              handleLoadMore={this.props.handleLoadMore}
+              hasMore={this.props.hasMore}
+              isOpen={this.props.isOpen}
+              handleRange={this.handleRange}
+              loading={this.state.loading}
+              selectItem={this.selectItem}
+              isSelected={this.isSelected}
+              handleLocation={this.handleLocation}
+              onCheckBoxToggle={this.props.onCheckBoxToggle}
+              selectedItem={this.state.selectedItem}
+              isPresearch={this.props.isPresearch}
+              disabled={this.props.disabled}
+              allowsMissing={this.props.allowsMissing}
 
             />
           </div>
@@ -527,6 +536,6 @@ const mapStateToProps = (state, ownProps) => ({
   // user: state.user,
   isUpdatingParams: state.search.isUpdatingParams,
   searchResultData: state.search.searchResults,
-  isFetchingAutoSuggest:  state.search.isFetchingAutoSuggest
+  isFetchingAutoSuggest: state.search.isFetchingAutoSuggest
 })
 export default connect(mapStateToProps, null)(withAggContext(CustomDropDown));

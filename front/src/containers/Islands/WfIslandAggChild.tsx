@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { BeatLoader } from 'react-spinners';
 import CustomDropDown from 'containers/AggDropDown/CustomDrop';
+import HtmlToReact from 'html-to-react';
 import { RootState } from 'reducers';
 import SortKind from 'containers/AggDropDown/SortKind';
 import ThemedButton from 'components/StyledComponents/index';
@@ -127,6 +128,9 @@ function WfIslandAggChild(props: Props) {
     dispatch(insertCrowdKeyValueId(props.nctId, editorText, currentAgg.name, user.id, false, false))
   };
 
+
+  const parser = new HtmlToReact.Parser();
+
   if (currentAgg.display === "TEXT_EDITOR") {
     let editorValue = editorText;
     if (currentAgg.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
@@ -137,12 +141,17 @@ function WfIslandAggChild(props: Props) {
     let configuredLabel = currentAgg?.displayName || '';
     //const ThemedTitle = isPresearch ? PresearchTitle : ThemedFacetTitle
 
+    const reactElement = parser.parse(configuredLabel)
+
+    //OLD { configuredLabel.toUpperCase() }
+
     return (
       <Panel>
         <ThemedPresearchHeader>
           <PresearchTitle style={{ textAlign: "center" }} >
+            {reactElement}
 
-            {configuredLabel.toUpperCase()}
+
           </PresearchTitle>
         </ThemedPresearchHeader>
         <Panel.Body>
