@@ -11,148 +11,79 @@ const util = require('util');
 let IS_RUNNING = false;
 
 export const geocodeStudies = async payload => {
-    logger.info('Geocoding study locations');
+    //added queries to updae geo2zip in postgres
+    //convert this to just indexing, not geocoding, until improved algorithm for address lookup and cleanup implemented
+    logger.info('indexing study locations');
     const idList = payload.studies;
     logger.info('Geocoding ' + idList.length + ' studies');
     let facilityMap = new Map();
-    const paramList = ['United States'];
+    const paramList = ['United States']; //not using but leaving since don't know how to fix
     let params = idList.map((id, index) => {
         paramList.push(id);
         return '$' + (index + 2);
     });
     const facilityQuery =
-        'select * from facilities where country=$1 and nct_id in (' +
-        params.join(',') +
-        ') ';
+        //query joins facility to get nct_id with facility_loctions to get lat/lon
+        //don't limit by country because name, city, state, country all have to index regardless
+        //order by so bulk processes nct_ids together ()
+            ' select f.nct_id , f."name" , f.city , f.state , f.zip , f.country , fl.latitude , fl.longitude , fl.status ' +
+			' from facilities f ' +
+			' left outer join public.facility_locations fl ' + 
+			' on f."name" = fl."name" and f.city = fl.city and f.state = fl.state and f.zip = fl.zip and f.country = fl.country ' + 
+			' where (f.country=$1 OR f.country !=$1) and f.nct_id in (' + 
+            params.join(',') +
+            ') ' +
+            ' ORDER BY f.nct_id';
+
+
+            // 'select * from facilities where country=$1 and nct_id in (' +
+            // params.join(',') +
+            // ') ';
     const facilities = await queryAACT(facilityQuery, paramList);
     logger.info('Geocoding study location facilities ' + facilities.rowCount);
     for (let i = 0; i < facilities.rowCount; i++) {
         try {
-            console.log('----------FACILITY---------');
             const facility = facilities.rows[i];
-            console.log(util.inspect(facility, false, null, true));
-            logger.info('FACILITY FROM GEOCODE', facility);
-            //// ADDED THIS QUERY TO GET LOCATIONS FROM FACILITY LOCATIONS
-            let results = await query(
-                'select id, latitude, longitude from facility_locations where name=$1 and city=$2 and state=$3 and country=$4 and latitude IS NOT NULL',
-                [facility.name, facility.city, facility.state, facility.country]
-            );
-            logger.info('RESULTS SITUATION', results);
 
-            /// IF WE DON"T GET LOCATIONS WE RUN A DIFF QUERY (there must be a better way to do this)
-            if (results.rowCount === 0) {
-                results = await query(
-                    'select id from facility_locations where name=$1 and city=$2 and state=$3 and country=$4 and zip=$5',
-                    [
-                        facility.name,
-                        facility.city,
-                        facility.state,
-                        facility.country,
-                        facility.zip,
-                    ]
-                );
-
-                const zipToGeoLoc = await zg.zip2geo(facility.zip);
-                //!  NOTE: If facility has no Zip Code loc will return undefined. Need to handle no Zip case later.
-                console.log('🚀 ~ ZIPTOGEO LOC', zipToGeoLoc);
-
-                // logger.info('FACILITY RESULTS', results)
-            }
-            let facilityLocationId;
-            let facilityLocation;
-            if (results.rowCount === 0) {
-                /// if both queries turn up 0nada we will insert to the facility_locations table
-                console.log('In ZERO CONDITIONAL');
-                // New location. Create a record.
-
-                const zipToGeoLoc = await zg.zip2geo(facility.zip);
-                //!  NOTE: If facility has no Zip Code loc will return undefined. Need to handle no Zip case later.
-                console.log('🚀 ~ ZIPTOGEO LOC', zipToGeoLoc);
-
-                let insertResults = await query(
-                    'insert into facility_locations (name,city,state,zip,country,latitude,longitude) values ($1,$2,$3,$4,$5,$6,$7) RETURNING id',
-                    [
-                        facility.name,
-                        facility.city,
-                        facility.state,
-                        facility.zip,
-                        facility.country,
-                        zipToGeoLoc.latitude,
-                        zipToGeoLoc.longitude,
-                    ]
-                );
-                facilityLocationId = insertResults.rows[0].id;
-                // logger.info('FACILITY ID', facilityLocationId)
-            } else {
-                facilityLocation = {
-                    latitude:
-                        results.rows[0].latitude || zipToGeoLoc.latitude || '',
-                    longitude:
-                        results.rows[0].longitude ||
-                        zipToGeoLoc.longitude ||
-                        '',
-                };
-                // logger.info('FACILITY LAT', facilityLocation)
-                console.log('IN ELSE CONDITIONAL');
-                facilityLocationId = results.rows[0].id;
-                logger.info('FACILITY ID', facilityLocationId);
-                // console.log("ID",facilityLocationId)
-            }
-
-            let latitude =
-                results.rows[0].latitude || zipToGeoLoc.latitude || '';
-            let longitude =
-                results.rows[0].longitude || zipToGeoLoc.longitude || '';
-
-            // Now figure out if we need to geocode this location
-            //! let location = await findOrCreateByName(facility.name);
-            // console.log("Location to follow:");
-            // console.log(util.inspect(location, false, null, true));
-
-            console.log('NO LONGER THE ELSE');
-            //console.log('🚀 ~ ZIPTOGEO LOC', loc);
-            console.log('🚀 ~THE Facility *************', facility);
-
-            let response = await query(
-                'update facility_locations set latitude=$1, longitude=$2, status=$3 where id=$4',
-                [latitude, longitude, 'good', facilityLocationId]
-            );
-
-            console.log('FFFFFFs');
-            console.log(facility);
+            // console.log(util.inspect(facility, false, null, true));
+            // logger.info('jumping to format row to index', facility);
+            //facility objec/row now has lat/lon
             addFacilityToStudyMap(facilityMap, {
                 nct_id: facility.nct_id,
                 name: facility.name,
                 city: facility.city,
                 state: facility.state,
                 country: facility.country,
-                latitude: facilityLocation.latitude,
-                longitude: facilityLocation.longitude,
+                //not sure lat/lon handle null, so keeping with prior code that added || ''
+                latitude: facility.latitude || '',
+                longitude: facility.longitude || '',
             });
+
         } catch (err) {
             console.log(err);
         }
     }
 
-    console.log('MAP before spread', facilityMap);
+    // console.log('MAP before spread', facilityMap);
     // Now send the map to Elasticsearch
     const listToUpdate = [...facilityMap.values()];
-    console.log(listToUpdate);
+    // console.log("******************************************************")
+    // console.log(listToUpdate);
     await bulkUpdate(listToUpdate);
     logger.info('Finished geocoding study locations');
 };
 
 const addFacilityToStudyMap = (map, facility) => {
-    console.log('In Add facility Locations');
-    console.log('Map' + util.inspect(map, false, null, true));
-    console.log(
-        'Facility in AFTSM' + util.inspect(facility, false, null, true)
-    );
+    // console.log('In Add facility Locations');
+    // console.log('Map' + util.inspect(map, false, null, true));
+    // console.log(
+    //     'Facility in AFTSM' + util.inspect(facility, false, null, true)
+    // );
     let found = map.get(facility.nct_id);
-    console.log('FOUND');
-    console.log(found);
+    // console.log('FOUND');
+    // console.log(found);
     if (!found) {
-        console.log('IN NOT FOUND');
+        // console.log('IN NOT FOUND');
         found = {
             nct_id: facility.nct_id,
             facility_names: [],
@@ -180,67 +111,6 @@ const addFacilityToStudyMap = (map, facility) => {
     // console.log("Post MAP" + util.inspect(map, false, null, true));
 };
 
-const findOrCreateByName = async name => {
-    console.log('IN FIND OR CREATE');
-    let locations = await query('select * from locations where name=$1', [
-        name,
-    ]);
-    console.log('Locations here: ');
-    // console.log(util.inspect(locations.rowCount, false, null, true));
-    if (locations.rowCount !== 0) {
-        ('if locations not 0');
-        return locations.rows[0];
-    }
-    console.log('Some other place');
 
-    const location = await query(
-        'insert into locations (name) values ($1) RETURNING *',
-        [name]
-    );
-    // console.log(util.inspect(location, false,null, true));
-    return location.rows[0];
-};
 
-const geocodeLocation = async location => {
-    console.log('GEO LOCATING', location);
-    let result;
-    if (process.env.GOOGLE_MAPS_API_KEY) {
-        try {
-            const client = new Client({});
-            let response = await client.geocode({
-                params: {
-                    address: location.name,
-                    key: process.env.GOOGLE_MAPS_API_KEY,
-                },
-            });
-            if (response.data.results.length > 0) {
-                result = response.data.results[0];
-            }
-        } catch (err) {
-            logger.error(err);
-        }
-    }
 
-    if (result) {
-        await query(
-            'update locations set latitude=$1,longitude=$2,partial_match=$3,location_type=$4,checked=$5 where id=$6',
-            [
-                result.geometry.location.lat,
-                result.geometry.location.lng,
-                result.partial_match,
-                result.types,
-                new Date(),
-                location.id,
-            ]
-        );
-    } else {
-        await query(
-            'update locations set partial_match=$1,location_type=$2,checked=$3 where id=$4',
-            [true, ['note found'], new Date(), location.id]
-        );
-    }
-    const updatedLoc = await query('select * from locations where id=$1', [
-        location.id,
-    ]);
-    return updatedLoc.rows[0];
-};

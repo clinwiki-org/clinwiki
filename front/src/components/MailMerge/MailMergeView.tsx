@@ -6,11 +6,12 @@ import HtmlToReact from 'html-to-react';
 import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation, setShowLoginModal } from '../../services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
-import { fetchIslandConfig, fetchSearchPageOpenCrowdAggBuckets, fetchSearchPageOpenAggBuckets } from 'services/search/actions'
+import { fetchIslandConfig, fetchSearchPageOpenCrowdAggBuckets, fetchSearchPageOpenAggBuckets, fetchSearchPageAggBuckets } from 'services/search/actions'
 import useUrlParams from 'utils/UrlParamsProvider';
 import LoginModal from 'components/LoginModal';
 import { uniq } from 'ramda';
 import { FieldDisplay, FilterKind } from '../../services/site/model/InputTypes';
+import { forEach } from 'remeda';
 
 export type IslandConstructor = (
   attributes: Record<string, string>,
@@ -77,8 +78,11 @@ const MailMergeView = (props: Props) => {
   const dispatch = useDispatch();
   const showLoginModal = useSelector((state: RootState) => state.study.showLoginModal);
   const data = useSelector((state: RootState) => state.search.searchResults);
-
-
+  const isFetchingAggBuckets = useSelector((state: RootState) => state.search.isFetchingAggBuckets);
+  const isFetchingCrowdAggBuckets = useSelector((state: RootState) => state.search.isFetchingCrowdAggBuckets);
+  const isFetchingStudy = useSelector((state: RootState) => state.study.isFetchingStudy);
+  const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams);
+  const searchHash = useSelector((state: RootState ) => state.search.searchHash );
   const searchParams = data?.data?.searchParams;
   const params = useUrlParams();
 
@@ -136,6 +140,7 @@ const MailMergeView = (props: Props) => {
   }, [dispatch]);
 
   useEffect(() => {
+    // Duplicate code// Refactor // IslandsAggChild is other file
     let uniqueAggIds = uniq(aggIslandsCurrent.current.currentAggIsalnds); 
     let aggArray: any[] = [];
     let aggIdArray: any[] = [];
@@ -154,52 +159,85 @@ const MailMergeView = (props: Props) => {
         };
 
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggArray.push(islandConfig[agg.id].name);
-        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggIdArray.push({ id: agg.id, name: islandConfig[agg.id].name });
+        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggIdArray.push({ id: agg.id,  name :islandConfig[agg.id].name  });
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdBucketsWanted.push(islandConfig[agg.id].visibleOptions);
         islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggSortArray.push(sort);
         islandConfig[agg.id].aggKind == 'aggs' && aggArray.push(islandConfig[agg.id].name);
-        islandConfig[agg.id].aggKind == 'aggs' && aggIdArray.push({ id: agg.id, name: islandConfig[agg.id].name });
+        islandConfig[agg.id].aggKind == 'aggs' && aggIdArray.push({ id: agg.id, name :islandConfig[agg.id].name });
         islandConfig[agg.id].aggKind == 'aggs' && aggBucketsWanted.push(islandConfig[agg.id].visibleOptions);
         islandConfig[agg.id].aggKind == 'aggs' && aggSortArray.push(sort);
       }
     });
 
 
-    if (searchParams && crowdAggArray.length !== 0) {
+    if (searchParams && crowdAggArray.length !== 0 ||  searchParams && aggArray.length !== 0) {
 
+
+      // const variables = {
+      //   ...searchParams.searchParams,
+      //   url: params.sv,
+      //   configType: 'presearch',
+      //   returnAll: false,
+      //   agg: aggArray,
+      //   crowdAgg: crowdAggArray,
+      //   aggOptionsSort: aggSortArray,
+      //   crowdAggOptionsSort: crowdAggSortArray,
+      //   pageSize: 100,
+      //   page: 1,
+      //   q: searchParams.searchParams.q,
+      //   aggBucketsWanted: aggBucketsWanted,
+      //   crowdBucketsWanted: crowdBucketsWanted
+
+      // };
+      crowdAggArray.forEach((agg, i)=>{
 
       const variables = {
         ...searchParams.searchParams,
         url: params.sv,
         configType: 'presearch',
         returnAll: false,
-        agg: crowdAggArray,
-        aggOptionsSort: crowdAggSortArray,
+        agg: `fm_${agg}`,
+        // crowdAgg: crowdAggArray,
+        // aggOptionsSort: aggSortArray,
+        aggOptionsSort: crowdAggSortArray[i],
         pageSize: 100,
         page: 1,
         q: searchParams.searchParams.q,
-        bucketsWanted: crowdBucketsWanted,
+        aggBucketsWanted: crowdBucketsWanted[i]
+        // crowdBucketsWanted: 
+        
       };
-      variables.agg[0] && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, crowdAggIdArray))
-    }
-    if ( searchParams && aggArray.length !== 0) {
 
-      const variables2 = {
+      let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
+      // !shouldNotDispatch && 
+      dispatch(fetchSearchPageAggBuckets(variables, crowdAggIdArray[i].id ))
+      });
+      aggArray.forEach((agg, i)=>{
+
+      const variables = {
         ...searchParams.searchParams,
         url: params.sv,
         configType: 'presearch',
         returnAll: false,
-        agg: aggArray,
-        aggOptionsSort: aggSortArray,
-        pageSize: 100,
+        agg: agg,
+        // crowdAgg: crowdAggArray,
+        aggOptionsSort: aggSortArray[i],
+        // crowdAggOptionsSort: crowdAggSortArray[i],
+        pageSize: 25,
         page: 1,
         q: searchParams.searchParams.q,
-        bucketsWanted: aggBucketsWanted
+        aggBucketsWanted: aggBucketsWanted[i]
+        // crowdBucketsWanted: 
+        
       };
-      variables2.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables2, aggIdArray))
+
+      let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
+      // !shouldNotDispatch && 
+      dispatch(fetchSearchPageAggBuckets(variables, aggIdArray[i].id ))
+      });
     }
 
-  }, [dispatch, islandConfig, searchParams])
+  }, [dispatch, islandConfig, searchHash, searchParams])
 
   useEffect(()=>{
     let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds); 

@@ -1,4 +1,4 @@
-import { call, put, takeLatest, select } from 'redux-saga/effects';
+import { call, put, takeLatest, select, takeLeading, takeEvery } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import * as types from './types';
 import * as actions from './actions';
@@ -11,6 +11,8 @@ const getCurrentSearcheParams = state =>
     state.search.searchResults.data.searchParams;
 const getCurrentIslands = state =>
     state.search.islandConfig;
+const getCurrentAggBuckets = state =>
+    state.search.aggBuckets;
 
 function* getSearchPageAggs(action) {
     try {
@@ -29,16 +31,28 @@ function* getSearchPageAggs(action) {
 }
 
 function* getSearchPageAggBuckets(action) {
-    //    console.log("SAGA SP Agg Buckets", action);
+       console.log("SAGA SP Agg Buckets", action);
+       let currentBuckets = [];
+       const allBuckets = yield select(getCurrentAggBuckets); 
+
     try {
+        currentBuckets = allBuckets && allBuckets.aggs[action.aggId] ;
         let response = yield call(() =>
-            api.fetchSearchPageAggBuckets(action.searchParams)
+            api.fetchSearchPageAggBuckets(action.searchParams, action.aggId)
         );
         if (response) {
             let nameBuckets = response.data.aggBuckets.aggs.filter(
                 agg => agg.name === action.searchParams.agg
             )[0];
-            yield put(actions.fetchSearchPageAggBucketsSuccess(nameBuckets));
+            if(allBuckets && currentBuckets){
+                if(action.searchParams.page == 1 ){
+                    yield put(actions.fetchSearchPageAggBucketsSuccess({buckets: nameBuckets.buckets,aggId: action.aggId}));
+                }else{
+                    yield put(actions.fetchSearchPageAggBucketsSuccess({buckets: currentBuckets.concat(nameBuckets.buckets),aggId: action.aggId}));
+                }
+            }else{
+                yield put(actions.fetchSearchPageAggBucketsSuccess({buckets: nameBuckets.buckets,aggId: action.aggId}));
+            }
         } else {
             yield put(actions.fetchSearchPageAggBucketsError(response.message));
         }
@@ -94,6 +108,7 @@ function* getSearchPageOpenCrowdAggBuckets(action) {
 }
 function* getSearchPageOpenAggBuckets(action) {
     try {
+        console.log(action)
         let response = yield call(() =>
             api.fetchSearchPageOpenAggBuckets(action.searchParams)
         );
@@ -102,6 +117,8 @@ function* getSearchPageOpenAggBuckets(action) {
                 actions.fetchSearchPageOpenAggBucketsSuccess({
                     ...response,
                     aggIdArray: action.aggIdArray,
+                    crowdAggIdArray: action.crowdAggIdArray,
+                    activeAgg: action.activeAgg,
                 })
             );
         } else {
@@ -417,23 +434,22 @@ function* bucketFilter(action) {
         const currentIslands = yield select(getCurrentIslands);
         
         let currentAgg = currentIslands[action.id];
-       
         const variables = {
             ...currentSearchParams.searchParams,
             url: "",
             configType: 'presearch',
             returnAll: false,
-            agg: [currentAgg.name],
+            agg: currentAgg.aggKind== "crowdAggs" ? `fm_${currentAgg.name}` : currentAgg.name,
             pageSize: 25,
             page: 1,
-            aggOptionsFilter: action.bucketsFilter,
-            aggOptionsSort: [{id: "key", desc: false}],
-            bucketsWanted: [currentAgg.visibleOptions]
+            aggOptionsFilter: action.bucketsState.bucketFilter,
+            aggOptionsSort: [{id: action.bucketsState.sortKind == 1 ? "count" : "key", desc: action.bucketsState.desc}],
+            aggBucketsWanted: currentAgg.visibleOptions
           };
 
 
         // Better error handling could be done here 
-          let response =currentAgg.aggKind== "crowdAggs" ? yield getSearchPageOpenCrowdAggBuckets({searchParams: variables, crowdAggIdArray: [{id:action.id, name: currentAgg.name}]}): yield getSearchPageOpenAggBuckets({searchParams: variables, aggIdArray: [{id:action.id, name: currentAgg.name}]})
+          let response =yield getSearchPageAggBuckets({searchParams: variables, aggId: action.id}) //: yield getSearchPageOpenAggBuckets({searchParams: variables, aggIdArray: [{id:action.id, name: currentAgg.name}]})
 
     } catch (err) {
         console.log(err);
@@ -442,7 +458,7 @@ function* bucketFilter(action) {
 
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
-    yield takeLatest(
+    yield takeEvery(
         types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND,
         getSearchPageAggBuckets
     );

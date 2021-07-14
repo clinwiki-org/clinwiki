@@ -51,7 +51,7 @@ export default function GenericPageWrapper(props: Props) {
 
     useEffect(() => {
         let searchParams = pageType == "Search" ? { ...data.data.searchParams } : null;
-        //let searchParams = pageType == "Search" ? { ...data.data.searchParams.searchParams } : null;
+
         const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(hasuraFragmentName, hasuraFragment)}`
         // const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
         const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`

@@ -5,15 +5,15 @@ import {query} from '../../util/db';
 import moment from 'moment';
 const util = require('util')
 
-const CHUNK_SIZE = 10;
+const CHUNK_SIZE = 1000;
 
 export const clinwikiJob = async nctIdList => {
     try {
         logger.info('Starting Clinwiki Job');
         const wikiPageIds = await getWikiPagesIdsByNctId(nctIdList);
-        logger.debug('WIKI PAGE IDS', wikiPageIds);
+        // logger.debug('WIKI PAGE IDS', wikiPageIds);
         //const studyIds = ['NCT00001431'];
-        logger.debug('Number of wiki pages to index: ' + wikiPageIds.length);
+        // logger.debug('Number of wiki pages to index: ' + wikiPageIds.length);
         const bulkWikiList = chunkList(wikiPageIds, CHUNK_SIZE);
 
         for (let j = 0; j < bulkWikiList.length; j++) {
@@ -44,7 +44,7 @@ export const clinwikiJob = async nctIdList => {
 
 export const wikiPageReindex = async payload => {
     const idList = payload.list;
-    logger.info('ID LIST FOR WIKIS', idList);
+    // logger.info('ID LIST FOR WIKIS', idList);
     const results = await getBulkWikiPages(idList);
 
     let wikiPages = [];
@@ -61,7 +61,7 @@ const getWikiPagesIdsByNctId = async idList => {
     let params = idList.map((id, index) => '$' + (index + 1));
     const wikiQuery =
         'select id from wiki_pages where nct_id in (' + params.join(',') + ')';
-    logger.info('WIKI PAGES TO INDEx', idList);
+    // logger.info('WIKI PAGES TO INDEx', idList);
     const rs = await query(wikiQuery, idList);
     return rs.rows.map(row => row.id);
 };
@@ -72,7 +72,7 @@ const getCrowdKeysToIndex = async idList => {
         'select id from crowd_key_value_ids where crowd_key_value_id_association in (' +
         params.join(',') +
         ')';
-    logger.debug(wikiQuery);
+    // logger.debug(wikiQuery);
     const rs = await query(wikiQuery, idList);
     return rs.rows.map(row => row.id);
 };
@@ -98,20 +98,17 @@ const esWikiPage = row => {
     let es = {};
     es.nct_id = row.nct_id;
     es.wiki_text = row.text;
-    let currentTime = Date.now();
-    let formattedTime = moment(currentTime).format('YYYY-MM-DD');
-    es.indexed_at = formattedTime
-    console.log('DATE NOW', es)
+    // console.log('DATE NOW', es)
     return es;
 };
 
 export const crowdKeyReindex = async payload => {
     const idList = payload.list;
-    console.log('IDLIST from CROWD KEY INDEX', idList);
+    // console.log('IDLIST from CROWD KEY INDEX', idList);
     const results = await getBulkCrowdKeys(idList);
                 
-    console.log("In Crwod-reindex")
-    console.log('results', results)
+    // console.log("In Crwod-reindex")
+    // console.log('CROWD KEY RESULTS', results)
     //let crowdKeys = [];
     // for(let i=0;i<results.rowCount;i++) {
     //     const crowdKey = results.rows[i];
@@ -121,25 +118,37 @@ export const crowdKeyReindex = async payload => {
     let crowdMap = new Map();
     for (let i = 0; i < results.rowCount; i++) {
         const crowdKeyRow = results.rows[i];
-
+ 
         let ckStudy = crowdMap.get(crowdKeyRow.crowd_key_value_id_association);
+
         if (!ckStudy) {
             ckStudy = { nct_id: crowdKeyRow.crowd_key_value_id_association };
             ckStudy.front_matter_keys = [];
         }
-        ckStudy['fm_' + crowdKeyRow.crowd_key] = crowdKeyRow.crowd_value;
+        // ckStudy['fm_' + crowdKeyRow.crowd_key] =  ckStudy['fm_' + crowdKeyRow.crowd_key];
+        /// we need to do something similar to this.
+        // console.log(crowdKeyRow)
+        // console.log(ckStudy)
+        // console.log('PRE PUSH', ckStudy['fm_' + crowdKeyRow.crowd_key])
+   
+        // ckStudy['fm_' + crowdKeyRow.crowd_key] ? ckStudy['fm_' + crowdKeyRow.crowd_key].push(crowdKeyRow.crowd_value) : ckStudy['fm_' + crowdKeyRow.crowd_key] = [crowdKeyRow.crowd_value];
+        if (ckStudy['fm_' + crowdKeyRow.crowd_key]) {
+            ckStudy['fm_' + crowdKeyRow.crowd_key].push(crowdKeyRow.crowd_value)
+        } else {
+            ckStudy['fm_' + crowdKeyRow.crowd_key] = [crowdKeyRow.crowd_value];
+        }
         if (ckStudy.front_matter_keys.indexOf(crowdKeyRow.crowd_key) === -1) {
             ckStudy.front_matter_keys.push(crowdKeyRow.crowd_key);
         }
         crowdMap.set(crowdKeyRow.crowd_key_value_id_association, ckStudy);
-    }
 
+    }
+    
     let crowdKeys = [...crowdMap.values()];
-    console.log('Mapping values, about to bulk update');
     let response = await bulkUpdate(crowdKeys);
 
-    console.log('_____________________');
-    console.log(util.inspect(response, false, null, true));
+    // console.log('_____________________');
+    // console.log(util.inspect(response, false, null, true));
     logger.info('Bulk update complete.');
 };
 
@@ -154,3 +163,5 @@ const getBulkCrowdKeys = async idList => {
 };
 
 export default clinwikiJob;
+
+

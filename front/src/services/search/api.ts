@@ -25,11 +25,11 @@ export const fetchSearchPageAggs = (searchParams: any) => {
     );
 };
 
-export const fetchSearchPageAggBuckets = (searchParams: any) => {
+export const fetchSearchPageAggBuckets = (searchParams: any, aggId?: any) => {
     return callGraphql(
         NODE_ENDPOINT,
         query.SEARCH_PAGE_AGG_BUCKETS_QUERY,
-        searchParams
+        searchParams,
     ); //TODO CHeck params
 };
 export const fetchSearchPageCrowdAggBuckets = (searchParams: any) => {

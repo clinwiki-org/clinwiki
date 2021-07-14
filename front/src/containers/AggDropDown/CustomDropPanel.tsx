@@ -105,7 +105,6 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
 
     const { hasMore, buckets, handleLoadMore, field, loading } = this.props
     const showAllowMissing = field.showAllowMissing;
-    //console.log('BUCKETS FROM PANEL', buckets)
     //if (!this.props.isOpen) return
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
@@ -201,6 +200,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
             loadMore={this.props.handleLoadMore}
             hasMore={this.props.hasMore}
             useWindow={false}
+            initialLoad={false}
             loader={
               <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
                 <BeatLoader key="loader" />
@@ -258,6 +258,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
             loadMore={this.props.handleLoadMore}
             hasMore={this.props.hasMore}
             useWindow={false}
+            initialLoad={false}
             loader={
               <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
                 <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />

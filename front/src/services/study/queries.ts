@@ -504,7 +504,7 @@ query CrowdValuesQuery($crowdKeyValueId: String!, $crowdKey: [String]) {
 
 export const SUGGESTED_LABELS_QUERY = `
 query SuggestedLabelsQuery($nctId: String!, $crowdBucketsWanted: [String!]) {
-  crowdAggFacets(crowdBucketsWanted: $crowdBucketsWanted) { 
+  crowdAggFacets(crowdBucketsWantedSuggestedLabels: $crowdBucketsWanted) { 
     aggs {
       name
       buckets {

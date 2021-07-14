@@ -7,9 +7,9 @@ import {initMonitorTriggers} from './trigger.monitor';
 import {wikiPageReindex,crowdKeyReindex} from './jobs/clinwiki.job';
 const util = require('util')
 
-const POLL_QUERY = 'select * from pipeline_queue order by created_at asc';
-const CREATE_PIPELINE_QUEUE_TABLE = 'create table pipeline_queue (id serial primary key, created_at timestamp DEFAULT CURRENT_TIMESTAMP, job_type text, payload text)';
-const DEQUEUE_JOB_QUERY = 'delete from pipeline_queue where id=$1';
+const POLL_QUERY = 'select * from pipeline_queue where processed = false order by created_at asc';
+const CREATE_PIPELINE_QUEUE_TABLE = 'create table pipeline_queue (id serial primary key, created_at timestamp DEFAULT CURRENT_TIMESTAMP, updated_at, timestamp  DEFAULT CURRENT_TIMESTAMP, job_type text, payload text, processed boolean DEFAULT false)';
+const DEQUEUE_JOB_QUERY = 'update pipeline_queue set "processed" = true, updated_at = Now() where id=$1'; //should be trigger based
 const ENQUEUE_JOB_QUERY = 'insert into pipeline_queue (job_type,payload) values ($1,$2)';
 export const JOB_TYPES = {
     AACT_STUDY_REINDEX: 'AACT_STUDY_REINDEX',
@@ -40,7 +40,7 @@ const createQueueTable = async () => {
 }
 
 export const serveQueue = async () => {
-    //logger.info('Serving pipeline queue');
+    // logger.info('Serving pipeline queue');
     if(!IS_RUNNING) {
         IS_RUNNING = true;
         try {

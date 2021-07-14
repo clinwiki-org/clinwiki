@@ -3,19 +3,6 @@ const esb = require('elastic-builder');
 const zg = require('zip2geo');
 const util = require('util');
 
-const ENABLED_AGGS = [
-    'average_rating', 'overall_status', 'facility_states', 'conditions',
-    'facility_cities', 'facility_names', 'facility_countries', 'study_type', 'sponsors',
-    'browse_condition_mesh_terms', 'phase', 'rating_dimensions',
-    'browse_interventions_mesh_terms', 'interventions_mesh_terms',
-    'front_matter_keys', 'start_date', 'wiki_page_edits.email', 'wiki_page_edits.created_at',
-    'reactions.kind', 'indexed_at', 'last_update_posted_date',
-    'last_changed_date',  'number_of_arms', 'study_views_count',
-    'number_of_groups', 'why_stopped', 'results_first_submitted_date',
-    'plan_to_share_ipd', 'design_outcome_measures',
-    'location'
-  ];
-
 
 export const translateSearch = async (criteria,includeSize,lastDate) => {
 
@@ -51,7 +38,6 @@ export const translateSearch = async (criteria,includeSize,lastDate) => {
     }
     
     let json = requestBody.toJSON();
-    injectAggs(criteria,json);
 
 
     console.log(  util.inspect(criteria,true, null, false));
@@ -151,12 +137,13 @@ export const translateOpenCrowdAggBuckets = async (criteria, bucketsWanted) => {
     return result;
 }
 
-export const translateOpenAggBuckets = async (criteria, bucketsWanted) => {
+export const translateOpenAggBuckets = async (criteria, aggBucketsWanted) => {
 
+    console.log("tOAB" , criteria, aggBucketsWanted);
     let boolQuery = esb.boolQuery();
     boolQuery.must(esb.simpleQueryStringQuery('*'));
-    await translateAggFilters(criteria.aggFilters,boolQuery,false);
-    await translateAggFilters(criteria.crowdAggFilters,boolQuery,true);
+    await translateAggFilters(criteria.aggFilters,boolQuery,false, criteria.agg);
+    await translateAggFilters(criteria.crowdAggFilters,boolQuery,true, criteria.agg);
 
     if(criteria.q.key === 'AND' && criteria.q.children) {
         criteria.q.children.forEach( child => {
@@ -172,24 +159,27 @@ export const translateOpenAggBuckets = async (criteria, bucketsWanted) => {
     // Create the aggs and crowd aggs
     let requestBody = esb.requestBodySearch().query( boolQuery ).from(0).size(100);
     const json = requestBody.toJSON();
-    injectOpenAggBuckets(criteria,json,true, bucketsWanted);
+    // injectOpenAggBuckets(criteria,json,true, aggBucketsWanted);
+    injectCrowdAggBuckets(criteria,json,true, aggBucketsWanted);
 
 
     return json;
 }
 
 
-const translateAggFilters = async (aggFilters,boolQuery,isCrowdAgg) => {
-    if(aggFilters) {
-        for(let i=0;i<aggFilters.length;i++) {
+const translateAggFilters = async (aggFilters, boolQuery, isCrowdAgg, currentAgg) => {
+    if (aggFilters) {
+        for (let i = 0; i < aggFilters.length; i++) {
             let agg = aggFilters[i];
-            let tf = await translateFilterTerm(agg,isCrowdAgg);
-            await boolQuery.must(tf);
+            if (isCrowdAgg ? currentAgg !== `fm_${agg.field}` : currentAgg !== agg.field) {
+                let tf = await translateFilterTerm(agg, isCrowdAgg, currentAgg);
+                await boolQuery.must(tf);
+            }
         }
     }
 };
 
-const translateFilterTerm = async (agg,isCrowdAgg) => {
+const translateFilterTerm = async (agg,isCrowdAgg, currentAgg) => {
     if(agg.gte || agg.lte || agg.gt || agg.lt) {        
         // This is a range term
         return await translateRangeTerm(agg,isCrowdAgg);
@@ -198,7 +188,9 @@ const translateFilterTerm = async (agg,isCrowdAgg) => {
         console.log('AGG EXISTS', agg)
         return await translateGeoLoc(agg,isCrowdAgg);
     }
-    return translateValueTerms(agg,isCrowdAgg);
+    if ( isCrowdAgg ? currentAgg !== `fm_${agg.field}`: currentAgg !==  agg.field){
+        return translateValueTerms(agg,isCrowdAgg, currentAgg);
+    }
 };
 
 const translateRangeTerm = async (agg,isCrowdAgg) => {
@@ -212,15 +204,15 @@ const translateRangeTerm = async (agg,isCrowdAgg) => {
     return query;
 };
 
-const translateValueTerms = (agg,isCrowdAgg) => {
+const translateValueTerms = (agg,isCrowdAgg, currentAgg) => {
     let list = [];
-    agg.values.forEach( val => {
-        let valQuery = esb.termQuery(getFieldName(agg,isCrowdAgg),val);
+        agg.values.forEach( val => {
+            let valQuery = esb.termQuery(getFieldName(agg,isCrowdAgg),val);
         
-        list.push(valQuery); 
-    });
-    let bq = esb.boolQuery().should(list);
-    return bq;
+            list.push(valQuery); 
+        });
+        let bq = esb.boolQuery().should(list);
+        return bq;
 }
 
 const translateGeoLoc = async (agg,isCrowdAgg) => {    
@@ -243,167 +235,18 @@ const translateGeoLoc = async (agg,isCrowdAgg) => {
 }
 
 const getFieldName = (agg,isCrowdAgg) => {
-    return isCrowdAgg ? 'fm_'+agg.field : agg.field;
+    return isCrowdAgg ? `fm_${agg.field}` : agg.field;
 }
 
-
-function injectAggs(criteria,json) {
-
-    let aggList = [];
-    criteria.aggFilters.map( af => {
-        let t = {};
-        if(af.field == 'location'){
-            return
-        }
-        if(af.gte || af.lte){
-            return
-        }
-        t[af.field] = {value: af.values[0]};
-
-        aggList.push({
-            bool: {
-                filter: [
-                    {
-                        bool: {
-                            should: [
-                                {
-                                    bool: {
-                                        filter: [
-                                            {
-                                                term: t
-                                            }
-                                        ]
-                                    }
-                                }                                
-                            ]
-                        }
-                    }
-                ]
-            }
-        });
-    });
-
-    let crowdAggList = [];
-    criteria.crowdAggFilters.map( af => {
-        if(af.gte || af.lte){
-            return
-        }
-        crowdAggList.push({
-            bool: {
-                filter: [
-                    {
-                        bool: {
-                            should: [
-                                {
-                                    bool: {
-                                        filter: [
-                                            {
-                                                term: {
-                                                    fm_tags: {
-                                                        value: af.values[0]
-                                                    }
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }                                
-                            ]
-                        }
-                    }
-                ]
-            }
-        });
-    });
-
-    let aggs = {};
-    ENABLED_AGGS.forEach( enabledAgg => {
-
-        let bucketAgg = {};
-        bucketAgg[enabledAgg] = {
-            "terms":{
-               "field":enabledAgg,
-               "size":10
-            }
-         };
-
-        aggs[enabledAgg] = {
-            filter: {
-                bool: {
-                    must: [
-                        {
-                            bool: {
-                                must: aggList
-                            }
-                        },
-                        {
-                            bool: {
-                                must: crowdAggList
-                            }
-                        }
-                    ]
-                }
-            },
-            aggs: bucketAgg
-        }
-    });
-    json.aggs = aggs;       
-}
-
-
-function injectCrowdAggBuckets(criteria,json,usePrefix) {
-    let aggs = {};
-    const aggKey = usePrefix ? 'fm_'+criteria.agg : criteria.agg;
-
-    let innerAggs = {};
-    innerAggs[aggKey] = {
-        terms: {
-            field: aggKey,
-            size: 1000000,
-            missing: '-99999999999'
-        },
-        aggs:  {
-            agg_bucket_sort:{
-                bucket_sort:{
-                   from:0,
-                   size:25,
-                   sort:[
-                      {
-                         _key:{
-                            order:"asc"
-                         }
-                      }
-                   ]
-                }
-             }            
-        }
-    }
-
-    aggs[aggKey] = {
-        filter:{
-            bool:{
-               must:[
-                  {
-                     bool:{
-                        must:[]
-                     }
-                  }
-               ]
-            }
-         },
-        aggs: innerAggs
-    }
-    
-    json.aggs = aggs;       
-}
-function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
+function injectCrowdAggBuckets(criteria,json,usePrefix, crowdBucketsWanted) {
     let aggs = {};
     const aggListSize = 25;
-    const aggKeys = criteria.agg;
+    const aggKey = usePrefix ? criteria.agg : criteria.agg;
+
     let innerAggs = {};
 
-    aggKeys.map((aggKey, index) => {
         let sort = [];
-        let sortOrder = criteria.aggOptionsSort[index] && criteria.aggOptionsSort[index].desc ? "desc" : "asc"
+        let sortOrder = criteria.aggOptionsSort[0] && criteria.aggOptionsSort[0].desc ? "desc" : "asc"
         let countSort = {
             _count: {
                 order: sortOrder
@@ -414,7 +257,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                 order: sortOrder
             }
         }
-        let includedValues = bucketsWanted[index].values.join('|');
+        let includedValues = crowdBucketsWanted?.values.join('|');
         let filterBuckets = criteria.aggOptionsFilter || "";
         let elasticFilterValues = "";
         if (filterBuckets !== "") {
@@ -429,7 +272,104 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
             });
         }
 
-        bucketsWanted[index].values.length !== 0 ?
+        crowdBucketsWanted.values.length !== 0 ?
+
+            (innerAggs[aggKey] = {
+                terms: {
+                    field: aggKey,
+                    size: 1000000,
+                    missing: '-99999999999',
+                    include: elasticFilterValues ?  `(${includedValues})\u0026(.*${elasticFilterValues}.*)` : includedValues
+
+                },
+                aggs: {
+                    agg_bucket_sort: {
+                        bucket_sort: {
+                            from:criteria.page * aggListSize -  25,
+                            size:aggListSize,
+                            sort: [
+                                criteria.aggOptionsSort[0]?.id == "count" ? countSort : alphaSort
+                            ]
+                        }
+                    }
+                }
+            })
+            : (innerAggs[aggKey] = {
+                terms: {
+                    field: aggKey,
+                    size: 1000000,
+                    missing: '-99999999999',
+                    include: elasticFilterValues !== "" ? `(.*${elasticFilterValues}.*)` : `.*`
+                },
+                aggs: {
+                    agg_bucket_sort: {
+                        bucket_sort: {
+                            from:criteria.page * aggListSize -  25,
+                            size:aggListSize,
+                            sort: [
+                                criteria.aggOptionsSort[0].id == "count" ? countSort : alphaSort
+                            ]
+                        }
+                    }
+                }
+            })
+
+    
+    aggs[aggKey] = {
+            filter:{
+                bool:{
+                   must:[
+                      {
+                         bool:{
+                            must:[]
+                         }
+                      }
+                   ]
+                }
+             },
+            aggs: innerAggs
+        }
+    
+    json.aggs ? json.aggs = {...json.aggs, ...innerAggs}:json.aggs = innerAggs;
+    // console.log("Inner Aggs AFTER", json.aggs)
+    return json     
+}
+function injectOpenCrowdAggBuckets(criteria,json,usePrefix, crowdBucketsWanted) {
+    console.log('BUCKETS WANTED', crowdBucketsWanted)
+    let aggs = {};
+    const aggListSize = 25;
+    const crowdAggKeys = criteria.crowdAgg;
+    let innerAggs = {};
+
+    crowdAggKeys.map((aggKey, index) => {
+        let sort = [];
+        let sortOrder = criteria.crowdAggOptionsSort[index] && criteria.crowdAggOptionsSort[index].desc ? "desc" : "asc"
+        let countSort = {
+            _count: {
+                order: sortOrder
+            }
+        }
+        let alphaSort = {
+            _key: {
+                order: sortOrder
+            }
+        }
+        let includedValues = crowdBucketsWanted[index]?.values.join('|');
+        let filterBuckets = criteria.aggOptionsFilter || "";
+        let elasticFilterValues = "";
+        if (filterBuckets !== "") {
+            let newArray = [];
+            var s = filterBuckets;
+            for (var i = 0; i < s.length; i++) {
+                newArray.push(s.charAt(i));
+            }
+            newArray.map((char) => {
+                console.log("Current Character", char)
+                elasticFilterValues = (elasticFilterValues + `[${char.toUpperCase()}${char.toLowerCase()}]`)
+            });
+        }
+
+        crowdBucketsWanted[index]?.values.length !== 0 ?
 
             (innerAggs[`fm_${aggKey}`] = {
                 terms: {
@@ -445,7 +385,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                             from:criteria.page * aggListSize -  25,
                             size:aggListSize,
                             sort: [
-                                criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
+                                criteria.crowdAggOptionsSort[index]?.id == "count" ? countSort : alphaSort
                             ]
                         }
                     }
@@ -456,7 +396,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                     field: `fm_${aggKey}`,
                     size: 1000000,
                     missing: '-99999999999',
-                    include:elasticFilterValues !== "" ? `(.*${elasticFilterValues}.*)` : `.*`
+                    include: elasticFilterValues !== "" ? `(.*${elasticFilterValues}.*)` : `.*`
                 },
                 aggs: {
                     agg_bucket_sort: {
@@ -464,7 +404,7 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
                             from:criteria.page * aggListSize -  25,
                             size:aggListSize,
                             sort: [
-                                criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
+                                criteria.crowdAggOptionsSort[index].id == "count" ? countSort : alphaSort
                             ]
                         }
                     }
@@ -472,119 +412,26 @@ function injectOpenCrowdAggBuckets(criteria,json,usePrefix, bucketsWanted) {
             })
 
     })
-
-aggKeys.map(aggKey=>{
-    aggs[`fm_${aggKey}`] = {
-        filter:{
-            bool:{
-               must:[
-                  {
-                     bool:{
-                        must:[]
-                     }
-                  }
-               ]
-            }
-         },
-        aggs: innerAggs
-    }
-
-})
     
-    json.aggs = innerAggs;  
+    crowdAggKeys.map(aggKey=>{
+        aggs[`fm_${aggKey}`] = {
+            filter:{
+                bool:{
+                   must:[
+                      {
+                         bool:{
+                            must:[]
+                         }
+                      }
+                   ]
+                }
+             },
+            aggs: innerAggs
+        }
+    
+    })
+    // console.log("Inner Aggs B4", json.aggs)
+    json.aggs ? json.aggs = {...json.aggs, ...innerAggs}:json.aggs = innerAggs;
+    // console.log("Inner Aggs AFTER", json.aggs)
     return json     
-}
-function injectOpenAggBuckets(criteria,json,usePrefix, bucketsWanted) {
-    let aggs = {};
-    const aggListSize = 25;
-    const aggKeys = criteria.agg;
-    let innerAggs = {};
-
-    aggKeys.map((aggKey, index) => {
-        let sort = [];
-        let sortOrder = criteria.aggOptionsSort[index] && criteria.aggOptionsSort[index].desc ? "desc" : "asc"
-        let countSort = {
-            _count: {
-                order: sortOrder
-            }
-        }
-        let alphaSort = {
-            _key: {
-                order: sortOrder
-            }
-        }
-        let includedValues = bucketsWanted[index].values.join('|');
-        let filterBuckets = criteria.aggOptionsFilter || "";
-        let elasticFilterValues = "";
-        if (filterBuckets !== "") {
-            let newArray = [];
-            var s = filterBuckets;
-            for (var i = 0; i < s.length; i++) {
-                newArray.push(s.charAt(i));
-            }
-            newArray.map((char) => {
-                console.log("Current Character", char)
-                elasticFilterValues = (elasticFilterValues + `[${char.toUpperCase()}${char.toLowerCase()}]`)
-            });
-        }
-        bucketsWanted[index].values.length !== 0 ?
-            (innerAggs[aggKey] = {
-                terms: {
-                    field: aggKey,
-                    size: 1000000,
-                    missing: '-99999999999',
-                    include: elasticFilterValues ?  `(${includedValues})\u0026(.*${elasticFilterValues}.*)` : includedValues                },
-                aggs: {
-                    agg_bucket_sort: {
-                        bucket_sort: {
-                            from:criteria.page *  aggListSize - 25,
-                            size: aggListSize,
-                            sort: [
-                                criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
-                            ]
-                        }
-                    }
-                }
-            })
-            : (innerAggs[aggKey] = {
-                terms: {
-                    field: aggKey,
-                    size: 1000000,
-                    missing: '-99999999999',
-                },
-                aggs: {
-                    agg_bucket_sort: {
-                        bucket_sort: {
-                            from:criteria.page *  aggListSize - 25,
-                            size: aggListSize,
-                            sort: [
-                                criteria.aggOptionsSort[index].id == "count" ? countSort : alphaSort
-                            ]
-                        }
-                    }
-                }
-            })
-
-    })
-
-aggKeys.map(aggKey=>{
-    aggs[aggKey] = {
-        filter:{
-            bool:{
-               must:[
-                  {
-                     bool:{
-                        must:[]
-                     }
-                  }
-               ]
-            }
-         },
-        aggs: innerAggs
-    }
-
-})
-    
-    json.aggs = innerAggs;
-    return json;       
 }

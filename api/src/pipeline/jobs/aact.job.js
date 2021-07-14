@@ -3,12 +3,13 @@ import {queryAACT} from '../../util/db';
 import {bulkUpsert,bulkUpdate} from '../../search/elastic';
 import {JOB_TYPES,enqueueJob} from '../pipeline.queue';
 import {clinwikiJob} from './clinwiki.job';
+import moment from 'moment';
 const util = require('util')
 
 const STUDIES_TO_INDEX_QUERY = "select nct_id from studies where updated_at > localtimestamp - INTERVAL '1 day'";
 const REINDEX_ALL_QUERY = "select nct_id from studies";
 const REINDEX_STUDY_QUERY = "select nct_id from studies where nct_id=$1";
-const CHUNK_SIZE = 10;
+const CHUNK_SIZE = 1000;
 
 let IS_RUNNING = false;
 
@@ -25,7 +26,9 @@ const aactJob = async () => {
             for(let j=0;j<bulkList.length;j++) {
                 const idList = bulkList[j];
                 // Queue these up for reindexing
-                await enqueueJob(JOB_TYPES.AACT_STUDY_REINDEX,{studies: idList});                
+                await enqueueJob(JOB_TYPES.AACT_STUDY_REINDEX,{studies: idList});     
+                // Now queue up reindex of clinwiki
+                await clinwikiJob(idList);           
             }
 
             logger.info('Job AACT Finished.')
@@ -46,15 +49,18 @@ export const aactStudyReindex = async (payload) => {
                 
     let studies = [];
     for(let i=0;i<results.rowCount;i++) {
-        const study = results.rows[i];
+        let study = results.rows[i];
+        let currentTime = Date.now();
+        let formattedTime = moment(currentTime).format('YYYY-MM-DD');
+        study.indexed_at = formattedTime
         studies.push(study);
     }
     logger.info("Sending bulk update of "+idList.length);
-    console.log(util.inspect(studies, false, null, true ))
+    // console.log(util.inspect(studies, false, null, true ))
     let response = await bulkUpsert(studies);
-    console.log("-------------------");
-    console.log("Bulk Upsert Response")
-    console.log(util.inspect(response, false, null, true));
+    // console.log("-------------------");
+    // console.log("Bulk Upsert Response")
+    // console.log(util.inspect(response, false, null, true));
     await sendBriefSummaries(idList);
     await sendConditions(idList);
     await enqueueJob(JOB_TYPES.GEOCODE_LOCATIONS,{studies: idList});
@@ -75,7 +81,7 @@ const getAllStudiesToIndex = async () => {
 const getSingleStudyToIndex = async (nctId) => {
     const rs = await queryAACT(REINDEX_STUDY_QUERY,[nctId]);
     console.log(">>>>>>>>>>>>>>>>>>");
-    console.log(util.inspect(rs, false, null,true));
+    // console.log(util.inspect(rs, false, null,true));
     return rs.rows.map( row => row.nct_id);
 };
 
@@ -157,7 +163,9 @@ export const aactReindexAllJob = async () => {
         IS_RUNNING = false;
     }
 };
-
+//aactReindexSingleStudyJob should be only place for an update so no jobs get missed - bulk should call this iterively
+//refactor this for efficiency if bulk update of multiple is really needed
+//bulk and all call this instead
 export const aactReindexSingleStudyJob = async (nctId) => {
     try {
         if(!IS_RUNNING) {

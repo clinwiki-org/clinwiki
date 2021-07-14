@@ -1225,12 +1225,12 @@ type PublicUser {
 }
 
 type Query {
-  aggBuckets(configType: String, params: SearchInput, returnAll: Boolean, searchHash: String, url: String,  bucketsWanted: [String!]): SearchResultSet!
+  aggBuckets(configType: String, params: SearchInput, returnAll: Boolean, searchHash: String, url: String,  aggBucketsWanted: VisibleOptions!): SearchResultSet!
   autocomplete(aggFields: [String!]!, crowdAggFields: [String!]!, params: SearchInput, searchHash: String, url: String): SearchResultSet!
   crowdAggBuckets(configType: String, params: SearchInput!, returnAll: Boolean, url: String, bucketsWanted: [String!]): SearchResultSet!
-  openAggBuckets(configType: String, params: SearchInput2!, returnAll: Boolean, url: String, bucketsWanted: [VisibleOptions!]): SearchResultSet!
-  openCrowdAggBuckets(configType: String, params: SearchInput2!, returnAll: Boolean, url: String, bucketsWanted: [VisibleOptions!]): SearchResultSet!
-  crowdAggFacets(crowdBucketsWanted: [String!]): SearchResultSet!
+  openAggBuckets(configType: String, params: SearchInput2!, returnAll: Boolean, url: String, aggBucketsWanted: [VisibleOptions!], crowdBucketsWanted: [VisibleOptions!]): SearchResultSet!
+  openCrowdAggBuckets(configType: String, params: SearchInput2!, returnAll: Boolean, url: String, aggBucketsWanted: [VisibleOptions!], crowdBucketsWanted: [VisibleOptions!]): SearchResultSet!
+  crowdAggFacets(crowdBucketsWantedSuggestedLabels: [String!]): SearchResultSet!
   feed(id: Int!): Feed
   health: Health!
   intervention(id: Int!): Intervention
@@ -1468,6 +1468,8 @@ input SearchInput2 {
   """
   agg: [String]
 
+  crowdAgg: [String]
+
   """
   the aggs we are filtering on
   """
@@ -1482,6 +1484,8 @@ input SearchInput2 {
   the values in aggs will be sorted by this option
   """
   aggOptionsSort: [SortInput!]
+
+  crowdAggOptionsSort: [SortInput!]
 
   """
   the crowd aggs we should filter on
