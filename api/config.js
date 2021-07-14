@@ -1,5 +1,5 @@
 let config = {};
-let dbString =  process.env.DATABASE_URL_NODE+`sslmode=require`
+let dbString =  process.env.DATABASE_URL_NODE+`?sslmode=require`
 
 export const loadConfig = () => {
   config.port = process.env.PORT || 8088;
