@@ -54,6 +54,28 @@ const NoFiltersMessage = () => {
       </div>
     </>)
 }
+
+const ForeverBlur = () => {
+  return (
+    <>
+      <li className="blurry-text">Foreverblur Foreverblur</li>
+    </>)
+}
+
+const LoadingMessage = () => {
+  return (
+    <>
+      <div className="loading">
+        <ul>
+          <ForeverBlur />
+          <ForeverBlur />
+          <ForeverBlur />
+          <ForeverBlur />
+        </ul>
+      </div>
+    </>)
+}
+
 class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPanelState> {
 
   // state ={
@@ -96,11 +118,11 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
   }
   render() {
     const { disabled } = this.props;
-    
+
     /*   if(this.props.buckets.length > 0) {
       console.log(this.props.isPresearch,"CusDr Panel BUckets ", this.props.buckets)
     } */
-    
+
     const { hasMore, buckets, handleLoadMore, field, loading } = this.props
     const showAllowMissing = field.showAllowMissing;
     //if (!this.props.isOpen) return
@@ -175,7 +197,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
         return <BeatLoader />
       }
       if (this.props.buckets[0] === undefined) {
-        return <NoFiltersMessage />
+        return <LoadingMessage />
       }
       if (!showAllowMissing && this.props.buckets[0].key == "-99999999999" && this.props.buckets.length == 0) {
         return <NoFiltersMessage />
