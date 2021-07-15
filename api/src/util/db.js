@@ -9,7 +9,13 @@ const fetch = require('node-fetch');
 
 export const query = async (str,params) => {
     if(!pool) {
-    pool = new Pool({ connectionString: config.postgresUrl });
+	pool = process.env.NODE_ENV == "production"? new Pool({ 
+        connectionString: config.postgresUrl, 
+        ssl: {
+            sslmode: 'require',
+            rejectUnauthorized: false
+          }
+        }) : new Pool({ connectionString: config.postgresUrl });
     }
     //logger.debug('Query DB: '+str+' with params: '+params);
     const res = await pool.query(str,params);
@@ -18,7 +24,13 @@ export const query = async (str,params) => {
 
 export const queryAACT = async (str,params) => {
     if(!aactPool) {
-	    aactPool = new Pool({ connectionString: config.aactUrl });
+	    aactPool = process.env.NODE_ENV == "production"?  new Pool({ 
+            connectionString: config.aactUrl,
+            ssl: {
+                sslmode: 'require',
+                rejectUnauthorized: false
+              }
+            }) : new Pool({ connectionString: config.postgresUrl });
        
     }
     //logger.debug('Query DB: '+str+' with params: '+params);
