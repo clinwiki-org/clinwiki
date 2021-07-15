@@ -49,7 +49,6 @@ const getBulkDocuments = async (dockKey, idList, gqlQuery) => {
     //Instead of above should run passed in GQL query 
 
     // 
-    console.log("WE IN THIS BITCH")
 console.log(dockKey, idList, gqlQuery)
     let result = await queryHasura(gqlQuery,{idList})
     console.log("PEW PEW",util.inspect(result, false,null,true ))
