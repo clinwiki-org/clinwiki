@@ -1,10 +1,9 @@
 let config = {};
-let dbString =  process.env.DATABASE_URL_NODE+`?sslmode=require`
 
 export const loadConfig = () => {
   config.port = process.env.PORT || 8088;
-  config.postgresUrl = process.env.ELASTICSEARCH_INDEX == 'studies_development'? process.env.DATABASE_URL_NODE:dbString ;
-  config.aactUrl = process.env.ELASTICSEARCH_INDEX == 'studies_development'? process.env.DATABASE_URL_NODE:dbString ;
+  config.postgresUrl = process.env.DATABASE_URL_NODE;
+  config.aactUrl = process.env.DATABASE_URL_NODE;
   config.searchboxUrl = process.env.SEARCHBOX_URL_NODE || 'changeme';
   config.elasticMaxResults = process.env.ELASTICSEARCH_MAXRESULTS || 100;
   config.smtpHost = process.env.SMTP_HOST || 'changeme';
