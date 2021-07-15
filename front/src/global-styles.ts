@@ -390,6 +390,7 @@ div.DraftEditor-editorContainer{
     opacity: 0;
     transition: .5s;
     padding: 5px;
+    font-size: 8px;
   }
   
   .mm-tooltip:hover .mm-tooltiptext {
