@@ -1,6 +1,6 @@
 import {isAdmin} from '../users/user.manager';
 import {aactReindexAllJob,aactReindexSingleStudyJob, } from '../pipeline/jobs/aact.job';
-import { reindexDocument} from '../pipeline/jobs/indexDoc.job';
+import { genericDocumentJob} from '../pipeline/jobs/indexDoc.job';
 const adminResolver = {
     reindexAll: async (args,context) => {
         if(isAdmin(context.user)) {
@@ -17,7 +17,7 @@ const adminResolver = {
     reindexDocument: async (args,context) => {
         if(isAdmin(context.user)) {
             console.log("ARGGGGG", args)
-            await reindexDocument(args);
+            await genericDocumentJob(args);
         }
         return 'Success';
     }

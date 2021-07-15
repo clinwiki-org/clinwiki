@@ -5,6 +5,7 @@ import {aactStudyReindex} from './jobs/aact.job';
 import {geocodeStudies} from './jobs/geocode.job';
 import {initMonitorTriggers} from './trigger.monitor';
 import {wikiPageReindex,crowdKeyReindex} from './jobs/clinwiki.job';
+import { reindexDocument } from './jobs/indexDoc.job';
 const util = require('util')
 
 const POLL_QUERY = 'select * from pipeline_queue where processed = false order by created_at asc';
@@ -13,6 +14,7 @@ const DEQUEUE_JOB_QUERY = 'update pipeline_queue set "processed" = true, updated
 const ENQUEUE_JOB_QUERY = 'insert into pipeline_queue (job_type,payload) values ($1,$2)';
 export const JOB_TYPES = {
     AACT_STUDY_REINDEX: 'AACT_STUDY_REINDEX',
+    DOCUMENT_REINDEX: 'DOCUMENT_REINDEX', 
     AACT_CONDITIONS_REINDEX: 'AACT_CONDITIONS_REINDEX',
     WIKI_TEXT_REINDIX_2ND_PASS: 'WIKI_TEXT_REINDIX_2ND_PASS',
     WIKI_TEXT_REINDEX: 'WIKI_TEXT_REINDEX',
@@ -65,6 +67,9 @@ const runJob = async (job) => {
         switch(job.job_type) {
             case JOB_TYPES.AACT_STUDY_REINDEX:
                 await aactStudyReindex(JSON.parse(job.payload));
+                break;
+            case JOB_TYPES.DOCUMENT_REINDEX:
+                await reindexDocument(JSON.parse(job.payload));
                 break;
             case JOB_TYPES.WIKI_TEXT_REINDEX:
                 await reindexWikiPage(JSON.parse(job.payload));

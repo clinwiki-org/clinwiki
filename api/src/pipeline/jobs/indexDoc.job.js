@@ -1,8 +1,13 @@
 import logger from '../../util/logger';
 import {queryHasura} from '../../util/db';
 import {bulkUpsertDocs,bulkUpdate} from '../../search/elastic';
+import {JOB_TYPES,enqueueJob} from '../pipeline.queue';
 import moment from 'moment';
 const util = require('util')
+
+const CHUNK_SIZE = 1000;
+
+let IS_RUNNING = false;
 
 const SAMPLE_QUERY = (docKey) =>  `
 
@@ -40,7 +45,35 @@ query MyQuery(
   }
   
 `
-
+const chunkList = (list, size) => {
+  let result = []
+  for (let i = 0; i < list.length; i += size) {
+      let chunk = list.slice(i, i + size)
+      result.push(chunk)
+  }
+  return result;    
+};
+export const genericDocumentJob = async (args) => {
+  try {
+      if(!IS_RUNNING) {
+          IS_RUNNING = true;
+          logger.info('Starting Doc. Job');
+          const bulkList = chunkList(args.primaryKeyList,CHUNK_SIZE);
+        console.log("LIST", bulkList)
+          for(let j=0;j<bulkList.length;j++) {
+              const idList = bulkList[j];
+              // Queue these up for reindexing
+              await enqueueJob(JOB_TYPES.DOCUMENT_REINDEX,{...args, primaryKeyList: idList});                
+            }
+          logger.info('Job GENERIC Doc. Finished.')
+          IS_RUNNING = false;
+      }
+  }
+  catch(err) {
+      logger.error(err);
+      IS_RUNNING = false;
+  }
+};
 const getBulkDocuments = async (dockKey, idList, gqlQuery) => {
     // let params = idList.map( (id,index) => '$'+(index+1));
     // const query = 'select * from studies where nct_id in ('+params.join(',')+')';
