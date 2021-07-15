@@ -8,7 +8,11 @@ let aactPool = undefined;
 
 export const query = async (str,params) => {
     if(!pool) {
-	pool = new Pool({ connectionString: config.postgresUrl });
+	pool = new Pool({ connectionString: config.postgresUrl, 
+        ssl: {
+            rejectUnauthorized: false
+          }
+        });
     }
     //logger.debug('Query DB: '+str+' with params: '+params);
     const res = await pool.query(str,params);
@@ -17,7 +21,11 @@ export const query = async (str,params) => {
 
 export const queryAACT = async (str,params) => {
     if(!aactPool) {
-	    aactPool = new Pool({ connectionString: config.aactUrl });
+	    aactPool = new Pool({ connectionString: config.aactUrl,
+            ssl: {
+                rejectUnauthorized: false
+              }
+            });
        
     }
     //logger.debug('Query DB: '+str+' with params: '+params);
