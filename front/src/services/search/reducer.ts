@@ -402,7 +402,8 @@ const searchReducer = (
             return{
                 ...state,
                 aggBucketFilter: obj,
-                islandConfig: tempIslandConfig 
+                islandConfig: tempIslandConfig,
+                isFetchingAggBuckets: true,
             }
         case types.TOGGLE_AGG:
             let newIslandConfig =

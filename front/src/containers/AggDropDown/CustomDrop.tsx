@@ -190,26 +190,35 @@ const SelectBoxBox = styled.div`
   background-color: #ececec;
  }
 
-.select-box--buckets-presearch .loading{
-  height: 500px;
-  background: #e7e7e7;
-  color: black;
-  border: 1px solid #e7e7e7;
+.select-box--buckets-presearch .wrapper{
+  grid-template-areas:
+     "square-placeholder"
+     "text-placeholder"
+  }
 }
 
-.select-box--buckets-presearch .loading .blurry-text{
-  text-shadow: 0 0 32px white;
-  filter:blur(5px);
+.select-box--buckets-presearch .wrapper{
+  display: grid;
+  grid-gap: 0.5em;
+  margin: 15px 40px 16px 6px;
+  grid-template-columns: 15% auto;
+		grid-template-areas:
+    "square-placeholder   header"
 }
 
-.select-box--buckets-presearch .loading li {
-  min-height: 20px;
-  padding: 1em;
-  font-weight: 400;
-  cursor: pointer;
-  border-bottom: 1px solid #e7e7e7;
-  -webkit-transition: .2s;
-  transition: .2s;
+.select-box--buckets-presearch .wrapper .box {
+  background-color: #e7e7e7;
+  color: #e7e7e7;
+  border-radius: 2px;
+  // margin: 14px;
+}
+
+.select-box--buckets-presearch .wrapper .square-placeholder {
+  margin: 5px 8px;
+}
+
+.select-box--buckets-presearch .wrapper .text-placeholder {
+  margin: 5px;
 }
 
 .select-box--buckets-presearch{
