@@ -22,7 +22,7 @@ const UserImage = styled.img`
 `;
 
 const UserButton = styled.div`
-  min-width: 120px;
+  // min-width: 120px;
   height: 35px;
   padding: 5px;
   border-radius: 5px;
@@ -246,7 +246,7 @@ const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps
         }}>
         <ThemedUserButton onClick={toggleMenuDropdown}>
           {renderUserImage(user.pictureUrl)}
-          <ContributionContainer>
+          {/* <ContributionContainer>
             <ContributionCount>{user.contributions}</ContributionCount>
             <FontAwesome
               name="pencil"
@@ -271,7 +271,7 @@ const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps
                 fontSize: 18,
               }}
             />
-          }
+          } */}
 
           <FontAwesome
             name="chevron-down"
