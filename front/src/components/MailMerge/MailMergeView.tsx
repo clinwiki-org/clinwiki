@@ -1,16 +1,17 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import Handlebars from 'handlebars';
-import useHandlebars from 'hooks/useHandlebars';
-import marked from 'marked';
-import HtmlToReact from 'html-to-react';
-import { fetchSuggestedLabels, upsertLabelMutation, deleteLabelMutation, setShowLoginModal } from '../../services/study/actions';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'reducers';
-import { fetchIslandConfig, fetchSearchPageOpenCrowdAggBuckets, fetchSearchPageOpenAggBuckets } from 'services/search/actions'
-import useUrlParams from 'utils/UrlParamsProvider';
-import LoginModal from 'components/LoginModal';
-import { uniq } from 'ramda';
 import { FieldDisplay, FilterKind } from '../../services/site/model/InputTypes';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { convertDisplayName, fetchIslandConfig, fetchSearchPageOpenAggBuckets, fetchSearchPageOpenCrowdAggBuckets } from 'services/search/actions'
+import { deleteLabelMutation, fetchSuggestedLabels, setShowLoginModal, upsertLabelMutation } from '../../services/study/actions';
+import { useDispatch, useSelector } from 'react-redux';
+
+import Handlebars from 'handlebars';
+import HtmlToReact from 'html-to-react';
+import LoginModal from 'components/LoginModal';
+import { RootState } from 'reducers';
+import marked from 'marked';
+import { uniq } from 'ramda';
+import useHandlebars from 'hooks/useHandlebars';
+import useUrlParams from 'utils/UrlParamsProvider';
 
 export type IslandConstructor = (
   attributes: Record<string, string>,
@@ -78,6 +79,7 @@ const MailMergeView = (props: Props) => {
   const showLoginModal = useSelector((state: RootState) => state.study.showLoginModal);
   const data = useSelector((state: RootState) => state.search.searchResults);
 
+  const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
 
   const searchParams = data?.data?.searchParams;
   const params = useUrlParams();
@@ -136,7 +138,7 @@ const MailMergeView = (props: Props) => {
   }, [dispatch]);
 
   useEffect(() => {
-    let uniqueAggIds = uniq(aggIslandsCurrent.current.currentAggIsalnds); 
+    let uniqueAggIds = uniq(aggIslandsCurrent.current.currentAggIsalnds);
     let aggArray: any[] = [];
     let aggIdArray: any[] = [];
     let aggBucketsWanted: any[] = [];
@@ -182,7 +184,7 @@ const MailMergeView = (props: Props) => {
       };
       variables.agg[0] && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, crowdAggIdArray))
     }
-    if ( searchParams && aggArray.length !== 0) {
+    if (searchParams && aggArray.length !== 0) {
 
       const variables2 = {
         ...searchParams.searchParams,
@@ -201,8 +203,8 @@ const MailMergeView = (props: Props) => {
 
   }, [dispatch, islandConfig, searchParams])
 
-  useEffect(()=>{
-    let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds); 
+  useEffect(() => {
+    let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds);
     let wfLabels: any[] = [];
 
     islandConfig && uniqueWFIds.map((WF) => {
@@ -210,15 +212,33 @@ const MailMergeView = (props: Props) => {
         islandConfig[WF.id] && wfLabels.push(islandConfig[WF.id].name);
       }
     })
-  
-    if(wfLabels){
+
+    if (wfLabels) {
       //@ts-ignore
       wfLabels[0] && dispatch(fetchSuggestedLabels(props.context?.nct_id, wfLabels));
-      
+
     }
 
-    
+
   }, [dispatch, islandConfig])
+
+  useEffect(() => {
+    let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds);
+    let wfLabels: any[] = [];
+
+    suggestedLabels && uniqueWFIds.map((WF) => {
+      let currentKeyObjects = suggestedLabels.data.crowd_keys.filter((x) => x.crowd_key === islandConfig[WF.id].name)
+      if (islandConfig[WF.id]?.defaultToOpen == true) {
+        const compiled = islandConfig[WF.id] && compileTemplate(islandConfig[WF.id].displayName)
+        const raw = applyTemplate(compiled, currentKeyObjects[0])
+        //console.log("🚀 ~ ~ raw", raw);
+        if (raw !== islandConfig[WF.id].displayName) {
+          dispatch(convertDisplayName(raw, WF.id))
+        }
+      }
+    })
+
+  }, [suggestedLabels])
 
   const parser = new HtmlToReact.Parser();
   const reactElement = parser.parseWithInstructions(

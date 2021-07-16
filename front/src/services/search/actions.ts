@@ -1,10 +1,11 @@
 import * as types from './types';
-import { SearchPageAggsQuery } from './model/SearchPageAggsQuery';
-import { SearchPageSearchQuery } from '../../services/search/model/SearchPageSearchQuery';
+
 import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
+import { SearchPageAggsQuery } from './model/SearchPageAggsQuery';
 import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
-import { UserSavedSearchesQuery } from 'services/search/model/UserSavedSearchesQuery';
+import { SearchPageSearchQuery } from '../../services/search/model/SearchPageSearchQuery';
 import { UpdateFacetConfigInput } from './model/UpdateFacetConfigInput';
+import { UserSavedSearchesQuery } from 'services/search/model/UserSavedSearchesQuery';
 
 export const fetchSearchPageAggs = (
     searchParams: any
@@ -310,6 +311,16 @@ export const fetchIslandConfigError = (
     type: types.FETCH_ISLAND_CONFIG_ERROR,
     payload: { message },
 });
+
+export const convertDisplayName = (
+    displayName: any,
+    islandId: any
+): types.SearchActionTypes => ({
+    type: types.CONVERT_DISPLAY_NAME,
+    displayName,
+    islandId,
+});
+
 export const updateFacetConfig = (
     input: UpdateFacetConfigInput
 ): types.SearchActionTypes => ({
@@ -386,9 +397,8 @@ export const toggleExpander = (
 });
 export const updateBucketsFilter = (
     id: string,
-    bucketsFilter: string,
-): types.SearchActionTypes => (
-    {
+    bucketsFilter: string
+): types.SearchActionTypes => ({
     type: types.BUCKET_FILTER,
     id,
     bucketsFilter,

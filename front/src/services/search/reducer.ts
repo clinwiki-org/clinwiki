@@ -1,7 +1,10 @@
-import { exportToCsv, searchExport } from './api';
-import { IslandConfigQuery } from './model/IslandConfigQuery';
 import * as types from './types';
-import {filter} from 'ramda';
+
+import { exportToCsv, searchExport } from './api';
+
+import { IslandConfigQuery } from './model/IslandConfigQuery';
+import { filter } from 'ramda';
+
 const initialState: types.SearchState = {
     isFetchingAggs: false,
     aggs: undefined,
@@ -28,7 +31,7 @@ const initialState: types.SearchState = {
     searchExport: undefined,
     isExportingToCsv: false,
     expanders: undefined,
-    aggBucketFilter: undefined
+    aggBucketFilter: undefined,
 };
 
 const searchReducer = (
@@ -59,7 +62,6 @@ const searchReducer = (
                 isFetchingAggBuckets: true,
             };
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SUCCESS:
-         
             return {
                 ...state,
                 isFetchingAggBuckets: false,
@@ -110,8 +112,11 @@ const searchReducer = (
             // console.log("Payload",action.payload)
             let aggObject = {};
             action.payload.data.openAggBuckets.aggs.map((agg, index) => {
-                let aggFromIdArray = filter(x=>x.name == agg.name, action.payload.aggIdArray);
-                aggObject[aggFromIdArray[0].id] =agg.buckets;
+                let aggFromIdArray = filter(
+                    x => x.name == agg.name,
+                    action.payload.aggIdArray
+                );
+                aggObject[aggFromIdArray[0].id] = agg.buckets;
             });
             return {
                 ...state,
@@ -138,9 +143,11 @@ const searchReducer = (
             // console.log("Payload",action.payload)
             let crowdAggObject = {};
             action.payload.data.openCrowdAggBuckets.aggs.map((agg, index) => {
-                let aggFromIdArray = filter(x=>`fm_${x.name}` == agg.name, action.payload.crowdAggIdArray);
-                crowdAggObject[aggFromIdArray[0].id] =
-                    agg.buckets;
+                let aggFromIdArray = filter(
+                    x => `fm_${x.name}` == agg.name,
+                    action.payload.crowdAggIdArray
+                );
+                crowdAggObject[aggFromIdArray[0].id] = agg.buckets;
             });
             return {
                 ...state,
@@ -301,6 +308,24 @@ const searchReducer = (
                 ...state,
                 isFetchingFacetConfig: false,
             };
+
+        case types.CONVERT_DISPLAY_NAME:
+            let currentIslandConfigs =
+                state.islandConfig || ({} as IslandConfigQuery);
+            let oldConfig = currentIslandConfigs[action.islandId];
+
+            let newConfig = {
+                ...oldConfig,
+                displayName: action.displayName,
+            };
+            return {
+                ...state,
+                //@ts-ignore
+                islandConfig: {
+                    ...state.islandConfig,
+                    [action.islandId]: newConfig,
+                },
+            };
         case types.UPDATE_FACET_CONFIG_SEND:
             return {
                 ...state,
@@ -393,10 +418,10 @@ const searchReducer = (
         case types.BUCKET_FILTER:
             let obj = {};
             obj[action.id] = action.bucketsFilter;
-            return{
+            return {
                 ...state,
-                aggBucketFilter: obj
-            }
+                aggBucketFilter: obj,
+            };
         case types.TOGGLE_AGG:
             let newIslandConfig =
                 state.islandConfig || ({} as IslandConfigQuery);

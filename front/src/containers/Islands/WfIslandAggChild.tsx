@@ -54,7 +54,6 @@ function WfIslandAggChild(props: Props) {
 
   useEffect(() => {
     if (currentAgg.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
-      //console.log("🚀 ~ WfIslandAggChild ~ crowdKeyValueData", crowdKeyValueData);
       // setEditorText(crowdKeyValueData[0].crowd_value)
       setEditorText(crowdKeyValueData[0].crowd_value)
     }
@@ -68,8 +67,6 @@ function WfIslandAggChild(props: Props) {
 
   //Believe this needs some work. Values being carried over
   let selectedCrowdValues = crowdKeyValueData.reduce((x, y, index) => ({ ...x, [index]: y.crowd_value }), {});
-
-  // console.log("🚀 ~ WfIslandAggChild ~ selectedCrowdValues", selectedCrowdValues);
 
   let selectedValues = Object.values(selectedCrowdValues);
   const checkedValues = new Set(

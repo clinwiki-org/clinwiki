@@ -1,16 +1,17 @@
-import { call, put, takeLatest, select } from 'redux-saga/effects';
-import { push } from 'connected-react-router';
-import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
+import * as types from './types';
+
+import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { camelCase, sentanceCase } from 'utils/helpers';
+
+import { push } from 'connected-react-router';
 
 const getCurrentSavedSearches = state =>
     state.search.savedSearches.data.saved_searches;
 const getCurrentSearcheParams = state =>
     state.search.searchResults.data.searchParams;
-const getCurrentIslands = state =>
-    state.search.islandConfig;
+const getCurrentIslands = state => state.search.islandConfig;
 
 function* getSearchPageAggs(action) {
     try {
@@ -127,7 +128,6 @@ function* getSearchParams(action) {
                 // console.log(`${key}: ${value}`);
                 camelCasedParams[camelCase(key)] = value;
             }
-
 
             response.data.searchParams.searchParams = camelCasedParams;
             yield put(actions.fetchSearchParamsSuccess(response));
@@ -415,28 +415,54 @@ function* bucketFilter(action) {
     try {
         const currentSearchParams = yield select(getCurrentSearcheParams);
         const currentIslands = yield select(getCurrentIslands);
-        
+
         let currentAgg = currentIslands[action.id];
-       
+
         const variables = {
             ...currentSearchParams.searchParams,
-            url: "",
+            url: '',
             configType: 'presearch',
             returnAll: false,
             agg: [currentAgg.name],
             pageSize: 25,
             page: 1,
             aggOptionsFilter: action.bucketsFilter,
-            aggOptionsSort: [{id: "key", desc: false}],
-            bucketsWanted: [currentAgg.visibleOptions]
-          };
+            aggOptionsSort: [{ id: 'key', desc: false }],
+            bucketsWanted: [currentAgg.visibleOptions],
+        };
 
-
-        // Better error handling could be done here 
-          let response =currentAgg.aggKind== "crowdAggs" ? yield getSearchPageOpenCrowdAggBuckets({searchParams: variables, crowdAggIdArray: [{id:action.id, name: currentAgg.name}]}): yield getSearchPageOpenAggBuckets({searchParams: variables, aggIdArray: [{id:action.id, name: currentAgg.name}]})
-
+        // Better error handling could be done here
+        let response =
+            currentAgg.aggKind == 'crowdAggs'
+                ? yield getSearchPageOpenCrowdAggBuckets({
+                      searchParams: variables,
+                      crowdAggIdArray: [
+                          { id: action.id, name: currentAgg.name },
+                      ],
+                  })
+                : yield getSearchPageOpenAggBuckets({
+                      searchParams: variables,
+                      aggIdArray: [{ id: action.id, name: currentAgg.name }],
+                  });
     } catch (err) {
         console.log(err);
+    }
+}
+
+// Replace display name handlebars with helper_text values
+function* convertIslandConfigDisplayName(action) {
+    //console.log('🚀 CONVERT DISPLAY NAME ~ action', action);
+    try {
+        //const currentIslands = yield select(getCurrentIslands);
+        // let response = yield call(() => api.fetchIslandConfig());
+        // if (response) {
+        //     yield put(actions.fetchIslandConfigSuccess(response));
+        // } else {
+        //     yield put(actions.fetchIslandConfigError(response.message));
+        // }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.fetchIslandConfigError(err.message));
     }
 }
 
@@ -467,9 +493,13 @@ export default function* userSagas() {
     yield takeLatest(types.DELETE_SAVED_SEARCH_SEND, deleteSavedSearch);
     // yield takeLatest(types.FETCH_FACET_CONFIG_SEND, getFacetConfig);
     yield takeLatest(types.FETCH_ISLAND_CONFIG_SEND, getIslandConfig);
+    yield takeLatest(
+        types.CONVERT_DISPLAY_NAME,
+        convertIslandConfigDisplayName
+    );
     yield takeLatest(types.UPDATE_FACET_CONFIG_SEND, updateFacetConfig);
     yield takeLatest(types.SEARCH_EXPORT_SEND, getSearchExport);
     yield takeLatest(types.EXPORT_T0_CSV_SEND, exportToCsv);
     yield takeLatest(types.TOGGLE_AGG, toggleAgg);
-    yield takeLatest(types.BUCKET_FILTER, bucketFilter)
+    yield takeLatest(types.BUCKET_FILTER, bucketFilter);
 }

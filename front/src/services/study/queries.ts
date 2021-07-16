@@ -495,6 +495,7 @@ query CrowdValuesQuery($crowdKeyValueId: String!, $crowdKey: [String]) {
   }
   crowd_keys(where: {crowd_key: {_in: $crowdKey}}) {
     crowd_key
+    crowd_key_helper_text
     crowd_values {
       crowd_value
     }

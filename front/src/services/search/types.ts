@@ -1,12 +1,12 @@
-import { UserSavedSearchesQuery } from 'services/search/model/UserSavedSearchesQuery';
-import { SearchPageAggsQuery } from './model/SearchPageAggsQuery';
-import { SearchPageSearchQuery } from '../../services/search/model/SearchPageSearchQuery';
-import { SearchPageParamsQuery } from '../../services/search/model/SearchPageParamsQuery';
-import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
-import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
 import { FacetConfigQuery } from './model/FacetConfigQuery';
 import { IslandConfigQuery } from './model/IslandConfigQuery';
+import { SearchPageAggBucketsQuery } from 'types/SearchPageAggBucketsQuery';
+import { SearchPageAggsQuery } from './model/SearchPageAggsQuery';
+import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
+import { SearchPageParamsQuery } from '../../services/search/model/SearchPageParamsQuery';
+import { SearchPageSearchQuery } from '../../services/search/model/SearchPageSearchQuery';
 import { UpdateFacetConfigInput } from './model/UpdateFacetConfigInput';
+import { UserSavedSearchesQuery } from 'services/search/model/UserSavedSearchesQuery';
 
 export const FETCH_SEARCH_PAGE_AGGS_SEND = 'FETCH_SEARCH_PAGE_AGGS_SEND';
 export const FETCH_SEARCH_PAGE_AGGS_SUCCESS = 'FETCH_SEARCH_PAGE_AGGS_SUCCESS';
@@ -75,6 +75,8 @@ export const FETCH_FACET_CONFIG_ERROR = 'FETCH_FACET_CONFIG_ERROR';
 export const FETCH_ISLAND_CONFIG_SEND = 'FETCH_ISLAND_CONFIG_SEND';
 export const FETCH_ISLAND_CONFIG_SUCCESS = 'FETCH_ISLAND_CONFIG_SUCCESS';
 export const FETCH_ISLAND_CONFIG_ERROR = 'FETCH_ISLAND_CONFIG_ERROR';
+
+export const CONVERT_DISPLAY_NAME = 'CONVERT_DISPLAY_NAME';
 
 export const UPDATE_FACET_CONFIG_SEND = 'UPDATE_FACET_CONFIG_SEND';
 export const UPDATE_FACET_CONFIG_SUCCESS = 'UPDATE_FACET_CONFIG_SUCCESS';
@@ -329,6 +331,12 @@ export interface FetchIslandConfigErrorAction {
     payload: SearchDataError;
 }
 
+export interface convertDisplayNameAction {
+    type: typeof CONVERT_DISPLAY_NAME;
+    displayName: any;
+    islandId: any;
+}
+
 export interface UpdateFacetConfigSendAction {
     type: typeof UPDATE_FACET_CONFIG_SEND;
     input: UpdateFacetConfigInput;
@@ -434,6 +442,7 @@ export type SearchActionTypes =
     | FetchIslandConfigSendAction
     | FetchIslandConfigSuccessAction
     | FetchIslandConfigErrorAction
+    | convertDisplayNameAction
     | UpdateFacetConfigSendAction
     | UpdateFacetConfigSuccessAction
     | UpdateFacetConfigErrorAction
