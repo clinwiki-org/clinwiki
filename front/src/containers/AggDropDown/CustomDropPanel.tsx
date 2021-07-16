@@ -57,24 +57,23 @@ const NoFiltersMessage = () => {
     </>)
 }
 
-const ForeverBlur = () => {
+const PlaceHolder = () => {
   return (
     <>
-      <li className="blurry-text">Foreverblur Foreverblur</li>
+      <div className="wrapper">
+        <div className="box square-placeholder">A</div>
+        <div className="box text-placeholder">A</div>
+      </div>
     </>)
 }
 
 const LoadingMessage = () => {
   return (
     <>
-      <div className="loading">
-        <ul>
-          <ForeverBlur />
-          <ForeverBlur />
-          <ForeverBlur />
-          <ForeverBlur />
-        </ul>
-      </div>
+      <PlaceHolder />
+      <PlaceHolder />
+      <PlaceHolder />
+      <PlaceHolder />
     </>)
 }
 
