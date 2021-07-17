@@ -35,7 +35,7 @@ export default function HasuraMailMergeFormControl(props: HasuraMailMergeFormCon
     const [nctId, setNctId] = useState(default_nctid);
     const dispatch = useDispatch();
 
-    const [fragmentName, fragment] = useHasuraFragment('ctgov_studies', props.template);
+    const [fragmentName, fragment] = useHasuraFragment('ctgov_prod_studies', props.template);
 
     useEffect(() => {
         const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
@@ -58,7 +58,7 @@ export default function HasuraMailMergeFormControl(props: HasuraMailMergeFormCon
 
     const schema: GraphqlSchemaType = {
         kind: 'graphql',
-        typeName: 'ctgov_studies',
+        typeName: 'ctgov_prod_studies',
         types: introspection.data.__schema.types,
     };
 
@@ -71,7 +71,7 @@ export default function HasuraMailMergeFormControl(props: HasuraMailMergeFormCon
             />
             <MailMerge
                 schema={schema}
-                sample={study?.data?.ctgov_studies[0] || {}}
+                sample={study?.data?.ctgov_prod_studies[0] || {}}
                 template={props.template}
                 onTemplateChanged={props.onTemplateChanged}
                 islands={props.islands}

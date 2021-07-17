@@ -457,7 +457,7 @@ ${FACILITY_FRAGMENT}
 
 export const HASURA_FACILITY_ISLAND_QUERY = `
 query HasuraFacilitiesPageQuery($nctId: String!) {
-  ctgov_studies(where: {nct_id: {_eq: $nctId}}) {
+  ctgov_prod_studies(where: {nct_id: {_eq: $nctId}}) {
     facilities {
       city
       country

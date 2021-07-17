@@ -141,7 +141,7 @@ function* getHasuraSampleStudy(action) {
             api.fetchHasuraSampleStudy(action.nctId, action.QUERY)
         );
         if (response) {
-            //console.log('SAGA HASURA STUDY RESPONSE', response.data.ctgov_studies[0]);
+            //console.log('SAGA HASURA STUDY RESPONSE', response.data.ctgov_prod_studies[0]);
             yield put(actions.fetchSampleStudyHasuraSuccess(response));
         } else {
             yield put(actions.fetchSampleStudyHasuraError(response.message));

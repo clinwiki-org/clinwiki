@@ -23,7 +23,7 @@ function getClassForMode(mode: Mode) {
         case 'Search':
             return 'ElasticStudy';
         case 'HasuraStudy':
-            return 'ctgov_studies';
+            return 'ctgov_prod_studies';
     }
 }
 
@@ -166,7 +166,7 @@ export default function HasuraTestComponent() {
         return <BeatLoader />;
     }
 
-    const sampleData = studyData?.data.ctgov_studies[0] || studyData.data?.search?.studies?.[0];
+    const sampleData = studyData?.data.ctgov_prod_studies[0] || studyData.data?.search?.studies?.[0];
 
     if (introspection) {
         const types = introspection.data.__schema.types;

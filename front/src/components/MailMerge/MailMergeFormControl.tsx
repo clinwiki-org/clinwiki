@@ -31,7 +31,7 @@ type Mode = 'Study' | 'Search';
 function getClassForMode(mode: Mode) {
   switch (mode) {
     case 'Study':
-      return 'ctgov_studies';
+      return 'ctgov_prod_studies';
     case 'Search':
       return 'ElasticStudy';
       

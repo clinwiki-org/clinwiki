@@ -51,7 +51,7 @@ export default function HasuraGenericPage(props: Props) {
     const pageViewData = useSelector((state: RootState) => state.study.pageView);
     const currentPage = pageViewData ? pageViewData?.data.site?.pageView : null;
 
-    const [fragmentName, fragment] = useHasuraFragment('ctgov_studies', currentPage?.template || '');
+    const [fragmentName, fragment] = useHasuraFragment('ctgov_prod_studies', currentPage?.template || '');
 
     const studyData = useSelector((state: RootState) => state.study.studyPageHasura);
 
@@ -93,7 +93,7 @@ export default function HasuraGenericPage(props: Props) {
             </Helmet>
             <MailMergeView
                 template={currentPage?.template || ''}
-                context={studyData?.data.ctgov_studies[0]}
+                context={studyData?.data.ctgov_prod_studies[0]}
                 islands={studyIslands}
             />
         </div>
