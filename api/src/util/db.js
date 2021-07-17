@@ -33,7 +33,7 @@ export const queryAACT = async (str,params) => {
        
     }
     //logger.debug('Query DB: '+str+' with params: '+params);
-    await aactPool.query("SET search_path TO 'ctgov';")
+    await aactPool.query("SET search_path TO 'ctgov_prod';")
     const res = await aactPool.query(str,params);
     return res;
 }
