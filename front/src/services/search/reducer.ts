@@ -1,7 +1,7 @@
 import { exportToCsv, searchExport } from './api';
 import { IslandConfigQuery } from './model/IslandConfigQuery';
 import * as types from './types';
-import {filter} from 'ramda';
+import { filter } from 'ramda';
 const initialState: types.SearchState = {
     isFetchingAggs: false,
     aggs: undefined,
@@ -28,7 +28,7 @@ const initialState: types.SearchState = {
     searchExport: undefined,
     isExportingToCsv: false,
     expanders: undefined,
-    aggBucketFilter: undefined
+    aggBucketFilter: undefined,
 };
 
 const searchReducer = (
@@ -56,10 +56,10 @@ const searchReducer = (
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND:
             return {
                 ...state,
-                isFetchingAggBuckets: true,
+                // isFetchingAggBuckets: true,
             };
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SUCCESS:
-         console.log(action)
+            console.log(action);
             return {
                 ...state,
                 isFetchingAggBuckets: false,
@@ -107,23 +107,27 @@ const searchReducer = (
                 isFetchingCrowdAggBuckets: true,
             };
         case types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SUCCESS:
-            console.log("Payload",action.payload)
+            console.log('Payload', action.payload);
             let aggObject = {};
             let crowdAggObject = {};
 
             action.payload.data.openAggBuckets.aggs.map((agg, index) => {
-                
                 // console.log(agg[0])
-                if(agg.name.substring(0,3)== "fm_"){
-                    let crowdAggFromIdArray = filter(x=>`fm_${x.name}` == agg.name, action.payload.crowdAggIdArray);
-                    console.log(agg.name)
-                    console.log("PLZ AL HELP ME", crowdAggFromIdArray);
+                if (agg.name.substring(0, 3) == 'fm_') {
+                    let crowdAggFromIdArray = filter(
+                        x => `fm_${x.name}` == agg.name,
+                        action.payload.crowdAggIdArray
+                    );
+                    console.log(agg.name);
+                    console.log('PLZ AL HELP ME', crowdAggFromIdArray);
                     crowdAggObject[crowdAggFromIdArray[0].id] = agg.buckets;
-                }else{
-                    let aggFromIdArray = filter(x=>x.name == agg.name, action.payload.aggIdArray);
-                    console.log("PLZ AL HELP ME", aggFromIdArray);
-                aggObject[aggFromIdArray[0].id] = agg.buckets ;
-
+                } else {
+                    let aggFromIdArray = filter(
+                        x => x.name == agg.name,
+                        action.payload.aggIdArray
+                    );
+                    console.log('PLZ AL HELP ME', aggFromIdArray);
+                    aggObject[aggFromIdArray[0].id] = agg.buckets;
                 }
             });
             return {
@@ -135,15 +139,15 @@ const searchReducer = (
                         ...state.aggBuckets?.aggs,
                         ...aggObject,
                         // ...crowdAggObject
-                    }
+                    },
                 },
                 crowdAggBuckets: {
                     ...state.crowdAggBuckets,
-                    aggs:{
+                    aggs: {
                         ...state.crowdAggBuckets?.aggs,
-                        ...crowdAggObject
-                    }
-                }
+                        ...crowdAggObject,
+                    },
+                },
             };
         case types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_ERROR:
             return {
@@ -393,18 +397,22 @@ const searchReducer = (
                 isExportingToCsv: false,
             };
         case types.BUCKET_FILTER:
-            let obj = {...state.aggBucketFilter};
-            let tempIslandConfig = state.islandConfig  || ({} as IslandConfigQuery);
-            
-            obj[action.id] = action.bucketsState;
-            tempIslandConfig[action.id].order = {sortKind : action.bucketsState.sortKind == 0 ? "key": "count", desc: action.bucketsState.desc}
+            let obj = { ...state.aggBucketFilter };
+            let tempIslandConfig =
+                state.islandConfig || ({} as IslandConfigQuery);
 
-            return{
+            obj[action.id] = action.bucketsState;
+            tempIslandConfig[action.id].order = {
+                sortKind: action.bucketsState.sortKind == 0 ? 'key' : 'count',
+                desc: action.bucketsState.desc,
+            };
+
+            return {
                 ...state,
                 aggBucketFilter: obj,
                 islandConfig: tempIslandConfig,
                 isFetchingAggBuckets: true,
-            }
+            };
         case types.TOGGLE_AGG:
             let newIslandConfig =
                 state.islandConfig || ({} as IslandConfigQuery);
