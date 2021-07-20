@@ -98,7 +98,7 @@ function WfIslandAggChild(props: Props) {
 
   let currentAggBuckets = [];
   //@ts-ignore
-  currentAggBucketsData.map(a => currentAggBuckets.push({ "key": a.crowd_value, "docCount": null }));
+  currentAggBucketsData.map(a => currentAggBuckets.push({ "key": a.crowd_value, "docCount": null, "crowd_value_helper_text": a.crowd_value_helper_text }));
 
   const handleContainerToggle = () => {
     if (aggId) {

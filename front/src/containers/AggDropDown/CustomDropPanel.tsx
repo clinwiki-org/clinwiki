@@ -16,6 +16,8 @@ import AllowMissingDropDownItem from './AllowMissingDropDownItem';
 import BarChartComponent from './BarChart'
 import { BeatLoader } from 'react-spinners';
 import { FieldDisplay } from '../../services/site/model/InputTypes';
+import Handlebars from 'handlebars';
+import HtmlToReact from 'html-to-react';
 import LocationAgg from './LocationAgg';
 import RangeSelector from './RangeSelector';
 import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
@@ -23,6 +25,7 @@ import TwoLevelPieChart from './TwoLevelPieChart';
 import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
 import styled from 'styled-components';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
+
 interface CustomDropPanelProps {
   field: SiteViewFragment_search_aggs_fields | any;
   buckets: AggBucket[];
@@ -69,6 +72,50 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
     }
     return null
   };
+
+  compileTemplate(template: string) {
+    try {
+      return Handlebars.compile(template);
+    } catch (e) {
+      const errMsg = `Template error: ${e}`;
+      return _ => errMsg;
+    }
+  }
+  applyTemplate(
+    template: HandlebarsTemplateDelegate<any>,
+    context?: object,
+  ) {
+    try {
+      context = { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
+      return template(context);
+    } catch (e) {
+      return `#Template apply error:\n   ${e}`;
+    }
+  }
+
+  renderBucketTemplate = (key, docCount, helperText) => {
+    let bucketContext = {
+      docCount: docCount,
+      crowd_value: key,
+      crowd_value_helper_text: helperText
+    };
+
+    const { bucketTemplate } = this.props.field;
+    const compiled = bucketTemplate && this.compileTemplate(bucketTemplate)
+    const raw = this.applyTemplate(compiled, bucketContext)
+
+    const parser = new HtmlToReact.Parser();
+    const reactElementHelperText = parser.parse(raw)
+
+    //  if (helperText !== "") {
+    return reactElementHelperText // docCount ? `${text} (${docCount})` : `${text}`;
+    //  }
+
+    // CHeck for doc Count { item.key } { item.docCount ? `(${item.docCount})` : "" }
+    //  return key + docCount ? `(${docCount})` : ""
+
+  }
+
   renderValue = (item, bucketKeyValuePair) => {
     let text = '';
     const { docCount } = item;
@@ -226,7 +273,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
                 >
                   <div className={`item-content ${disabled ? "disabled-text" : ""}`}>
                     {this.renderPreValue(item.key)}
-                    <span>{item.key} {item.docCount ? `(${item.docCount})` : ""} </span>
+                    <span>{this.renderBucketTemplate(item.key, item.docCount, item.crowd_value_helper_text)} </span>
                   </div>
                 </div>
               ))}

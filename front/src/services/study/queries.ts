@@ -498,6 +498,7 @@ query CrowdValuesQuery($crowdKeyValueId: String!, $crowdKey: [String]) {
     crowd_key_helper_text
     crowd_values {
       crowd_value
+      crowd_value_helper_text
     }
   }
 }
