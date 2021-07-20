@@ -1,52 +1,52 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouteMatch } from 'react-router-dom';
-import useUrlParams from 'utils/UrlParamsProvider';
-import SortKind from 'containers/AggDropDown/SortKind';
-import CustomDropDown from 'containers/AggDropDown/CustomDrop';
-import { useDispatch, useSelector } from 'react-redux';
-import { toggleAgg, updateSearchParamsAction, updateBucketsFilter } from 'services/search/actions'
-import { RootState } from 'reducers';
-import { fetchSearchPageAggBuckets, fetchSearchPageCrowdAggBuckets } from 'services/search/actions';
-import { SearchQuery, SearchParams } from '../SearchPage/shared';
-import { SortInput } from 'types/globalTypes';
 import {
   AggBucket,
-  maskAgg,
-  defaultPageSize
+  defaultPageSize,
+  maskAgg
 } from '../SearchPage/Types';
-
+import React, { useEffect, useRef, useState } from 'react';
+import { SearchParams, SearchQuery } from '../SearchPage/shared';
 import {
-  pipe,
-  length,
-  prop,
-  sortBy,
-  uniqBy,
-  find,
-  reverse,
   contains,
+  dissoc,
   filter,
+  find,
+  findIndex,
+  groupBy,
+  head,
   isEmpty,
   isNil,
-  map,
-  dissoc,
-  head,
-  propOr,
-  groupBy,
+  length,
   lensPath,
+  map,
   over,
-  findIndex,
+  pipe,
+  prop,
   propEq,
+  propOr,
   reject,
-  view,
   remove,
+  reverse,
+  sortBy,
+  uniqBy,
+  view,
 } from 'ramda';
+import { fetchIslandConfig, fetchSearchPageOpenAggBuckets, fetchSearchPageOpenCrowdAggBuckets } from 'services/search/actions'
+import { fetchSearchPageAggBuckets, fetchSearchPageCrowdAggBuckets } from 'services/search/actions';
+import { toggleAgg, updateBucketsFilter, updateSearchParamsAction } from 'services/search/actions'
+import { useDispatch, useSelector } from 'react-redux';
+
 import { AggFilterInput } from 'types/globalTypes';
+import CustomDropDown from 'containers/AggDropDown/CustomDrop';
+import { RootState } from 'reducers';
 import {
   SearchPageParamsQuery_searchParams,
 } from '../../services/search/model/SearchPageParamsQuery';
 import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
+import { SortInput } from 'types/globalTypes';
+import SortKind from 'containers/AggDropDown/SortKind';
 import { preselectedFilters } from 'utils/siteViewHelpers';
-import { fetchIslandConfig, fetchSearchPageOpenCrowdAggBuckets, fetchSearchPageOpenAggBuckets } from 'services/search/actions'
+import { useRouteMatch } from 'react-router-dom';
+import useUrlParams from 'utils/UrlParamsProvider';
 
 const DEFAULT_PARAMS: SearchParams = {
   q: { children: [], key: 'AND' },
@@ -178,7 +178,7 @@ const IslandAggChild = (props: Props) => {
     searchParams[grouping]
   );
   //helper functions\
-  console.log('CURRENT AGG', currentAgg)
+  //console.log('CURRENT AGG', currentAgg)
   const getFullPagesCount = buckets => Math.floor(length(buckets) / PAGE_SIZE);
   const handleSort = (desc: boolean, sortKind: SortKind) => {
     switch (sortKind) {
@@ -345,16 +345,16 @@ const IslandAggChild = (props: Props) => {
       bucketsWanted: [currentAgg.visibleOptions]
     };
     let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
-    currentAgg.aggKind === "crowdAggs" ? !shouldNotDispatch  && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, [{ id: aggId, name: currentAgg.name }])) : !shouldNotDispatch && dispatch(fetchSearchPageOpenAggBuckets(variables, [{ id: aggId, name: currentAgg.name }]));
+    currentAgg.aggKind === "crowdAggs" ? !shouldNotDispatch && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, [{ id: aggId, name: currentAgg.name }])) : !shouldNotDispatch && dispatch(fetchSearchPageOpenAggBuckets(variables, [{ id: aggId, name: currentAgg.name }]));
     handleLoadMoreResponse();
   }
 
   const handleLoadMoreResponse = () => {
-    console.log('AGG BUCKETS', aggBuckets)
+    //console.log('AGG BUCKETS', aggBuckets)
     let aggName = currentAgg!.name
-    let responseBuckets = currentAgg.aggKind == "crowdAggs" && aggId ?  crowdAggBuckets?.aggs[aggId!] :  aggBuckets?.aggs[aggId!];
+    let responseBuckets = currentAgg.aggKind == "crowdAggs" && aggId ? crowdAggBuckets?.aggs[aggId!] : aggBuckets?.aggs[aggId!];
     let currentBuckets = buckets[0] === undefined ? [] : buckets
-    const allBuckets = responseBuckets && responseBuckets.length !== 0 ?  currentBuckets.concat(responseBuckets) : [] ;
+    const allBuckets = responseBuckets && responseBuckets.length !== 0 ? currentBuckets.concat(responseBuckets) : [];
     let newBuckets = pipe(
       uniqBy<AggBucket>(prop('key')),
       sortBy<AggBucket>(prop('key'))
@@ -394,7 +394,7 @@ const IslandAggChild = (props: Props) => {
 
   useEffect(() => {
     handleLoadMoreResponse()
-  }, [aggBuckets, crowdAggBuckets,  aggId]);
+  }, [aggBuckets, crowdAggBuckets, aggId]);
 
   const toggleAlphaSort = () => {
     setDesc(!desc);
@@ -566,9 +566,10 @@ const IslandAggChild = (props: Props) => {
         isOpen={currentAgg.defaultToOpen}
         fromAggField={false}
         allowsMissing={aggValues?.includeMissingFields}
-        disabled={ isFetchingStudy || isFetchingAggBuckets || isFetchingCrowdAggBuckets }
+        disabled={isFetchingStudy || isFetchingAggBuckets || isFetchingCrowdAggBuckets}
       />
     </>
   );
+
 }
 export default React.memo(IslandAggChild);
