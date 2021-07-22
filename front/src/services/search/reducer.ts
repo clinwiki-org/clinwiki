@@ -62,7 +62,7 @@ const searchReducer = (
             console.log(action);
             return {
                 ...state,
-                isFetchingAggBuckets: false,
+                // isFetchingAggBuckets: false,
                 aggBuckets: {
                     ...state.aggBuckets,
                     aggs: {
@@ -70,11 +70,19 @@ const searchReducer = (
                         [action.payload.aggId]: action.payload.buckets,
                     },
                 },
+                aggBucketFilter: {
+                    ...state.aggBucketFilter,
+                    isFetchingCurrentAggBucket: false,
+                },
             };
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_ERROR:
             return {
                 ...state,
-                isFetchingAggBuckets: false,
+                // isFetchingAggBuckets: false,
+                aggBucketFilter: {
+                    ...state.aggBucketFilter,
+                    isFetchingCurrentAggBucket: false,
+                },
             };
 
         case types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND:
@@ -397,7 +405,10 @@ const searchReducer = (
                 isExportingToCsv: false,
             };
         case types.BUCKET_FILTER:
-            let obj = { ...state.aggBucketFilter };
+            let obj = {
+                ...state.aggBucketFilter,
+                isFetchingCurrentAggBucket: true,
+            };
             let tempIslandConfig =
                 state.islandConfig || ({} as IslandConfigQuery);
 
@@ -411,7 +422,7 @@ const searchReducer = (
                 ...state,
                 aggBucketFilter: obj,
                 islandConfig: tempIslandConfig,
-                isFetchingAggBuckets: true,
+                // isFetchingAggBuckets: true,
             };
         case types.TOGGLE_AGG:
             let newIslandConfig =
