@@ -1,4 +1,11 @@
-import { call, put, takeLatest, select, takeLeading, takeEvery } from 'redux-saga/effects';
+import {
+    call,
+    put,
+    takeLatest,
+    select,
+    takeLeading,
+    takeEvery,
+} from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import * as types from './types';
 import * as actions from './actions';
@@ -9,10 +16,8 @@ const getCurrentSavedSearches = state =>
     state.search.savedSearches.data.saved_searches;
 const getCurrentSearcheParams = state =>
     state.search.searchResults.data.searchParams;
-const getCurrentIslands = state =>
-    state.search.islandConfig;
-const getCurrentAggBuckets = state =>
-    state.search.aggBuckets;
+const getCurrentIslands = state => state.search.islandConfig;
+const getCurrentAggBuckets = state => state.search.aggBuckets;
 
 function* getSearchPageAggs(action) {
     try {
@@ -31,12 +36,12 @@ function* getSearchPageAggs(action) {
 }
 
 function* getSearchPageAggBuckets(action) {
-       console.log("SAGA SP Agg Buckets", action);
-       let currentBuckets = [];
-       const allBuckets = yield select(getCurrentAggBuckets); 
+    console.log('SAGA SP Agg Buckets', action);
+    let currentBuckets = [];
+    const allBuckets = yield select(getCurrentAggBuckets);
 
     try {
-        currentBuckets = allBuckets && allBuckets.aggs[action.aggId] ;
+        currentBuckets = allBuckets && allBuckets.aggs[action.aggId];
         let response = yield call(() =>
             api.fetchSearchPageAggBuckets(action.searchParams, action.aggId)
         );
@@ -44,14 +49,35 @@ function* getSearchPageAggBuckets(action) {
             let nameBuckets = response.data.aggBuckets.aggs.filter(
                 agg => agg.name === action.searchParams.agg
             )[0];
-            if(allBuckets && currentBuckets){
-                if(action.searchParams.page == 1 ){
-                    yield put(actions.fetchSearchPageAggBucketsSuccess({buckets: nameBuckets.buckets,aggId: action.aggId}));
-                }else{
-                    yield put(actions.fetchSearchPageAggBucketsSuccess({buckets: currentBuckets.concat(nameBuckets.buckets),aggId: action.aggId}));
+            if (allBuckets && currentBuckets) {
+                if (action.searchParams.page == 1) {
+                    yield put(
+                        actions.fetchSearchPageAggBucketsSuccess({
+                            buckets: nameBuckets.buckets,
+                            aggId: action.aggId,
+                            isFetchingCurrentAggBucket:
+                                action.isFetchingCurrentAggBucket,
+                        })
+                    );
+                } else {
+                    yield put(
+                        actions.fetchSearchPageAggBucketsSuccess({
+                            buckets: currentBuckets.concat(nameBuckets.buckets),
+                            aggId: action.aggId,
+                            isFetchingCurrentAggBucket:
+                                action.isFetchingCurrentAggBucket,
+                        })
+                    );
                 }
-            }else{
-                yield put(actions.fetchSearchPageAggBucketsSuccess({buckets: nameBuckets.buckets,aggId: action.aggId}));
+            } else {
+                yield put(
+                    actions.fetchSearchPageAggBucketsSuccess({
+                        buckets: nameBuckets.buckets,
+                        aggId: action.aggId,
+                        isFetchingCurrentAggBucket:
+                            action.isFetchingCurrentAggBucket,
+                    })
+                );
             }
         } else {
             yield put(actions.fetchSearchPageAggBucketsError(response.message));
@@ -144,7 +170,6 @@ function* getSearchParams(action) {
                 // console.log(`${key}: ${value}`);
                 camelCasedParams[camelCase(key)] = value;
             }
-
 
             response.data.searchParams.searchParams = camelCasedParams;
             yield put(actions.fetchSearchParamsSuccess(response));
@@ -432,25 +457,34 @@ function* bucketFilter(action) {
     try {
         const currentSearchParams = yield select(getCurrentSearcheParams);
         const currentIslands = yield select(getCurrentIslands);
-        
+
         let currentAgg = currentIslands[action.id];
         const variables = {
             ...currentSearchParams.searchParams,
-            url: "",
+            url: '',
             configType: 'presearch',
             returnAll: false,
-            agg: currentAgg.aggKind== "crowdAggs" ? `fm_${currentAgg.name}` : currentAgg.name,
+            agg:
+                currentAgg.aggKind == 'crowdAggs'
+                    ? `fm_${currentAgg.name}`
+                    : currentAgg.name,
             pageSize: 25,
             page: 1,
             aggOptionsFilter: action.bucketsState.bucketFilter,
-            aggOptionsSort: [{id: action.bucketsState.sortKind == 1 ? "count" : "key", desc: action.bucketsState.desc}],
-            aggBucketsWanted: currentAgg.visibleOptions
-          };
+            aggOptionsSort: [
+                {
+                    id: action.bucketsState.sortKind == 1 ? 'count' : 'key',
+                    desc: action.bucketsState.desc,
+                },
+            ],
+            aggBucketsWanted: currentAgg.visibleOptions,
+        };
 
-
-        // Better error handling could be done here 
-          let response =yield getSearchPageAggBuckets({searchParams: variables, aggId: action.id}) //: yield getSearchPageOpenAggBuckets({searchParams: variables, aggIdArray: [{id:action.id, name: currentAgg.name}]})
-
+        // Better error handling could be done here
+        let response = yield getSearchPageAggBuckets({
+            searchParams: variables,
+            aggId: action.id,
+        }); //: yield getSearchPageOpenAggBuckets({searchParams: variables, aggIdArray: [{id:action.id, name: currentAgg.name}]})
     } catch (err) {
         console.log(err);
     }

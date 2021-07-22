@@ -4,7 +4,7 @@ import useUrlParams from 'utils/UrlParamsProvider';
 import SortKind from 'containers/AggDropDown/SortKind';
 import CustomDropDown from 'containers/AggDropDown/CustomDrop';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleAgg, updateSearchParamsAction, updateBucketsState, fetchSearchPageAggBuckets} from 'services/search/actions'
+import { toggleAgg, updateSearchParamsAction, updateBucketsState, fetchSearchPageAggBuckets } from 'services/search/actions'
 import { RootState } from 'reducers';
 import { SearchQuery, SearchParams } from '../SearchPage/shared';
 import { SortInput } from 'types/globalTypes';
@@ -100,6 +100,7 @@ const IslandAggChild = (props: Props) => {
   // const aggsList = useSelector((state : RootState ) => state.search.aggs);
   const aggBuckets = useSelector((state: RootState) => state.search.aggBuckets);
   const aggBucketsFilter = useSelector((state: RootState) => state.search.aggBucketFilter);
+  const isFetchingCurrentAggBucket = useSelector((state: RootState) => state.search.aggBucketFilter?.isFetchingCurrentAggBucket);
   const isFetchingAggBuckets = useSelector((state: RootState) => state.search.isFetchingAggBuckets);
   const crowdAggBuckets = useSelector((state: RootState) => state.search.crowdAggBuckets);
   const isFetchingCrowdAggBuckets = useSelector((state: RootState) => state.search.isFetchingCrowdAggBuckets);
@@ -119,11 +120,11 @@ const IslandAggChild = (props: Props) => {
   })
   for (const [key, value] of Object.entries(islandConfig)) {
     //@ts-ignore
-    if(value.defaultToOpen){
-      aggIslandsCurrent.current.currentAggIsalnds = [...aggIslandsCurrent.current.currentAggIsalnds, key];  
+    if (value.defaultToOpen) {
+      aggIslandsCurrent.current.currentAggIsalnds = [...aggIslandsCurrent.current.currentAggIsalnds, key];
     }
   }
-  let uniqueAggIds = uniq(aggIslandsCurrent.current.currentAggIsalnds); 
+  let uniqueAggIds = uniq(aggIslandsCurrent.current.currentAggIsalnds);
 
 
 
@@ -188,7 +189,7 @@ const IslandAggChild = (props: Props) => {
   );
 
   const desc = currentAgg.order.desc
-  const sortKind =  currentAgg?.order?.sortKind == "count" ? SortKind.Number : SortKind.Alpha
+  const sortKind = currentAgg?.order?.sortKind == "count" ? SortKind.Number : SortKind.Alpha
   //helper functions\
   const getFullPagesCount = buckets => Math.floor(length(buckets) / PAGE_SIZE);
   const handleSort = (desc: boolean, sortKindVar: SortKind) => {
@@ -341,7 +342,7 @@ const IslandAggChild = (props: Props) => {
   const buckets = aggBuckets?.aggs[aggId!] || []
   const handleLoadMore = (e) => {
 
-    
+
     let aggSort = handleSort(desc, sortKind);
     console.log("IN HLM", currentAgg.name)
     const variables = {
@@ -349,15 +350,15 @@ const IslandAggChild = (props: Props) => {
       url: paramsUrl.sv,
       configType: 'presearch',
       returnAll: false,
-      agg: currentAgg.aggKind =="crowdAggs" ? `fm_${currentAgg.name}`: currentAgg.name ,
+      agg: currentAgg.aggKind == "crowdAggs" ? `fm_${currentAgg.name}` : currentAgg.name,
       pageSize: PAGE_SIZE,
       page: getFullPagesCount(buckets) + 1,
-      aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId].bucketFilter || "" ,
-      aggOptionsSort: [{id: sortKind== 1 ? "count" : "key", desc: desc}],
+      aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId].bucketFilter || "",
+      aggOptionsSort: [{ id: sortKind == 1 ? "count" : "key", desc: desc }],
       q: searchParams.q,
       aggBucketsWanted: currentAgg.visibleOptions,
-        };
-     dispatch(fetchSearchPageAggBuckets(variables, props.aggId));
+    };
+    dispatch(fetchSearchPageAggBuckets(variables, props.aggId));
   }
 
   const handleLoadMoreResponse = () => {
@@ -401,11 +402,11 @@ const IslandAggChild = (props: Props) => {
   useEffect(() => {
 
     aggBuckets && handleLoadMoreResponse()
-  }, [aggBuckets,  aggId]);
+  }, [aggBuckets, aggId]);
 
   const toggleAlphaSort = () => {
     aggId && dispatch(updateBucketsState(aggId, {
-      bucketFilter: aggBucketsFilter && aggBucketsFilter[aggId] && aggBucketsFilter[aggId].bucketFilter || "",
+      bucketFilter: aggBucketsFilter && aggBucketsFilter[aggId] && aggBucketsFilter[aggId].bucketFilter && aggBucketsFilter.isFetchingCurrentAggBucket || "",
       sortKind: SortKind.Alpha,
       desc: !desc
 
@@ -416,7 +417,7 @@ const IslandAggChild = (props: Props) => {
   const toggleNumericSort = () => {
     // console.log("IN TOGGLE")
     aggId && dispatch(updateBucketsState(aggId, {
-      bucketFilter: aggBucketsFilter && aggBucketsFilter[aggId] && aggBucketsFilter[aggId].bucketFilter || "",
+      bucketFilter: aggBucketsFilter && aggBucketsFilter[aggId] && aggBucketsFilter[aggId].bucketFilter && aggBucketsFilter.isFetchingCurrentAggBucket || "",
       sortKind: SortKind.Number,
       desc: !desc
 
@@ -537,10 +538,10 @@ const IslandAggChild = (props: Props) => {
     }
   };
 
-  const handleContainerToggle =async() => {
+  const handleContainerToggle = async () => {
     if (aggId) {
       dispatch(toggleAgg(aggId, islandConfig[aggId], searchParams));
-//Need to possibly handle this in the saga instead @TO-DO
+      //Need to possibly handle this in the saga instead @TO-DO
 
 
       let aggSort = handleSort(desc, sortKind);
@@ -552,18 +553,18 @@ const IslandAggChild = (props: Props) => {
         url: paramsUrl.sv,
         configType: 'presearch',
         returnAll: false,
-        agg: currentAgg.aggKind =="crowdAggs" ? `fm_${currentAgg.name}`: currentAgg.name ,
+        agg: currentAgg.aggKind == "crowdAggs" ? `fm_${currentAgg.name}` : currentAgg.name,
         pageSize: PAGE_SIZE,
         page: getFullPagesCount(buckets) + 1,
-        aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId].bucketFilter || "" ,
-        aggOptionsSort: [{id: sortKind== 1 ? "count" : "key", desc: desc}],
+        aggOptionsFilter: props.aggId && aggBucketsFilter && aggBucketsFilter[props.aggId] && aggBucketsFilter[props.aggId].bucketFilter || "",
+        aggOptionsSort: [{ id: sortKind == 1 ? "count" : "key", desc: desc }],
         q: searchParams.q,
         aggBucketsWanted: currentAgg.visibleOptions,
-          };
+      };
 
-          let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
+      let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
 
-          !shouldNotDispatch && dispatch(fetchSearchPageAggBuckets(variables, props.aggId));
+      !shouldNotDispatch && dispatch(fetchSearchPageAggBuckets(variables, props.aggId));
 
     }
   }
@@ -595,7 +596,7 @@ const IslandAggChild = (props: Props) => {
         isOpen={currentAgg.defaultToOpen}
         fromAggField={false}
         allowsMissing={aggValues?.includeMissingFields}
-        disabled={ isFetchingStudy || isFetchingAggBuckets }
+        disabled={isFetchingStudy || isFetchingCurrentAggBucket}
       />
     </>
   );
