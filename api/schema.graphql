@@ -1170,6 +1170,7 @@ type Mutation {
   upsertWikiTag(input: UpsertWikiTagInput!): UpsertWikiTagPayload
   reindexAll: String
   reindexStudy(input: String): String
+  reindexDocument(primaryKey: String, primaryKeyList: String, indexName: String): String
 }
 
 type OverallOfficial {
