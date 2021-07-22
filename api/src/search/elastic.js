@@ -50,6 +50,49 @@ export const newQuery = async (body) => {
     }
 }
 
+export const bulkUpsertDocs = async (list, docKey, indexName) => {
+    try {
+        let body = '';
+        list.forEach( doc => {
+            body = body.concat(JSON.stringify(
+                { index: { 
+                    _index: indexName, 
+                    _type: '_doc',
+                    _id: doc[docKey]
+                }}
+            ));
+            body = body.concat("\n");
+            let payload = {...doc};
+            payload.doc_as_upsert = true;
+            body = body.concat(JSON.stringify(payload));
+            body = body.concat("\n");
+        });
+
+
+        const url = Url(config.searchboxUrl);
+        let encode = Buffer.from(url.username+':'+url.password)
+            .toString('base64');
+        const elasticUrl = url.protocol+'//'+url.host+'/_bulk';
+        console.log("Body", body);
+        
+        return await superagent.post(elasticUrl)
+            .set('Authorization','Basic '+ encode)
+            .set('Content-Type', 'application/json')
+            .send(body).then(response => {
+                logger.info('BULK UPSERT REPONSE ELASTIC', response)
+               return response.body
+            });
+        
+    }
+    catch(err) {
+        logger.info('##### ERROR IN ELASTIC.BULKUPSERT: '+err);
+        if(err.statusCode === 400) {
+            console.log(err.body.error)
+        }
+    }
+};
+
+
 export const bulkUpsert = async (list) => {
     try {
         let body = '';
@@ -72,6 +115,7 @@ export const bulkUpsert = async (list) => {
         let encode = Buffer.from(url.username+':'+url.password)
             .toString('base64');
         const elasticUrl = url.protocol+'//'+url.host+'/_bulk';
+        console.log("Body~");
         return await superagent.post(elasticUrl)
             .set('Authorization','Basic '+ encode)
             .set('Content-Type', 'application/json')
