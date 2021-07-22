@@ -26,3 +26,25 @@ export const reindexStudyError = (errors: Array<string>) => ({
     type: types.REINDEX_STUDY_ERROR,
     payload: errors
 });
+
+export const reindexDocument = (                       
+    primaryKey,
+    primaryKeyList,
+    // query,
+    indexName 
+    ) => ({
+    type: types.REINDEX_DOCUMENT_SEND,
+    primaryKey,
+    primaryKeyList,
+    // query,
+    indexName
+});
+
+export const reindexDocumentSuccess = (payload: String) => ({
+    type: types.REINDEX_DOCUMENT_SUCCESS
+});
+
+export const reindexDocumentError = (errors: Array<string>) => ({
+    type: types.REINDEX_DOCUMENT_ERROR,
+    payload: errors
+});
