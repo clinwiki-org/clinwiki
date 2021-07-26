@@ -23,7 +23,7 @@ function getClassForMode(mode: Mode) {
         case 'Search':
             return 'ElasticStudy';
         case 'HasuraStudy':
-            return 'ctgov_studies';
+            return 'ctgov_prod_studies';
     }
 }
 

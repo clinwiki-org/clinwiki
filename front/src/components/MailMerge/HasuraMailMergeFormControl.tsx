@@ -58,7 +58,7 @@ export default function HasuraMailMergeFormControl(props: HasuraMailMergeFormCon
 
     const schema: GraphqlSchemaType = {
         kind: 'graphql',
-        typeName: 'ctgov_studies',
+        typeName: 'ctgov_prod_studies',
         types: introspection.data.__schema.types,
     };
 
@@ -71,7 +71,7 @@ export default function HasuraMailMergeFormControl(props: HasuraMailMergeFormCon
             />
             <MailMerge
                 schema={schema}
-                sample={study?.data?.ctgov_studies[0] || {}}
+                sample={study?.data?.ctgov_prod_studies[0] || {}}
                 template={props.template}
                 onTemplateChanged={props.onTemplateChanged}
                 islands={props.islands}

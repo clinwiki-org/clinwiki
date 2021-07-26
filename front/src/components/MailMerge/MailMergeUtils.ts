@@ -31,10 +31,10 @@ const camelToSnakeCase = str =>
   str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 
 export function getHasuraStudyQuery(name: string, frag: string) {
-  frag = frag || `fragment ${name} on ctgov_studies{nct_id}`;
+  frag = frag || `fragment ${name} on ctgov_prod_studies{nct_id}`;
   return `
-  query ctgov_studies${name}Query($nctId: String!) {
-    ctgov_studies(where: {nct_id: {_eq: $nctId}}) {
+  query ctgov_prod_studies${name}Query($nctId: String!) {
+    ctgov_prod_studies(where: {nct_id: {_eq: $nctId}}) {
       ...${name}
     }
   }
@@ -55,10 +55,10 @@ export const getSampleStudyQuery = (name: string, frag: string) => {
 };
 
 export const getHasuraSampleStudyQuery = (name: string, frag: string) => {
-  frag = frag || `fragment ${name} on ctgov_studies{nct_id}`;
+  frag = frag || `fragment ${name} on ctgov_prod_studies{nct_id}`;
   return `
 query HasuraSampleStudyQuery($nctId: String!) {
-  ctgov_studies(where: {nct_id: {_eq: $nctId}}) {
+  ctgov_prod_studies(where: {nct_id: {_eq: $nctId}}) {
     ...${name}
   }
 }
