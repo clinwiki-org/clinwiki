@@ -46,14 +46,14 @@ function WfIslandAggChild(props: Props) {
   const crowdKeyValueData = suggestedLabels?.data?.crowd_key_value_ids.filter(x => x.crowd_key == currentAgg.name) || [];
   let crowdKeyValueTitle = null;
 
-  if (currentAgg.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
+  if (currentAgg?.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
     crowdKeyValueTitle = crowdKeyValueData[0].crowd_value
   }
 
   const [editorText, setEditorText] = useState(crowdKeyValueTitle ? crowdKeyValueTitle : "Enter title value");
 
   useEffect(() => {
-    if (currentAgg.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
+    if (currentAgg?.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
       // setEditorText(crowdKeyValueData[0].crowd_value)
       setEditorText(crowdKeyValueData[0].crowd_value)
     }
@@ -128,9 +128,9 @@ function WfIslandAggChild(props: Props) {
 
   const parser = new HtmlToReact.Parser();
 
-  if (currentAgg.display === "TEXT_EDITOR") {
+  if (currentAgg?.display === "TEXT_EDITOR") {
     let editorValue = editorText;
-    if (currentAgg.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
+    if (currentAgg?.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
       // setEditorText(crowdKeyValueData[0].crowd_value)
       editorValue = crowdKeyValueData[0].crowd_value
     }
