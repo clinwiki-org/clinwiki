@@ -75,6 +75,7 @@ export const FETCH_SEARCH_PAGE_MM_SEND = 'FETCH_SEARCH_PAGE_MM_SEND';
 export const FETCH_SEARCH_PAGE_MM_SUCCESS = 'FETCH_SEARCH_PAGE_MM_SUCCESS';
 export const FETCH_SEARCH_PAGE_MM_ERROR = 'FETCH_SEARCH_PAGE_MM_ERROR';
 export const FETCH_STUDY_PAGE_HASURA_SEND = 'FETCH_STUDY_PAGE_HASURA_SEND';
+export const FETCH_STUDY_PAGE_HASURA_SEND_DIS = 'FETCH_STUDY_PAGE_HASURA_SEND_DIS';
 export const FETCH_STUDY_PAGE_HASURA_SUCCESS =
     'FETCH_STUDY_PAGE_HASURA_SUCCESS';
 export const FETCH_STUDY_PAGE_HASURA_ERROR = 'FETCH_STUDY_PAGE_HASURA_ERROR';
@@ -466,6 +467,11 @@ export interface fetchSearchPageMMErrorAction {
 export interface fetchStudyPageHasuraSendAction {
     type: typeof FETCH_STUDY_PAGE_HASURA_SEND;
     nctId: any;
+    HASURA_STUDY_QUERY: any;
+}
+export interface fetchStudyPageHasuraSendActionDIS {
+    type: typeof FETCH_STUDY_PAGE_HASURA_SEND_DIS;
+    conditionId: any;
     HASURA_STUDY_QUERY: any;
 }
 
@@ -1129,6 +1135,7 @@ export type StudyActionTypes =
     | FetchSampleStudyHasuraSuccessAction
     | FetchSampleStudyHasuraErrorAction
     | fetchStudyPageHasuraSendAction
+    | fetchStudyPageHasuraSendActionDIS
     | fetchStudyPageHasuraSuccessAction
     | fetchStudyPageHasuraErrorAction
     | setShowLoginModalSendAction;

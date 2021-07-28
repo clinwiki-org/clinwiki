@@ -43,7 +43,6 @@ export default function MailMerge(props: Props) {
         template={template}
         context={props.sample}
         islands={props.islands}
-        pageType={props.pageType}
       />
     </>
   );

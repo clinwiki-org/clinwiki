@@ -27,6 +27,7 @@ import withTheme from 'containers/ThemeProvider';
 import MMTest from 'components/MailMerge/MMTestComponent'
 import HasuraMMTest from 'components/MailMerge/HasuraMMTestComponent'
 import GenericPageWrapper from 'containers/GenericPage/GenericPageWrapper';
+import GenericPageWrapperDIS from 'containers/GenericPageDIS/GenericPageWrapper';
 import HasuraGenericPage from 'containers/HasuraGenericPage/HasuraGenericPage.';
 import Reindex from 'containers/Reindex';
 
@@ -58,10 +59,14 @@ class App extends React.PureComponent<AppProps> {
                 <Route exact path="/about" component={AboutPage} />
                 <Route exact path="/version" component={ReleaseNotes} />
                 <Route path="/search/" render={(props) => <GenericPageWrapper />} />
+                <Route path="/searchdis/" render={(props) => <GenericPageWrapperDIS />} />
                 <Route path="/search2/" component={SearchPage} />
                 <Route path="/search2/:siteviewUrl" component={SearchPage} />
                 <Route path="/study/:nctId"
                   render={(props) => <GenericPageWrapper arg={props.match.params.nctId} />}
+                />
+                <Route path="/disease/:dId"
+                  render={(props) => <GenericPageWrapperDIS arg={props.match.params.dId} />}
                 />
                 <Route path="/hasurastudy/:nctId"
                   render={(props) => <HasuraGenericPage arg={props.match.params.nctId} />}

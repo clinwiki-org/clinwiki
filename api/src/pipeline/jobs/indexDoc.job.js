@@ -10,7 +10,7 @@ const CHUNK_SIZE = 1000;
 
 let IS_RUNNING = false;
 
-const SAMPLE_QUERY = (docKey) => `
+const SAMPLE_QUERY_CLINWIKI = (docKey) => `
 
 query MyQuery(
     $idList: [String!]
@@ -51,6 +51,37 @@ query MyQuery(
   }
   
 `
+const SAMPLE_QUERY_DIS = (docKey) => `
+
+query MyQuery(
+  $idList: [bigint!]
+  ) {
+  disyii2_prod_20210704_2_tbl_conditions(where: {${docKey}: {_in: $idList}}) {
+    condition_id
+    conditions_condition_name {
+      name
+      mod_date
+      mod_by
+    }
+    description
+    mesh
+    ncbi
+    pubmed
+    snomedct
+    umls
+    condition_conditions_tags {
+      fk_condition_id
+      fk_tag_id
+      cr_date
+      conditions_tags_condition_tags {
+        tag_name
+      }
+    }
+  }
+}
+
+  
+`
 const chunkList = (list, size) => {
   let result = []
   for (let i = 0; i < list.length; i += size) {
@@ -82,6 +113,7 @@ export const genericDocumentJob = async (args) => {
 };
 
 const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
+  // console.log(key, data)
   let tempObj = {};
   switch (dataTypeToIndex) {
     case "PrimaryKey":
@@ -91,7 +123,8 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
       tempObj[fieldNameIndex] = data
       return tempObj
     case "date":
-      tempObj[fieldNameIndex] = moment(data).format('YYYY-MM-DD');
+      //Need to handle null dates, currently passing todays date
+      tempObj[fieldNameIndex] = moment(data || "2021-07-28").format('YYYY-MM-DD');
       return tempObj
     case "long":
       tempObj[fieldNameIndex] = parseInt(data);
@@ -218,9 +251,9 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
   }
 }
 const getBulkDocuments = async (dockKey, idList, gqlQuery) => {
-
+const hasuraInstance = dockKey == "nct_id"? "studies":" dis"
   // console.log(dockKey, idList, gqlQuery);
-  let result = await queryHasura(gqlQuery, { idList });
+  let result = await queryHasura(gqlQuery, { idList },hasuraInstance );
   // console.log("PEW PEW", util.inspect(result, false, null, true));
 
   return result;
@@ -253,28 +286,44 @@ export const reindexDocument = async (payload) => {
   //GraphQlQuery
   //IndexName
 
-  console.log("PAYLOAD", payload)
+  // console.log("PAYLOAD", payload)
 
   const docKey = payload.primaryKey;
   const idList = payload.primaryKeyList;
-  const gqlQuery = SAMPLE_QUERY(docKey)
+  const gqlQuery = payload.indexName == "studies_development" ? SAMPLE_QUERY_CLINWIKI(docKey) : SAMPLE_QUERY_DIS(docKey);
   const indexName = payload.indexName
 
   const results = await getBulkDocuments(docKey, idList, gqlQuery);
   console.log(util.inspect(results, false, null, true))
 
   let documents = [];
-  for (let i = 0; i < results.data.ctgov_prod_studies.length; i++) {
-    let document = results.data.ctgov_prod_studies[i];
 
-    let mappedDoc = await getDocumentMapping(document);
+  if(payload.indexName == "studies_development"){
+    for (let i = 0; i < results.data.ctgov_prod_studies.length; i++) {
+      let document = results.data.ctgov_prod_studies[i];
 
-    let currentTime = Date.now();
-    let formattedTime = moment(currentTime).format('YYYY-MM-DD');
-    mappedDoc.indexed_at = formattedTime
-    documents.push(mappedDoc);
-  }
+      let mappedDoc = await getDocumentMapping(document);
 
+      let currentTime = Date.now();
+      let formattedTime = moment(currentTime).format('YYYY-MM-DD');
+      mappedDoc.indexed_at = formattedTime
+      documents.push(mappedDoc);
+    }
+  } 
+  if(payload.indexName == "dis_development"){
+
+    for (let i = 0; i < results.data.disyii2_prod_20210704_2_tbl_conditions.length; i++) {
+      let document = results.data.disyii2_prod_20210704_2_tbl_conditions[i];
+      
+      let mappedDoc = await getDocumentMapping(document);
+      
+      let currentTime = Date.now();
+      let formattedTime = moment(currentTime).format('YYYY-MM-DD');
+      mappedDoc.indexed_at = formattedTime
+      documents.push(mappedDoc);
+    }
+  } 
+    
   logger.info("Sending bulk update of " + idList.length);
   logger.info("Sending bulk update of " + documents);
 

@@ -85,7 +85,6 @@ export default function GenericPageWrapper(props: Props) {
                 template={currentPage?.template || ''}
                 context={ studyData?.data?.ctgov_prod_studies? studyData?.data?.ctgov_prod_studies[0]: searchData()}
                 islands={islands}
-                pageType={pageType}
             />}
         </div>
     );

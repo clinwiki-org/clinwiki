@@ -39,13 +39,18 @@ export const queryAACT = async (str,params) => {
     return res;
 }
 
-export const queryHasura = async (str,params) => {
-    
-    const abc = await fetch(config.hasuraUrl, {
+export const queryHasura = async (str,params, hasuraInstance) => {
+    //Seperate header needed here currently since we are hitting a container instance of hasura and cloud. Container key is kept in our dockerfile but for cloud we have to include it in the request header 
+    const abc = await fetch(hasuraInstance == "studies"? config.hasuraUrl : config.hasuraUrlDIS, {
         method: 'POST',
-        headers: {
+        headers: hasuraInstance == "studies"? {
             'Content-Type': 'application/json',
             Accept: 'application/json',
+         
+        }: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'x-hasura-admin-secret': config.secretKeyDis,
         },
         body: JSON.stringify({
             query: str,

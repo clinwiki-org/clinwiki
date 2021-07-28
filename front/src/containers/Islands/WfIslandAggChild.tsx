@@ -45,7 +45,7 @@ function WfIslandAggChild(props: Props) {
   const crowdKeyValueData = suggestedLabels?.data?.crowd_key_value_ids.filter(x => x.crowd_key == currentAgg.name) || [];
   let crowdKeyValueTitle = null;
 
-  if (currentAgg.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
+  if (currentAgg?.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
     crowdKeyValueTitle = crowdKeyValueData[0].crowd_value
   }
 
@@ -53,7 +53,7 @@ function WfIslandAggChild(props: Props) {
   const [richEditorText, setRichEditorText] = useState(RichTextEditor.createValueFromString(editorText, 'markdown'));
 
   useEffect(() => {
-    if (currentAgg.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
+    if (currentAgg?.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
       //console.log("🚀 ~ WfIslandAggChild ~ crowdKeyValueData", crowdKeyValueData);
       // setEditorText(crowdKeyValueData[0].crowd_value)
       setRichEditorText(RichTextEditor.createValueFromString(crowdKeyValueData[0].crowd_value, 'markdown'));

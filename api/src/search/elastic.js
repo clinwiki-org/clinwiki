@@ -5,18 +5,16 @@ import logger from '../util/logger';
 const util = require('util');
 const Url = require('url-parse');
 
-export const query = async (body) => {
+export const query = async (body, index) => {
     try {
         const connection = getConnection();
         const payload = {
-            index: config.elasticIndex,
+            index,
             body
         };
         console.log('QUERY PAYLOAD', payload);
-        // console.log('QUERY PAYLOAD', payload.body.query.bool);
-        logger.info(util.inspect(payload, false, null, true /* enable colors */))
         const results = await connection.search(payload);
-        console.log(util.inspect('------ELASTIC RESULTS------', results, false, null, true /* enable colors */))
+
         return results;
     }
     catch(err) {
