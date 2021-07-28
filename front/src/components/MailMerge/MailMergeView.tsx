@@ -1,7 +1,6 @@
-import { FieldDisplay, FilterKind } from '../../services/site/model/InputTypes';
 import React, { useEffect, useMemo, useRef } from 'react';
-import { convertDisplayName, fetchIslandConfig, fetchSearchPageOpenAggBuckets, fetchSearchPageOpenCrowdAggBuckets } from 'services/search/actions'
-import { deleteLabelMutation, fetchSuggestedLabels, setShowLoginModal, upsertLabelMutation } from '../../services/study/actions';
+import { convertDisplayName, fetchIslandConfig, fetchSearchPageAggBuckets } from 'services/search/actions'
+import { fetchSuggestedLabels, setShowLoginModal } from '../../services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Handlebars from 'handlebars';
@@ -81,6 +80,11 @@ const MailMergeView = (props: Props) => {
 
   const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
 
+  const isFetchingAggBuckets = useSelector((state: RootState) => state.search.isFetchingAggBuckets);
+  const isFetchingCrowdAggBuckets = useSelector((state: RootState) => state.search.isFetchingCrowdAggBuckets);
+  const isFetchingStudy = useSelector((state: RootState) => state.study.isFetchingStudy);
+  const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams);
+  const searchHash = useSelector((state: RootState) => state.search.searchHash);
   const searchParams = data?.data?.searchParams;
   const params = useUrlParams();
 
@@ -138,6 +142,7 @@ const MailMergeView = (props: Props) => {
   }, [dispatch]);
 
   useEffect(() => {
+    // Duplicate code// Refactor // IslandsAggChild is other file
     let uniqueAggIds = uniq(aggIslandsCurrent.current.currentAggIsalnds);
     let aggArray: any[] = [];
     let aggIdArray: any[] = [];
@@ -167,41 +172,74 @@ const MailMergeView = (props: Props) => {
     });
 
 
-    if (searchParams && crowdAggArray.length !== 0) {
+    if (searchParams && crowdAggArray.length !== 0 || searchParams && aggArray.length !== 0) {
 
 
-      const variables = {
-        ...searchParams.searchParams,
-        url: params.sv,
-        configType: 'presearch',
-        returnAll: false,
-        agg: crowdAggArray,
-        aggOptionsSort: crowdAggSortArray,
-        pageSize: 100,
-        page: 1,
-        q: searchParams.searchParams.q,
-        bucketsWanted: crowdBucketsWanted,
-      };
-      variables.agg[0] && dispatch(fetchSearchPageOpenCrowdAggBuckets(variables, crowdAggIdArray))
+      // const variables = {
+      //   ...searchParams.searchParams,
+      //   url: params.sv,
+      //   configType: 'presearch',
+      //   returnAll: false,
+      //   agg: aggArray,
+      //   crowdAgg: crowdAggArray,
+      //   aggOptionsSort: aggSortArray,
+      //   crowdAggOptionsSort: crowdAggSortArray,
+      //   pageSize: 100,
+      //   page: 1,
+      //   q: searchParams.searchParams.q,
+      //   aggBucketsWanted: aggBucketsWanted,
+      //   crowdBucketsWanted: crowdBucketsWanted
+
+      // };
+      crowdAggArray.forEach((agg, i) => {
+
+        const variables = {
+          ...searchParams.searchParams,
+          url: params.sv,
+          configType: 'presearch',
+          returnAll: false,
+          agg: `fm_${agg}`,
+          // crowdAgg: crowdAggArray,
+          // aggOptionsSort: aggSortArray,
+          aggOptionsSort: crowdAggSortArray[i],
+          pageSize: 100,
+          page: 1,
+          q: searchParams.searchParams.q,
+          aggBucketsWanted: crowdBucketsWanted[i]
+          // crowdBucketsWanted: 
+
+        };
+
+        let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
+        // !shouldNotDispatch && 
+        dispatch(fetchSearchPageAggBuckets(variables, crowdAggIdArray[i].id))
+      });
+      aggArray.forEach((agg, i) => {
+
+        const variables = {
+          ...searchParams.searchParams,
+          url: params.sv,
+          configType: 'presearch',
+          returnAll: false,
+          agg: agg,
+          // crowdAgg: crowdAggArray,
+          aggOptionsSort: aggSortArray[i],
+          // crowdAggOptionsSort: crowdAggSortArray[i],
+          pageSize: 25,
+          page: 1,
+          q: searchParams.searchParams.q,
+          aggBucketsWanted: aggBucketsWanted[i]
+          // crowdBucketsWanted: 
+
+        };
+
+        let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
+        // !shouldNotDispatch && 
+        dispatch(fetchSearchPageAggBuckets(variables, aggIdArray[i].id))
+      });
     }
-    if (searchParams && aggArray.length !== 0) {
 
-      const variables2 = {
-        ...searchParams.searchParams,
-        url: params.sv,
-        configType: 'presearch',
-        returnAll: false,
-        agg: aggArray,
-        aggOptionsSort: aggSortArray,
-        pageSize: 100,
-        page: 1,
-        q: searchParams.searchParams.q,
-        bucketsWanted: aggBucketsWanted
-      };
-      variables2.agg[0] && dispatch(fetchSearchPageOpenAggBuckets(variables2, aggIdArray))
-    }
-
-  }, [dispatch, islandConfig, searchParams])
+  }, [dispatch, islandConfig, searchHash, searchParams])
 
   useEffect(() => {
     let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds);
