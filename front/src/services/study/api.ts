@@ -81,7 +81,7 @@ export const fetchHasuraSampleStudy = (nctId: any, QUERY: any) => {
 };
 
 export const fetchStudyPage = (nctId: any, QUERY: any) => {
-    return callGraphql(ENDPOINT, QUERY, { nctId });
+    return callGraphql(HASURA_CW, QUERY, { nctId });
 };
 
 export const fetchStudyPageHasura = (nctId: any, HASURA_STUDY_QUERY: any) => {

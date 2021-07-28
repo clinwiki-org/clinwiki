@@ -4,6 +4,7 @@ export const loadConfig = () => {
   config.port = process.env.PORT || 8088;
   config.postgresUrl = process.env.DATABASE_URL_NODE || 'changeme';
   config.aactUrl = process.env.DATABASE_URL_NODE || 'changeme';
+  config.hasuraUrl = process.env.HASURA_CLINWIKI_URL || 'changeme';
   config.searchboxUrl = process.env.SEARCHBOX_URL_NODE || 'changeme';
   config.elasticMaxResults = process.env.ELASTICSEARCH_MAXRESULTS || 100;
   config.smtpHost = process.env.SMTP_HOST || 'changeme';

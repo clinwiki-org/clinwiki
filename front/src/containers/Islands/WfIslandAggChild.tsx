@@ -51,11 +51,12 @@ function WfIslandAggChild(props: Props) {
   }
 
   const [editorText, setEditorText] = useState(crowdKeyValueTitle ? crowdKeyValueTitle : "Enter title value");
+  const [richEditorText, setRichEditorText] = useState(RichTextEditor.createValueFromString(editorText, 'markdown'));
 
   useEffect(() => {
     if (currentAgg?.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
       // setEditorText(crowdKeyValueData[0].crowd_value)
-      setEditorText(crowdKeyValueData[0].crowd_value)
+      setRichEditorText(RichTextEditor.createValueFromString(crowdKeyValueData[0].crowd_value, 'markdown'));
     }
   }, [suggestedLabels]);
 
@@ -111,18 +112,23 @@ function WfIslandAggChild(props: Props) {
     //console.log(editorText)
   };
 
+  const handleRichEditorChange = (richEditorText: EditorValue) => {
+    setRichEditorText(richEditorText);
+  };
+
   const handleEditSubmit = () => {
+    let rteText = richEditorText.toString('markdown');
     if (!user || isUpsertingLabel) {
       !user && dispatch(setShowLoginModal(true))
       return console.log(!user ? "Sorry, must be logged in to do this" : "Sorry still saving value")
     }
     if (crowdKeyValueData.length === 1) {
       let idToUpdate = crowdKeyValueData[0].id
-      let updatedContent = editorText;
-      dispatch(updateCrowdKeyValueId(idToUpdate, updatedContent, props.nctId))
+      //let updatedContent = richEditorText//.toString('markdown');
+      dispatch(updateCrowdKeyValueId(idToUpdate, rteText, props.nctId))
       return;
     }
-    dispatch(insertCrowdKeyValueId(props.nctId, editorText, currentAgg.name, user.id, false, false))
+    dispatch(insertCrowdKeyValueId(props.nctId, rteText, currentAgg.name, user.id, false, false))
   };
 
 
@@ -137,6 +143,7 @@ function WfIslandAggChild(props: Props) {
 
     let configuredLabel = currentAgg?.displayName || '';
     //const ThemedTitle = isPresearch ? PresearchTitle : ThemedFacetTitle
+    //const rteText = RichTextEditor.createValueFromString(editorValue, 'markdown');
 
     const reactElement = parser.parse(configuredLabel)
 
@@ -152,13 +159,18 @@ function WfIslandAggChild(props: Props) {
           </PresearchTitle>
         </ThemedPresearchHeader>
         <Panel.Body>
-          <FormControl
+          <RichTextEditor
+            readOnly={!user}
+            onChange={handleRichEditorChange}
+            value={richEditorText || RichTextEditor.createEmptyValue()}
+          />
+          {/* <FormControl
             style={{ minHeight: '150px', maxWidth: "auto" }}
             componentClass="textarea"
             defaultValue={editorValue || ''}
             onChange={handleEditorText}
             disabled={!user}
-          />
+          /> */}
         </Panel.Body>
         <ThemedButton
           onClick={() => { handleEditSubmit(); }}

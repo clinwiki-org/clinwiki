@@ -29,14 +29,16 @@ export const fetchSearchPageAggsError = (
 });
 
 export const fetchSearchPageAggBuckets = (
-    searchParams: any
+    searchParams: any,
+    aggId: any
 ): types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND,
     searchParams,
+    aggId,
 });
 
 export const fetchSearchPageAggBucketsSuccess = (
-    payload: SearchPageAggBucketsQuery
+    payload: any
 ): types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SUCCESS,
     payload,
@@ -92,12 +94,14 @@ export const fetchSearchPageOpenCrowdAggBucketsError = (
     payload: { message },
 });
 export const fetchSearchPageOpenAggBuckets = (
-    searchParams: any,
-    aggIdArray: any
+    searchParams: any
+    // aggIdArray: any,
+    // crowdAggIdArray: any,
 ): types.SearchActionTypes => ({
     type: types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SEND,
     searchParams,
-    aggIdArray,
+    // aggIdArray,
+    // crowdAggIdArray,
 });
 
 export const fetchSearchPageOpenAggBucketsSuccess = (
@@ -114,12 +118,12 @@ export const fetchSearchPageOpenAggBucketsError = (
     payload: { message },
 });
 
-export const fetchCrumbsSearchPageAggBuckets = (
-    searchParams: any
-): types.SearchActionTypes => ({
-    type: types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND,
-    searchParams, //TODO CHeck
-});
+// export const fetchCrumbsSearchPageAggBuckets = (
+//     searchParams: any
+// ): types.SearchActionTypes => ({
+//     type: types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND,
+//     searchParams, //TODO CHeck
+// });
 
 export const fetchCrumbsSearchPageAggBucketsSuccess = (
     payload: SearchPageAggBucketsQuery
@@ -395,11 +399,11 @@ export const toggleExpander = (
     id,
     collapsed,
 });
-export const updateBucketsFilter = (
+export const updateBucketsState = (
     id: string,
-    bucketsFilter: string
+    bucketsState: any
 ): types.SearchActionTypes => ({
     type: types.BUCKET_FILTER,
     id,
-    bucketsFilter,
+    bucketsState,
 });

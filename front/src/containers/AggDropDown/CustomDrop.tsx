@@ -193,6 +193,37 @@ const SelectBoxBox = styled.div`
   background-color: #ececec;
  }
 
+.select-box--buckets-presearch .wrapper{
+  grid-template-areas:
+     "square-placeholder"
+     "text-placeholder"
+  }
+}
+
+.select-box--buckets-presearch .wrapper{
+  display: grid;
+  grid-gap: 0.5em;
+  margin: 15px 40px 16px 6px;
+  grid-template-columns: 15% auto;
+		grid-template-areas:
+    "square-placeholder   header"
+}
+
+.select-box--buckets-presearch .wrapper .box {
+  background-color: #e7e7e7;
+  color: #e7e7e7;
+  border-radius: 2px;
+  // margin: 14px;
+}
+
+.select-box--buckets-presearch .wrapper .square-placeholder {
+  margin: 5px 8px;
+}
+
+.select-box--buckets-presearch .wrapper .text-placeholder {
+  margin: 5px;
+}
+
 .select-box--buckets-presearch{
   max-height:200px;
   overflow-y: scroll;
@@ -271,8 +302,8 @@ const SelectBoxBox = styled.div`
 
   }
 }
-
 `
+
 const ThemedSelectBox = withTheme(SelectBoxBox)
 class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDownState> {
   //@ts-ignore
@@ -295,7 +326,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
   dropDown = () => {
     if (this.props.field.display == "CRUMBS_ONLY") return
-    this.props.handleLoadMore();
+    // this.props.handleLoadMore();
     this.setState((prevState) => ({
       showItems: !prevState.showItems,
       showAdditionalCrumbs: !prevState.showItems

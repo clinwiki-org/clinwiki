@@ -177,12 +177,12 @@ export default function FacilityIsland(props: Props) {
   const facilityData = useSelector((state: RootState) => state.study.facilitiesPageHasura);
 
 
-  if (!facilityData || !facilityData?.data?.ctgov_studies[0]) {
+  if (!facilityData || !facilityData?.data?.ctgov_prod_studies[0]) {
     return <BeatLoader />
   }
 
   const K_HOVER_DISTANCE = 30;
-  const facilities = facilityData?.data?.ctgov_studies[0]?.facilities// facilityData?.data?.study?.facilities;
+  const facilities = facilityData?.data?.ctgov_prod_studies[0]?.facilities// facilityData?.data?.study?.facilities;
 
   if (facilities && facilities?.length > 0) {
     const items = pipe(addIndex(map)(processFacility), flatten)(facilities) as {

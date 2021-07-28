@@ -94,7 +94,13 @@ export const initMonitorTriggers = async () => {
     });
 
     // Now start listening.
-    const subscriber = createSubscriber({ connectionString: config.postgresUrl })
+    const subscriber = process.env.NODE_ENV == "production"? createSubscriber({ 
+        connectionString: config.postgresUrl ,
+        ssl: {
+            sslmode: 'require',
+            rejectUnauthorized: false
+            }
+        }) : createSubscriber({ connectionString: config.postgresUrl })
     TABLES_TO_MONITOR.forEach( async table => {
         const eventName = table.name+'_event';
         subscriber.notifications.on(eventName, table.callback);

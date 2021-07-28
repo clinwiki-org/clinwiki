@@ -12,9 +12,11 @@ export const query = async (body) => {
             index: config.elasticIndex,
             body
         };
-        //console.log(util.inspect(payload, false, null, true /* enable colors */))
+        console.log('QUERY PAYLOAD', payload);
+        // console.log('QUERY PAYLOAD', payload.body.query.bool);
+        logger.info(util.inspect(payload, false, null, true /* enable colors */))
         const results = await connection.search(payload);
-        //console.log(util.inspect(results, false, null, true /* enable colors */))
+        console.log(util.inspect('------ELASTIC RESULTS------', results, false, null, true /* enable colors */))
         return results;
     }
     catch(err) {
@@ -30,6 +32,7 @@ const getConnection = () => {
     const client = new Client({
         node: config.searchboxUrl
     });
+    logger.info('CONNETCT', client )
     return client;
 };
 
@@ -46,6 +49,49 @@ export const newQuery = async (body) => {
         console.log(util.inspect(err, false, null, true /* enable colors */))
     }
 }
+
+export const bulkUpsertDocs = async (list, docKey, indexName) => {
+    try {
+        let body = '';
+        list.forEach( doc => {
+            body = body.concat(JSON.stringify(
+                { index: { 
+                    _index: indexName, 
+                    _type: '_doc',
+                    _id: doc[docKey]
+                }}
+            ));
+            body = body.concat("\n");
+            let payload = {...doc};
+            payload.doc_as_upsert = true;
+            body = body.concat(JSON.stringify(payload));
+            body = body.concat("\n");
+        });
+
+
+        const url = Url(config.searchboxUrl);
+        let encode = Buffer.from(url.username+':'+url.password)
+            .toString('base64');
+        const elasticUrl = url.protocol+'//'+url.host+'/_bulk';
+        console.log("Body", body);
+        
+        return await superagent.post(elasticUrl)
+            .set('Authorization','Basic '+ encode)
+            .set('Content-Type', 'application/json')
+            .send(body).then(response => {
+                logger.info('BULK UPSERT REPONSE ELASTIC', response)
+               return response.body
+            });
+        
+    }
+    catch(err) {
+        logger.info('##### ERROR IN ELASTIC.BULKUPSERT: '+err);
+        if(err.statusCode === 400) {
+            console.log(err.body.error)
+        }
+    }
+};
+
 
 export const bulkUpsert = async (list) => {
     try {
@@ -69,10 +115,14 @@ export const bulkUpsert = async (list) => {
         let encode = Buffer.from(url.username+':'+url.password)
             .toString('base64');
         const elasticUrl = url.protocol+'//'+url.host+'/_bulk';
+        console.log("Body~");
         return await superagent.post(elasticUrl)
             .set('Authorization','Basic '+ encode)
             .set('Content-Type', 'application/json')
-            .send(body).then(response => response.body);
+            .send(body).then(response => {
+                logger.info('BULK UPSERT REPONSE ELASTIC', response)
+               return response.body
+            });
         
     }
     catch(err) {
@@ -84,7 +134,7 @@ export const bulkUpsert = async (list) => {
 };
 
 export const bulkUpdate = async (list) => {
-    console.log("B4 Body" + util.inspect(list, false, null, true));
+    // console.log("B4 Body" + util.inspect(list, false, null, true));
     try {
         let body = '';
         list.forEach( doc => {
@@ -101,6 +151,7 @@ export const bulkUpdate = async (list) => {
         });
 
         const url = Url(config.searchboxUrl);
+        logger.info('ELASTIC URL', url)
         let encode = Buffer.from(url.username+':'+url.password)
             .toString('base64');
         const elasticUrl = url.protocol+'//'+url.host+'/_bulk';
@@ -109,7 +160,7 @@ export const bulkUpdate = async (list) => {
             .set('Authorization','Basic '+ encode)
             .set('Content-Type', 'application/json')
             .send(body).then(response =>{ 
-                // console.log(response)
+                logger.info('-------------- ELASTIC RESPONSE - BULK UPDATE ------------', response.body)
                 return response.body
             });
     }

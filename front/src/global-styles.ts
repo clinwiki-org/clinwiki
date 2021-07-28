@@ -440,7 +440,7 @@ div.DraftEditor-editorContainer{
 }
 
 .grid > * {
-  background-color: rgba(111,41,97,.1);
+  background-color: #fff;
   border-radius: 5px;
   padding: 10px;
 }
@@ -461,7 +461,7 @@ div.DraftEditor-editorContainer{
 }
 
 .grid2 > * {
-  background-color: rgba(0,41,97,.1);
+  background-color: #fff;
   border-radius: 5px;
   padding: 10px;
 }
@@ -483,7 +483,7 @@ div.DraftEditor-editorContainer{
 }
 
 .grid3 > * {
-  background-color: rgba(111,41,97,.1);
+  background-color: #fff;
   border-radius: 5px;
   padding: 10px;
 }
@@ -505,7 +505,7 @@ div.DraftEditor-editorContainer{
 }
 
 .grid4 > * {
-  background-color: rgba(111,41,97,.1);
+  background-color: #fff;
   border-radius: 5px;
   padding: 10px;
 }

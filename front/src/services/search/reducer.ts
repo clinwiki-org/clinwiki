@@ -59,24 +59,32 @@ const searchReducer = (
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SEND:
             return {
                 ...state,
-                isFetchingAggBuckets: true,
+                // isFetchingAggBuckets: true,
             };
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SUCCESS:
             return {
                 ...state,
-                isFetchingAggBuckets: false,
+                // isFetchingAggBuckets: false,
                 aggBuckets: {
                     ...state.aggBuckets,
                     aggs: {
                         ...state.aggBuckets?.aggs,
-                        [action.payload.name]: action.payload.buckets,
+                        [action.payload.aggId]: action.payload.buckets,
                     },
+                },
+                aggBucketFilter: {
+                    ...state.aggBucketFilter,
+                    isFetchingCurrentAggBucket: false,
                 },
             };
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_ERROR:
             return {
                 ...state,
-                isFetchingAggBuckets: false,
+                // isFetchingAggBuckets: false,
+                aggBucketFilter: {
+                    ...state.aggBucketFilter,
+                    isFetchingCurrentAggBucket: false,
+                },
             };
 
         case types.FETCH_SEARCH_PAGE_CROWD_AGG_BUCKETS_SEND:
@@ -109,14 +117,28 @@ const searchReducer = (
                 isFetchingCrowdAggBuckets: true,
             };
         case types.FETCH_SEARCH_PAGE_OPEN_AGG_BUCKETS_SUCCESS:
-            // console.log("Payload",action.payload)
+            console.log('Payload', action.payload);
             let aggObject = {};
+            let crowdAggObject = {};
+
             action.payload.data.openAggBuckets.aggs.map((agg, index) => {
-                let aggFromIdArray = filter(
-                    x => x.name == agg.name,
-                    action.payload.aggIdArray
-                );
-                aggObject[aggFromIdArray[0].id] = agg.buckets;
+                // console.log(agg[0])
+                if (agg.name.substring(0, 3) == 'fm_') {
+                    let crowdAggFromIdArray = filter(
+                        x => `fm_${x.name}` == agg.name,
+                        action.payload.crowdAggIdArray
+                    );
+                    console.log(agg.name);
+                    console.log('PLZ AL HELP ME', crowdAggFromIdArray);
+                    crowdAggObject[crowdAggFromIdArray[0].id] = agg.buckets;
+                } else {
+                    let aggFromIdArray = filter(
+                        x => x.name == agg.name,
+                        action.payload.aggIdArray
+                    );
+                    console.log('PLZ AL HELP ME', aggFromIdArray);
+                    aggObject[aggFromIdArray[0].id] = agg.buckets;
+                }
             });
             return {
                 ...state,
@@ -126,6 +148,14 @@ const searchReducer = (
                     aggs: {
                         ...state.aggBuckets?.aggs,
                         ...aggObject,
+                        // ...crowdAggObject
+                    },
+                },
+                crowdAggBuckets: {
+                    ...state.crowdAggBuckets,
+                    aggs: {
+                        ...state.crowdAggBuckets?.aggs,
+                        ...crowdAggObject,
                     },
                 },
             };
@@ -138,27 +168,6 @@ const searchReducer = (
             return {
                 ...state,
                 isFetchingCrowdAggBuckets: true,
-            };
-        case types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_SUCCESS:
-            // console.log("Payload",action.payload)
-            let crowdAggObject = {};
-            action.payload.data.openCrowdAggBuckets.aggs.map((agg, index) => {
-                let aggFromIdArray = filter(
-                    x => `fm_${x.name}` == agg.name,
-                    action.payload.crowdAggIdArray
-                );
-                crowdAggObject[aggFromIdArray[0].id] = agg.buckets;
-            });
-            return {
-                ...state,
-                isFetchingCrowdAggBuckets: false,
-                crowdAggBuckets: {
-                    ...state.crowdAggBuckets,
-                    aggs: {
-                        ...state.crowdAggBuckets?.aggs,
-                        ...crowdAggObject,
-                    },
-                },
             };
         case types.FETCH_SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_ERROR:
             return {
@@ -416,11 +425,24 @@ const searchReducer = (
                 isExportingToCsv: false,
             };
         case types.BUCKET_FILTER:
-            let obj = {};
-            obj[action.id] = action.bucketsFilter;
+            let obj = {
+                ...state.aggBucketFilter,
+                isFetchingCurrentAggBucket: true,
+            };
+            let tempIslandConfig =
+                state.islandConfig || ({} as IslandConfigQuery);
+
+            obj[action.id] = action.bucketsState;
+            tempIslandConfig[action.id].order = {
+                sortKind: action.bucketsState.sortKind == 0 ? 'key' : 'count',
+                desc: action.bucketsState.desc,
+            };
+
             return {
                 ...state,
                 aggBucketFilter: obj,
+                islandConfig: tempIslandConfig,
+                // isFetchingAggBuckets: true,
             };
         case types.TOGGLE_AGG:
             let newIslandConfig =

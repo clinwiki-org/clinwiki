@@ -172,13 +172,13 @@ export const SEARCH_PAGE_AGG_BUCKETS_QUERY = `
     $url: String
     $configType: String
     $returnAll: Boolean
-    $bucketsWanted: [String!]
+    $aggBucketsWanted: VisibleOptions!
   ) {
     aggBuckets(
       url: $url
       configType: $configType
       returnAll: $returnAll
-      bucketsWanted: $bucketsWanted
+      aggBucketsWanted: $aggBucketsWanted
       params: {
         agg: $agg
         q: $q
@@ -249,6 +249,7 @@ export const SEARCH_PAGE_CROWD_AGG_BUCKETS_QUERY = `
 export const SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_QUERY = `
   query SearchPageOpenCrowdAggBucketsQuery(
     $agg: [String]
+    $crowdAgg: [String]
     $q: SearchQueryInput!
     $aggFilters: [AggFilterInput!]
     $crowdAggFilters: [AggFilterInput!]
@@ -256,24 +257,29 @@ export const SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_QUERY = `
     $pageSize: Int!
     $aggOptionsFilter: String
     $aggOptionsSort: [SortInput!]
+    $crowdAggOptionsSort: [SortInput!]
     $url: String
     $configType: String
     $returnAll: Boolean
-    $bucketsWanted: [VisibleOptions!]
+    $aggBucketsWanted: [VisibleOptions!]
+    $crowdBucketsWanted: [VisibleOptions!]
   ) {
-    openCrowdAggBuckets(
+    openAggBuckets(
       url: $url
       configType: $configType
       returnAll: $returnAll
-      bucketsWanted: $bucketsWanted
+      aggBucketsWanted: $aggBucketsWanted
+      crowdBucketsWanted: $crowdBucketsWanted
       params: {
         agg: $agg
+        crowdAgg: $crowdAgg
         q: $q
         sorts: []
         aggFilters: $aggFilters
         crowdAggFilters: $crowdAggFilters
         aggOptionsFilter: $aggOptionsFilter
         aggOptionsSort: $aggOptionsSort
+        crowdAggOptionsSort: $crowdAggOptionsSort
         page: $page
         pageSize: $pageSize
       }
@@ -292,6 +298,7 @@ export const SEARCH_PAGE_OPEN_CROWD_AGG_BUCKETS_QUERY = `
 export const SEARCH_PAGE_OPEN_AGG_BUCKETS_QUERY = `
   query SearchPageOpenAggBucketsQuery(
     $agg: [String]
+    $crowdAgg: [String]
     $q: SearchQueryInput!
     $aggFilters: [AggFilterInput!]
     $crowdAggFilters: [AggFilterInput!]
@@ -299,24 +306,29 @@ export const SEARCH_PAGE_OPEN_AGG_BUCKETS_QUERY = `
     $pageSize: Int!
     $aggOptionsFilter: String
     $aggOptionsSort: [SortInput!]
+    $crowdAggOptionsSort: [SortInput!]
     $url: String
     $configType: String
     $returnAll: Boolean
-    $bucketsWanted: [VisibleOptions!]
+    $aggBucketsWanted: [VisibleOptions!]
+    $crowdBucketsWanted: [VisibleOptions!]
   ) {
     openAggBuckets(
       url: $url
       configType: $configType
       returnAll: $returnAll
-      bucketsWanted: $bucketsWanted
+      aggBucketsWanted: $aggBucketsWanted
+      crowdBucketsWanted: $crowdBucketsWanted
       params: {
         agg: $agg
+        crowdAgg: $crowdAgg
         q: $q
         sorts: []
         aggFilters: $aggFilters
         crowdAggFilters: $crowdAggFilters
         aggOptionsFilter: $aggOptionsFilter
         aggOptionsSort: $aggOptionsSort
+        crowdAggOptionsSort: $crowdAggOptionsSort
         page: $page
         pageSize: $pageSize
       }

@@ -47,11 +47,11 @@ export default function GenericPageWrapper(props: Props) {
     const pageType = match.path == "/search/" ? "Search" : "Study"
     const schemaType = getClassForMode(pageType);
     const [fragmentName, fragment] = useFragment(schemaType, currentPage.template || '');
-    const [hasuraFragmentName, hasuraFragment] = useHasuraFragment('ctgov_studies', currentPage?.template || '');
+    const [hasuraFragmentName, hasuraFragment] = useHasuraFragment('ctgov_prod_studies', currentPage?.template || '');
 
     useEffect(() => {
         let searchParams = pageType == "Search" ? { ...data.data.searchParams } : null;
-        //let searchParams = pageType == "Search" ? { ...data.data.searchParams.searchParams } : null;
+
         const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(hasuraFragmentName, hasuraFragment)}`
         // const STUDY_QUERY = `${getStudyQuery(fragmentName, fragment)}`
         const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
@@ -70,7 +70,7 @@ export default function GenericPageWrapper(props: Props) {
         }
     }
     //console.log("STUDY DATA", studyData)
-    const title = microMailMerge(currentPage?.title, pageType == 'Study' ? studyData?.data?.ctgov_studies[0] :  searchData()) || "Add a Title";
+    const title = microMailMerge(currentPage?.title, pageType == 'Study' ? studyData?.data?.ctgov_prod_studies[0] :  searchData()) || "Add a Title";
 
     const islands = pageType == 'Study' ? studyIslands : searchIslands;
     if (pageType == 'Study' && !studyData) {
@@ -83,7 +83,7 @@ export default function GenericPageWrapper(props: Props) {
             </Helmet>
             { currentPage && studyData && <MailMergeView
                 template={currentPage?.template || ''}
-                context={ studyData?.data?.ctgov_studies? studyData?.data?.ctgov_studies[0]: searchData()}
+                context={ studyData?.data?.ctgov_prod_studies? studyData?.data?.ctgov_prod_studies[0]: searchData()}
                 islands={islands}
                 pageType={pageType}
             />}

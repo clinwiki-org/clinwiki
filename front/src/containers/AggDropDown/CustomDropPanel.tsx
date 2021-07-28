@@ -59,6 +59,27 @@ const NoFiltersMessage = () => {
       </div>
     </>)
 }
+
+const PlaceHolder = () => {
+  return (
+    <>
+      <div className="wrapper">
+        <div className="box square-placeholder">A</div>
+        <div className="box text-placeholder">A</div>
+      </div>
+    </>)
+}
+
+const LoadingMessage = () => {
+  return (
+    <>
+      <PlaceHolder />
+      <PlaceHolder />
+      <PlaceHolder />
+      <PlaceHolder />
+    </>)
+}
+
 class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPanelState> {
 
   // state ={
@@ -152,7 +173,6 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
 
     const { hasMore, buckets, handleLoadMore, field, loading } = this.props
     const showAllowMissing = field.showAllowMissing;
-    //console.log('BUCKETS FROM PANEL', buckets)
     //if (!this.props.isOpen) return
     if (
       field?.display === FieldDisplay.DATE_RANGE ||
@@ -225,7 +245,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
         return <BeatLoader />
       }
       if (this.props.buckets[0] === undefined) {
-        return <NoFiltersMessage />
+        return <LoadingMessage />
       }
       if (!showAllowMissing && this.props.buckets[0].key == "-99999999999" && this.props.buckets.length == 0) {
         return <NoFiltersMessage />
@@ -248,6 +268,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
             loadMore={this.props.handleLoadMore}
             hasMore={this.props.hasMore}
             useWindow={false}
+            initialLoad={false}
             loader={
               <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
                 <BeatLoader key="loader" />
@@ -282,66 +303,67 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
       )
 
     }
-    else {
-      if (this.props.buckets[0] === undefined && this.props.buckets.length !== 0) {
-        return <BeatLoader />
-      }
-      if (this.props.buckets.length == 0 || this.props.buckets[0] === undefined) {
-        return <NoFiltersMessage />
-      }
-      if (!showAllowMissing && this.props.buckets[0].key == "-99999999999" && this.props.buckets.length == 1) {
-        return <NoFiltersMessage />
+    // else {
+    //   if (this.props.buckets[0] === undefined && this.props.buckets.length !== 0) {
+    //     return <BeatLoader />
+    //   }
+    //   if (this.props.buckets.length == 0 || this.props.buckets[0] === undefined) {
+    //     return <NoFiltersMessage />
+    //   }
+    //   if (!showAllowMissing && this.props.buckets[0].key == "-99999999999" && this.props.buckets.length == 1) {
+    //     return <NoFiltersMessage />
 
-      }
-      return (
-        <>
-          {showAllowMissing && this.props.allowsMissing && (
-            <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()}>
-              <AllowMissingDropDownItem buckets={buckets} className="item-content" />
-            </div>
-          )}
-          <InfiniteScroll
-            pageStart={0}
-            loadMore={this.props.handleLoadMore}
-            hasMore={this.props.hasMore}
-            useWindow={false}
-            loader={
-              <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
-                <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />
-              </div>
-            }>
-            {this.props.buckets && this.props.buckets
-              .filter(
-                bucket =>
-                  !bucketKeyIsMissing(bucket) &&
-                  (this.props.field.visibleOptions.length
-                    ? this.props.field.visibleOptions.includes(bucket.key)
-                    : true)
-              )
-              .map((item) => {
-                const bucketKeyValuePair = field.bucketKeyValuePairs ? find(propEq('key', item.key))(field.bucketKeyValuePairs) : false;
-                return (
-                  this.props.isSelected(item.key) ? null :
-                    <div
-                      key={item.key + 'buckets'}
-                      onClick={() => this.props.selectItem(item)}
-                      className={
-                        this.props.selectedItem === item
-                          ? "selected select-item"
-                          : "select-item"
-                      }
-                    >
-                      <div className="item-content">
-                        {/* {this.renderPreValue(item.key)} */}
-                        <span>{this.renderValue(item, bucketKeyValuePair)}</span>
-                      </div>
-                    </div>
-                )
-              })}
-          </InfiniteScroll>
-        </>
-      )
-    }
+    //   }
+    //   return (
+    //     <>
+    //       {showAllowMissing && this.props.allowsMissing && (
+    //         <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()}>
+    //           <AllowMissingDropDownItem buckets={buckets} className="item-content" />
+    //         </div>
+    //       )}
+    //       <InfiniteScroll
+    //         pageStart={0}
+    //         loadMore={this.props.handleLoadMore}
+    //         hasMore={this.props.hasMore}
+    //         useWindow={false}
+    //         initialLoad={false}
+    //         loader={
+    //           <div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
+    //             <BeatLoader key="loader" color={this.props.isPresearch ? '#000' : '#fff'} />
+    //           </div>
+    //         }>
+    //         {this.props.buckets && this.props.buckets
+    //           .filter(
+    //             bucket =>
+    //               !bucketKeyIsMissing(bucket) &&
+    //               (this.props.field.visibleOptions.length
+    //                 ? this.props.field.visibleOptions.includes(bucket.key)
+    //                 : true)
+    //           )
+    //           .map((item) => {
+    //             const bucketKeyValuePair = field.bucketKeyValuePairs ? find(propEq('key', item.key))(field.bucketKeyValuePairs) : false;
+    //             return (
+    //               this.props.isSelected(item.key) ? null :
+    //                 <div
+    //                   key={item.key + 'buckets'}
+    //                   onClick={() => this.props.selectItem(item)}
+    //                   className={
+    //                     this.props.selectedItem === item
+    //                       ? "selected select-item"
+    //                       : "select-item"
+    //                   }
+    //                 >
+    //                   <div className="item-content">
+    //                     {/* {this.renderPreValue(item.key)} */}
+    //                     <span>{this.renderValue(item, bucketKeyValuePair)}</span>
+    //                   </div>
+    //                 </div>
+    //             )
+    //           })}
+    //       </InfiniteScroll>
+    //     </>
+    //   )
+    // }
   }
 }
 
