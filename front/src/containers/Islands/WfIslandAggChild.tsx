@@ -12,13 +12,17 @@ import RichTextEditor, { EditorValue } from 'react-rte';
 import { deleteCrowdKeyValueId, insertCrowdKeyValueId, updateCrowdKeyValueId } from '../../services/crowdKeys/actions'
 import { deleteLabelMutation, fetchSuggestedLabels, setShowLoginModal, upsertLabelMutation } from '../../services/study/actions'
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useRouteMatch } from 'react-router-dom';
+import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 
 import { BeatLoader } from 'react-spinners';
+import { CurrentUserQuery_me } from 'services/user/model/CurrentUserQuery';
 import CustomDropDown from 'containers/AggDropDown/CustomDrop';
 import HtmlToReact from 'html-to-react';
 import { RootState } from 'reducers';
 import SortKind from 'containers/AggDropDown/SortKind';
 import ThemedButton from 'components/StyledComponents/index';
+import styled from 'styled-components';
 
 interface Props {
   aggId?: string;
@@ -26,7 +30,17 @@ interface Props {
   suggestedLabels: any;
 }
 
+const Toolbar = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+`;
+
 function WfIslandAggChild(props: Props) {
+
+  let match = useRouteMatch();
+  let history = useHistory();
+  const params = useUrlParams();
 
   const { aggId, nctId, suggestedLabels } = props;
   const dispatch = useDispatch();
@@ -52,6 +66,8 @@ function WfIslandAggChild(props: Props) {
 
   const [editorText, setEditorText] = useState(crowdKeyValueTitle ? crowdKeyValueTitle : "Enter title value");
   const [richEditorText, setRichEditorText] = useState(RichTextEditor.createValueFromString(editorText, 'markdown'));
+  const [isEditing, setIsEditing] = useState(false);
+
 
   useEffect(() => {
     if (currentAgg?.display === "TEXT_EDITOR" && crowdKeyValueData.length > 0) {
@@ -116,9 +132,14 @@ function WfIslandAggChild(props: Props) {
     setRichEditorText(richEditorText);
   };
 
+  const handleEdit = () => {
+    setIsEditing(true)
+  };
+
   const handleEditSubmit = () => {
     let rteText = richEditorText.toString('markdown');
     if (!user || isUpsertingLabel) {
+      setIsEditing(false)
       !user && dispatch(setShowLoginModal(true))
       return console.log(!user ? "Sorry, must be logged in to do this" : "Sorry still saving value")
     }
@@ -126,13 +147,64 @@ function WfIslandAggChild(props: Props) {
       let idToUpdate = crowdKeyValueData[0].id
       //let updatedContent = richEditorText//.toString('markdown');
       dispatch(updateCrowdKeyValueId(idToUpdate, rteText, props.nctId))
+      setIsEditing(false)
+
       return;
     }
     dispatch(insertCrowdKeyValueId(props.nctId, rteText, currentAgg.name, user.id, false, false))
+    setIsEditing(false)
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false)
+    //history.push(`${match.url}${queryStringAll(params)}`);
   };
 
 
   const parser = new HtmlToReact.Parser();
+
+  const renderToolbar = (
+    user: CurrentUserQuery_me | null | undefined,
+    isEditing: boolean
+  ) => {
+    const isAuthenticated = user !== null;
+    if (!isAuthenticated) return false;
+    //const editorTextState = getEditorText();
+    // const editorTextData =
+    //   data && data.wiki_pages[0] && data.wiki_pages[0].text // data.study && data.study.wikiPage && data.study.wikiPage.content;
+
+    let editMessage = `Changes not saved. Are you sure you want to leave while editing?`;
+    return (
+      <Toolbar>
+        {isEditing ?
+          <div>
+            <ThemedButton
+              onClick={() => { editMessage = "Save changes?"; handleCancelEdit(); }}
+              style={{ marginLeft: '10px', background: 'white', color: '#6BA5D6', border: "1px solid #6BA5D6" }}>
+              Cancel <FontAwesome name="X" />
+            </ThemedButton>
+            <ThemedButton
+              onClick={() => { editMessage = "Save changes?"; handleEditSubmit(); }}
+              // disabled={editorTextState === editorTextData}
+              style={{ marginLeft: '10px' }}>
+              Save <FontAwesome name="pencil" />
+            </ThemedButton>
+          </div> :
+          <div>
+            <ThemedButton
+              type="button"
+              onClick={isAuthenticated ? () => handleEdit() : () => setShowLoginModal(true)}
+              style={{ marginLeft: '10px' }}>
+              Edit <FontAwesome name="edit" />
+            </ThemedButton>
+          </div>
+        }
+
+
+
+      </Toolbar>
+    );
+  };
 
   if (currentAgg?.display === "TEXT_EDITOR") {
     let editorValue = editorText;
@@ -160,7 +232,8 @@ function WfIslandAggChild(props: Props) {
         </ThemedPresearchHeader>
         <Panel.Body>
           <RichTextEditor
-            readOnly={!user}
+            //readOnly={!user}
+            readOnly={!isEditing}
             onChange={handleRichEditorChange}
             value={richEditorText || RichTextEditor.createEmptyValue()}
           />
@@ -172,12 +245,17 @@ function WfIslandAggChild(props: Props) {
             disabled={!user}
           /> */}
         </Panel.Body>
-        <ThemedButton
+
+        {renderToolbar(user, isEditing)}
+
+
+        {/* <ThemedButton
           onClick={() => { handleEditSubmit(); }}
           disabled={!user} //{editorTextState === editorTextData}
           style={{ margin: '7px' }}>
           Save <FontAwesome name="save" />
-        </ThemedButton>
+        </ThemedButton> */}
+
       </Panel>
     )
   }
