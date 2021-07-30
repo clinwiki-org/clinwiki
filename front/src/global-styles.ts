@@ -1,5 +1,7 @@
-import { createGlobalStyle } from 'styled-components';
 import withTheme, { Theme } from 'containers/ThemeProvider/ThemeProvider';
+
+import { createGlobalStyle } from 'styled-components';
+
 /* eslint no-unused-expressions: 0 */
 
 export default withTheme(createGlobalStyle`
@@ -22,7 +24,7 @@ label {
   line-height: 1.5em;
 }
 .hr {
-  background: ${(props:any) => props.theme.crumbs.crumbBackground};
+  background: ${(props: any) => props.theme.crumbs.crumbBackground};
 }
 .btn, button, .-btn{
   border: 0px;
@@ -32,7 +34,7 @@ label {
   margin: 0 0.5em 0.5em 0;
 }
 .btn, .-btn{
-  background: ${(props:any) => props.theme.crumbs.crumbBackground};
+  background: ${(props: any) => props.theme.crumbs.crumbBackground};
   color: #fff !important;
   padding: 10px 15px;
   display: inline-block;
@@ -374,6 +376,7 @@ div.DraftEditor-editorContainer{
     position: relative;
     display: inline-block;
     z-index: 10000;
+    font-size: medium;
   }
   
   .mm-tooltip .mm-tooltiptext {
@@ -387,6 +390,7 @@ div.DraftEditor-editorContainer{
     opacity: 0;
     transition: .5s;
     padding: 5px;
+    font-size: 8px;
   }
   
   .mm-tooltip:hover .mm-tooltiptext {

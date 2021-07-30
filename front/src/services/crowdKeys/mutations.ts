@@ -23,7 +23,7 @@ mutation DeleteCrowdKeyValueId($crowd_key: String!, $crowd_key_value_id_associat
 `;
 
 export const UPDATE_CROWD_KEY_VALUE_ID = `
-mutation updateCrowdKeyValueId($crowdKeyValueIdPK: bigint!, $crowdValue: String!) {
+mutation updateCrowdKeyValueId($crowdKeyValueIdPK: Int!, $crowdValue: String!) {
   update_crowd_key_value_ids_by_pk(pk_columns: {id: $crowdKeyValueIdPK}, _set: {crowd_value: $crowdValue}) {
     id
     updated_at

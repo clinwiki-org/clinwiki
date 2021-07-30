@@ -1,37 +1,40 @@
-import * as React from 'react';
-import { FieldDisplay } from '../../services/site/model/InputTypes';
-import styled from 'styled-components';
-import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import * as FontAwesome from 'react-fontawesome';
-import { BeatLoader } from 'react-spinners';
 import * as InfiniteScroll from 'react-infinite-scroller';
-import { connect } from 'react-redux';
+import * as React from 'react';
+
 import {
+  PresearchTitle,
+  ThemedFacetAgg,
+  ThemedFacetHeader,
+  ThemedFacetTitle,
   ThemedPresearchCard,
   ThemedPresearchHeader,
-  PresearchTitle,
-  ThemedFacetHeader,
-  ThemedFacetAgg,
-  ThemedFacetTitle,
 } from 'components/StyledComponents';
-import Filter from './Filter';
-import SortKind from './SortKind';
+import {
+  find,
+  findIndex,
+  propEq
+} from 'ramda';
+
 import {
   AggBucket,
 } from '../SearchPage/Types';
-import aggToField from 'utils/aggs/aggToField';
-import { capitalize } from 'utils/helpers';
-import {
-  propEq,
-  findIndex,
-  find
-} from 'ramda';
-import withTheme from 'containers/ThemeProvider';
-import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
+import { BeatLoader } from 'react-spinners';
 import CustomDropCrumbs from './CustomDropCrumbs';
 import CustomDropPanel from './CustomDropPanel';
+import { FieldDisplay } from '../../services/site/model/InputTypes';
+import Filter from './Filter';
+import HtmlToReact from 'html-to-react';
+import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
+import SortKind from './SortKind';
+import aggToField from 'utils/aggs/aggToField';
+import { capitalize } from 'utils/helpers';
+import { connect } from 'react-redux';
 import { settings } from 'cluster';
+import styled from 'styled-components';
+import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
+import withTheme from 'containers/ThemeProvider';
 
 interface CustomDropDownProps {
   field: SiteViewFragment_search_aggs_fields | any;
@@ -299,8 +302,8 @@ const SelectBoxBox = styled.div`
 
   }
 }
-
 `
+
 const ThemedSelectBox = withTheme(SelectBoxBox)
 class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDownState> {
   //@ts-ignore
@@ -482,6 +485,12 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     const title = aggToField(this.props.field.name, configuredLabel);
     const showAllowMissing = this.props.field.showAllowMissing;
 
+    const parser = new HtmlToReact.Parser();
+    const reactElementTitle = parser.parse(configuredLabel)
+
+    // Using the aggtoField function {capitalize(title)}
+
+
     if (this.props.buckets == undefined && this.props.isOpen) {
       return <BeatLoader />
     }
@@ -495,7 +504,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
               {/* {this.props.aggKind === 'crowdAggs'
                        ? configuredLabel
                        : title}         */}
-              {capitalize(title)}
+              {reactElementTitle}
               {this.props.field.display == "CRUMBS_ONLY" ? (null) : (<FontAwesome name={icon} style={{ display: 'flex', marginLeft: 'auto' }} />)}
             </ThemedTitle>
             {this.props.isPresearch ? (
