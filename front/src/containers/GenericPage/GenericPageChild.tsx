@@ -84,24 +84,16 @@ export default function GenericPageWrapper(props: Props) {
 
         switch (pageType) {
             case 'Study':
-
                 dispatch(fetchStudyPageHasura(props.arg ?? "", HASURA_STUDY_QUERY));
-
                 return
             case 'Search_Study':
-
                 dispatch(fetchSearchPageMM(searchParams.searchParams, SEARCH_QUERY));
-
                 return
             case 'Search_Condition':
-
                 dispatch(fetchSearchPageMM(searchParams.searchParams, HASURA_SEARCH_QUERY));
-
                 return
             case 'Condition':
-
                 dispatch(fetchStudyPageHasuraDIS(props.arg ?? "", HASURA_STUDY_QUERY_DIS));
-
                 return
             default:
                 console.log("No PAGE TYPE ")
@@ -133,7 +125,7 @@ export default function GenericPageWrapper(props: Props) {
                     recordsTotal: studyData?.data?.searchDIS.recordsTotal
                 }
             case 'Condition':
-                return
+                return studyData?.data?.disyii2_prod_20210704_2_tbl_conditions[0]
             default:
                 console.log("No PAGE TYPE ")
                 return

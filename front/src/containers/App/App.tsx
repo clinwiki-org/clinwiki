@@ -60,6 +60,9 @@ class App extends React.PureComponent<AppProps> {
                 <Route path="/study/:nctId"
                   render={(props) => <GenericPageWrapper arg={props.match.params.nctId} />}
                 />
+                <Route path="/condition/:conditionId"
+                  render={(props) => <GenericPageWrapper arg={props.match.params.conditionId} />}
+                />
                 <Route path="/hasurastudy/:nctId"
                   render={(props) => <HasuraGenericPage arg={props.match.params.nctId} />}
                 />

@@ -32,7 +32,6 @@ export function getSearchQueryDIS(name: string, frag: string) {
   query Search${name}QueryDIS($params:SearchInput!) {
     searchDIS(params: $params) {
       diseases {
-        conditionId
         ...${name}
       }
       recordsTotal
