@@ -122,7 +122,9 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
     };
 
     const { bucketTemplate } = this.props.field;
-    const compiled = bucketTemplate && this.compileTemplate(bucketTemplate)
+    const  DEFAULT_BUCKET_TEMPLATE = `${key} (${docCount})`;
+    
+    const compiled =  this.compileTemplate(bucketTemplate || DEFAULT_BUCKET_TEMPLATE)
     const raw = this.applyTemplate(compiled, bucketContext)
 
     const parser = new HtmlToReact.Parser();

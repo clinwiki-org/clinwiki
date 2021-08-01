@@ -481,8 +481,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     const ThemedHeader = this.props.isPresearch ? ThemedPresearchHeader : ThemedFacetHeader
     //Find why this is not themedPresearchTitle 
     const ThemedTitle = this.props.isPresearch ? PresearchTitle : ThemedFacetTitle
-    let configuredLabel = this.props.field?.displayName || '';
-    const title = aggToField(this.props.field.name, configuredLabel);
+    let configuredLabel = this.props.field?.displayName || aggToField(this.props.field.name);
     const showAllowMissing = this.props.field.showAllowMissing;
 
     const parser = new HtmlToReact.Parser();
