@@ -135,7 +135,8 @@ const getAllDocuments = async (primaryKey) => {
 
 console.log("RESULTS FOR ALL DOPCS", result)
 
-  return hasuraInstance == "dis" ? result.data.disyii2_prod_20210704_2_tbl_conditions.map( row => row.condition_id): result.data.ctgov_prod_studies.map( row => row.nct_id);
+  return hasuraInstance == "dis" ? result.data.disyii2_prod_20210704_2_tbl_conditions.map( row => row.condition_id)
+  : result.data.ctgov_prod_studies.map( row => row.nct_id);
 };
 
 
@@ -355,10 +356,18 @@ export const reindexDocument = async (payload) => {
 
   const docKey = payload.primaryKey;
   const idList = payload.primaryKeyList;
-  const gqlQuery = payload.indexName == "studies_development" ? SAMPLE_QUERY_CLINWIKI(docKey) : SAMPLE_QUERY_DIS(docKey);
-  const indexName = payload.indexName
+  const indexName = payload.indexName;
 
-  const results = await getBulkDocuments(docKey, idList, gqlQuery);
+  const gqlQuery = (index) =>{
+    if( index == "studies_development" || index == "studies_production"){
+      return SAMPLE_QUERY_CLINWIKI(docKey);
+    }
+    if( index == "dis_development" || index == "dis_production"){
+      return SAMPLE_QUERY_DIS(docKey);
+    }
+  }
+
+  const results = await getBulkDocuments(docKey, idList, gqlQuery(indexName));
   // console.log(util.inspect(results, false, null, true))
 
   let documents = [];
@@ -397,8 +406,4 @@ export const reindexDocument = async (payload) => {
   console.log("-------------------");
   console.log("Bulk Upsert Response")
   console.log(util.inspect(response, false, null, true));
-
-
-
-
 }

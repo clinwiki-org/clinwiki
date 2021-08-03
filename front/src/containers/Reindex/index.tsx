@@ -29,15 +29,25 @@ const handleReindexAll = (indexKind)=>{
 
     //indeces should come from .env ideally
     if(indexKind == "STUDY"){
+        window.location.hostname.includes('localhost') ? 
         dispatch(reindexAllDocuments(
             'nct_id',
             'studies_development'
+        )): 
+        dispatch(reindexAllDocuments(
+            'nct_id',
+            'studies_production'
         ));
     }
     if(indexKind == "CONDITION"){
+        window.location.hostname.includes('localhost') ? 
         dispatch(reindexAllDocuments(
             'condition_id',
             'dis_development'
+        )):
+        dispatch(reindexAllDocuments(
+            'condition_id',
+            'dis_production'
         ));
     }
 }
