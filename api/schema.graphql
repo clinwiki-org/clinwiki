@@ -1181,6 +1181,8 @@ type Mutation {
   reindexAll: String
   reindexStudy(input: String): String
   reindexDocument(primaryKey: String, primaryKeyList: String, indexName: String): String
+  reindexAllDocuments(primaryKey: String, indexName: String): String
+  
 }
 
 type OverallOfficial {

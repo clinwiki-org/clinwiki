@@ -10,6 +10,21 @@ const CHUNK_SIZE = 1000;
 
 let IS_RUNNING = false;
 
+const QUERY_ALL_CONDITION_IDS = `
+query MyQuery {
+  disyii2_prod_20210704_2_tbl_conditions {
+    condition_id
+  }
+}
+`
+const QUERY_ALL_NCT_IDS = `
+query MyQuery {
+  ctgov_prod_studies {
+    nct_id
+  }
+}
+`
+
 const SAMPLE_QUERY_CLINWIKI = (docKey) => `
 
 query MyQuery(
@@ -101,6 +116,50 @@ export const genericDocumentJob = async (args) => {
         const idList = bulkList[j];
         // Queue these up for reindexing
         await enqueueJob(JOB_TYPES.DOCUMENT_REINDEX, { ...args, primaryKeyList: idList });
+      }
+      logger.info('Job GENERIC Doc. Finished.')
+      IS_RUNNING = false;
+    }
+  }
+  catch (err) {
+    logger.error(err);
+    IS_RUNNING = false;
+  }
+};
+
+const getAllDocuments = async (primaryKey) => {
+  const hasuraInstance =  primaryKey == "nct_id" ? "studies":"dis";
+  const HASURA_QUERY = hasuraInstance == "dis" ? QUERY_ALL_CONDITION_IDS: QUERY_ALL_NCT_IDS
+  console.log("GETTING ALL DOCS");
+  let result = await queryHasura(HASURA_QUERY, {} ,hasuraInstance );
+
+console.log("RESULTS FOR ALL DOPCS", result)
+
+  return hasuraInstance == "dis" ? result.data.disyii2_prod_20210704_2_tbl_conditions.map( row => row.condition_id): result.data.ctgov_prod_studies.map( row => row.nct_id);
+};
+
+
+
+
+export const allGenericDocumentsJob = async (args) => {
+  try {
+    if (!IS_RUNNING) {
+      IS_RUNNING = true;
+      logger.info('Starting Reindex all');
+
+      const genericDocumentIds = await getAllDocuments(args.primaryKey);
+
+
+      const bulkList = chunkList(genericDocumentIds, CHUNK_SIZE);
+      const docKey = args.primaryKey
+      const indexName = args.indexName
+      // console.log("LIST", bulkList)
+      
+      for (let j = 0; j < bulkList.length; j++) {
+        const idList = bulkList[j];
+        console.log(docKey, indexName)
+        // Queue these up for reindexing
+        await enqueueJob(JOB_TYPES.DOCUMENT_REINDEX, { ...args, primaryKeyList: idList, primaryKey: docKey, indexName: indexName });
       }
       logger.info('Job GENERIC Doc. Finished.')
       IS_RUNNING = false;
@@ -206,7 +265,10 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
               }
             } else {
               for (const [key, value] of Object.entries(doc)) {
-                currentObject[key] = [...currentObject[key], value]
+                // console.log("KEY KEY", currentObject[key])
+                let currentValue = currentObject[key]
+                let valueTobeAdded = [value]
+                currentObject[key] = valueTobeAdded.concat(currentValue)
               }
             }
             // console.log("KURENT", currentObject)
@@ -233,6 +295,9 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
               }));
       }
 
+      if(!data){
+        return
+      }
       //handles array values such as facilities
       if (data.map) {
         //Async hell 
@@ -294,12 +359,12 @@ export const reindexDocument = async (payload) => {
   const indexName = payload.indexName
 
   const results = await getBulkDocuments(docKey, idList, gqlQuery);
-  console.log(util.inspect(results, false, null, true))
+  // console.log(util.inspect(results, false, null, true))
 
   let documents = [];
 
-  if(payload.indexName == "studies_development"){
-    for (let i = 0; i < results.data.ctgov_prod_studies.length; i++) {
+  if(payload.indexName == "studies_development" || payload.indexName ==  "studies_production"){
+    for (let i = 0; i < results?.data?.ctgov_prod_studies.length; i++) {
       let document = results.data.ctgov_prod_studies[i];
 
       let mappedDoc = await getDocumentMapping(document);
@@ -310,9 +375,9 @@ export const reindexDocument = async (payload) => {
       documents.push(mappedDoc);
     }
   } 
-  if(payload.indexName == "dis_development"){
+  if(payload.indexName == "dis_development" || payload.indexName ==  "dis_production"){
 
-    for (let i = 0; i < results.data.disyii2_prod_20210704_2_tbl_conditions.length; i++) {
+    for (let i = 0; i < results?.data?.disyii2_prod_20210704_2_tbl_conditions?.length; i++) {
       let document = results.data.disyii2_prod_20210704_2_tbl_conditions[i];
       
       let mappedDoc = await getDocumentMapping(document);
