@@ -27,7 +27,7 @@ export default function MailMerge(props: Props) {
     props.onTemplateChanged(before + templateString + after);
   };
   const style = { ...defaultStyle, ...props.style };
-  //console.log('sample ', props.sample)
+//Preview commented out as was displaying inconsistently 
   return (
     <>
       <div style={style}>
@@ -38,12 +38,13 @@ export default function MailMerge(props: Props) {
           onCursorMove={setCursorPosition}
         />
       </div>
-      <View
+      {/* <View
         style={{ border: '2px solid black' }}
         template={template}
         context={props.sample}
         islands={props.islands}
-      />
+        pageType={props.pageType}
+      /> */}
     </>
   );
 }
