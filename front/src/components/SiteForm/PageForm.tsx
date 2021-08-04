@@ -84,9 +84,12 @@ export default function PageForm(props: Props) {
   const pageViewSaveSuccessMessage = useSelector((state: RootState) => state.study.updatePageViewSuccessMessage);
 
   const stringToIntPageType = (pageType: any) => {
-    if (pageType === 'hasuraStudy' || 1) return 1
-    if (pageType === 'search' || 2) return 2
-    else return 0
+    switch(pageType){
+      case 'hasuraStudy':
+        return 1
+      case 'search':
+        return 2
+    }
   }
 
   const dispatch = useDispatch();
@@ -119,13 +122,12 @@ export default function PageForm(props: Props) {
 
   const updateMode = mode => {
     setMode(mode);
-    if (mode === 'Study') {
-      setNctOrSearchHash(default_nctid);
-    }
     if (mode === 'Search') {
+      setPageType('search');
       setNctOrSearchHash(default_hash);
     }
     if (mode === 'Hasura Study') {
+      setPageType('hasuraStudy');
       setNctOrSearchHash(default_hash);
     }
 
