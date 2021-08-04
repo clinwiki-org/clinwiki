@@ -2,6 +2,7 @@ import Handlebars from 'handlebars';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { link } from 'fs';
 import {ThemedSearchCard} from 'components/StyledComponents';
+import moment from 'moment';
 
 export function registerHandlebarsHelpers() {
   Handlebars.registerHelper('stars', (value: number) => {
@@ -73,3 +74,8 @@ export function registerHandlebarsHelpers() {
     }
   });
 }
+Handlebars.registerHelper('formatDate', function(dateString) {
+  return new Handlebars.SafeString(
+      moment(dateString).format("MM/DD/YYYY").toUpperCase()
+  );
+});
