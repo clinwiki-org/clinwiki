@@ -67,7 +67,7 @@ const AuthHeader = (props) => {
 
 
   let subdomain = window.location.host.split('.')[1] ? window.location.host.split('.')[0] : "default";
-  if (subdomain == "experimental" || subdomain == "staging" || subdomain == "clinwiki-node" || subdomain == "app") {
+  if (subdomain == "experimental" || subdomain == "staging" || subdomain == "clinwiki-prod" || subdomain == "app") {
     subdomain = "default"
   }
 
