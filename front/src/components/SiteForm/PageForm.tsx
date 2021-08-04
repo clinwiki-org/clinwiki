@@ -14,7 +14,7 @@ import Toast from 'components/Toast';
 import HasuraMailMergeFormControl from 'components/MailMerge/HasuraMailMergeFormControl';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {RootState} from 'reducers';
+import { RootState } from 'reducers';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 15px;
@@ -61,26 +61,29 @@ export default function PageForm(props: Props) {
   const default_hash = 'gELcp_Fb'
 
   const intToStringPageType = (pageType: number) => {
-    if (pageType === 0 || 'study') return 'search'
-    if (pageType === 1 || 'hasuraStudy') return 'study'
-    if (pageType === 2 || 'search') return 'hasuraStudy'
-    else return "study"
+    switch (pageType) {
+      case 1:
+        return 'hasuraStudy';
+      case 2:
+        return 'search';
+      default:
+        return 'hasuraStudy';
+    }
+
   }
 
-  //console.log("PAGE FORM PAGE TYPE", page)
 
   const [url, setUrl] = useState(page.url);
   const [title, setTitle] = useState(page.title);
-  const [pageType, setPageType] = useState(intToStringPageType(page?.page_type))
+  const [pageType, setPageType] = useState(intToStringPageType(page.page_type))
   const [template, setTemplate] = useState(page.template);
   const [isDefault, setDefault] = useState(page.default);
-  const [mode, setMode] = useState(intToStringPageType(page?.page_type));
+  const [mode, setMode] = useState(intToStringPageType(page.page_type));
   const theme = useTheme();
   let [nctOrSearchHash, setNctOrSearchHash] = useState(default_nctid);
   const pageViewSaveSuccessMessage = useSelector((state: RootState) => state.study.updatePageViewSuccessMessage);
 
   const stringToIntPageType = (pageType: any) => {
-    if (pageType === 'study' || 0) return 0
     if (pageType === 'hasuraStudy' || 1) return 1
     if (pageType === 'search' || 2) return 2
     else return 0
@@ -89,28 +92,15 @@ export default function PageForm(props: Props) {
   const dispatch = useDispatch();
   let input = { id: page.id, title, url, template, default: isDefault, pageType: stringToIntPageType(pageType) };
 
-  const updatePageType = type => {
-    if (type === 'Study') setPageType("study");
-    if (type === 'Hasura Study') setPageType("hasuraStudy");
-  };
-
-  const dropDownTitle = type => {
-    let title = ""
-    if (type === 'study') { title = "Study" }
-    if (type === 'hasuraStudy') { title = "Hasura Study" }
-    return title;
-  };
-
   const handleSavePageView = () => {
     dispatch(updatePageViewHasura(props.siteId, input))
   }
 
   useEffect(() => {
     if (pageViewSaveSuccessMessage) {
-    toast(pageViewSaveSuccessMessage);
+      toast(pageViewSaveSuccessMessage);
     }
-  },[pageViewSaveSuccessMessage])
-
+  }, [pageViewSaveSuccessMessage]);
   const selectedMailMergeType =
     pageType === 'hasuraStudy' ?
       <HasuraMailMergeFormControl
@@ -130,15 +120,12 @@ export default function PageForm(props: Props) {
   const updateMode = mode => {
     setMode(mode);
     if (mode === 'Study') {
-      setPageType('study');
       setNctOrSearchHash(default_nctid);
     }
     if (mode === 'Search') {
-      setPageType('search');
       setNctOrSearchHash(default_hash);
     }
     if (mode === 'Hasura Study') {
-      setPageType('hasuraStudy');
       setNctOrSearchHash(default_hash);
     }
 
@@ -146,8 +133,8 @@ export default function PageForm(props: Props) {
 
   return (
     <div style={{ padding: '10px' }}>
-      
-      <ToastContainer/>
+
+      <ToastContainer />
       <label>Url</label>
       {formControl('Url', url, setUrl)}
       <label>Default?</label>
@@ -178,9 +165,9 @@ export default function PageForm(props: Props) {
             marginBottom: '10px',
             background: theme?.button,
           }}>
-          <MenuItem onClick={_ => updateMode("Study")}>Study</MenuItem>
-          <MenuItem onClick={_ => updateMode("Search")}>Search</MenuItem>
-          <MenuItem onClick={_ => updateMode("Hasura Study")}>Hasura Study</MenuItem>
+          {/* <MenuItem onClick={_ => updateMode("Study")}>Study</MenuItem> */}
+          <MenuItem onClick={() => updateMode("Search")}>Search</MenuItem>
+          <MenuItem onClick={() => updateMode("Hasura Study")}>Hasura Study</MenuItem>
         </DropdownButton>
         <FormControl
           placeholder="Select an nctid"
