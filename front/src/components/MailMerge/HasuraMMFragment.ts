@@ -84,7 +84,9 @@ function tokensToGraphQLOb(tags: string[]) {
           parts[0] == 'querystring' ||
           parts[0] == '$LEFT' ||
           parts[0] == '$RIGHT' ||
-          parts[0] == '$TRUNCATE'
+          parts[0] == '$TRUNCATE' || 
+          parts[0] == 'formatDate'
+
         ) {
 
         } else {
