@@ -160,19 +160,12 @@ export default function FacilityIsland(props: Props) {
   };
 
   const dispatch = useDispatch();
-  /*  const { data: facilityData } = useQuery<FacilitiesPageQuery>(QUERY, {
-      variables: { nctId },
-    });
-  */
 
-  //console.log (state.study)
   useEffect(() => {
 
     dispatch(fetchFacilitiesHasuraPage(props.nctId || ""));
-    //dispatch(fetchFacilitiesPage(props.nctId || ""));
   }, [dispatch, nctId]);
 
-  //const facilityData = useSelector((state: RootState) => state.study.facilitiesPage);
 
   const facilityData = useSelector((state: RootState) => state.study.facilitiesPageHasura);
 

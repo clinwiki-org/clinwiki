@@ -189,7 +189,7 @@ const IslandAggChild = (props: Props) => {
     searchParams[grouping]
   );
 
-  const desc = currentAgg.order.desc
+  const desc = currentAgg?.order?.desc
   const sortKind = currentAgg?.order?.sortKind == "count" ? SortKind.Number : SortKind.Alpha
   //helper functions\
   const getFullPagesCount = buckets => Math.floor(length(buckets) / PAGE_SIZE);
