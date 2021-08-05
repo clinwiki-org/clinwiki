@@ -49,7 +49,7 @@ function WfIslandAggChild(props: Props) {
   const isLoading = useSelector((state: RootState) => state.study.isFetchingSuggestedLables);
   const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
   const user = useSelector((state: RootState) => state.user.current);
-  const isUpsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel)
+  const isUpsertingLabel = useSelector((state: RootState) => state.crowdKeys.isUpdatingCrowdKeyValueId)
 
   let getCurrentAgg = () => {
     let jsonConfig = islandConfig
