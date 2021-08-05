@@ -63,6 +63,9 @@ export const aactStudyReindex = async (payload) => {
     // console.log(util.inspect(response, false, null, true));
     await sendBriefSummaries(idList);
     await sendConditions(idList);
+    //adding browse_mesh tables to restor
+    await sendBrowseConditions(idList);
+    await sendBrowseInterventions(idList);
     await enqueueJob(JOB_TYPES.GEOCODE_LOCATIONS,{studies: idList});
     logger.info("Bulk update complete.");
 
@@ -121,6 +124,40 @@ const sendConditions = async (idList) => {
         const study = {
             nct_id: s.nct_id,
             conditions: s.condi
+        };
+        studies.push(study);
+    }
+    await bulkUpdate(studies);
+}
+//adding browse_conditions and browse_interventions
+const sendBrowseConditions = async (idList) => {
+    let params = idList.map( (id,index) => '$'+(index+1));
+    const query = 'select nct_id,array_agg(mesh_term) mesh_term from browse_conditions where nct_id in ('+params.join(',')+') group by nct_id';
+    const results = await queryAACT(query,idList);
+    
+    let studies = [];
+    for(let i=0;i<results.rowCount;i++) {
+        const s = results.rows[i];
+        const study = {
+            nct_id: s.nct_id,
+            browse_conditions_mesh_term: s.mesh_term
+        };
+        studies.push(study);
+    }
+    await bulkUpdate(studies);
+}
+
+const sendBrowseInterventions = async (idList) => {
+    let params = idList.map( (id,index) => '$'+(index+1));
+    const query = 'select nct_id,array_agg(mesh_term) mesh_term from browse_interventions where nct_id in ('+params.join(',')+') group by nct_id';
+    const results = await queryAACT(query,idList);
+    
+    let studies = [];
+    for(let i=0;i<results.rowCount;i++) {
+        const s = results.rows[i];
+        const study = {
+            nct_id: s.nct_id,
+            browse_interventions_mesh_term: s.mesh_term
         };
         studies.push(study);
     }
