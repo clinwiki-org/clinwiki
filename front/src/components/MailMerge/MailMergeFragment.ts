@@ -100,6 +100,7 @@ function tokensToGraphQLOb(tags: string[]) {
           parts[0] == '$RIGHT' ||
           parts[0] == '$TRUNCATE' ||
           parts[0] == '$RenderEach' || 
+          parts[0] == 'formatDate' || 
           typeof parts[0] == typeof 1
         ) {
 
