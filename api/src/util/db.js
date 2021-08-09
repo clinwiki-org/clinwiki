@@ -50,6 +50,7 @@ export const queryHasura = async (str,params, hasuraInstance) => {
         headers: hasuraInstance == "studies"? {
             'Content-Type': 'application/json',
             Accept: 'application/json',
+            'x-hasura-admin-secret': config.adminSecretKey,
          
         }: {
             'Content-Type': 'application/json',

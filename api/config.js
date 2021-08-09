@@ -23,6 +23,7 @@ export const loadConfig = () => {
   config.elasticIndexDIS = process.env.ELASTICSEARCH_INDEX_DIS || 'dis_development';
   config.secretKeyDis = process.env.HASURA_DIS_SECRET_KEY || 'changeme';
   config.secretKeyClinwiki = process.env.HASURA_CLINWIKI_SECRET_KEY || 'changeme';
+  config.adminSecretKey = process.env.HASURA_ADMIN_SECRET_KEY || 'changeme';
 };
 
 export default config;
