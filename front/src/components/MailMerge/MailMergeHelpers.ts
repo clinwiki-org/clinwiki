@@ -66,7 +66,7 @@ export function registerHandlebarsHelpers() {
     if(!arrayOfValuesToFind) return
     let valuesToFind: string[] = arrayOfValuesToFind.toLowerCase().replace(/\s/g, "").split('|');
     let values: string[] = arrayOfValues.split('|');
-    let indexFound= valuesToFind.indexOf(valueToReplace.toLocaleLowerCase().replace(/\s/g, ""))
+    let indexFound= valuesToFind.indexOf(valueToReplace?.toLocaleLowerCase().replace(/\s/g, ""))
     if ( indexFound== -1){
       return new Handlebars.SafeString(valueToReplace)
     }else{
@@ -74,8 +74,66 @@ export function registerHandlebarsHelpers() {
     }
   });
 }
+  Handlebars.registerHelper('$Reduce', (arrayOfValuesToReduce: any[]) => {
+    if(!arrayOfValuesToReduce) return
+
+    const combinedItems = (arr :any[] = []) => {
+      const res = arr.reduce((values, obj) => {
+         let found = false;
+         for (let i = 0; i < values.length; i++) {
+            if (values[i].crowd_key === obj.crowd_key) {
+               found = true;
+              //  values[i].count++;
+              let someArray : any[]=[];
+              someArray.push(values[i].crowd_value)
+              someArray.push(obj.crowd_value)
+              console.log(obj)
+              values[i].crowd_value = someArray
+            };
+         }
+         if (!found) {
+            obj.count = 1;
+            values.push(obj);
+         }
+        //  console.log(values)
+         return values;
+      }, []);
+      console.log(res)
+      return res;
+   }
+
+   console.log(combinedItems(arrayOfValuesToReduce))
+   return combinedItems(arrayOfValuesToReduce)
+   
+  });
 Handlebars.registerHelper('formatDate', function(dateString) {
   return new Handlebars.SafeString(
       moment(dateString).format("MM/DD/YYYY").toUpperCase()
   );
+});
+Handlebars.registerHelper('runConditional', (a: any, operator: string, b: string, opts:string) => {
+  console.log(a, b)
+  var bool = false;
+  switch(operator) {
+     case '==':
+       console.log("SIP")
+         bool = a == b;
+         break;
+     case '>':
+         bool = a > b;
+         break;
+     case '<':
+         bool = a < b;
+         break;
+     default:
+       console.log("OP", operator)
+        //  throw "Unknown operator " + operator;
+        return operator
+      }
+
+  // if (bool) {
+  //     return opts.fn(bool);
+  // } else {
+  //     return opts.inverse(bool);
+  // }
 });

@@ -68,7 +68,13 @@ function tokensToGraphQLOb(tags: string[]) {
       const parts = t.split(/\s/).filter(id => id);
       if (parts.length > 1) {
         const name = parts[1];
-        pushScope(name);
+        if(parts[0]== '#each' && parts.length >2){
+          let index = parts.length-2
+          pushScope(parts[index])
+        }else{
+          console.log(name, parts)
+          pushScope(name);
+        }
       }
     } else if (t.startsWith('/')) {
       popScope();
@@ -90,10 +96,12 @@ function tokensToGraphQLOb(tags: string[]) {
         ) {
 
         } else {
+          console.log("PARTS", parts)
           setProperty(name);
         }
       }
     } else {
+      console.log(t);
       setProperty(t);
     }
   }
