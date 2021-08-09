@@ -40,9 +40,9 @@ export const queryAACT = async (str,params) => {
 }
 
 export const queryHasura = async (str,params, hasuraInstance) => {
-    // console.log("HASURA QUERY", str)
-    // console.log("Params", params)
-    // console.log("Instance", hasuraInstance)
+    console.log("HASURA QUERY", str)
+    console.log("Params", params)
+    console.log("Instance", hasuraInstance)
 
     //Seperate header needed here currently since we are hitting a container instance of hasura and cloud. Container key is kept in our dockerfile but for cloud we have to include it in the request header 
     const abc = await fetch(hasuraInstance == "studies"? config.hasuraUrl : config.hasuraUrlDIS, {
@@ -63,7 +63,7 @@ export const queryHasura = async (str,params, hasuraInstance) => {
         }),
     }).then(r => r.json());
 
-    // console.log("ABC", abc)
+    console.log("ABC", abc)
     return abc;
 }
 
