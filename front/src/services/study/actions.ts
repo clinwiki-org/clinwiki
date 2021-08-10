@@ -94,7 +94,7 @@ export const updatePageViewHasuraSuccess = (
 ): types.StudyActionTypes => ({
     type: types.UPDATE_PAGE_VIEW_HASURA_SUCCESS,
     payload,
-    updatePageViewSuccessMessage
+    updatePageViewSuccessMessage,
 });
 export const updatePageViewHasuraError = (
     message: string
@@ -202,6 +202,30 @@ export const fetchSearchPageMMError = (
     type: types.FETCH_SEARCH_PAGE_MM_ERROR,
     payload: { message },
 });
+
+export const fetchSearchPageStudy = (
+    params: any,
+    QUERY: any
+): types.StudyActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_STUDY_SEND,
+    params,
+    QUERY,
+});
+
+export const fetchSearchPageStudySuccess = (
+    payload: any
+): types.StudyActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_STUDY_SUCCESS,
+    payload,
+});
+
+export const fetchSearchPageStudyError = (
+    message: string
+): types.StudyActionTypes => ({
+    type: types.FETCH_SEARCH_PAGE_STUDY_ERROR,
+    payload: { message },
+});
+
 export const fetchStudyPageHasura = (
     nctId: string,
     HASURA_STUDY_QUERY: any
@@ -325,7 +349,7 @@ export const updatePageViewSuccess = (
 ): types.StudyActionTypes => ({
     type: types.UPDATE_PAGE_VIEW_SUCCESS,
     payload,
-    updatePageViewSuccessMessage
+    updatePageViewSuccessMessage,
 });
 export const updatePageViewError = (
     message: string

@@ -73,7 +73,7 @@ const initialState: types.StudyState = {
     isFetchingEditReview: false,
     editReview: undefined,
     showLoginModal: false,
-    updatePageViewSuccessMessage: ""
+    updatePageViewSuccessMessage: '',
 };
 
 const studyReducer = (
@@ -163,11 +163,12 @@ const studyReducer = (
                 isUpdatingPageViewHasura: true,
             };
         case types.UPDATE_PAGE_VIEW_HASURA_SUCCESS:
-            console.log('REDUCER', action.payload)
+            console.log('REDUCER', action.payload);
             return {
                 ...state,
                 isUpdatingPageViewHasura: false,
-                updatePageViewSuccessMessage: action.updatePageViewSuccessMessage
+                updatePageViewSuccessMessage:
+                    action.updatePageViewSuccessMessage,
             };
         case types.UPDATE_PAGE_VIEW_HASURA_ERROR:
             return {
@@ -269,6 +270,22 @@ const studyReducer = (
                 studyPage: action.payload,
             };
         case types.FETCH_SEARCH_PAGE_MM_ERROR:
+            return {
+                ...state,
+                isFetchingStudy: false,
+            };
+        case types.FETCH_SEARCH_PAGE_STUDY_SEND:
+            return {
+                ...state,
+                isFetchingStudy: true,
+            };
+        case types.FETCH_SEARCH_PAGE_STUDY_SUCCESS:
+            return {
+                ...state,
+                isFetchingStudy: false,
+                studyPage: action.payload,
+            };
+        case types.FETCH_SEARCH_PAGE_STUDY_ERROR:
             return {
                 ...state,
                 isFetchingStudy: false,
