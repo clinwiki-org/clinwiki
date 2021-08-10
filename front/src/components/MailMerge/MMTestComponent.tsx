@@ -29,17 +29,30 @@ function getClassForMode(mode: Mode) {
 
 
 const STUDY_TEMPLATE3 = `
-
-
+<div>
 {{#each ctgov_prod_studies_clinwiki_crowd_key_value_ids}}
-{{#iff (crowd_key '==' 'Mutations Targeted' '')}}
-<b>{{crowd_key}} :</b> 
+{{#if ( runConditional crowd_key "==" "Mutations Targeted" crowd_key )}}
+<b>{{crowd_key}} :</b>  {{crowd_value}}
 
-{{/iff}}
+{{/if}}
 
-true
 {{/each}}
 
+</div>
+
+<span class="crumb-wrapper">
+
+
+{{#each ( $Reduce ctgov_prod_studies_clinwiki_crowd_key_value_ids )}}
+<b>{{crowd_key}} :</b> 
+  <span class="crumb-container">&nbsp;{{crowd_value}}  &nbsp;</span> 
+{{/each}}
+
+
+
+
+
+</span>
 `
 const STUDY_TEMPLATE2 = `
 
@@ -170,7 +183,7 @@ const SEARCH_TEMPLATE = `
 
 `
 export default function TestComponent() {
-  const [template, setTemplate] = useState(STUDY_TEMPLATE2);
+  const [template, setTemplate] = useState(STUDY_TEMPLATE3);
   const [mode, setMode] = useState<Mode>('Study');
   const defaultNctId = 'NCT04507503';
   const defaultSearchHash = 'tqxCyI9M';

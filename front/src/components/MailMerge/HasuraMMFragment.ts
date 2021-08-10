@@ -71,6 +71,8 @@ function tokensToGraphQLOb(tags: string[]) {
         if(parts[0]== '#each' && parts.length >2){
           let index = parts.length-2
           pushScope(parts[index])
+        }else if(parts[0]== '#if' && parts.length >2){
+          // 
         }else{
           console.log(name, parts)
           pushScope(name);
@@ -91,7 +93,9 @@ function tokensToGraphQLOb(tags: string[]) {
           parts[0] == '$LEFT' ||
           parts[0] == '$RIGHT' ||
           parts[0] == '$TRUNCATE' || 
-          parts[0] == 'formatDate'
+          parts[0] == 'formatDate' || 
+          parts[0] == 'else' 
+
 
         ) {
 
@@ -101,8 +105,12 @@ function tokensToGraphQLOb(tags: string[]) {
         }
       }
     } else {
-      console.log(t);
-      setProperty(t);
+      // console.log(t);
+      if(t == "else"){
+
+      }else{
+        setProperty(t);
+      }
     }
   }
   return result;

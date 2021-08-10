@@ -83,26 +83,20 @@ export function registerHandlebarsHelpers() {
          for (let i = 0; i < values.length; i++) {
             if (values[i].crowd_key === obj.crowd_key) {
                found = true;
-              //  values[i].count++;
               let someArray : any[]=[];
               someArray.push(values[i].crowd_value)
               someArray.push(obj.crowd_value)
-              console.log(obj)
               values[i].crowd_value = someArray
             };
          }
          if (!found) {
-            obj.count = 1;
-            values.push(obj);
+          values.push(obj);
          }
-        //  console.log(values)
          return values;
       }, []);
-      console.log(res)
       return res;
    }
 
-   console.log(combinedItems(arrayOfValuesToReduce))
    return combinedItems(arrayOfValuesToReduce)
    
   });
@@ -111,29 +105,20 @@ Handlebars.registerHelper('formatDate', function(dateString) {
       moment(dateString).format("MM/DD/YYYY").toUpperCase()
   );
 });
-Handlebars.registerHelper('runConditional', (a: any, operator: string, b: string, opts:string) => {
-  console.log(a, b)
+Handlebars.registerHelper('runConditional', (a: any, operator: string, b: string, opts?:string) => {
   var bool = false;
   switch(operator) {
      case '==':
-       console.log("SIP")
          bool = a == b;
-         break;
+         return bool;
      case '>':
          bool = a > b;
-         break;
+         return bool;
      case '<':
          bool = a < b;
-         break;
+         return bool;
      default:
-       console.log("OP", operator)
         //  throw "Unknown operator " + operator;
-        return operator
+        return a==b;
       }
-
-  // if (bool) {
-  //     return opts.fn(bool);
-  // } else {
-  //     return opts.inverse(bool);
-  // }
 });
