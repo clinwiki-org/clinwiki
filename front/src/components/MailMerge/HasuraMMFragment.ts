@@ -68,7 +68,15 @@ function tokensToGraphQLOb(tags: string[]) {
       const parts = t.split(/\s/).filter(id => id);
       if (parts.length > 1) {
         const name = parts[1];
-        pushScope(name);
+        if(parts[0]== '#each' && parts.length >2){
+          let index = parts.length-2
+          pushScope(parts[index])
+        }else if(parts[0]== '#if' && parts.length >2){
+          // 
+        }else{
+          console.log(name, parts)
+          pushScope(name);
+        }
       }
     } else if (t.startsWith('/')) {
       popScope();
@@ -85,16 +93,23 @@ function tokensToGraphQLOb(tags: string[]) {
           parts[0] == '$LEFT' ||
           parts[0] == '$RIGHT' ||
           parts[0] == '$TRUNCATE' || 
-          parts[0] == 'formatDate'
-
+          parts[0] == 'formatDate' || 
+          parts[0] == 'else' ||
+          parts[0] == 'runConditional' 
         ) {
 
         } else {
+          console.log("PARTS", parts)
           setProperty(name);
         }
       }
     } else {
-      setProperty(t);
+      // console.log(t);
+      if(t == "else"){
+
+      }else{
+        setProperty(t);
+      }
     }
   }
   return result;

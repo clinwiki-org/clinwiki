@@ -66,7 +66,7 @@ export function registerHandlebarsHelpers() {
     if(!arrayOfValuesToFind) return
     let valuesToFind: string[] = arrayOfValuesToFind.toLowerCase().replace(/\s/g, "").split('|');
     let values: string[] = arrayOfValues.split('|');
-    let indexFound= valuesToFind.indexOf(valueToReplace.toLocaleLowerCase().replace(/\s/g, ""))
+    let indexFound= valuesToFind.indexOf(valueToReplace?.toLocaleLowerCase().replace(/\s/g, ""))
     if ( indexFound== -1){
       return new Handlebars.SafeString(valueToReplace)
     }else{
@@ -74,8 +74,51 @@ export function registerHandlebarsHelpers() {
     }
   });
 }
+  Handlebars.registerHelper('$Reduce', (arrayOfValuesToReduce: any[]) => {
+    if(!arrayOfValuesToReduce) return
+
+    const combinedItems = (arr :any[] = []) => {
+      const res = arr.reduce((values, obj) => {
+         let found = false;
+         for (let i = 0; i < values.length; i++) {
+            if (values[i].crowd_key === obj.crowd_key) {
+               found = true;
+              let someArray : any[]=[];
+              someArray.push(values[i].crowd_value)
+              someArray.push(obj.crowd_value)
+              values[i].crowd_value = someArray
+            };
+         }
+         if (!found) {
+          values.push(obj);
+         }
+         return values;
+      }, []);
+      return res;
+   }
+
+   return combinedItems(arrayOfValuesToReduce)
+   
+  });
 Handlebars.registerHelper('formatDate', function(dateString) {
   return new Handlebars.SafeString(
       moment(dateString).format("MM/DD/YYYY").toUpperCase()
   );
+});
+Handlebars.registerHelper('runConditional', (a: any, operator: string, b: string, opts?:string) => {
+  var bool = false;
+  switch(operator) {
+     case '==':
+         bool = a == b;
+         return bool;
+     case '>':
+         bool = a > b;
+         return bool;
+     case '<':
+         bool = a < b;
+         return bool;
+     default:
+        //  throw "Unknown operator " + operator;
+        return a==b;
+      }
 });
