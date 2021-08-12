@@ -76,10 +76,9 @@ export default function StudyInfiniteScroll() {
 
   const handleLoadMore = () => {
     const page = studyData.length / 25 + 1
-
     let variables = {
       ...data.data.searchParams.searchParams,
-      pageSize: page * 25,
+      pageSize: Math.floor(page * 25),
       page: 1,
     };
     dispatch(fetchSearchPageStudy(variables, SEARCH_QUERY));
@@ -88,28 +87,52 @@ export default function StudyInfiniteScroll() {
   const InfiniteScrollContainer = document.querySelector('.InfiniteScrollContainer');
   const InfiniteScrollContainerHeight = InfiniteScrollContainer?.scrollHeight;
   const [studyDocumentHeight, setStudyDocumentHeight] = useState(InfiniteScrollContainerHeight);
+  const [hasMore, setHasMore] = useState(true);
+
 
   useEffect(() => {
     const InfiniteScrollContainer = document.querySelector('.InfiniteScrollContainer');
     setStudyDocumentHeight(InfiniteScrollContainer?.scrollHeight);
     const shouldScroll = Number(InfiniteScrollContainerHeight) * 6 / 7
     InfiniteScrollContainer?.scrollIntoView()
-    if (studyData.length === 0 || studyData.length === 24) {
+
+    if (studyData.length <= 25) {
+      hasMoreHelper()
       InfiniteScrollContainer?.scrollTo(0, 0)
-    } else
+    } else {
+      hasMoreHelper()
       InfiniteScrollContainer?.scrollTo(0, shouldScroll)
+    }
     return () => {
       InfiniteScrollContainer?.scrollTo(0, 0)
     }
   }, [studyData.length])
 
+  const hasMoreHelper = () => {
+    if (studyData.length % 25 !== 0 && studyData.length > 25) {
+      setHasMore(false)
+    } else if (studyData.length < 25) {
+      setHasMore(false)
+    } else {
+      setHasMore(true)
+    }
+  }
+
+  const handleLoadMoreHelper = () => {
+    if (studyData.length >= 24) {
+      handleLoadMore()
+    } else {
+      return
+    }
+  }
+
   return (
     <div className="InfiniteScrollContainer" style={{ height: '700px', overflow: 'auto' }}>
       <InfiniteScroll
         pageStart={0}
-        loadMore={handleLoadMore}
+        loadMore={handleLoadMoreHelper}
         initialLoad={false}
-        hasMore={true || false}
+        hasMore={hasMore}
         loader={<div key={0} style={{ display: 'flex', justifyContent: 'center' }}>
           <BeatLoader key="loader" />
         </div>}
