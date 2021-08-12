@@ -74,6 +74,12 @@ export const FETCH_STUDY_PAGE_ERROR = 'FETCH_STUDY_PAGE_ERROR';
 export const FETCH_SEARCH_PAGE_MM_SEND = 'FETCH_SEARCH_PAGE_MM_SEND';
 export const FETCH_SEARCH_PAGE_MM_SUCCESS = 'FETCH_SEARCH_PAGE_MM_SUCCESS';
 export const FETCH_SEARCH_PAGE_MM_ERROR = 'FETCH_SEARCH_PAGE_MM_ERROR';
+
+export const FETCH_SEARCH_PAGE_STUDY_SEND = 'FETCH_SEARCH_PAGE_STUDY_SEND';
+export const FETCH_SEARCH_PAGE_STUDY_SUCCESS =
+    'FETCH_SEARCH_PAGE_STUDY_SUCCESS';
+export const FETCH_SEARCH_PAGE_STUDY_ERROR = 'FETCH_SEARCH_PAGE_STUDY_ERROR';
+
 export const FETCH_STUDY_PAGE_HASURA_SEND = 'FETCH_STUDY_PAGE_HASURA_SEND';
 export const FETCH_STUDY_PAGE_HASURA_SUCCESS =
     'FETCH_STUDY_PAGE_HASURA_SUCCESS';
@@ -385,13 +391,13 @@ export interface UpdatePageViewHasuraSendAction {
 export interface UpdatePageViewHasuraSuccessAction {
     type: typeof UPDATE_PAGE_VIEW_HASURA_SUCCESS;
     updatePageViewSuccessMessage: string;
-    payload: any
+    payload: any;
 }
 
 export interface UpdatePageViewHasuraErrorAction {
     type: typeof UPDATE_PAGE_VIEW_HASURA_ERROR;
     // payload: any;
-    payload: any
+    payload: any;
 }
 export interface fetchFacilitiesPageHasuraSendAction {
     type: typeof FETCH_FACILITIES_PAGE_HASURA_SEND;
@@ -453,7 +459,6 @@ export interface fetchSearchPageMMSendAction {
     params: any;
     QUERY: any;
 }
-
 export interface fetchSearchPageMMSuccessAction {
     type: typeof FETCH_SEARCH_PAGE_MM_SUCCESS;
     payload: SearchStudyPageQuery;
@@ -462,7 +467,19 @@ export interface fetchSearchPageMMErrorAction {
     type: typeof FETCH_SEARCH_PAGE_MM_ERROR;
     payload: StudyDataError;
 }
-
+export interface fetchSearchPageStudySendAction {
+    type: typeof FETCH_SEARCH_PAGE_STUDY_SEND;
+    params: any;
+    QUERY: any;
+}
+export interface fetchSearchPageStudySuccessAction {
+    type: typeof FETCH_SEARCH_PAGE_STUDY_SUCCESS;
+    payload: SearchStudyPageQuery;
+}
+export interface fetchSearchPageStudyErrorAction {
+    type: typeof FETCH_SEARCH_PAGE_STUDY_ERROR;
+    payload: StudyDataError;
+}
 export interface fetchStudyPageHasuraSendAction {
     type: typeof FETCH_STUDY_PAGE_HASURA_SEND;
     nctId: any;
@@ -1005,6 +1022,9 @@ export type StudyActionTypes =
     | fetchSearchPageMMSendAction
     | fetchSearchPageMMSuccessAction
     | fetchSearchPageMMErrorAction
+    | fetchSearchPageStudySendAction
+    | fetchSearchPageStudySuccessAction
+    | fetchSearchPageStudyErrorAction
     | fetchFacilitiesPageHasuraSendAction
     | fetchFacilitiesPageHasuraSuccessAction
     | fetchFacilitiesPageHasuraErrorAction

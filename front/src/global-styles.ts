@@ -645,4 +645,8 @@ div.DraftEditor-editorContainer{
     margin:auto;
   }
  }
+ .mail-merge .three.loader-container.subgrid .mail-merge-island div:nth-child(1) {
+    display: flex;
+    flex-wrap: wrap;
+  }
 `);
