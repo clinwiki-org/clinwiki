@@ -142,7 +142,6 @@ export default function StudyInfiniteScroll() {
           return (<div key={index}>
             {renderStudyTemplate(study.nctId, study.overallStatus, study.briefTitle, study.studyType, study.phase, study.enrollmentType, study.enrollment, study.startDate, study.completionDate, study.lastUpdatePostedDate)
             }
-            {studyData.length}
           </div>
           )
         })}
