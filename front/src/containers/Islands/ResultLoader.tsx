@@ -12,7 +12,7 @@ function ResultLoader() {
   const Loader = styled.div`
     min-width: 100%;
     min-height: 100%;
-    background: rgb(0 0 0 / 12%);
+    background: #fff;
     position: absolute;
     top: 0;
     left: 0;

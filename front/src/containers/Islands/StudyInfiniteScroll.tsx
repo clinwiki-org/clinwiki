@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -85,8 +85,26 @@ export default function StudyInfiniteScroll() {
     dispatch(fetchSearchPageStudy(variables, SEARCH_QUERY));
   }
 
+  const InfiniteScrollContainer = document.querySelector('.InfiniteScrollContainer');
+  const InfiniteScrollContainerHeight = InfiniteScrollContainer?.scrollHeight;
+  const [studyDocumentHeight, setStudyDocumentHeight] = useState(InfiniteScrollContainerHeight);
+
+  useEffect(() => {
+    const InfiniteScrollContainer = document.querySelector('.InfiniteScrollContainer');
+    setStudyDocumentHeight(InfiniteScrollContainer?.scrollHeight);
+    const shouldScroll = Number(InfiniteScrollContainerHeight) * 6 / 7
+    InfiniteScrollContainer?.scrollIntoView()
+    if (studyData.length === 0 || studyData.length === 24) {
+      InfiniteScrollContainer?.scrollTo(0, 0)
+    } else
+      InfiniteScrollContainer?.scrollTo(0, shouldScroll)
+    return () => {
+      InfiniteScrollContainer?.scrollTo(0, 0)
+    }
+  }, [studyData.length])
+
   return (
-    <div style={{ height: '700px', overflow: 'auto' }}>
+    <div className="InfiniteScrollContainer" style={{ height: '700px', overflow: 'auto' }}>
       <InfiniteScroll
         pageStart={0}
         loadMore={handleLoadMore}
@@ -101,6 +119,7 @@ export default function StudyInfiniteScroll() {
           return (<div key={index}>
             {renderStudyTemplate(study.nctId, study.overallStatus, study.briefTitle, study.studyType, study.phase, study.enrollmentType, study.enrollment, study.startDate, study.completionDate, study.lastUpdatePostedDate)
             }
+            {studyData.length}
           </div>
           )
         })}
