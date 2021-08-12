@@ -82,10 +82,14 @@ function* updatePageViewHasura(action) {
             //we should only call this one time, need to figure out what's going on here.
             yield put(actions.fetchPageViewHasuraSuccess(response));
             yield put(actions.fetchPageViewsHasuraSuccess(response2));
-            yield put(actions.updatePageViewHasuraSuccess(updateResponse, "Save successful"));
-            yield call(delay, 500)
-            yield put(actions.updatePageViewHasuraSuccess(updateResponse, "")); 
-            
+            yield put(
+                actions.updatePageViewHasuraSuccess(
+                    updateResponse,
+                    'Save successful'
+                )
+            );
+            yield call(delay, 500);
+            yield put(actions.updatePageViewHasuraSuccess(updateResponse, ''));
         } else {
             yield put(
                 actions.updatePageViewHasuraError(updateResponse.message)
@@ -184,6 +188,22 @@ function* getSearchPageMM(action) {
     } catch (err) {
         console.log(err);
         yield put(actions.fetchStudyPageError(err.message));
+    }
+}
+
+function* getSearchPageStudy(action) {
+    try {
+        let response = yield call(() =>
+            api.fetchSearchPageStudy(action.params, action.QUERY)
+        );
+        if (response) {
+            yield put(actions.fetchSearchPageStudySuccess(response));
+        } else {
+            yield put(actions.fetchSearchPageStudyError(response.message));
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.fetchSearchPageStudyError(err.message));
     }
 }
 
@@ -661,7 +681,7 @@ function* updatePageView(action) {
 
             yield put(actions.fetchPageViewSuccess(response));
             yield put(actions.fetchPageViewsSuccess(response2));
-            yield put(actions.updatePageViewSuccess(updateResponse, "FO"));
+            yield put(actions.updatePageViewSuccess(updateResponse, 'FO'));
         } else {
             yield put(actions.updatePageViewError(updateResponse.message));
         }
@@ -789,6 +809,7 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_SAMPLE_STUDY_SEND, getSampleStudy);
     yield takeLatest(types.FETCH_STUDY_PAGE_SEND, getStudyPage);
     yield takeLatest(types.FETCH_SEARCH_PAGE_MM_SEND, getSearchPageMM);
+    yield takeLatest(types.FETCH_SEARCH_PAGE_STUDY_SEND, getSearchPageStudy);
     yield takeLatest(types.FETCH_PAGE_VIEWS_SEND, getPageViews);
     yield takeLatest(types.FETCH_PAGE_VIEW_SEND, getPageView);
     yield takeLatest(

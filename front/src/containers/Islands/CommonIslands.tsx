@@ -14,6 +14,7 @@ import SaveSearchIsland from './SaveSearchIsland';
 import DownloadCSVIsland from './DownloadCSVIsland';
 import ResultSort from './ResultSort';
 import ResultLoader from './ResultLoader';
+import StudyInfiniteScroll from './StudyInfiniteScroll';
 import IslandAggWrapper from './IslandAggWrappper';
 import IslandAggWrapper2 from './WfIslandAggWrappper';
 import CrumbsBarIsland from './CrumbsBarIsland';
@@ -86,10 +87,13 @@ export const searchIslands: Record<string, IslandConstructor> = {
     <ResultSort sortables={attributes['sortBy']} />
   ),
   randnumberloader: (attributes: Record<string, string>, context?: any) => (
-    <RandNumberLoader/>
+    <RandNumberLoader />
   ),
   resultloader: (attributes: Record<string, string>, context?: any) => (
     <ResultLoader />
+  ),
+  studyinfinitescroll: (attributes: Record<string, string>, context?: any) => (
+    <StudyInfiniteScroll />
   ),
 };
 

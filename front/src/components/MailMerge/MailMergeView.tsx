@@ -268,6 +268,7 @@ const MailMergeView = (props: Props) => {
       let currentKeyObjects = suggestedLabels.data.crowd_keys.filter((x) => x.crowd_key === islandConfig[WF.id].name)
       if (islandConfig[WF.id]?.defaultToOpen == true) {
         const compiled = islandConfig[WF.id] && compileTemplate(islandConfig[WF.id].displayName)
+      // console.log(compiled)
         const raw = applyTemplate(compiled, currentKeyObjects[0])
         //console.log("🚀 ~ ~ raw", raw);
         if (raw !== islandConfig[WF.id].displayName) {

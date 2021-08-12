@@ -38,13 +38,13 @@ export default function MailMerge(props: Props) {
           onCursorMove={setCursorPosition}
         />
       </div>
-      {/* <View
+      <View
         style={{ border: '2px solid black' }}
         template={template}
         context={props.sample}
         islands={props.islands}
         pageType={props.pageType}
-      /> */}
+      />
     </>
   );
 }
