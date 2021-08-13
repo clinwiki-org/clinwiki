@@ -176,6 +176,7 @@ function* getStudyPage(action) {
 
 function* getSearchPageMM(action) {
     try {
+        console.log(action)
         let response = yield call(() =>
             api.fetchSearchPageMM(action.params, action.QUERY)
         );
@@ -212,6 +213,23 @@ function* getStudyPageHasura(action) {
     try {
         let response = yield call(() =>
             api.fetchStudyPageHasura(action.nctId, action.HASURA_STUDY_QUERY)
+        );
+        if (response) {
+            yield put(actions.fetchStudyPageHasuraSuccess(response));
+            //yield call(() => api.updateStudyViewLogCount(action.nctId));
+        } else {
+            yield put(actions.fetchStudyPageHasuraError(response.message));
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.fetchStudyPageHasuraError(err.message));
+    }
+}
+function* getDISPageHasura(action) {
+    console.log('SAGA GET STUDY HASURA', action);
+    try {
+        let response = yield call(() =>
+            api.fetchStudyPageHasuraDIS(action.conditionId, action.HASURA_STUDY_QUERY)
         );
         if (response) {
             yield put(actions.fetchStudyPageHasuraSuccess(response));
@@ -863,6 +881,7 @@ export default function* userSagas() {
         getHasuraSampleStudy
     );
     yield takeLatest(types.FETCH_STUDY_PAGE_HASURA_SEND, getStudyPageHasura);
+    yield takeLatest(types.FETCH_STUDY_PAGE_HASURA_SEND_DIS, getDISPageHasura);
     yield takeLatest(
         types.FETCH_FACILITIES_PAGE_HASURA_SEND,
         getFacilitiesPageHasura

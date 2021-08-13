@@ -79,6 +79,8 @@ function tokensToGraphQLOb(tags: string[]) {
           parts[0] == '#$RenderEach'
            || 
           parts[0] == '#each' && parts[1] == 'studies'
+           || 
+          parts[0] == '#each' && parts[1] == 'diseases'
         ) {
         } else {
           pushScope(name);
