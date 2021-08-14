@@ -34,3 +34,17 @@ export const fetchSiteProviderHasura = (id?, url?) => {
     url: url,
   });
 };
+
+export const fetchGeneric = (query) => {
+  //console.log("fetchSitesPageHasura called in hasuraSite api")
+  return callHasuraClinwiki(HASURA_CW, query, {});
+};
+
+export const updateGeneric = (input, mutation?) => {
+  //console.log('mutation = ', mutate.UPDATE_SITE_MUTATION);
+  //console.log('input = ', input);
+  return callHasuraClinwiki(HASURA_CW, mutation, {
+   input
+  });
+  //{ input: { id: input.id, name: input.name}});
+};

@@ -7,6 +7,8 @@ const initialState: types.SiteState = {
     hasuraSitesData: undefined,
     isFetchingSiteProviderHasura: false,
     siteProviderHasura: undefined,
+    isFetchingGeneric: false,
+    genericData: undefined
 };                                                                                  
                                                                                     
 const hasuraSiteReducer = ( state = initialState, action: types.HasuraSiteActionTypes) : types.SiteState => {
@@ -64,10 +66,28 @@ const hasuraSiteReducer = ( state = initialState, action: types.HasuraSiteAction
                 ...state,
                 isFetchingSiteProviderHasura: false
             };
-        
+        case types.FETCH_GENERIC:
+            //console.log("FETCH_SITES_PAGE_HASURA_SEND hit in hasuraSite reducer"); 
+            return {
+                ...state,
+                isFetchingGeneric: true
+            };
+        case types.FETCH_GENERIC_SUCCESS:
+            //console.log("FETCH_GENERIC_SUCCESS hit in hasuraSite reducer"); 
+            return {
+                ...state,
+                isFetchingGeneric: false,
+                genericData: action.payload
+            };
+        case types.FETCH_GENERIC_ERROR:
+            return {
+                ...state,
+                isFetchingGeneric: false
+            }; 
         default:                                                                    
             return {...state};                                                      
-    }       
+    }      
+   
 }   
 
 export default hasuraSiteReducer;        
