@@ -76,8 +76,51 @@ function* getSiteProviderHasura(action) {
     }
 }
 
+export function* getGeneric(action) {
+    //console.log("getSitesPageHasura called in hasuraSites sagas");
+    try {
+        let response = yield call(() => api.fetchGeneric(action.payload));
+    	// console.log(response);
+        const genericData = response.data
+        console.log('SAGA GENERIC FETCH', genericData);
+        if(response) {
+            yield put(actions.fetchGenericSuccess(genericData));
+            return response;
+        }
+        else {
+            yield put(actions.fetchSitesPageHasuraError(response.message));
+        }
+    }
+    catch(err) {
+        //console.log(err);
+        yield put(actions.fetchSitesPageHasuraError(err.message));
+    }
+}
+
+function* updateGeneric(action) { 
+    try {
+        //console.log("updateSiteHasura called in hasiraSite/sagas", action);
+        let genericResponse = yield call(() => api.updateGeneric(action.input, action.mutation));
+        console.log('genric response = ', genericResponse);
+        if (genericResponse.data.updateSitehasura.errors === null){ 
+            // let response = yield getSitesPage(action);
+            // yield put(actions.updateSiteHasuraSuccess(response.data));
+        }
+        else {
+            yield put(actions.updateSiteHasuraError(genericResponse.message));
+        }
+    }
+    catch(err) {
+        //console.log(err);
+        yield put(actions.updateSiteHasuraError(err.message));
+    }
+}
+
 export default function* hasuraSagas() {
     yield takeLatest(types.FETCH_SITES_PAGE_HASURA_SEND, getSitesPageHasura);
     yield takeLatest(types.FETCH_SITE_PROVIDER_HASURA_SEND, getSiteProviderHasura);
     yield takeLatest(types.UPDATE_SITE_HASURA_SEND, updateSiteHasura);
+    yield takeLatest(types.UPDATE_GENERIC, updateGeneric);
+    yield takeLatest(types.FETCH_GENERIC, getGeneric);
+    
 }

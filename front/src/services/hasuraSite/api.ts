@@ -10,6 +10,7 @@ const HASURA_CW = getHasuraClinwikiURL();
 export const updateSiteHasura = (input, url?) => {
   //console.log('mutation = ', mutate.UPDATE_SITE_MUTATION);
   //console.log('input = ', input);
+  console.log('SITE UPDATE', mutate.UPDATE_SITE_MUTATION)
   return callHasuraClinwiki(HASURA_CW, mutate.UPDATE_SITE_MUTATION, {
     id: input.id,
     name: input.name,
@@ -41,10 +42,11 @@ export const fetchGeneric = (query) => {
 };
 
 export const updateGeneric = (input, mutation?) => {
-  //console.log('mutation = ', mutate.UPDATE_SITE_MUTATION);
+  console.log('UPDATE API', mutation)
+  //console.log('mutation = ' mutate.UPDATE_SITE_MUTATION);
   //console.log('input = ', input);
   return callHasuraClinwiki(HASURA_CW, mutation, {
-   input
-  });
+   ...input
+  })
   //{ input: { id: input.id, name: input.name}});
 };

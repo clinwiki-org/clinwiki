@@ -48,7 +48,7 @@ const GenericForm = (props) => {
 
 
   const introspection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
-  const genericData = useSelector((state: RootState) => state.hasuraSite.genericResponse);
+  const genericData = useSelector((state: RootState) => state.hasuraSite.genericData);
   
   useEffect(()=>{
     const genericQuery = genericQueryString()
@@ -70,8 +70,8 @@ const GenericForm = (props) => {
   const genericTableMutation = (formData) => {
 
     return `
-    mutation GenericTableMutation($input: ${formData}) {
-      update_${tableName}({id: {_eq: $${formData.id}}}) {
+    mutation GenericTableMutation($input: input}) {
+      update_${tableName}({id: {_eq: $id}}) {
         ${fields.join('\n')}
       }
     }`

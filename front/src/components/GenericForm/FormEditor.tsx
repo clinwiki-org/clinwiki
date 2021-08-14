@@ -38,8 +38,8 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
     console.log('YO', key, values)
     //@ts-ignore
     values[key] = e.target.value;
- 
-    setFormState(values);
+    console.log('after change', values)
+    setFormState({...values});
   }
 
   console.log('form state', formState)
@@ -66,7 +66,7 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
             <textarea 
                   name={key} 
                   onChange={(e) => handleChange(e, key)}
-                  //@ts-ignore
+              
                   value={formState[key]} />
                   
           </div>
