@@ -19,7 +19,9 @@ export interface GraphqlSchemaType {
 interface Props {
   schema: SchemaType;
   onSelectItem?: (v: string) => void;
-  setFields?: any
+  setFields?: any;
+  setShortFields?: any;
+  cleanFields?:any;
 }
 
 const menuStyle: React.CSSProperties = {
@@ -89,7 +91,7 @@ function graphqlToInternal(x: GraphqlSchemaType) {
     path: string,
     root: IntrospectionOutputTypeRef,
     typeMap: Record<string, IntrospectionType>,
-    result: string[],
+    result: any[],
     guard: string[]
   ) {
     if (result.length > 700 || guard.length > 5) return;
@@ -99,7 +101,15 @@ function graphqlToInternal(x: GraphqlSchemaType) {
         gqlFieldToInternal(path, root.ofType, typeMap, result, guard);
         break;
       case 'SCALAR':
-        result.push(path);
+        // console.log('PATH', (root.name))
+        // if (path == "id" || path == "updated_at" || path == "created_at") {
+        //  break;
+        // }
+        let resultObj = {
+          name: path,
+          type: root.name
+        }
+        result.push(resultObj);
         break;
       case 'LIST':
         gqlFieldToInternal(`${path}#`, root.ofType, typeMap, result, guard);
@@ -107,6 +117,7 @@ function graphqlToInternal(x: GraphqlSchemaType) {
       case 'OBJECT':
         if (!guard.includes(root.name)) {
           guard.push(root.name);
+          console.log('GUARD', guard)
           const itype = typeMap[root.name];
           gqlObjToInternal(path, itype, typeMap, result, guard);
           guard.pop();
@@ -144,6 +155,7 @@ function graphqlToInternal(x: GraphqlSchemaType) {
   const typeMap: Record<string, IntrospectionType> = {};
   for (const t of x.types) typeMap[t.name] = t;
   let result: string[] = [];
+  console.log('RESUTS madness', result)
   const rootType = typeMap[x.typeName];
   gqlObjToInternal('', rootType, typeMap, result, [rootType.name]);
   return result.sort();
@@ -191,16 +203,31 @@ function pathToTemplate(path: string): string {
   return result;
 }
 
-const SchemaSelector2 = (props: Props) => {
+const SchemaSelector2 = React.memo((props: Props) => {
   const [filter, setFilter] = useState('');
-  const schema = useMemo(() => schemaToInternal(props.schema), [props.schema]);
+  const schema =schemaToInternal(props.schema);
+
   useEffect(()=>{
     props.setFields(schema)
+    const cleanSchema = props.cleanFields(schema)
+    console.log('CLEANED SCHEMA', cleanSchema)
+    props.setShortFields(cleanSchema)
   },[])
+
+  useEffect(()=>{
+    (async () => {
+      console.log('SCHEMA',schema)
+      const cleanSchema = await props.cleanFields(schema)
+      console.log('CLEANED SCHEMA',cleanSchema)
+      // props.setFields(schema)
+      
+    })()
+ 
+  },[schema])
 
   return (
     <div>
-      <input
+      {/* <input
         className="mailmerge-filter" style={{ width: '100%' }}
         onChange={e => setFilter(e.target.value.toLowerCase())}
         placeholder="filter..."
@@ -217,9 +244,9 @@ const SchemaSelector2 = (props: Props) => {
               {i}{' '}
             </a> // eslint-disable-line
           ))}
-      </div>
+      </div> */}
     </div>
   );
-}
+})
 
 export default SchemaSelector2

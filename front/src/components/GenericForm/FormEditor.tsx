@@ -8,13 +8,9 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
   useEffect(() => {
     let values = [];
     Object.entries(row).map(([key, value]) => {
-      // const key = Object.keys(field)
-      // const value = Object.values(field)
-      
-    // console.log('YO', e, key)
     //@ts-ignore
-    values[key] = value;
-    setFormState( values );
+      values[key] = value;
+      setFormState( values );
     })
   }, [row])
 
@@ -22,13 +18,9 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
     if (isInsert == true) {
     let values = [];
     Object.entries(row).map(([key, value]) => {
-      // const key = Object.keys(field)
-      // const value = Object.values(field)
-      
-    // console.log('YO', e, key)
     //@ts-ignore
-    values[key] = "";
-    setFormState( values );
+      values[key] = "";
+      setFormState( values );
     })
   }
   }, [isInsert])
@@ -51,7 +43,9 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
     >Save</ThemedButton>
    
     {Object.entries(row).map(([key, value]) => {
-  
+      if (key =="created_at" || key == "updated_at") {
+        return
+      }
       // const key = Object.keys(field)
       // const value = Object.values(field)
       console.log('KEY', key, value)
@@ -67,7 +61,9 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
                   name={key} 
                   onChange={(e) => handleChange(e, key)}
               
-                  value={formState[key]} />
+                  value={formState[key]}
+                  disabled={!!(key == "id")}
+                  />
                   
           </div>
         </label>

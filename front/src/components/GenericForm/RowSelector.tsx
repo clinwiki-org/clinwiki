@@ -8,7 +8,7 @@ const RowSelector = ({rows, selectRow}) => {
   console.log('GENERIC Data', rows)
   return (
   <div className="flex-rows">
-    {rows.map(row => <div className="generic-item" key={row.id} onClick={() => {selectRow(row.id)}}>{row.id}</div>)}
+    {rows && rows.map(row => <div className="generic-item" key={row.id} onClick={() => {selectRow(row.id)}}>{row.id}</div>)}
   </div>)
 }
 
