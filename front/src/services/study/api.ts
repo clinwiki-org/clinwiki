@@ -1,4 +1,4 @@
-import { getHasuraClinwikiURL } from './../../utils/graphqlUtil';
+import { callHasuraDIS, getHasuraClinwikiURL, getHasuraDISURL } from './../../utils/graphqlUtil';
 import * as query from './queries';
 import * as mutate from './mutations';
 import {
@@ -17,6 +17,7 @@ const ENDPOINT = get_gql_url();
 //const HASURA_AACT = getHasuraURLAACT();
 const NODE_ENDPOINT = getGraphQLMigrationURL();
 const HASURA_CW = getHasuraClinwikiURL();
+const HASURA_CW_DIS = getHasuraDISURL();
 
 export const fetchPageViewsHasura = (siteId: any) => {
     return callHasuraClinwiki(HASURA_CW, query.PAGE_VIEWS_HASURA_QUERY, {
@@ -90,6 +91,9 @@ export const fetchStudyPage = (nctId: any, QUERY: any) => {
 
 export const fetchStudyPageHasura = (nctId: any, HASURA_STUDY_QUERY: any) => {
     return callHasuraClinwiki(HASURA_CW, HASURA_STUDY_QUERY, { nctId });
+};
+export const fetchStudyPageHasuraDIS = (conditionId: any, HASURA_STUDY_QUERY: any) => {
+    return callHasuraDIS(HASURA_CW_DIS, HASURA_STUDY_QUERY, { conditionId });
 };
 
 export const fetchPageViews = (siteId: any) => {

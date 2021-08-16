@@ -9,6 +9,12 @@ const searchResolver = {
         const results = await SearchManager.search(args);
         return results;
     },
+    searchDIS: async (args, context) => {
+        //logger.info('PARGS', args)
+        //console.log(util.inspect(args, false, null, true));
+        const results = await SearchManager.searchDIS(args);
+        return results;
+    },
     aggBuckets: async (args, context) => {
         //console.log('##### AGGBUCKETS'+util.inspect(args, false, null, true));
         const results = await SearchManager.openAggBuckets(args);

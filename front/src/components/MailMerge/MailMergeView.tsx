@@ -24,7 +24,6 @@ export interface Props {
   style?: object;
   islands?: Record<string, IslandConstructor>;
   refetchQuery?: any;
-  pageType?: any;
 }
 const defaultStyle: React.CSSProperties = {
   display: 'flex',
