@@ -16,14 +16,30 @@ const QUERY_LONG_LINK = 'select * from short_links where long=$1';
 const QUERY_NEW_HASH = `insert into short_links (short,long, created_at, updated_at) values ($1,$2, to_timestamp(${Date.now()} / 1000.0), to_timestamp(${Date.now()} / 1000.0))`;
 const crypto = require('crypto');
 
+export async function searchDIS(args) {
+    // logger.info('ARGSDIS!:', + args)    
+    try {
+        const translated = await translateSearch(args.params, true);
+        let esResults = await elastic.query(translated, process.env.ELASTICSEARCH_INDEX_DIS);
+        const diseases = esResults.body.hits.hits
+        .filter(disease => (disease._source.condition_id ? true : false))
+        .map(disease => esToGraphql(disease));
+        return {
+            recordsTotal: esResults.body.hits.total,
+            diseases,
+        };
+    } catch (err) {
+        logger.error('Error running search: ' + err);
+    }
+}
+
 export async function search(args) {
     logger.info('ARGS!:', + args)
     
     try {
-        // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         const translated = await translateSearch(args.params, true);
         // console.log("-------------->  ELASTIC SEARCH QUERY <------------- " + util.inspect(translated, false, null, true))
-        let esResults = await elastic.query(translated);
+        let esResults = await elastic.query(translated,  process.env.ELASTICSEARCH_INDEX);
         const studies = esResults.body.hits.hits
             .filter(study => (study._source.nct_id ? true : false))
             .map(study => esToGraphql(study));
@@ -125,7 +141,7 @@ export async function openAggBuckets(args) {
             args.aggBucketsWanted
         );
         console.log("TRANSLATED", translated)
-        let esResults = await elastic.query(translated);
+        let esResults = process.env.DEFAULT_APPLICATION == "clinwiki" ? await elastic.query(translated, process.env.ELASTICSEARCH_INDEX) : await elastic.query(translated, process.env.ELASTICSEARCH_INDEX_DIS);
         console.log("TRANSLATED OPEN AGG Buckets" + util.inspect(esResults.body.aggregations, true, null, false))
         const studies = esResults.body.hits.hits.map(study =>
             esToGraphql(study)
@@ -159,7 +175,7 @@ export async function aggBuckets(args) {
 
         );
         console.log("TRANSLATED", translated)
-        let esResults = await elastic.query(translated);
+        let esResults = await elastic.query(translated, process.env.ELASTICSEARCH_INDEX);
         console.log("TRANSLATED AGG Buckets" + util.inspect(esResults.body.aggregations, true, null, false))
         const studies = esResults.body.hits.hits.map(study =>
             esToGraphql(study)

@@ -18,8 +18,6 @@ import {
 import { snakeCase } from 'utils/helpers';
 import 'react-table/react-table.css';
 import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
-import MasonryCards from './components/MasonryCards';
-import ListCards from './components/ListCards';
 import withTheme from 'containers/ThemeProvider';
 import TableRV from './components/TableRV';
 import {
@@ -122,55 +120,7 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
     resultsType,
   ) => {
     switch (resultsType) {
-      case 'masonry':
-        return (
-          <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                marginBottom: '10px',
-              }}>
-              {renderViewDropdown()}
-              {renderFilterDropDown()}
-            </div>
-
-            <MasonryCards
-              data={data}
-              loading={loading}
-              template={template}
-            />
-
-          </div>
-        );
-      case 'list':
-        return (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                marginBottom: '10px',
-              }}>
-              {renderViewDropdown()}
-              {renderFilterDropDown()}
-            </div>
-            <AutoSizer>
-              {({ height, width }) => (
-                <ListCards
-                  data={data}
-                  loading={loading}
-                  template={template}
-                  height={height}
-                  width={width}
-                />
-              )}
-            </AutoSizer>
-          </div>
-        );
-      case 'table':
+      default :
         return (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div
@@ -195,32 +145,6 @@ const MemoizedSearchView = React.memo(function SearchView2(props: SearchView2Pro
                 />
               )}
             </AutoSizer>
-          </div>
-        );
-      default:
-        return (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <p>  Looks like you have an outdated view style configured.
-            Please contact your site administrator.
-            </p>
-            <p>
-              Defaulting to Card View:
-             </p>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                marginBottom: '10px',
-              }}>
-              {renderViewDropdown()}
-              {renderFilterDropDown()}
-            </div>
-            <MasonryCards
-              data={data}
-              loading={loading}
-              template={template}
-            />
           </div>
         );
     }

@@ -133,6 +133,28 @@ export const callHasuraClinwiki = (
         }),
     }).then(r => r.json());
 };
+export const callHasuraDIS = (
+    endpoint: string,
+    query: any,
+    variables: any,
+    operationName?: string
+) => {
+    let hasuraHeaders = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'x-hasura-admin-secret': "56yLdUHm55QErQJepIvlIxFMk8jcnxRRF8dWA8JQjuP4h0py25uLbquMvqULZkRU" ,
+
+    }
+    return fetch(endpoint, {
+        method: 'POST',
+        headers: hasuraHeaders,
+        body: JSON.stringify({
+            query,
+            variables,
+            operationName,
+        }),
+    }).then(r => r.json());
+};
 
 
 export const getHasuraClinwikiURL = () => {
@@ -143,4 +165,13 @@ export const getHasuraClinwikiURL = () => {
         return `${process.env.REACT_APP_HASURA_CLINWIKI_URL}`;
     }
     return `${process.env.REACT_APP_HASURA_CLINWIKI_URL}`;
+};
+export const getHasuraDISURL = () => {
+    if (
+        typeof window === 'undefined' ||
+        window.location.hostname.includes('localhost')
+    ) {
+        return `${process.env.REACT_APP_HASURA_DIS_URL}`;
+    }
+    return `${process.env.REACT_APP_HASURA_DIS_URL}`;
 };

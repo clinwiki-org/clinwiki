@@ -1,7 +1,10 @@
-import { exportToCsv, searchExport } from './api';
-import { IslandConfigQuery } from './model/IslandConfigQuery';
 import * as types from './types';
+
+import { exportToCsv, searchExport } from './api';
+
+import { IslandConfigQuery } from './model/IslandConfigQuery';
 import { filter } from 'ramda';
+
 const initialState: types.SearchState = {
     isFetchingAggs: false,
     aggs: undefined,
@@ -59,7 +62,6 @@ const searchReducer = (
                 // isFetchingAggBuckets: true,
             };
         case types.FETCH_SEARCH_PAGE_AGG_BUCKETS_SUCCESS:
-            console.log(action);
             return {
                 ...state,
                 // isFetchingAggBuckets: false,
@@ -314,6 +316,24 @@ const searchReducer = (
             return {
                 ...state,
                 isFetchingFacetConfig: false,
+            };
+
+        case types.CONVERT_DISPLAY_NAME:
+            let currentIslandConfigs =
+                state.islandConfig || ({} as IslandConfigQuery);
+            let oldConfig = currentIslandConfigs[action.islandId];
+
+            let newConfig = {
+                ...oldConfig,
+                displayName: action.displayName,
+            };
+            return {
+                ...state,
+                //@ts-ignore
+                islandConfig: {
+                    ...state.islandConfig,
+                    [action.islandId]: newConfig,
+                },
             };
         case types.UPDATE_FACET_CONFIG_SEND:
             return {

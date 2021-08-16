@@ -18,6 +18,22 @@ function* reindexAll(action) {
     yield put(actions.reindexAllError(err.message));
   }
 }
+function* reindexAllDocuments(action) {
+  console.log(action)
+  try {
+    let response = yield call(() => api.reindexAllDocuments(action.primaryKey, action.indexName));
+    if (response) {
+      yield put(actions.reindexAllDocumentsSuccess(response.data));
+    } 
+    else {
+      yield put(actions.reindexAllDocumentsError(response.message));
+    }
+  } 
+  catch (err) {
+    console.log(err);
+    yield put(actions.reindexAllDocumentsError(err.message));
+  }
+}
 
 function* reindexStudy(action) {
   try {
@@ -53,6 +69,7 @@ function* reindexDocument(action) {
 
 export default function* userSagas() {
   yield takeLatest(types.REINDEX_ALL_SEND, reindexAll);
+  yield takeLatest(types.REINDEX_ALL_DOCUMENT_SEND, reindexAllDocuments);
   yield takeLatest(types.REINDEX_STUDY_SEND, reindexStudy);
   yield takeLatest(types.REINDEX_DOCUMENT_SEND, reindexDocument);
 }

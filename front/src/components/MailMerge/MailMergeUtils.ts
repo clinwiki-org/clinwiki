@@ -26,6 +26,20 @@ export function getSearchQuery(name: string, frag: string) {
   ${frag}
   `;
 }
+export function getSearchQueryDIS(name: string, frag: string) {
+    frag = frag || `fragment ${name} on ElasticStudyDIS { conditionId }`;
+    return `
+  query Search${name}QueryDIS($params:SearchInput!) {
+    searchDIS(params: $params) {
+      diseases {
+        ...${name}
+      }
+      recordsTotal
+    }
+  }
+  ${frag}
+  `;
+}
 
 export function getSearchNearbyQuery() {
     return `
@@ -48,6 +62,19 @@ export function getHasuraStudyQuery(name: string, frag: string) {
     return `
   query ctgov_prod_studies${name}Query($nctId: String!) {
     ctgov_prod_studies(where: {nct_id: {_eq: $nctId}}) {
+      ...${name}
+    }
+  }
+  ${frag}
+`;
+}
+export function getHasuraStudyQueryDIS(name: string, frag: string) {
+    frag =
+        frag ||
+        `fragment ${name} on disyii2_prod_20210704_2_tbl_conditions{condition_id}`;
+    return `
+  query disyii2_prod_20210704_2_tbl_conditions${name}Query($conditionId: bigint) {
+    disyii2_prod_20210704_2_tbl_conditions(where: {condition_id: {_eq: $conditionId}}) {
       ...${name}
     }
   }

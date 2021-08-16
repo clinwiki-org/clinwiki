@@ -10,6 +10,10 @@ export const REINDEX_DOCUMENT_SEND = 'REINDEX_DOCUMENT_SEND';
 export const REINDEX_DOCUMENT_SUCCESS = 'REINDEX_DOCUMENT_SUCCESS';
 export const REINDEX_DOCUMENT_ERROR = 'REINDEX_DOCUMENT_ERROR';
 
+export const REINDEX_ALL_DOCUMENT_SEND = 'REINDEX_ALL_DOCUMENT_SEND';
+export const REINDEX_ALL_DOCUMENT_SUCCESS = 'REINDEX_ALL_DOCUMENT_SUCCESS';
+export const REINDEX_ALL_DOCUMENT_ERROR = 'REINDEX_ALL_DOCUMENT_ERROR';
+
 export interface AdminState {
     isReindexing: boolean,
     reIndexingErrors: Array<string>
@@ -53,8 +57,23 @@ export interface ReindexDocumentSuccessAction {
 export interface ReindexDocumentErrorAction {
     type: typeof REINDEX_DOCUMENT_ERROR
 };
+export interface ReindexAllDocumentSendAction {
+    type: typeof REINDEX_ALL_DOCUMENT_SEND,
+    primaryKey: string,
+    // query,
+    indexName: string
+};
+
+export interface ReindexAllDocumentSuccessAction {
+    type: typeof REINDEX_ALL_DOCUMENT_SUCCESS
+};
+
+export interface ReindexAllDocumentErrorAction {
+    type: typeof REINDEX_ALL_DOCUMENT_ERROR
+};
 
 export type AdminActionTypes =
 ReindexAllSendAction | ReindexAllSuccessAction | ReindexAllErrorAction |
 ReindexStudySendAction | ReindexStudySuccessAction | ReindexStudyErrorAction|
-ReindexDocumentSendAction | ReindexDocumentSuccessAction | ReindexDocumentErrorAction;
+ReindexDocumentSendAction | ReindexDocumentSuccessAction | ReindexDocumentErrorAction | 
+ReindexAllDocumentSendAction | ReindexAllDocumentSuccessAction | ReindexAllDocumentErrorAction;

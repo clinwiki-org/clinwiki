@@ -1,16 +1,11 @@
-import {
-    call,
-    put,
-    takeLatest,
-    select,
-    takeLeading,
-    takeEvery,
-} from 'redux-saga/effects';
-import { push } from 'connected-react-router';
-import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
+import * as types from './types';
+
+import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects';
 import { camelCase, sentanceCase } from 'utils/helpers';
+
+import { push } from 'connected-react-router';
 
 const getCurrentSavedSearches = state =>
     state.search.savedSearches.data.saved_searches;
@@ -134,7 +129,7 @@ function* getSearchPageOpenCrowdAggBuckets(action) {
 }
 function* getSearchPageOpenAggBuckets(action) {
     try {
-        console.log(action)
+        console.log(action);
         let response = yield call(() =>
             api.fetchSearchPageOpenAggBuckets(action.searchParams)
         );
@@ -490,6 +485,23 @@ function* bucketFilter(action) {
     }
 }
 
+// Replace display name handlebars with helper_text values
+function* convertIslandConfigDisplayName(action) {
+    //console.log('🚀 CONVERT DISPLAY NAME ~ action', action);
+    try {
+        //const currentIslands = yield select(getCurrentIslands);
+        // let response = yield call(() => api.fetchIslandConfig());
+        // if (response) {
+        //     yield put(actions.fetchIslandConfigSuccess(response));
+        // } else {
+        //     yield put(actions.fetchIslandConfigError(response.message));
+        // }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.fetchIslandConfigError(err.message));
+    }
+}
+
 export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PAGE_AGGS_SEND, getSearchPageAggs);
     yield takeEvery(
@@ -517,9 +529,13 @@ export default function* userSagas() {
     yield takeLatest(types.DELETE_SAVED_SEARCH_SEND, deleteSavedSearch);
     // yield takeLatest(types.FETCH_FACET_CONFIG_SEND, getFacetConfig);
     yield takeLatest(types.FETCH_ISLAND_CONFIG_SEND, getIslandConfig);
+    yield takeLatest(
+        types.CONVERT_DISPLAY_NAME,
+        convertIslandConfigDisplayName
+    );
     yield takeLatest(types.UPDATE_FACET_CONFIG_SEND, updateFacetConfig);
     yield takeLatest(types.SEARCH_EXPORT_SEND, getSearchExport);
     yield takeLatest(types.EXPORT_T0_CSV_SEND, exportToCsv);
     yield takeLatest(types.TOGGLE_AGG, toggleAgg);
-    yield takeLatest(types.BUCKET_FILTER, bucketFilter)
+    yield takeLatest(types.BUCKET_FILTER, bucketFilter);
 }

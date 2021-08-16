@@ -1,52 +1,53 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouteMatch } from 'react-router-dom';
-import useUrlParams from 'utils/UrlParamsProvider';
-import SortKind from 'containers/AggDropDown/SortKind';
-import CustomDropDown from 'containers/AggDropDown/CustomDrop';
-import { useDispatch, useSelector } from 'react-redux';
-import { toggleAgg, updateSearchParamsAction, updateBucketsState, fetchSearchPageAggBuckets } from 'services/search/actions'
-import { RootState } from 'reducers';
-import { SearchQuery, SearchParams } from '../SearchPage/shared';
-import { SortInput } from 'types/globalTypes';
 import {
   AggBucket,
-  maskAgg,
-  defaultPageSize
+  defaultPageSize,
+  maskAgg
 } from '../SearchPage/Types';
-
+import React, { useEffect, useRef, useState } from 'react';
+import { SearchParams, SearchQuery } from '../SearchPage/shared';
 import {
-  pipe,
-  length,
-  prop,
-  sortBy,
-  uniqBy,
-  find,
-  reverse,
   contains,
+  dissoc,
   filter,
+  find,
+  findIndex,
+  groupBy,
+  head,
   isEmpty,
   isNil,
-  map,
-  dissoc,
-  head,
-  propOr,
-  groupBy,
+  length,
   lensPath,
+  map,
   over,
-  findIndex,
+  pipe,
+  prop,
   propEq,
+  propOr,
   reject,
-  view,
   remove,
-  uniq
+  reverse,
+  sortBy,
+  uniq,
+  uniqBy,
+  view
 } from 'ramda';
+import { fetchIslandConfig, fetchSearchPageOpenAggBuckets, fetchSearchPageOpenCrowdAggBuckets } from 'services/search/actions'
+import { fetchSearchPageAggBuckets, fetchSearchPageCrowdAggBuckets } from 'services/search/actions';
+import { toggleAgg, updateBucketsState, updateSearchParamsAction } from 'services/search/actions'
+import { useDispatch, useSelector } from 'react-redux';
+
 import { AggFilterInput } from 'types/globalTypes';
+import CustomDropDown from 'containers/AggDropDown/CustomDrop';
+import { RootState } from 'reducers';
 import {
   SearchPageParamsQuery_searchParams,
 } from '../../services/search/model/SearchPageParamsQuery';
 import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
+import { SortInput } from 'types/globalTypes';
+import SortKind from 'containers/AggDropDown/SortKind';
 import { preselectedFilters } from 'utils/siteViewHelpers';
-import { fetchIslandConfig, fetchSearchPageOpenCrowdAggBuckets, fetchSearchPageOpenAggBuckets } from 'services/search/actions'
+import { useRouteMatch } from 'react-router-dom';
+import useUrlParams from 'utils/UrlParamsProvider';
 
 const DEFAULT_PARAMS: SearchParams = {
   q: { children: [], key: 'AND' },
@@ -188,7 +189,7 @@ const IslandAggChild = (props: Props) => {
     searchParams[grouping]
   );
 
-  const desc = currentAgg.order.desc
+  const desc = currentAgg?.order?.desc
   const sortKind = currentAgg?.order?.sortKind == "count" ? SortKind.Number : SortKind.Alpha
   //helper functions\
   const getFullPagesCount = buckets => Math.floor(length(buckets) / PAGE_SIZE);
@@ -600,5 +601,6 @@ const IslandAggChild = (props: Props) => {
       />
     </>
   );
+
 }
 export default React.memo(IslandAggChild);
