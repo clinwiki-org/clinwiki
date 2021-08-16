@@ -1,6 +1,6 @@
 export function getStudyQuery(name: string, frag: string) {
-  frag = frag || `fragment ${name} on Study { nctId }`;
-  return `
+    frag = frag || `fragment ${name} on Study { nctId }`;
+    return `
   query Study${name}Query($nctId: String!) {
     study(nctId: $nctId) {
       nctId
@@ -12,8 +12,8 @@ export function getStudyQuery(name: string, frag: string) {
 }
 
 export function getSearchQuery(name: string, frag: string) {
-  frag = frag || `fragment ${name} on ElasticStudy { nctId }`;
-  return `
+    frag = frag || `fragment ${name} on ElasticStudy { nctId }`;
+    return `
   query Search${name}Query($params:SearchInput!) {
     search(params: $params) {
       studies {
@@ -27,12 +27,25 @@ export function getSearchQuery(name: string, frag: string) {
   `;
 }
 
+export function getSearchNearbyQuery() {
+    return `
+  query SearchNearbyQuery($params:SearchInput!) {
+    search(params: $params) {
+      studies {
+        nctId
+      }
+      recordsTotal
+    }
+  }
+  `;
+}
+
 const camelToSnakeCase = str =>
-  str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+    str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 
 export function getHasuraStudyQuery(name: string, frag: string) {
-  frag = frag || `fragment ${name} on ctgov_prod_studies{nct_id}`;
-  return `
+    frag = frag || `fragment ${name} on ctgov_prod_studies{nct_id}`;
+    return `
   query ctgov_prod_studies${name}Query($nctId: String!) {
     ctgov_prod_studies(where: {nct_id: {_eq: $nctId}}) {
       ...${name}
@@ -43,8 +56,8 @@ export function getHasuraStudyQuery(name: string, frag: string) {
 }
 
 export const getSampleStudyQuery = (name: string, frag: string) => {
-  frag = frag || `fragment ${name} on Study { nctId }`;
-  return `
+    frag = frag || `fragment ${name} on Study { nctId }`;
+    return `
   query SampleStudyQuery($nctId: String!) {
     study(nctId: $nctId) {
       ...${name}
@@ -55,8 +68,8 @@ export const getSampleStudyQuery = (name: string, frag: string) => {
 };
 
 export const getHasuraSampleStudyQuery = (name: string, frag: string) => {
-  frag = frag || `fragment ${name} on ctgov_prod_studies{nct_id}`;
-  return `
+    frag = frag || `fragment ${name} on ctgov_prod_studies{nct_id}`;
+    return `
 query HasuraSampleStudyQuery($nctId: String!) {
   ctgov_prod_studies(where: {nct_id: {_eq: $nctId}}) {
     ...${name}

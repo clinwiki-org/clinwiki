@@ -76,6 +76,10 @@ export const fetchSearchPageMM = (params: any, QUERY: any) => {
     return callGraphql(NODE_ENDPOINT, QUERY, { params: params });
 };
 
+export const fetchSearchPageNearby = (params: any, QUERY: any) => {
+    return callGraphql(NODE_ENDPOINT, QUERY, { params: params });
+};
+
 export const fetchSearchPageStudy = (params: any, QUERY: any) => {
     return callGraphql(NODE_ENDPOINT, QUERY, { params: params });
 };

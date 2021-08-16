@@ -68,7 +68,7 @@ export default function GenericPageWrapper(props: Props) {
     dispatch(fetchPageViewHasura(site?.id, params.pv || defaultPage() || urlFinal));
   }, [dispatch, params.pv]);
   useEffect(() => {
-    pageType == "Search" && dispatch(fetchSearchParams(params.hash));
+    dispatch(fetchSearchParams(params.hash));
   }, [dispatch, params.hash]);
 
   if (!params.hash && pageType == "Search") {
@@ -78,7 +78,7 @@ export default function GenericPageWrapper(props: Props) {
   if (!currentPage) {
     return <BeatLoader />
   }
-  if (pageType == 'Search' && !data) {
+  if (!data) {
     return <BeatLoader />
   }
   if (!props.arg && pageType == "Study") {

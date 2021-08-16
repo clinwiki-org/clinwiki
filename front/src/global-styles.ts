@@ -649,4 +649,10 @@ div.DraftEditor-editorContainer{
     display: flex;
     flex-wrap: wrap;
   }
+
+  .disabled-btn {
+    background-color: #b4b4b4 !important;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 `);
