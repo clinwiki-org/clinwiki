@@ -5,6 +5,8 @@ import * as actions from './actions';
 import * as types from './types';
 import * as siteActions from '../site/actions'
 
+const delay = time => new Promise(resolve => setTimeout(resolve, time));
+
 function* updateSiteHasura(action) { 
     try {
         //console.log("updateSiteHasura called in hasiraSite/sagas", action);
@@ -76,8 +78,55 @@ function* getSiteProviderHasura(action) {
     }
 }
 
+export function* getGeneric(action) {
+    //console.log("getSitesPageHasura called in hasuraSites sagas");
+    try {
+        let response = yield call(() => api.fetchGeneric(action.payload));
+    	// console.log(response);
+        const genericData = response.data
+        console.log('SAGA GENERIC FETCH', genericData);
+        if(response) {
+            yield put(actions.fetchGenericSuccess(genericData));
+            return response;
+        }
+        else {
+            yield put(actions.fetchSitesPageHasuraError(response.message));
+        }
+    }
+    catch(err) {
+        //console.log(err);
+        yield put(actions.fetchSitesPageHasuraError(err.message));
+    }
+}
+
+function* updateGeneric(action) { 
+    try {
+        //console.log("updateSiteHasura called in hasiraSite/sagas", action);
+        let genericResponse = yield call(() => api.updateGeneric(action.input, action.mutation));
+        console.log('genric response = ', genericResponse);
+        if (genericResponse.data){ 
+            yield put(actions.updateGenericSuccess(genericResponse.data, "You have updated a record"));
+            yield call(delay, 500);
+            console.log('run it back')
+            yield put(actions.updateGenericSuccess(genericResponse.data, ''));
+        }
+        else {
+            yield put(actions.updateGenericError(genericResponse.errors[0].message));
+            yield call(delay, 500);
+            yield put(actions.updateGenericError(""));
+        }
+    }
+    catch(err) {
+        //console.log(err);
+        yield put(actions.updateSiteHasuraError(err.message));
+    }
+}
+
 export default function* hasuraSagas() {
     yield takeLatest(types.FETCH_SITES_PAGE_HASURA_SEND, getSitesPageHasura);
     yield takeLatest(types.FETCH_SITE_PROVIDER_HASURA_SEND, getSiteProviderHasura);
     yield takeLatest(types.UPDATE_SITE_HASURA_SEND, updateSiteHasura);
+    yield takeLatest(types.UPDATE_GENERIC, updateGeneric);
+    yield takeLatest(types.FETCH_GENERIC, getGeneric);
+    
 }

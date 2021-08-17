@@ -16,7 +16,7 @@ import {
   fromPairs,
 } from 'ramda';
 import { snakeCase } from 'utils/helpers';
-import 'react-table/react-table.css';
+// import 'react-table/react-table.css';
 import { studyFields, MAX_WINDOW_SIZE } from 'utils/constants';
 import withTheme from 'containers/ThemeProvider';
 import TableRV from './components/TableRV';
