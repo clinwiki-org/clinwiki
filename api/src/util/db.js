@@ -62,7 +62,12 @@ export const queryHasura = async (str,params, hasuraInstance) => {
             variables: params,
             // operationName,
         }),
-    }).then(r => r.json());
+    }).then(r => {
+        console.log(r)
+        return r.json()
+    }).catch((err) => {
+        console.log('ERR', err)
+    })
 
     console.log("ABC", abc)
     return abc;
