@@ -2,8 +2,9 @@ import React, {useState, useEffect} from 'react'
 import {ThemedButton} from '../StyledComponents'
 
 const FormEditor = ({row, fields, isInsert, onSave}) => {
-  console.log('the row', row, fields[row])
+  console.log('the insert', fields)
   const [formState, setFormState] = useState([])
+  const [isInvalid, setIsInvalid] = useState(false)
 
   useEffect(() => {
     let values = [];
@@ -25,30 +26,199 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
   }
   }, [isInsert])
 
-  const handleChange = (e, key) => {
+  const tryParseJSONObject = (jsonString) => {
+    try {
+        var o = JSON.parse(jsonString);
+        if (o && typeof o === "object") {
+            return o;
+        }
+    }
+    catch (e) { }
+
+    return false;
+};
+  const handleChange = (e, key, type?: string) => {
+  
+    if (type == "checkbox") {
+      let values = formState
+
+      //@ts-ignore
+      values[key] = e.target.value == "true" ? true : false;
+
+      setFormState({...values});
+    }
+    else {
+      // checking for JSON will go here
+      // setIsInvalid(false)
+      // let isJSON = e.target.value
+      // let newValue = tryParseJSONObject(e.target.value)
+      // if (newValue == false) {
+      //   console.log('isvalid', isInvalid)
+      //   setIsInvalid(true)
+      // }
     let values = formState
-    console.log('YO', key, values)
     //@ts-ignore
     values[key] = e.target.value;
-    console.log('after change', values)
     setFormState({...values});
+    }
   }
 
-  console.log('form state', formState)
-  return (<form>
-     
+  const renderInsertForm = () => {
+    return Object.entries(fields).map(([x, value]) => {
+      //@ts-ignore
+      const key = isInsert ? value.name : x
+      if (key =="created_at" || key == "updated_at") {
+        return
+      }
+      //@ts-ignore
+      if (value.type == "Boolean") {
+        return <div key={key}>
+          <label>
+            <div>
+              {key}
+            </div>
+            <div>
+              True
+              <input
+                type="radio"
+                value={"true"}
+                checked={formState[key] == true}
+                onChange={(e) => handleChange(e, key, "checkbox")}
+              />
+              False
+              <input
+                type="radio"
+                value={"false"}
+                checked={formState[key] == false}
+                onChange={(e) => handleChange(e, key, "checkbox")}
+              />
+            </div>
+          </label>
+        </div>
+      }
+      return (
+        <div key={key}>
+        {isInvalid && <div className="generic-error">Bad JSON object</div>}
+        <label>
+          <div>
+            {key}
+          </div>
+          <div>
+            <textarea 
+                  name={key} 
+                  onChange={(e) => handleChange(e, key)}
+              
+                  value={formState[key]}
+                  disabled={!!(key == "id")}
+                  />    
+          </div>
+        </label>
+        </div>
+      )
+    })
+  }
+
+  const renderUpdateForm = () => {
+    return Object.entries(row).map(([key, value]) => {
+      if (key =="created_at" || key == "updated_at") {
+        return
+      }
+      if (typeof value == "boolean") {
+        return <div key={key}>
+          <label>
+            <div>
+              {key}
+            </div>
+            <div>
+              True
+              <input
+                type="radio"
+                value={"true"}
+                checked={formState[key] == true}
+                onChange={(e) => handleChange(e, key, "checkbox")}
+              />
+              False
+              <input
+                type="radio"
+                value={"false"}
+                checked={formState[key] == false}
+                onChange={(e) => handleChange(e, key, "checkbox")}
+              />
+            </div>
+          </label>
+        </div>
+      }
+      return (
+        <div key={key}>
+        {isInvalid && <div className="generic-error">Bad JSON object</div>}
+        <label>
+          <div>
+            {key}
+          </div>
+          <div>
+            <textarea 
+                  name={key} 
+                  onChange={(e) => handleChange(e, key)}
+              
+                  value={formState[key]}
+                  disabled={!!(key == "id")}
+                  />    
+          </div>
+        </label>
+        </div>
+      )
+    })
+  }
+
+
+
+  return (
+  <form>
     <ThemedButton
     style={{marginTop: 10, float: 'right'}}
     onClick={(e) => onSave(e, formState)}
     >Save</ThemedButton>
-   
-    {Object.entries(row).map(([key, value]) => {
+    { !isInsert ? renderUpdateForm() : null }
+    { isInsert ? renderInsertForm() : null }
+
+  
+  
+  </form>)
+}
+
+export default FormEditor
+
+
+  {/* {Object.entries(row).map(([key, value]) => {
+      console.log('Value', value)
       if (key =="created_at" || key == "updated_at") {
         return
       }
-      // const key = Object.keys(field)
-      // const value = Object.values(field)
-      console.log('KEY', key, value)
+      if (typeof value == "boolean") {
+        return <div key={key}>
+          <label>
+            <div>
+              {key}
+            </div>
+            <div>
+              True
+              <input
+                type="radio"
+                value={"true"}
+                checked={formState[key] == true}
+                onChange={(e) => handleChange(e, key, "checkbox")}
+              />
+              False
+              <input
+                type="radio"
+                value={"false"}
+                checked={formState[key] == false}
+                onChange={(e) => handleChange(e, key, "checkbox")}
+              />
+            </div>
+          </label>
+        </div>
+      }
       return (
         <div key={key}>
       
@@ -70,9 +240,4 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
         </div>
       )
     })
-  }
-  
-  </form>)
-}
-
-export default FormEditor
+  } */}

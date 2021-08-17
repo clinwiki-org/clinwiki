@@ -30,7 +30,9 @@ export interface SiteState {
     isFetchingSiteProviderHasura: boolean,
     siteProviderHasura: any | SiteProviderQuery | undefined,
     genericData: any,
-    isFetchingGeneric: boolean
+    isFetchingGeneric: boolean,
+    genericUpdateErrorMessage: string,
+    genericUpdateSuccessMessage: string
 }                                                                                   
                                                                                     
 export interface SiteDataError {                                                    
@@ -91,7 +93,8 @@ export interface UpdateGenericAction {
 
 export interface UpdateGenericSuccessAction {
     type: typeof UPDATE_GENERIC_SUCCESS,
-    payload: any
+    payload: any,
+    message: string
 };
 
 export interface UpdateGenericErrorAction {
@@ -114,10 +117,11 @@ export interface FetchGenericErrorAction {
 };
 
 
+
 export type HasuraSiteActionTypes = 
     UpdateSiteHasuraSendAction | UpdateSiteHasuraSuccessAction | UpdateSiteHasuraErrorAction |
     FetchSitesPageHasuraSendAction | FetchSitesPageHasuraSuccessAction | FetchSitesPageHasuraErrorAction |
     FetchSiteProviderHasuraSendAction | FetchSiteProviderHasuraSuccessAction | FetchSiteProviderHasuraErrorAction |
     UpdateGenericAction | UpdateGenericSuccessAction | UpdateGenericErrorAction | FetchGeneric | FetchGenericSuccessAction | 
-    FetchGenericErrorAction
+    FetchGenericErrorAction 
     ;

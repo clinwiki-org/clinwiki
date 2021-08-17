@@ -54,9 +54,10 @@ export const updateGeneric = (input: any, mutation?: string) : types.HasuraSiteA
     mutation
 });
 
-export const updateGenericSuccess = (payload: any) : types.HasuraSiteActionTypes => ({
+export const updateGenericSuccess = (payload: any, message: string) : types.HasuraSiteActionTypes => ({
     type: types.UPDATE_GENERIC_SUCCESS,
-    payload
+    payload,
+    message
 });
 
 export const updateGenericError = (payload: any) : types.HasuraSiteActionTypes => ({
@@ -78,3 +79,8 @@ export const fetchGenericError = (message: string) : types.HasuraSiteActionTypes
     type: types.FETCH_GENERIC_ERROR,
     payload: { message }
 });
+
+// export const updateGenericSuccess = (payload: any) : types.HasuraSiteActionTypes => ({
+//     type: types.UPDATE_GENERIC_SUCCESS,
+//     payload
+// });

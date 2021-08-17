@@ -208,10 +208,10 @@ const SchemaSelector2 = React.memo((props: Props) => {
   const schema =schemaToInternal(props.schema);
 
   useEffect(()=>{
-    props.setFields(schema)
-    const cleanSchema = props.cleanFields(schema)
-    console.log('CLEANED SCHEMA', cleanSchema)
-    props.setShortFields(cleanSchema)
+    // props.setFields(schema)
+    // const cleanSchema = props.cleanFields(schema)
+    // console.log('CLEANED SCHEMA', cleanSchema)
+    // props.setShortFields(cleanSchema)
   },[])
 
   useEffect(()=>{
@@ -219,8 +219,7 @@ const SchemaSelector2 = React.memo((props: Props) => {
       console.log('SCHEMA',schema)
       const cleanSchema = await props.cleanFields(schema)
       console.log('CLEANED SCHEMA',cleanSchema)
-      // props.setFields(schema)
-      
+      // props.setFields(schema
     })()
  
   },[schema])
