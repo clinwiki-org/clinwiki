@@ -3,6 +3,8 @@ import { bulkUpdate } from '../../search/elastic';
 import logger from '../../util/logger';
 import {query} from '../../util/db';
 import moment from 'moment';
+import config from '../../../config';
+
 const util = require('util')
 
 const CHUNK_SIZE = 1000;
@@ -144,8 +146,8 @@ export const crowdKeyReindex = async payload => {
     let crowdKeys = [...crowdMap.values()];
     //TO-DO: Generecise 
     // *******************
-    // let response = await bulkUpdate(crowdKeys, 'nct_id', 'studies_development');
-    let response = await bulkUpdate(crowdKeys, 'condition_id', 'dis_development');
+    // let response = await bulkUpdate(crowdKeys, 'nct_id', config.elasticIndex);
+    let response = await bulkUpdate(crowdKeys, 'condition_id', config.elasticIndexDIS);
     // *******************
 
     // console.log('_____________________');

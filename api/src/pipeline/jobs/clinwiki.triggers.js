@@ -4,6 +4,7 @@ import * as elastic from '../../search/elastic';
 const util = require('util');
 import {aactReindexSingleStudyJob} from './aact.job.js';
 import { JOB_TYPES, enqueueJob } from '../pipeline.queue';
+import config from '../../../config';
 
 
 export const indexWikiPage = async (payload) => {
@@ -27,14 +28,14 @@ export const indexCrowdKeyValueIds = async (payload) => {
     // TO-DO: Genericise!
     // *******************
     //for DIS
-    let indexName = "dis_development";
+    let indexName = config.elasticIndexDIS;
     await enqueueJob(JOB_TYPES.DOCUMENT_REINDEX, { primaryKeyList: [docId], primaryKey: 'condition_id', indexName: indexName });
     await enqueueJob(JOB_TYPES.CROWD_KEY_BULK_REINDEX, {
         list: docId,
     });
 
     //for studies 
-    // let indexName = "studies_development";
+    // let indexName = config.elasticIndex;
     // await enqueueJob(JOB_TYPES.DOCUMENT_REINDEX, { primaryKeyList: [docId], primaryKey: 'nct_id', indexName: indexName });
     // await enqueueJob(JOB_TYPES.CROWD_KEY_BULK_REINDEX, {
     //     list: docId,
