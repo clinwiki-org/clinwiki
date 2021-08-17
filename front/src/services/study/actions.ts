@@ -234,6 +234,14 @@ export const fetchStudyPageHasura = (
     nctId,
     HASURA_STUDY_QUERY,
 });
+export const fetchStudyPageHasuraDIS = (
+    conditionId: string,
+    HASURA_STUDY_QUERY: any
+): types.StudyActionTypes => ({
+    type: types.FETCH_STUDY_PAGE_HASURA_SEND_DIS,
+    conditionId,
+    HASURA_STUDY_QUERY,
+});
 export const fetchStudyPageHasuraSuccess = (
     payload: any
 ): types.StudyActionTypes => ({

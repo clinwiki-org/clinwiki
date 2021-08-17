@@ -1,6 +1,9 @@
 export const REINDEX_ALL_MUTATION = `mutation {
   reindexAll
 }`;
+export const REINDEX_ALL_DOCUMENTS_MUTATION  = `mutation ReindexAllDocumentsMutation( $primaryKey: String , $indexName: String) {
+  reindexAllDocuments(primaryKey:$primaryKey, indexName: $indexName) 
+}`;
 
 export const REINDEX_STUDY_MUTATION = `mutation ReindexStudyMutation($input: String!) {
   reindexStudy(input: $input) 

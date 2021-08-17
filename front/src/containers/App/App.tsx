@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import NotFoundPage from 'containers/NotFoundPage';
 import NotConfiguredPage from 'containers/NotConfiguredPage';
-import SearchPage from 'containers/SearchPage';
 import { ProfilePage, EditProfilePage } from 'containers/ProfilePage';
 import LandingPage from 'containers/LandingPage';
 import AboutPage from 'containers/AboutPage';
@@ -58,10 +57,11 @@ class App extends React.PureComponent<AppProps> {
                 <Route exact path="/about" component={AboutPage} />
                 <Route exact path="/version" component={ReleaseNotes} />
                 <Route path="/search/" render={(props) => <GenericPageWrapper />} />
-                <Route path="/search2/" component={SearchPage} />
-                <Route path="/search2/:siteviewUrl" component={SearchPage} />
                 <Route path="/study/:nctId"
                   render={(props) => <GenericPageWrapper arg={props.match.params.nctId} />}
+                />
+                <Route path="/condition/:conditionId"
+                  render={(props) => <GenericPageWrapper arg={props.match.params.conditionId} />}
                 />
                 <Route path="/hasurastudy/:nctId"
                   render={(props) => <HasuraGenericPage arg={props.match.params.nctId} />}
