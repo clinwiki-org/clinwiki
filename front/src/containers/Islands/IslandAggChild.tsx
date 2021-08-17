@@ -575,7 +575,7 @@ const IslandAggChild = (props: Props) => {
       <CustomDropDown
         buckets={buckets || []}
         isPresearch={true}
-        selectedKeys={filters[currentAgg!.name] || emptySet}
+        selectedKeys={filters[currentAgg?.name] || emptySet}
         field={currentAgg}
         onContainerToggle={() => handleContainerToggle()}
         handleLoadMore={handleLoadMore}
@@ -594,7 +594,7 @@ const IslandAggChild = (props: Props) => {
         toggleAlphaSort={toggleAlphaSort}
         toggleNumericSort={toggleNumericSort}
         setShowLabel={showLabel => setShowLabel(showLabel)}
-        isOpen={currentAgg.defaultToOpen}
+        isOpen={currentAgg?.defaultToOpen}
         fromAggField={false}
         allowsMissing={aggValues?.includeMissingFields}
         disabled={isFetchingStudy || isFetchingCurrentAggBucket}

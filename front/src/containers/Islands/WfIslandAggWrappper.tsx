@@ -9,12 +9,12 @@ import { fetchWorkFlowPage } from 'services/study/actions';
 
 interface Props {
   aggId?: string;
-  nctId?: string;
+  context?: any;
 
 }
 
 function IslandAggWrapper(props: Props) {
-  const { aggId, nctId } = props;
+  const { aggId, context } = props;
   const dispatch = useDispatch();
 
   const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
@@ -39,7 +39,7 @@ function IslandAggWrapper(props: Props) {
   return (
     <WfIslandAggChild
       aggId={props.aggId}
-      nctId={props.nctId || ""}
+      documentId={context?.nct_id ||context?.condition_id || ""}
       suggestedLabels={suggestedLabels}
     />
   );

@@ -137,7 +137,22 @@ export default function GenericPageWrapper(props: Props) {
     //console.log("STUDY DATA", studyData)
     const title = microMailMerge(currentPage?.title, searchData(pageType) || "Add a Title");
 
-    const islands = pageType == 'Study' ? studyIslands : searchIslands;
+    const islands = (pageType) => {
+        switch (pageType) {
+            case 'Study':
+                return studyIslands
+            case 'Search_Study':
+                return searchIslands
+            case 'Search_Condition':
+                return searchIslands
+            case 'Condition':
+                return studyIslands
+            default:
+                console.log("No PAGE TYPE ")
+                return
+        }
+    }
+
     if (pageType == 'Study' && !studyData) {
         return <BeatLoader />
     }
@@ -149,7 +164,7 @@ export default function GenericPageWrapper(props: Props) {
             {currentPage && studyData && <MailMergeView
                 template={currentPage?.template || ''}
                 context={searchData(pageType)}
-                islands={islands}
+                islands={islands(pageType)}
             />}
         </div>
     );

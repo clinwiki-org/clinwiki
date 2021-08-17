@@ -116,6 +116,10 @@ export const genericDocumentJob = async (args) => {
         const idList = bulkList[j];
         // Queue these up for reindexing
         await enqueueJob(JOB_TYPES.DOCUMENT_REINDEX, { ...args, primaryKeyList: idList });
+        //TO-DO: Test 
+        await enqueueJob(JOB_TYPES.CROWD_KEY_BULK_REINDEX, {
+          list: idList,
+      });
       }
       logger.info('Job GENERIC Doc. Finished.')
       IS_RUNNING = false;

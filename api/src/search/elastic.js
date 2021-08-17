@@ -131,16 +131,17 @@ export const bulkUpsert = async (list) => {
     }
 };
 
-export const bulkUpdate = async (list) => {
-    // console.log("B4 Body" + util.inspect(list, false, null, true));
+export const bulkUpdate = async (list, docKey, indexName) => {
+    console.log("B4 Body" + util.inspect(list, false, null, true));
+
     try {
         let body = '';
         list.forEach( doc => {
             body = body.concat(JSON.stringify(
                 { update: { 
-                    _index: config.elasticIndex, 
+                    _index: indexName, 
                     _type: '_doc',
-                    _id: doc.nct_id
+                    _id: doc[docKey]
                 }}
             ));
             body = body.concat("\n");

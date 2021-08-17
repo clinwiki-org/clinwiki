@@ -62,7 +62,7 @@ export const studyIslands: Record<string, IslandConstructor> = {
     <ReviewsIsland nctId={context?.nct_id} />
   ),
   wfagg: (attributes: Record<string, string>, context?: any) => (
-    <IslandAggWrapper2 nctId={context?.nct_id} aggId={attributes['id']} />
+    <IslandAggWrapper2 context={context} aggId={attributes['id']} />
   ),
 };
 export const searchIslands: Record<string, IslandConstructor> = {

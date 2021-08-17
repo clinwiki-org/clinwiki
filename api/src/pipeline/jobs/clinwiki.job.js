@@ -104,11 +104,8 @@ const esWikiPage = row => {
 
 export const crowdKeyReindex = async payload => {
     const idList = payload.list;
-    // console.log('IDLIST from CROWD KEY INDEX', idList);
     const results = await getBulkCrowdKeys(idList);
                 
-    // console.log("In Crwod-reindex")
-    // console.log('CROWD KEY RESULTS', results)
     //let crowdKeys = [];
     // for(let i=0;i<results.rowCount;i++) {
     //     const crowdKey = results.rows[i];
@@ -122,16 +119,16 @@ export const crowdKeyReindex = async payload => {
         let ckStudy = crowdMap.get(crowdKeyRow.crowd_key_value_id_association);
 
         if (!ckStudy) {
-            ckStudy = { nct_id: crowdKeyRow.crowd_key_value_id_association };
+            //TO-DO: Generecise params
+            // *******************
+            // Study
+            // ckStudy = { nct_id: crowdKeyRow.crowd_key_value_id_association };
+            // DIS
+            ckStudy = { condition_id: crowdKeyRow.crowd_key_value_id_association };
             ckStudy.front_matter_keys = [];
+            // *******************
+        
         }
-        // ckStudy['fm_' + crowdKeyRow.crowd_key] =  ckStudy['fm_' + crowdKeyRow.crowd_key];
-        /// we need to do something similar to this.
-        // console.log(crowdKeyRow)
-        // console.log(ckStudy)
-        // console.log('PRE PUSH', ckStudy['fm_' + crowdKeyRow.crowd_key])
-   
-        // ckStudy['fm_' + crowdKeyRow.crowd_key] ? ckStudy['fm_' + crowdKeyRow.crowd_key].push(crowdKeyRow.crowd_value) : ckStudy['fm_' + crowdKeyRow.crowd_key] = [crowdKeyRow.crowd_value];
         if (ckStudy['fm_' + crowdKeyRow.crowd_key]) {
             ckStudy['fm_' + crowdKeyRow.crowd_key].push(crowdKeyRow.crowd_value)
         } else {
@@ -145,7 +142,11 @@ export const crowdKeyReindex = async payload => {
     }
     
     let crowdKeys = [...crowdMap.values()];
-    let response = await bulkUpdate(crowdKeys);
+    //TO-DO: Generecise 
+    // *******************
+    // let response = await bulkUpdate(crowdKeys, 'nct_id', 'studies_development');
+    let response = await bulkUpdate(crowdKeys, 'condition_id', 'dis_development');
+    // *******************
 
     // console.log('_____________________');
     // console.log(util.inspect(response, false, null, true));
@@ -153,12 +154,15 @@ export const crowdKeyReindex = async payload => {
 };
 
 const getBulkCrowdKeys = async idList => {
-    let params = idList.map((id, index) => '$' + (index + 1));
+    // TO-DO: Make sure this value gets sent an array 
+    let idListArray = [idList]
+    console.log(idListArray)
+    let params = idListArray.map((id, index) => '$' + (index + 1));
     const crowdKeyQuery =
-        'select * from crowd_key_value_ids where id in (' +
+        'select * from crowd_key_value_ids where crowd_key_value_id_association in (' +
         params.join(',') +
         ')';
-    const rs = await query(crowdKeyQuery, idList);
+    const rs = await query(crowdKeyQuery, idListArray);
     return rs;
 };
 

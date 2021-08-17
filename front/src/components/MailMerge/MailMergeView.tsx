@@ -252,7 +252,9 @@ const MailMergeView = (props: Props) => {
 
     if (wfLabels) {
       //@ts-ignore
-      wfLabels[0] && dispatch(fetchSuggestedLabels(props.context?.nct_id, wfLabels));
+      wfLabels[0] && props.context?.condition_id && dispatch(fetchSuggestedLabels(props.context?.condition_id.toString(), wfLabels[0]));
+      //@ts-ignore
+      wfLabels[0] && props.context?.nct_id && dispatch(fetchSuggestedLabels(props.context?.nct_id.toString(), wfLabels[0]));
 
     }
 

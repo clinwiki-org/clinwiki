@@ -26,7 +26,7 @@ import styled from 'styled-components';
 
 interface Props {
   aggId?: string;
-  nctId: string;
+  documentId: string;
   suggestedLabels: any;
 }
 
@@ -42,7 +42,7 @@ function WfIslandAggChild(props: Props) {
   let history = useHistory();
   const params = useUrlParams();
 
-  const { aggId, nctId, suggestedLabels } = props;
+  const { aggId, documentId, suggestedLabels } = props;
   const dispatch = useDispatch();
   const emptySet = new Set();
 
@@ -103,11 +103,11 @@ function WfIslandAggChild(props: Props) {
       if (!value) return;
       let val = value;
       // console.log(meta[currentAgg?.name])
-      dispatch(insertCrowdKeyValueId(props.nctId, key, currentAgg.name, user.id, false, false))
+      dispatch(insertCrowdKeyValueId(documentId.toString(), key, currentAgg.name, user.id, false, false))
 
       // console.log(nctId, currentAgg?.name, key)
     } else {
-      dispatch(deleteCrowdKeyValueId(props.nctId, key, currentAgg.name))
+      dispatch(deleteCrowdKeyValueId(documentId.toString(), key, currentAgg.name))
     }
   }
   let filteredArray = suggestedLabels?.data?.crowd_keys.filter(x => x.crowd_key == currentAgg.name);
@@ -146,12 +146,12 @@ function WfIslandAggChild(props: Props) {
     if (crowdKeyValueData.length === 1) {
       let idToUpdate = crowdKeyValueData[0].id
       //let updatedContent = richEditorText//.toString('markdown');
-      dispatch(updateCrowdKeyValueId(idToUpdate, rteText, props.nctId))
+      dispatch(updateCrowdKeyValueId(idToUpdate, rteText, documentId))
       setIsEditing(false)
 
       return;
     }
-    dispatch(insertCrowdKeyValueId(props.nctId, rteText, currentAgg.name, user.id, false, false))
+    dispatch(insertCrowdKeyValueId(documentId, rteText, currentAgg.name, user.id, false, false))
     setIsEditing(false)
   };
 
