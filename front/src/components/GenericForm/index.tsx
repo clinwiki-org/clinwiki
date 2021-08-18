@@ -1,5 +1,4 @@
 import React, {useEffect, useState, useMemo} from 'react'
-import SchemaSelector2 from './schemaSelector2'
 // import { GraphqlSchemaType } from './schemaSelector2';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
