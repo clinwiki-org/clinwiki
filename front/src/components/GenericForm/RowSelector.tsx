@@ -72,8 +72,6 @@ const RowSelector = ({data, selectRow, setIsForm, isForm, columns, isLoading}) =
     () => ({
       // Add a new fuzzyTextFilterFn filter type.
       fuzzyText: fuzzyTextFilterFn,
-      // Or, override the default text filter to use
-      // "startWith"
       text: (rows, id, filterValue) => {
         return rows.filter(row => {
           const rowValue = row.values[id]
@@ -93,58 +91,54 @@ const RowSelector = ({data, selectRow, setIsForm, isForm, columns, isLoading}) =
   return <BeatLoader />
 }
 
-// console.log('DATA', data)
   return (
-  // <div className="flex-rows">
-  //   {data && data.map(row => <div className="generic-item" key={row.id} onClick={() => {onRowClick(row.id)}}>{row.id}</div>)}
-<Styles>
+    <Styles>
+      <div>
       <GlobalFilter
         preGlobalFilteredRows={preGlobalFilteredRows}
         globalFilter={state.globalFilter}
         setGlobalFilter={setGlobalFilter}
       />      
-     <table {...getTableProps()}>
+      <table {...getTableProps()}>
 
-      <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup
-              .headers
-              .map(column => (
-                <th {...column.getHeaderProps(column.getSortByToggleProps())} 
-                className={
-                  column.isSorted
-                    ? column.isSortedDesc
-                      ? "sort-desc"
-                      : "sort-asc"
-                    : ""
-                }
-                
-                >{column.render('Header')}</th>
-              ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
-          prepareRow(row);
-          return (
-            <tr className="t-row" {...row.getRowProps()} onClick={() => onRowClick(row.original.id)}>
-              {row
-                .cells
-                .map(cell => {
-                  return <td {...cell.getCellProps()}><div className="cw-cell">{cell.render('Cell')}</div></td>
-                })}
+        <thead>
+          {headerGroups.map(headerGroup => (
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup
+                .headers
+                .map(column => (
+                  <th {...column.getHeaderProps(column.getSortByToggleProps())} 
+                  className={
+                    column.isSorted
+                      ? column.isSortedDesc
+                        ? "sort-desc"
+                        : "sort-asc"
+                      : ""
+                  }
+                  
+                  >{column.render('Header')}</th>
+                ))}
             </tr>
-          )
-        })}
-      </tbody>
-    </table>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {rows.map((row, i) => {
+            prepareRow(row);
+            return (
+              <tr className="t-row" {...row.getRowProps()} onClick={() => onRowClick(row.original.id)}>
+                {row
+                  .cells
+                  .map(cell => {
+                    return <td {...cell.getCellProps()}><div className="cw-cell">{cell.render('Cell')}</div></td>
+                  })}
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+      </div>
     </Styles>
   )
-
-  // </div>
-  
 }
 
 export default RowSelector

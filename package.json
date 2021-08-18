@@ -1,9 +1,12 @@
 {
     "name": "required_for_heroku_buildpack",
-        "scripts": {
-        "build":"./heroku-build.sh",
-        "start":"cd api && npm start",
+    "scripts": {
+        "build": "./heroku-build.sh",
+        "start": "cd api && npm start",
         "pipeline-start": "cd api && npm run pipeline-start"
     },
-    "dependencies": {}
+    "dependencies": {
+        "react-table": "^7.7.0",
+        "rsuite-table": "^3.15.1"
+    }
 }
