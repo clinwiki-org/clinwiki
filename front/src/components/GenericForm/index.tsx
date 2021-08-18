@@ -375,7 +375,6 @@ function schemaToInternal(schemaType: SchemaType) {
   const buildGQLInput = () => {
     const fieldInput = {};
     const schema = isInsert ? shortFields : activeSchema
-    console.log('FIELDS before update', activeSchema)
     Object.values(schema).map((field:any) => {
       const key = `$${field.name}`;
       const type = field.type
@@ -411,13 +410,11 @@ function schemaToInternal(schemaType: SchemaType) {
           return obj;
       }, {}
     );
-    console.log('insertF', insertFields)
     const genericMutation = genericTableCreateMutation(insertFields)
     dispatch(updateGeneric(insertFields, genericMutation))
     setIsInsert(false)
     setIsForm(false)
-   } else {
-    console.log('UPDATE')  
+   } else { 
     const genericMutation = genericTableUpdateMutation(formData)
     dispatch(updateGeneric(formData, genericMutation))
     // const genericQuery = await genericQueryString(activeSchema)
