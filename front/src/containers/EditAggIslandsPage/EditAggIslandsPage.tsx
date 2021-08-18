@@ -9,6 +9,7 @@ import { BeatLoader } from 'react-spinners';
 import { isAdmin } from 'utils/auth';
 import { Redirect } from 'react-router-dom'
 
+import GenericForm from 'components/GenericForm'
 
 interface EditWorkflowsPageProps { }
 interface EditWorkflowsPageState {
@@ -107,45 +108,7 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
     else
       return (
         <Container>
-          <Row>
-            <Col md={2}>
-              <Nav
-                bsStyle="pills"
-                stacked
-                activeKey={currentAggId}
-                onSelect={key => setCurrentAggId(key)}>
-                {
-                  aggsArray.map(agg => (console.log(agg),
-                    <NavItem key={agg} eventKey={agg} >
-                      {agg}
-                    </NavItem>
-                  ))}
-                <ThemedButton
-                  style={{ marginTop: 15 }}
-                  onClick={(handleNewFacet)}>
-                  New Facet
-                </ThemedButton>
-              </Nav>
-            </Col>
-            <Col md={10}>
-              <StyledPanel>
-
-                <StyledFormInput
-                  componentClass="textarea"
-                  name="reactionsConfig"
-                  placeholder={"SOmething"}
-                  value={aggConfig}
-                  onChange={(e) => handleConfigChange(e)}
-                />
-                <ThemedButton
-                  style={{ marginTop: 15 }}
-                  onClick={(e) => handleSaveIsland(e)}>
-                  Save
-                </ThemedButton>
-
-              </StyledPanel>
-            </Col>
-          </Row>
+          <GenericForm tableName="island_configs" />
         </Container>
       )
   }
