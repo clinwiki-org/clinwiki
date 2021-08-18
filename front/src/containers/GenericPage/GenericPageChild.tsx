@@ -4,11 +4,11 @@ import MailMergeView, {
 } from 'components/MailMerge/MailMergeView';
 import { useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { getStudyQuery, getSearchQuery, getHasuraStudyQuery, getSearchQueryDIS, getHasuraStudyQueryDIS } from 'components/MailMerge/MailMergeUtils';
+import { getStudyQuery, getSearchQuery, getHasuraStudyQuery, getSearchQueryDIS, getHasuraStudyQueryDIS, getSearchNearbyQuery } from 'components/MailMerge/MailMergeUtils';
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
-import { fetchStudyPage, fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS } from 'services/study/actions';
+import { fetchStudyPage, fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS, fetchStudyPageNearby } from 'services/study/actions';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
@@ -35,12 +35,12 @@ function getClassForMode(mode: Mode) {
     }
 }
 
-
 export default function GenericPageWrapper(props: Props) {
     const match = useRouteMatch();
     const dispatch = useDispatch();
     const params = useUrlParams();
     const studyData = useSelector((state: RootState) => state.study.studyPage);
+    const studyList = useSelector((state: RootState) => state.study.studyList);
     const upsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel);
     const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
     const data = useSelector((state: RootState) => state.search.searchResults);
@@ -85,6 +85,10 @@ export default function GenericPageWrapper(props: Props) {
         switch (pageType) {
             case 'Study':
                 dispatch(fetchStudyPageHasura(props.arg ?? "", HASURA_STUDY_QUERY));
+                const SEARCH_NEARBY_QUERY = `${getSearchNearbyQuery()}`
+                const pageSize = searchParams.searchParams.pageSize = studyList?.data?.search?.recordsTotal
+                const finalPageSize = pageSizeHelper(pageSize)
+                dispatch(fetchStudyPageNearby({ ...searchParams.searchParams, pageSize: finalPageSize }, SEARCH_NEARBY_QUERY))
                 return
             case 'Search_Study':
                 dispatch(fetchSearchPageMM(searchParams.searchParams, SEARCH_QUERY));
@@ -99,13 +103,21 @@ export default function GenericPageWrapper(props: Props) {
                 console.log("No PAGE TYPE ")
                 return
         }
-    }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data, suggestedLabels]);
+    }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data, suggestedLabels, studyList?.data?.search?.recordsTotal]);
 
+
+    const pageSizeHelper = (pageSize) => {
+        if (pageSize > 10000) {
+            return 10000
+        } else {
+            return pageSize
+        }
+    }
 
     const searchData = (pageType) => {
         switch (pageType) {
             case 'Study':
-                return studyData?.data?.ctgov_prod_studies[0]
+                return { ...studyData?.data?.ctgov_prod_studies[0], nextStudy, previousStudy }
             case 'Search_Study':
                 let studies: any[] = []
                 studyData?.data?.search?.studies?.map((study, index) => {
@@ -131,11 +143,36 @@ export default function GenericPageWrapper(props: Props) {
                 return
         }
     }
+
+    const currentStudy = match.params['nctId']
+    const nctIdObject = studyList?.data?.search?.studies?.find(study => study.nctId == currentStudy);
+    const currentIndexOfStudyList = studyList?.data?.search?.studies?.indexOf(nctIdObject)
+    // console.log('studyList?.data?.search?.studies', studyList?.data?.search?.studies.length);
+
+    const nextStudy = () => {
+        const nextNctId = studyList?.data?.search?.studies[currentIndexOfStudyList + 1]
+        console.log("currentIndexOfStudyList", currentIndexOfStudyList);
+        if (nextNctId && nextNctId.nctId) {
+            console.log("nextNctId is", nextNctId.nctId);
+            return nextNctId.nctId
+        } else {
+            console.log("adjust nextButton");
+            return document.querySelector(".next-btn")?.classList.add("disabled-btn")
+        }
+    }
+
+    const previousStudy = () => {
+        const previousNctId = studyList?.data?.search?.studies[currentIndexOfStudyList - 1]
+        if (previousNctId && previousNctId.nctId) {
+            return previousNctId.nctId
+        } else {
+            return document.querySelector('.prev-btn')?.classList.add('disabled-btn')
+        }
+    }
+
     const pageType = getPageType(currentPage?.page_type);
 
-
-    //console.log("STUDY DATA", studyData)
-    const title = microMailMerge(currentPage?.title, searchData(pageType) || "Add a Title");
+    const title = microMailMerge(currentPage?.title, searchData(pageType)) || "Add a Title";
 
     const islands = pageType == 'Study' ? studyIslands : searchIslands;
     if (pageType == 'Study' && !studyData) {

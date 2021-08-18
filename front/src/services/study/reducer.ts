@@ -17,7 +17,9 @@ const initialState: types.StudyState = {
     isFetchingSampleStudyHasura: false,
     hasuraSampleStudy: undefined,
     isFetchingStudy: false,
+    isFetchingStudyNearby: false,
     studyPage: undefined,
+    studyList: undefined,
     isFetchingPageViews: false,
     pageViews: undefined,
     isFetchingPageView: false,
@@ -241,7 +243,22 @@ const studyReducer = (
                 ...state,
                 isFetchingStudy: false,
             };
-
+        case types.FETCH_STUDY_PAGE_NEARBY_SEND:
+            return {
+                ...state,
+                isFetchingStudyNearby: true,
+            };
+        case types.FETCH_STUDY_PAGE_NEARBY_SUCCESS:
+            return {
+                ...state,
+                isFetchingStudyNearby: false,
+                studyList: action.payload,
+            };
+        case types.FETCH_STUDY_PAGE_NEARBY_ERROR:
+            return {
+                ...state,
+                isFetchingStudyNearby: false,
+            };
         case types.FETCH_STUDY_PAGE_HASURA_SEND:
             return {
                 ...state,
