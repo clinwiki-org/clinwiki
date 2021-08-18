@@ -6,6 +6,9 @@ import ThemedButton from 'components/StyledComponents';
 import { Row, Col, FormControl, Nav, NavItem, Panel } from 'react-bootstrap';
 import { fetchIslandConfig, updateFacetConfig } from 'services/search/actions'
 import { BeatLoader } from 'react-spinners';
+import { isAdmin } from 'utils/auth';
+import { Redirect } from 'react-router-dom'
+
 import GenericForm from 'components/GenericForm'
 
 interface EditWorkflowsPageProps { }
@@ -39,11 +42,12 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
   const [aggs, setAggs] = useState("");
   const [currentAggId, setCurrentAggId] = useState("")
   const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
+  const user = useSelector((state: RootState) => state.user.current);
 
 
   useEffect(() => {
-  dispatch(fetchIslandConfig());
-  setCurrentAggId("3")
+    dispatch(fetchIslandConfig());
+    setCurrentAggId("3")
   }, [dispatch]);
 
   useEffect(() => {
@@ -77,7 +81,7 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
   const handleNewFacet = (e) => {
     let mainConfig = islandConfig
     let index = Object.keys(aggs).length
-    let mainDefaultString = islandConfig && JSON.stringify(mainConfig);    
+    let mainDefaultString = islandConfig && JSON.stringify(mainConfig);
     let newDefaultObject = JSON.parse(mainDefaultString)
     mainConfig = {
       ...mainConfig,
@@ -92,18 +96,22 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
     dispatch(updateFacetConfig({ input: variables }))
 
   }
-  if (aggs == null)
-    return (
-      <Container>
-        <Row>No Aggs</Row>
-      </Container>
-    );
-  else
-    return (
-      <Container>
-        <GenericForm tableName="island_configs" />
-      </Container>
-    )
+  if (!isAdmin(user)) {
+    return <Redirect to='/' />
+  } else {
+    if (aggs == null)
+      return (
+        <Container>
+          <Row>No Aggs</Row>
+        </Container>
+      );
+    else
+      return (
+        <Container>
+          <GenericForm tableName="island_configs" />
+        </Container>
+      )
+  }
 }
 
 export default EditAggIslandsPage;

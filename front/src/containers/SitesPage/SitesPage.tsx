@@ -12,6 +12,8 @@ import { useEffect } from 'react';
 import { RootState } from 'reducers';
 import { BeatLoader } from 'react-spinners';
 import LoginModal from 'components/LoginModal';
+import { isAdmin } from 'utils/auth';
+import { Redirect } from 'react-router-dom'
 
 const Container = styled.div`
 padding: 20px;
@@ -32,6 +34,7 @@ const SitesPage = ({ history }: SitesPageProps) => {
   const data = useSelector((state: RootState) => state.site.sitesData)
   const isLoading = useSelector((state: RootState) => state.site.isFetchingSitesPage)
   const isDeleting = useSelector((state: RootState) => state.site.isDeletingSite)
+  const user = useSelector((state: RootState) => state.user.current);
 
   const handleCreateSite = () => {
     history.push('/sites/new');
@@ -56,6 +59,9 @@ const SitesPage = ({ history }: SitesPageProps) => {
         cancel={() => history.goBack()}
       />
     } */
+  if (!isAdmin(user)) {
+    return <Redirect to='/' />
+  }
   return (
     <Container>
       <CollapsiblePanel header="My Sites">

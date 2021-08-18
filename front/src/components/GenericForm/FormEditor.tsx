@@ -38,9 +38,9 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
     return false;
 };
   const handleChange = (e, key, type?: string) => {
-  
+    let values = formState
     if (type == "checkbox") {
-      let values = formState
+
 
       //@ts-ignore
       values[key] = e.target.value == "true" ? true : false;
@@ -48,18 +48,19 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
       setFormState({...values});
     }
     else {
-      // checking for JSON will go here
-      // setIsInvalid(false)
-      // let isJSON = e.target.value
-      // let newValue = tryParseJSONObject(e.target.value)
-      // if (newValue == false) {
-      //   console.log('isvalid', isInvalid)
-      //   setIsInvalid(true)
-      // }
-    let values = formState
-    //@ts-ignore
-    values[key] = e.target.value;
-    setFormState({...values});
+      //some crude validation 
+      setIsInvalid(false)
+      console.log('CHAR0', e.target.value.charAt(e.target.value.length-1))
+      if (e.target.value.charAt(0) == "{" || e.target.value.charAt(e.target.value.length-1) == "}") {
+        let newValue = tryParseJSONObject(e.target.value)
+        if (newValue == false) {
+          console.log('isvalid', isInvalid)
+          setIsInvalid(true)
+        }
+      }
+      //@ts-ignore
+      values[key] = e.target.value;
+      setFormState({...values});
     }
   }
 

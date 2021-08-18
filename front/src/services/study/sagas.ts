@@ -180,7 +180,6 @@ function* getSearchPageMM(action) {
         let response = yield call(() =>
             api.fetchSearchPageMM(action.params, action.QUERY)
         );
-        // yield put(fetchSearchParams(action.hash))
         if (response) {
             yield put(actions.fetchStudyPageSuccess(response));
         } else {
@@ -189,6 +188,25 @@ function* getSearchPageMM(action) {
     } catch (err) {
         console.log(err);
         yield put(actions.fetchStudyPageError(err.message));
+    }
+}
+
+function* getStudyPageNearby(action) {
+    try {
+        // console.log('action in getStudyPageNearby', action);
+
+        let response = yield call(() =>
+            api.fetchSearchPageNearby(action.params, action.QUERY)
+        );
+        // yield put(fetchSearchParams(action.hash))
+        if (response) {
+            yield put(actions.fetchStudyPageNearbySuccess(response));
+        } else {
+            yield put(actions.fetchStudyPageNearbyError(response.message));
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.fetchStudyPageNearbyError(err.message));
     }
 }
 
@@ -826,6 +844,7 @@ export default function* userSagas() {
     yield takeLatest(types.UPDATE_PAGE_VIEW_HASURA_SEND, updatePageViewHasura);
     yield takeLatest(types.FETCH_SAMPLE_STUDY_SEND, getSampleStudy);
     yield takeLatest(types.FETCH_STUDY_PAGE_SEND, getStudyPage);
+    yield takeLatest(types.FETCH_STUDY_PAGE_NEARBY_SEND, getStudyPageNearby);
     yield takeLatest(types.FETCH_SEARCH_PAGE_MM_SEND, getSearchPageMM);
     yield takeLatest(types.FETCH_SEARCH_PAGE_STUDY_SEND, getSearchPageStudy);
     yield takeLatest(types.FETCH_PAGE_VIEWS_SEND, getPageViews);
