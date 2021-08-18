@@ -170,8 +170,6 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
     })
   }
 
-
-
   return (
   <form>
     <ThemedButton
@@ -180,64 +178,10 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
     >Save</ThemedButton>
     { !isInsert ? renderUpdateForm() : null }
     { isInsert ? renderInsertForm() : null }
-
-  
-  
   </form>)
 }
 
 export default FormEditor
 
 
-  {/* {Object.entries(row).map(([key, value]) => {
-      console.log('Value', value)
-      if (key =="created_at" || key == "updated_at") {
-        return
-      }
-      if (typeof value == "boolean") {
-        return <div key={key}>
-          <label>
-            <div>
-              {key}
-            </div>
-            <div>
-              True
-              <input
-                type="radio"
-                value={"true"}
-                checked={formState[key] == true}
-                onChange={(e) => handleChange(e, key, "checkbox")}
-              />
-              False
-              <input
-                type="radio"
-                value={"false"}
-                checked={formState[key] == false}
-                onChange={(e) => handleChange(e, key, "checkbox")}
-              />
-            </div>
-          </label>
-        </div>
-      }
-      return (
-        <div key={key}>
-      
-        <label>
-          <div>
-            {key}
-          </div>
-          <div>
-            <textarea 
-                  name={key} 
-                  onChange={(e) => handleChange(e, key)}
-              
-                  value={formState[key]}
-                  disabled={!!(key == "id")}
-                  />
-                  
-          </div>
-        </label>
-        </div>
-      )
-    })
-  } */}
+  
