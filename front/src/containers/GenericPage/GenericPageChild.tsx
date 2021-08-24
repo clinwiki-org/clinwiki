@@ -107,8 +107,8 @@ export default function GenericPageWrapper(props: Props) {
 
 
     const pageSizeHelper = (pageSize) => {
-        if (pageSize > 10000) {
-            return 10000
+        if (pageSize > 500) {
+            return 500
         } else {
             return pageSize
         }
