@@ -324,7 +324,7 @@ div.DraftEditor-editorContainer{
   display: flex;
   flex-wrap:wrap;
   position: relative;
-  overflow: hidden;
+  overflow: scroll;
   
   a {
     ${props => props.theme.button};
