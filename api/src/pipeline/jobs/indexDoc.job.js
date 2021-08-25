@@ -61,7 +61,15 @@ query MyQuery(
         crowd_key
         crowd_value
       }
-  
+      ctgov_prod_studies_browse_conditions {
+        mesh_term
+      }
+      ctgov_prod_studies_browse_interventions {
+        mesh_term
+      }
+      ctgov_prod_studies_central_contacts {
+        name
+      }
     }
   }
   

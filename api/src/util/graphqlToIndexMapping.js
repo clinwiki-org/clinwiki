@@ -111,7 +111,30 @@ export const graphqlToIndexMapping =  {
         "fieldNameIndex": "",
         "dataTypeToIndex": "Crowd"
     },
-
+    "ctgov_prod_studies_browse_conditions": {
+        "fieldNameIndex": "",
+        "dataTypeToIndex": "sub_query"
+    },
+    "ctgov_prod_studies_browse_conditions.mesh_term": {
+        "fieldNameIndex": "browse_conditions_mesh_term",
+        "dataTypeToIndex": "keyword"
+    },
+    "ctgov_prod_studies_browse_interventions": {
+        "fieldNameIndex": "",
+        "dataTypeToIndex": "sub_query"
+    },
+    "ctgov_prod_studies_browse_interventions.mesh_term": {
+        "fieldNameIndex": "browse_interventions_mesh_term",
+        "dataTypeToIndex": "keyword"
+    },
+    "ctgov_prod_studies_central_contacts": {
+        "fieldNameIndex": "",
+        "dataTypeToIndex": "sub_query"
+    },
+    "ctgov_prod_studies_central_contacts.name": {
+        "fieldNameIndex": "central_contacts_name",
+        "dataTypeToIndex": "keyword"
+    },
     //DIS
     "condition_id": {
         "fieldNameIndex": "condition_id",
