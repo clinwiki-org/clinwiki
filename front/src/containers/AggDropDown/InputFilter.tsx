@@ -332,7 +332,6 @@ function InputFilter(props: InputFilterProps) {
                     {aggBuckets?.aggs[`${aggId}`].map((dis, index) =>
                       <ResultItem key={index}>
                         <ResultLink onClick={() => {
-                          console.log("dis.key:", dis.key);
                           props.selectItem({ key: dis.key })
                         }}>
 
@@ -355,7 +354,7 @@ function InputFilter(props: InputFilterProps) {
                     {totalResults !== 0 &&
                       <div className="dis-autocomplete-bottom">
                         <ButtonsContainer>
-                          <ShowingContainer> {totalResults} results found. Showing 1 to {totalResults} </ShowingContainer>
+                          <ShowingContainer> {totalResults || 0} results found. Showing 1 to {totalResults || 1} </ShowingContainer>
                           <PaginatorContainerLeft id="dis-autocomplete-paginate-previous" href="#" className="paginator_next left disabled"><span className="fa fa-angle-left"></span></PaginatorContainerLeft>
                           <PaginatorContainerRight id="dis-autocomplete-paginate-next" href="#" className="right"><span className="fa fa-angle-right"></span></PaginatorContainerRight>
                         </ButtonsContainer>
