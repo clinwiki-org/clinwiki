@@ -40,8 +40,8 @@ export default function StudyInfiniteScroll() {
   const finalFragment = itemFragment.slice(1, itemFragment.length - 1).join(", ")
 
   const data = useSelector((state: RootState) => state.search.searchResults);
-  const studyData = useSelector((state: RootState) => state.study.studyPage.data.search.studies)
-  const recordsTotal = useSelector((state: RootState) => state.study.studyPage.data.search.recordsTotal)
+  const studyData = useSelector((state: RootState) => state.study.studyPage?.data.search.studies)
+  const recordsTotal = useSelector((state: RootState) => state.study.studyPage?.data.search.recordsTotal)
 
   const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
 

@@ -577,6 +577,7 @@ const IslandAggChild = (props: Props) => {
         isPresearch={true}
         selectedKeys={filters[currentAgg!.name] || emptySet}
         field={currentAgg}
+        aggId={aggId}
         onContainerToggle={() => handleContainerToggle()}
         handleLoadMore={handleLoadMore}
         hasMore={hasMore}

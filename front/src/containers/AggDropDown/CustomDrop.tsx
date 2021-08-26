@@ -35,6 +35,7 @@ import { settings } from 'cluster';
 import styled from 'styled-components';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 import withTheme from 'containers/ThemeProvider';
+import InputFilter from './InputFilter';
 
 interface CustomDropDownProps {
   field: SiteViewFragment_search_aggs_fields | any;
@@ -66,6 +67,8 @@ interface CustomDropDownProps {
   allowsMissing?: boolean;
   searchResultData: any;
   isUpdatingParams: boolean;
+  inputFilter: string;
+  aggId: string;
 }
 interface CustomDropDownState {
   buckets?: AggBucket[],
@@ -371,7 +374,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     }
 
     //handles our mutliselect happens to be same behavior as old TEXT/STRING type 
-    if (this.props.field.display == "MULTISELECT" || this.props.field.display == "STRING" || this.props.field.display == "PIE_CHART" || this.props.field.display == "BAR_CHART" || this.props.field.display == "CHECKBOX") {
+    if (this.props.field.display == "MULTISELECT" || this.props.field.display == "STRING" || this.props.field.display == "PIE_CHART" || this.props.field.display == "BAR_CHART" || this.props.field.display == "CHECKBOX" || this.props.field.display == "LOOKUP_INPUT") {
       let index = findIndex(propEq('key', item.key))(this.state.selectedItems)
       let selectedItemsArray = this.state.selectedItems.slice()
 
@@ -449,6 +452,20 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
   handleLocation = (location) => {
     this.setState({ selectedItems: [{ zipcode: location[0], radius: location[3], lat: location[1], long: location[2] }] })
   }
+  renderLookUpInput = () => {
+    if (this.props.fromAggField || this.props.field.showFilterToolbar == true || this.props.field.showFilterToolbar == null) {
+      return (
+        <InputFilter
+          buckets={this.props.buckets}
+          inputFilter={this.props.inputFilter}
+          aggId={this.props.aggId}
+          selectItem={this.selectItem}
+        />
+      )
+
+    }
+    return
+  }
   renderFilter = () => {
     if (this.props.fromAggField || this.props.field.showFilterToolbar == true || this.props.field.showFilterToolbar == null) {
       return (
@@ -489,6 +506,9 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
     // Using the aggtoField function {capitalize(title)}
 
+    if (this.props.field.display == 'LOOKUP_INPUT') {
+      return <>{this.renderLookUpInput()}</>
+    }
 
     if (this.props.buckets == undefined && this.props.isOpen) {
       return <BeatLoader />
