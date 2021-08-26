@@ -164,7 +164,7 @@ function ResultSort(props: Props) {
   };
 
   // hardcoding to nct_id for now. Use to live in SV level. Need to pass this in as argument possibly?
-  let sortables : string[]=  props.sortables ? props.sortables: ["nct_id", "status", "average_rating", "briefTitle","start_date", "completion_date" ]
+  let sortables : string[]=  props.sortables ? props.sortables: ["nct_id", "status", "briefTitle", "start_date", "completion_date", "fm_PaCTD Rating", "fm_Trial Relevance Rating"]
   return (
     <>
       <div style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto' }}>
