@@ -84,7 +84,7 @@ export const searchIslands: Record<string, IslandConstructor> = {
     <DownloadCSVIsland />
   ),
   resultsort: (attributes: Record<string, string>, context?: any) => (
-    <ResultSort sortables={attributes['sortBy']} />
+    <ResultSort islandId={attributes['id']} />
   ),
   randnumberloader: (attributes: Record<string, string>, context?: any) => (
     <RandNumberLoader />
