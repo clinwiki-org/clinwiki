@@ -9,7 +9,6 @@ import {
 } from 'utils/siteViewUpdater';
 import { History, Location } from 'history';
 import SearchForm from './SearchForm';
-import SiteViewsForm from './SiteViewsForm';
 import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 
 interface SiteViewRouterProps {
@@ -66,7 +65,7 @@ class SiteViewRouter extends React.Component<
             />
           )}
         />
-        <Route
+        {/* <Route
           path={`${path}`}
           render={() => (
             <SiteViewsForm
@@ -74,7 +73,7 @@ class SiteViewRouter extends React.Component<
               site={site}
             />
           )}
-        />
+        /> */}
         {/* <Redirect to={`${path}/main`} /> */}
       </Switch>
     );

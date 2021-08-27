@@ -1,7 +1,6 @@
 import * as query from './queries';
 import {
   callGraphql,
-  get_gql_url,
   getGraphQLMigrationURL,
 } from 'utils/graphqlUtil';
 

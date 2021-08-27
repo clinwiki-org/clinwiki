@@ -39,7 +39,7 @@ import {
 } from 'services/site/model/SiteFragment';
 import SearchTemplate from './SearchTemplate';
 import { connect } from 'react-redux';
-import { updateSiteView } from 'services/site/actions';
+// import { updateSiteView } from 'services/site/actions';
 
 interface SearchFormProps {
   match: match<{ id: string }>;
@@ -1055,7 +1055,7 @@ class SearchForm extends React.Component<SearchFormProps, SearchFormState> {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  updateSiteView: (id, input) => dispatch(updateSiteView(id, input))
+  // updateSiteView: (id, input) => dispatch(updateSiteView(id, input))
 })
 
 const mapStateToProps = (state, ownProps) => ({

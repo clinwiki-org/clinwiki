@@ -50,7 +50,6 @@ import { BeatLoader } from 'react-spinners';
 import { assertNullableType } from 'graphql';
 import HtmlToReact from 'html-to-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPresentSiteProvider } from 'services/site/actions';
 import { fetchSearchParams, updateSearchParamsAction } from 'services/search/actions'
 import {RootState} from 'reducers';
 
@@ -292,7 +291,7 @@ function SearchPage(props: SearchPageProps) {
   const urlFinal = urlName ? urlName : "default";
 
   useEffect(() => {
-  dispatch(fetchPresentSiteProvider( undefined , urlFinal ));
+  // dispatch(fetchPresentSiteProvider( undefined , urlFinal ));
   }, [dispatch, urlFinal])
 
   const site = useSelector((state : RootState ) => state.site.presentSiteProvider.site)

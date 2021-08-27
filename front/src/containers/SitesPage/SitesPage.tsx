@@ -6,7 +6,6 @@ import CollapsiblePanel from 'components/CollapsiblePanel';
 import { History } from 'history';
 import ThemedButton from 'components/StyledComponents/index';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteSite, fetchSitesPage } from 'services/site/actions'
 import { fetchSitesPageHasura } from 'services/hasuraSite/actions'
 import { useEffect } from 'react';
 import { RootState } from 'reducers';
@@ -43,7 +42,7 @@ const SitesPage = ({ history }: SitesPageProps) => {
     history.push(`/sites/${id}/edit`);
   };
   const handleSiteDelete = (id: number) => {
-    dispatch(deleteSite(id));
+    // dispatch(deleteSite(id));
   };
 
   useEffect(() => {

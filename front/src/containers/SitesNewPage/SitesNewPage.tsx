@@ -7,7 +7,7 @@ import { History, Location } from 'history';
 import { match } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
-import { createSite } from 'services/site/actions';
+// import { createSite } from 'services/site/actions';
 
 
 interface SitesNewPageProps {
@@ -21,7 +21,7 @@ const SitesNewPage = ({match, history, location} : SitesNewPageProps) => {
   const isCreating = useSelector((state : RootState ) => state.site.isCreatingSite)
 
   const handleSave = (input: CreateSiteInput) => {
-      dispatch(createSite(input));
+      // dispatch(createSite(input));
       if (!isCreating) {
         history.push('/sites')}
   };
@@ -34,6 +34,7 @@ const SitesNewPage = ({match, history, location} : SitesNewPageProps) => {
                 match={match}
                 site={{ ...site, name: '' }}
                 onSaveSite={input => handleSave(input)}
+                updateSiteView={console.log("change me")}
               />
             )
         }

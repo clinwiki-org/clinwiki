@@ -1,9 +1,7 @@
-import { getSitesPage } from '../site/sagas'
 import { call, put, takeLatest } from 'redux-saga/effects';
 import * as api from './api';
 import * as actions from './actions';
 import * as types from './types';
-import * as siteActions from '../site/actions'
 
 const delay = time => new Promise(resolve => setTimeout(resolve, time));
 
@@ -13,7 +11,7 @@ function* updateSiteHasura(action) {
         let updateResponse = yield call(() => api.updateSiteHasura(action.input));
         //console.log('response = ', updateResponse);
         if (updateResponse.data.updateSitehasura.errors === null){ 
-            let response = yield getSitesPage(action);
+            let response = yield getSitesPageHasura(action);
             yield put(actions.updateSiteHasuraSuccess(response.data));
         }
         else {
@@ -34,7 +32,7 @@ export function* getSitesPageHasura(action) {
         const hasuraSites = {"me": {"id": 1, "ownSites": response.data.sites, "editorSites": response.data.sites}};
         //console.log(hasuraSites);
         if(response) {
-            yield put(siteActions.fetchSitesPageSuccess(hasuraSites));
+            yield put(actions.fetchSitesPageHasuraSuccess(hasuraSites));
             return response;
         }
         else {

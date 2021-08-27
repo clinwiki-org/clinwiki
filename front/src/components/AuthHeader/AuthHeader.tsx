@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
-import { fetchAdminUserSite, fetchHasuraPresentSiteProvider } from 'services/site/actions';
+import { fetchHasuraPresentSiteProvider } from 'services/site/actions';
 import styled from 'styled-components';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import logo from 'images/clinwiki-501.png';
 import UserProfileHeaderButton from './UserProfileHeaderButton';
 import { BeatLoader } from 'react-spinners';
-import { fetchPresentSiteProvider } from 'services/site/actions';
 
 
 const Row = styled.div`

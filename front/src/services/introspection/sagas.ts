@@ -4,21 +4,21 @@ import * as actions from './actions';
 import * as api from './api';
 
 
-function* getIntrospection(action) {
-    try {
-        let response = yield call(() => api.fetchIntrospection(action.QUERY));
-        if(response) {
-            yield put(actions.fetchIntrospectionSuccess(response));
-        }
-        else {
-            yield put(actions.fetchIntrospectionError(response.message));
-        }
-    }
-    catch(err) {
-        console.log(err);
-        yield put(actions.fetchIntrospectionError(err.message));
-    }
-}
+// function* getIntrospection(action) {
+//     try {
+//         let response = yield call(() => api.fetchIntrospection(action.QUERY));
+//         if(response) {
+//             yield put(actions.fetchIntrospectionSuccess(response));
+//         }
+//         else {
+//             yield put(actions.fetchIntrospectionError(response.message));
+//         }
+//     }
+//     catch(err) {
+//         console.log(err);
+//         yield put(actions.fetchIntrospectionError(err.message));
+//     }
+// }
 
 function* getHasuraIntrospection(action) {
     try {
@@ -53,7 +53,7 @@ function* getNodeIntrospection(action) {
 
 
 export default function* introspectionSagas() {
-    yield takeLatest(types.FETCH_INTROSPECTION_SEND, getIntrospection);
+    // yield takeLatest(types.FETCH_INTROSPECTION_SEND, getIntrospection);
     yield takeLatest(types.FETCH_HASURA_INTROSPECTION_SEND, getHasuraIntrospection);
     yield takeLatest(types.FETCH_NODE_INTROSPECTION_SEND, getNodeIntrospection);
 }

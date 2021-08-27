@@ -5,20 +5,20 @@ import * as api from './api';
 import history from 'createHistory';
 import { setLocalJwt } from 'utils/localStorage';
 
-function* getUser(action) {
-  try {
-    let response = yield call(() => api.fetchUser(action.userId));
-    if (response) {
-      response.data.user.userId = action.userId;
-      yield put(actions.fetchUserSuccess(response.data));
-    } else {
-      yield put(actions.fetchUserError([response.message]));
-    }
-  } catch (err) {
-    console.log(err);
-    yield put(actions.fetchUserError([err.message]));
-  }
-}
+// function* getUser(action) {
+//   try {
+//     let response = yield call(() => api.fetchUser(action.userId));
+//     if (response) {
+//       response.data.user.userId = action.userId;
+//       yield put(actions.fetchUserSuccess(response.data));
+//     } else {
+//       yield put(actions.fetchUserError([response.message]));
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     yield put(actions.fetchUserError([err.message]));
+//   }
+// }
 
 function* getCurrentUser(action) {
   try {
@@ -90,68 +90,68 @@ function* signUp(action) {
   }
 }
 
-function* updatePassword(action) {
-  try {
-    let response = yield call(() =>
-      api.updatePassword(
-        action.resetPasswordToken,
-        action.password,
-        action.passwordConfirmation
-      )
-    );
-    if (response) {
-      yield put(actions.updatePasswordSuccess(response));
-    } else {
-      yield put(actions.updatePasswordError(response.message));
-    }
-  } catch (err) {
-    console.log(err);
-    yield put(actions.updatePasswordError([err.message]));
-  }
-}
+// function* updatePassword(action) {
+//   try {
+//     let response = yield call(() =>
+//       api.updatePassword(
+//         action.resetPasswordToken,
+//         action.password,
+//         action.passwordConfirmation
+//       )
+//     );
+//     if (response) {
+//       yield put(actions.updatePasswordSuccess(response));
+//     } else {
+//       yield put(actions.updatePasswordError(response.message));
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     yield put(actions.updatePasswordError([err.message]));
+//   }
+// }
 
-function* resetPassword(action) {
-  //console.log("SAGA reset pass", action)
-  try {
-    let response = yield call(() => api.resetPassword(action.email));
-    if (response) {
-      yield put(actions.resetPasswordSuccess(response));
-    } else {
-      yield put(actions.resetPasswordError(response.message));
-    }
-  } catch (err) {
-    console.log(err);
-    yield put(actions.resetPasswordError([err.message]));
-  }
-}
+// function* resetPassword(action) {
+//   //console.log("SAGA reset pass", action)
+//   try {
+//     let response = yield call(() => api.resetPassword(action.email));
+//     if (response) {
+//       yield put(actions.resetPasswordSuccess(response));
+//     } else {
+//       yield put(actions.resetPasswordError(response.message));
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     yield put(actions.resetPasswordError([err.message]));
+//   }
+// }
 
-function* editProfile(action) {
-  try {
-    let response = yield call(() =>
-      api.editProfile(
-        action.firstName,
-        action.lastName,
-        action.defaultQueryString
-      )
-    );
-    if (response) {
-      yield put(actions.editProfileSuccess(response));
-    } else {
-      yield put(actions.editProfileError([response.message]));
-    }
-  } catch (err) {
-    console.log(err);
-    yield put(actions.editProfileError([err.message]));
-  }
-}
+// function* editProfile(action) {
+//   try {
+//     let response = yield call(() =>
+//       api.editProfile(
+//         action.firstName,
+//         action.lastName,
+//         action.defaultQueryString
+//       )
+//     );
+//     if (response) {
+//       yield put(actions.editProfileSuccess(response));
+//     } else {
+//       yield put(actions.editProfileError([response.message]));
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     yield put(actions.editProfileError([err.message]));
+//   }
+// }
 
 export default function* userSagas() {
-  yield takeLatest(types.FETCH_USER_SEND, getUser);
+  // yield takeLatest(types.FETCH_USER_SEND, getUser);
   yield takeLatest(types.FETCH_CURRENT_USER_SEND, getCurrentUser);
   yield takeLatest(types.SIGN_IN_SEND, signIn);
   yield takeLatest(types.LOGOUT_SEND, logout);
   yield takeLatest(types.SIGN_UP_SEND, signUp);
-  yield takeLatest(types.UPDATE_PASSWORD_SEND, updatePassword);
-  yield takeLatest(types.RESET_PASSWORD_SEND, resetPassword);
-  yield takeLatest(types.EDIT_PROFILE_SEND, editProfile);
+  // yield takeLatest(types.UPDATE_PASSWORD_SEND, updatePassword);
+  // yield takeLatest(types.RESET_PASSWORD_SEND, resetPassword);
+  // yield takeLatest(types.EDIT_PROFILE_SEND, editProfile);
 }

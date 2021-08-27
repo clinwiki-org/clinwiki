@@ -6,7 +6,6 @@ import { find, propEq } from 'ramda';
 import { fetchPageViews, fetchPageView, fetchPageViewsHasura, fetchPageViewHasura } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
-import { fetchPresentSiteProvider } from 'services/site/actions';
 import GenericPageChild from './GenericPageChild';
 import { fetchSearchParams } from 'services/search/actions';
 interface Props {

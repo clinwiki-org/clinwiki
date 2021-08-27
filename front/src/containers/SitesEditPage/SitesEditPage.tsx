@@ -6,7 +6,6 @@ import SiteProvider from 'containers/SiteProvider';
 import { History, Location } from 'history';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
-import { updateSite } from 'services/site/actions';
 import { updateSiteHasura } from 'services/hasuraSite/actions';
 import { snakeCase } from '../../utils/helpers';
 
@@ -51,6 +50,7 @@ const SitesEditPage = ({match, history, location} : SitesEditPageProps) => {
                     site={site}
                     onSaveSite={input => handleSave(input)}
                     //onSaveSiteView={updateSiteView}
+                    updateSiteView={console.log('cahnge me')}
                   />
         )}
       </SiteProvider>

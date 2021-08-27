@@ -21,7 +21,7 @@ import StudyForm from './StudyForm';
 import ThemedButton from 'components/StyledComponents/index';
 import PagesForm from './PagesForm';
 import { connect } from 'react-redux';
-import { fetchSiteProvider, updateSiteView } from 'services/site/actions';
+// import { fetchSiteProvider, updateSiteView } from 'services/site/actions';
 import { fetchSiteProviderHasura } from 'services/hasuraSite/actions';
 import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
 
@@ -254,7 +254,7 @@ class SiteForm extends React.Component<SiteFormProps, SiteFormState> {
 
 const mapDispatchToProps = (dispatch) => ({
   fetchSiteProviderHasura: (id?, url?) => dispatch(fetchSiteProviderHasura(id, url)),
-  updateSiteView: (id, input) => dispatch(updateSiteView(id, input))
+  // updateSiteView: (id, input) => dispatch(updateSiteView(id, input))
 })
 
 

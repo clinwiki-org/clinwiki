@@ -261,21 +261,21 @@ function* updateSearchParams(action) {
     }
 }
 
-function* getSearchAutoSuggest(action) {
-    try {
-        let response = yield call(() =>
-            api.fetchSearchAutoSuggest(action.searchParams)
-        );
-        if (response) {
-            yield put(actions.fetchSearchAutoSuggestSuccess(response));
-        } else {
-            yield put(actions.fetchSearchAutoSuggestError(response.message));
-        }
-    } catch (err) {
-        console.log(err);
-        yield put(actions.fetchSearchAutoSuggestError(err.message));
-    }
-}
+// function* getSearchAutoSuggest(action) {
+//     try {
+//         let response = yield call(() =>
+//             api.fetchSearchAutoSuggest(action.searchParams)
+//         );
+//         if (response) {
+//             yield put(actions.fetchSearchAutoSuggestSuccess(response));
+//         } else {
+//             yield put(actions.fetchSearchAutoSuggestError(response.message));
+//         }
+//     } catch (err) {
+//         console.log(err);
+//         yield put(actions.fetchSearchAutoSuggestError(err.message));
+//     }
+// }
 
 function* getSavedSearches(action) {
     //console.log("SAGA get Saved Searches", action)
@@ -370,62 +370,62 @@ function* getIslandConfig() {
     }
 }
 
-function* updateFacetConfig(action) {
-    try {
-        // console.log("SAGA Updating PAGE VIEW", action);
-        let updateResponse = yield call(() =>
-            api.updateFacetConfig(action.input)
-        );
-        if (updateResponse.data.updateFacetConfig.errors === null) {
-            let response = yield getIslandConfig();
-            yield put(actions.updateFacetConfigSuccess(response));
-        } else {
-            yield put(actions.updateFacetConfigError(updateResponse.message));
-        }
-    } catch (err) {
-        console.log(err);
-        yield put(actions.updateFacetConfigError(err.message));
-    }
-}
+// function* updateFacetConfig(action) {
+//     try {
+//         // console.log("SAGA Updating PAGE VIEW", action);
+//         let updateResponse = yield call(() =>
+//             api.updateFacetConfig(action.input)
+//         );
+//         if (updateResponse.data.updateFacetConfig.errors === null) {
+//             let response = yield getIslandConfig();
+//             yield put(actions.updateFacetConfigSuccess(response));
+//         } else {
+//             yield put(actions.updateFacetConfigError(updateResponse.message));
+//         }
+//     } catch (err) {
+//         console.log(err);
+//         yield put(actions.updateFacetConfigError(err.message));
+//     }
+// }
 
-function* getSearchExport(action) {
-    //console.log("Search EXPORT", action)
-    try {
-        let response = yield call(() =>
-            api.searchExport(action.searchExportId)
-        );
-        // console.log("🚀 ~ etSearchExport ~ response", response);
-        if (response.data.searchExport.downloadUrl === null) {
-            yield getSearchExport(action);
-            return;
-        }
-        if (response) {
-            yield put(actions.searchExportSuccess(response));
-        } else {
-            yield put(actions.searchExportError(response.message));
-        }
-    } catch (err) {
-        console.log(err);
-        yield put(actions.searchExportError(err.message));
-    }
-}
+// function* getSearchExport(action) {
+//     //console.log("Search EXPORT", action)
+//     try {
+//         let response = yield call(() =>
+//             api.searchExport(action.searchExportId)
+//         );
+//         // console.log("🚀 ~ etSearchExport ~ response", response);
+//         if (response.data.searchExport.downloadUrl === null) {
+//             yield getSearchExport(action);
+//             return;
+//         }
+//         if (response) {
+//             yield put(actions.searchExportSuccess(response));
+//         } else {
+//             yield put(actions.searchExportError(response.message));
+//         }
+//     } catch (err) {
+//         console.log(err);
+//         yield put(actions.searchExportError(err.message));
+//     }
+// }
 
-function* exportToCsv(action) {
-    try {
-        let exportResponse = yield call(() =>
-            api.exportToCsv(action.searchHash, action.siteViewId)
-        );
-        //console.log("EXPORT RES", exportResponse)
-        if (exportResponse.data.exportToCsv) {
-            yield put(actions.exportToCsvSuccess(exportResponse));
-        } else {
-            yield put(actions.exportToCsvError(exportResponse.message));
-        }
-    } catch (err) {
-        console.log(err);
-        yield put(actions.exportToCsvError(err.message));
-    }
-}
+// function* exportToCsv(action) {
+//     try {
+//         let exportResponse = yield call(() =>
+//             api.exportToCsv(action.searchHash, action.siteViewId)
+//         );
+//         //console.log("EXPORT RES", exportResponse)
+//         if (exportResponse.data.exportToCsv) {
+//             yield put(actions.exportToCsvSuccess(exportResponse));
+//         } else {
+//             yield put(actions.exportToCsvError(exportResponse.message));
+//         }
+//     } catch (err) {
+//         console.log(err);
+//         yield put(actions.exportToCsvError(err.message));
+//     }
+// }
 function* toggleAgg(action) {
     try {
         // const variables = {
@@ -523,7 +523,7 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PARAMS_SEND, getSearchParams);
     yield takeLatest(types.FETCH_SEARCH_STUDIES_SEND, getSearchStudies);
     yield takeLatest(types.UPDATE_SEARCH_PARAMS_SEND, updateSearchParams);
-    yield takeLatest(types.FETCH_SEARCH_AUTOSUGGEST_SEND, getSearchAutoSuggest);
+    // yield takeLatest(types.FETCH_SEARCH_AUTOSUGGEST_SEND, getSearchAutoSuggest);
     yield takeLatest(types.FETCH_SAVED_SEARCHES_SEND, getSavedSearches);
     yield takeLatest(types.CREATE_SAVED_SEARCH_SEND, createSavedSearch);
     yield takeLatest(types.DELETE_SAVED_SEARCH_SEND, deleteSavedSearch);
@@ -533,9 +533,9 @@ export default function* userSagas() {
         types.CONVERT_DISPLAY_NAME,
         convertIslandConfigDisplayName
     );
-    yield takeLatest(types.UPDATE_FACET_CONFIG_SEND, updateFacetConfig);
-    yield takeLatest(types.SEARCH_EXPORT_SEND, getSearchExport);
-    yield takeLatest(types.EXPORT_T0_CSV_SEND, exportToCsv);
+    // yield takeLatest(types.UPDATE_FACET_CONFIG_SEND, updateFacetConfig);
+    // yield takeLatest(types.SEARCH_EXPORT_SEND, getSearchExport);
+    // yield takeLatest(types.EXPORT_T0_CSV_SEND, exportToCsv);
     yield takeLatest(types.TOGGLE_AGG, toggleAgg);
     yield takeLatest(types.BUCKET_FILTER, bucketFilter);
 }

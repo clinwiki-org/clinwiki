@@ -15,7 +15,6 @@ import StudyViewLogMutaion from 'queries/StudyViewLogMutation';
 import { fetchPageViews, fetchPageView, fetchStudyPage, updateStudyViewLogCount, fetchStudyPageHasura } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
-import { fetchPresentSiteProvider } from 'services/site/actions';
 import { useHasuraFragment } from 'components/MailMerge/HasuraMMFragment';
 
 interface Props {

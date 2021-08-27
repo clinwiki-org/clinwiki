@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { fetchHasuraPresentSiteProvider, fetchPresentSiteProvider } from 'services/site/actions';
+import { fetchHasuraPresentSiteProvider } from 'services/site/actions';
 //import PresentSiteProvider from 'containers/PresentSiteProvider';
 import { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -279,7 +279,7 @@ export const ProvideTheme = ({ children }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchHasuraPresentSiteProvider(history, subdomain));
-    dispatch(fetchPresentSiteProvider(undefined, urlFinal));
+    // dispatch(fetchPresentSiteProvider(undefined, urlFinal));
   }, [])
 
   //const isLoading = useSelector((state : RootState) => state.site.isFetchingPresentSiteProvider)

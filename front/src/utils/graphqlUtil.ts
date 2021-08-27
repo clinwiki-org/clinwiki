@@ -34,16 +34,6 @@ export const callGraphql = (
     return abc;
 };
 
-export const get_gql_url = () => {
-    if (
-        typeof window === 'undefined' ||
-        window.location.hostname.includes('localhost')
-    ) {
-        return `https://${window.location.hostname}:3000/graphql`;
-    }
-    return '/graphql';
-};
-
 export const getGraphQLMigrationURL = () => {
     //console.log(window.location.hostname.includes('localhost'));
     if (
