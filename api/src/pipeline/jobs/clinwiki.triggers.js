@@ -1,4 +1,5 @@
 import logger from '../../util/logger';
+import config from '../../../config';
 import {bulkUpdate, bulkUpdateCrowdKeys} from '../../search/elastic';
 import * as elastic from '../../search/elastic';
 const util = require('util');
@@ -21,7 +22,10 @@ export const indexCrowdKeyValueIds = async (payload) => {
     let rowInfo = JSON.parse(payload[1])
     let triggerInfo = JSON.parse(payload[0])
     let docId = rowInfo.crowd_key_value_id_association
+    //TO-DO probably need a better check for index and primary key. 
+    let primaryKey = config.defaultApp == "clinwiki"? 'nct_id' :'condition_id';
+    let indexName = config.defaultApp == "clinwiki"? config.elasticIndex : config.elasticIndexDIS; 
     //Not sure if best to directly que or call our reindexDocumentJob like prev done with aact
-    await enqueueJob(JOB_TYPES.DOCUMENT_REINDEX, { primaryKey: 'nct_id', primaryKeyList: [docId], indexName: 'studies_development' });
+    await enqueueJob(JOB_TYPES.DOCUMENT_REINDEX, { primaryKey, primaryKeyList: [docId], indexName });
 
 }
