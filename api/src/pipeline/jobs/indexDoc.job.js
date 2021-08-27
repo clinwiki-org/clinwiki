@@ -360,7 +360,6 @@ export const reindexDocument = async (payload) => {
   //PAYLOAD: 
   // PrimaryKey
   // PrimaryKeyList 
-  //GraphQlQuery
   //IndexName
 
   // console.log("PAYLOAD", payload)
