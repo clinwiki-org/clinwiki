@@ -222,11 +222,13 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
     case "Crowd":
       let crowdObject = {};
       let frontMatterKeys = [];
+      let crowdKeyArray = []
 
       if (data.map) {
         data.map((val, i) => {
           const key = val.crowd_key;
           const value = val.crowd_value
+          crowdKeyArray.push({crowd_key: key, crowd_value: value})
           if (i == 0) {
             frontMatterKeys.push(key)
             crowdObject[`fm_${key}`] = [value];
@@ -237,6 +239,7 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
           }
         })
       }
+        crowdObject['crowd_keys'] = crowdKeyArray
 
       return { front_matter_keys: frontMatterKeys, ...crowdObject }
     case "sub_query":

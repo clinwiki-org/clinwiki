@@ -799,6 +799,10 @@ enum Diff {
 """
 Elasticsearch indexed study values
 """
+type crowdKeyValue {
+  crowdKey: String
+  crowdValue: String
+}
 type ElasticStudy implements Timestamps {
   acronym: String
   averageRating: Float!
@@ -808,6 +812,7 @@ type ElasticStudy implements Timestamps {
   completionDate: DateTime
   conditions: String
   createdAt: DateTime!
+  crowdKeys: [crowdKeyValue]
   detailedDescription: String
   dispositionFirstPostedDate: String
   dispositionFirstPostedDateType: String
