@@ -95,7 +95,6 @@ export default function StudyInfiniteScroll() {
     const InfiniteScrollContainer = document.querySelector('.InfiniteScrollContainer');
     setStudyDocumentHeight(InfiniteScrollContainer?.scrollHeight);
     const shouldScroll = Number(InfiniteScrollContainerHeight) * 6 / 7
-    InfiniteScrollContainer?.scrollIntoView()
 
     if (studyData.length <= 25) {
       hasMoreHelper()

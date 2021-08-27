@@ -9,14 +9,11 @@ import {
 } from 'components/StyledComponents';
 import { ThemedButton } from '../LoginPage/StyledButton';
 import { reindexAll, reindexStudy, reindexDocument, reindexAllDocuments } from '../../services/admin/actions';
-import { RootState } from 'reducers';
-import { isAdmin } from 'utils/auth';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 
 
 const Reindex = (props) => {
     const dispatch = useDispatch();
-    const user = useSelector((state: RootState) => state.user.current);
     let [nctid, setNctid] = useState('');
     let [primaryKey, setPrimaryKey] = useState('');
     let [primaryKeyList, setPrimaryKeyList] = useState('');
@@ -51,9 +48,6 @@ const Reindex = (props) => {
                     'dis_production'
                 ));
         }
-    }
-    if (!isAdmin(user)) {
-        return <Redirect to='/' />
     }
     return (
         <div>
