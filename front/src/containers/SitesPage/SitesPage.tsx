@@ -30,7 +30,7 @@ interface SitesPageProps {
 const SitesPage = ({ history }: SitesPageProps) => {
 
   const dispatch = useDispatch();
-  const data = useSelector((state: RootState) => state.site.sitesData)
+  const data = useSelector((state: RootState) => state.hasuraSite.hasuraSitesData)
   const isLoading = useSelector((state: RootState) => state.site.isFetchingSitesPage)
   const isDeleting = useSelector((state: RootState) => state.site.isDeletingSite)
   const user = useSelector((state: RootState) => state.user.current);
