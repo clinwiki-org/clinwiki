@@ -311,7 +311,7 @@ function InputFilter(props: InputFilterProps) {
                     <br />
                     <SearchText>Please type a disease name to search ... </SearchText>
                   </DisAutocompleteLoading>
-                  <DisAutocompleteCloseResult href="#" title="close">Close LiveSearch
+                <DisAutocompleteCloseResult title="close" onClick={() => setDisplaySearch(false)}>Close LiveSearch
                     <span className="fa fa-arrow-circle-up"></span>
                   </DisAutocompleteCloseResult>
                 </>}
@@ -322,6 +322,9 @@ function InputFilter(props: InputFilterProps) {
                       <StrongTerm>{inputFilter}</StrongTerm>:
                     </span>
                   </DisAutoCompleteAutoCorrect>
+                <DisAutocompleteCloseResult title="close" onClick={() => setDisplaySearch(false)}>Close LiveSearch&nbsp;
+                    <span className="fa fa-arrow-circle-up"></span>
+                  </DisAutocompleteCloseResult>
                   <SearchAutoComplete role="listbox" aria-activedescendant="ui-active-menuitem" >
                     {isFetchingCurrentAggBucket &&
                       <DisAutocompleteLoading>
@@ -348,9 +351,6 @@ function InputFilter(props: InputFilterProps) {
                         <br />
                       </NoResult>}
 
-                    <DisAutocompleteCloseResult href="#" title="close">Close LiveSearch&nbsp;
-                      <span className="fa fa-arrow-circle-up"></span>
-                    </DisAutocompleteCloseResult>
                     {totalResults !== 0 &&
                       <div className="dis-autocomplete-bottom">
                         <ButtonsContainer>
