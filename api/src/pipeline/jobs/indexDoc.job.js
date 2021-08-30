@@ -31,17 +31,95 @@ query MyQuery(
     $idList: [String!]
     ) {
     ctgov_prod_studies (where: {${docKey}: {_in: $idList}}) {
-      nct_id
+      acronym
+      baseline_population
+      biospec_description
+      biospec_retention
       brief_title
-      overall_status
-      phase
-      study_type
-      start_date
-      last_update_posted_date
       completion_date
       completion_date_type
+      completion_month_year
+      created_at
+      disposition_first_posted_date
+      disposition_first_posted_date_type
+      disposition_first_submitted_date
+      disposition_first_submitted_qc_date
       enrollment
+      enrollment_type
+      expanded_access_type_individual
+      expanded_access_type_intermediate
+      expanded_access_type_treatment
+      has_dmc
       has_expanded_access
+      ipd_access_criteria
+      ipd_time_frame
+      ipd_url
+      is_fda_regulated_device
+      is_fda_regulated_drug
+      is_ppsd
+      is_unapproved_device
+      is_us_export
+      last_known_status
+      last_update_posted_date
+      last_update_posted_date_type
+      last_update_submitted_date
+      last_update_submitted_qc_date
+      limitations_and_caveats
+      nct_id
+      nlm_download_date_description
+      number_of_arms
+      number_of_groups
+      official_title
+      overall_status
+      phase
+      plan_to_share_ipd
+      plan_to_share_ipd_description
+      primary_completion_date
+      primary_completion_date_type
+      primary_completion_month_year
+      results_first_posted_date
+      results_first_posted_date_type
+      results_first_submitted_date
+      results_first_submitted_qc_date
+      source
+      start_date
+      start_date_type
+      start_month_year
+      study_first_posted_date
+      study_first_posted_date_type
+      study_first_submitted_date
+      study_first_submitted_qc_date
+      study_type
+      target_duration
+      updated_at
+      verification_date
+      verification_month_year
+      why_stopped
+      ctgov_prod_studies_brief_summaries {
+        description
+      }
+      ctgov_prod_studies_browse_conditions {
+        mesh_term
+      }
+      ctgov_prod_studies_browse_interventions {
+        mesh_term
+      }
+      ctgov_prod_studies_conditions {
+        downcase_name
+      }
+      ctgov_prod_studies_central_contacts {
+        name
+        email
+        phone
+        contact_type
+      }
+      ctgov_prod_studies_clinwiki_crowd_key_value_ids {
+        crowd_key
+        crowd_value
+      }
+      ctgov_prod_studies_detailed_descriptions {
+        description
+      }
       ctgov_prod_studies_facilities {
         name
         city
@@ -54,21 +132,27 @@ query MyQuery(
         }
         contacts {
           name
+          email
+          phone
+          contact_type
         }
       }
-      updated_at
-      ctgov_prod_studies_clinwiki_crowd_key_value_ids {
-        crowd_key
-        crowd_value
-      }
-      ctgov_prod_studies_browse_conditions {
-        mesh_term
-      }
-      ctgov_prod_studies_browse_interventions {
-        mesh_term
-      }
-      ctgov_prod_studies_central_contacts {
+      ctgov_prod_studies_overall_officials {
         name
+        role
+        affiliation
+      }
+      ctgov_prod_studies_sponsors {
+        name
+        lead_or_collaborator
+        agency_class
+      }
+      ctgov_prod_studies_responsible_parties {
+        name
+        affiliation
+        title
+        organization
+        responsible_party_type
       }
     }
   }
