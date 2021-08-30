@@ -6,8 +6,6 @@ import ThemedButton from 'components/StyledComponents';
 import { Row, Col, FormControl, Nav, NavItem, Panel } from 'react-bootstrap';
 import { fetchIslandConfig, updateFacetConfig } from 'services/search/actions'
 import { BeatLoader } from 'react-spinners';
-import { isAdmin } from 'utils/auth';
-import { Redirect } from 'react-router-dom'
 
 import GenericForm from 'components/GenericForm'
 
@@ -42,7 +40,6 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
   const [aggs, setAggs] = useState("");
   const [currentAggId, setCurrentAggId] = useState("")
   const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
-  const user = useSelector((state: RootState) => state.user.current);
 
 
   useEffect(() => {
@@ -96,22 +93,19 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
     dispatch(updateFacetConfig({ input: variables }))
 
   }
-  if (!isAdmin(user)) {
-    return <Redirect to='/' />
-  } else {
-    if (aggs == null)
-      return (
-        <Container>
-          <Row>No Aggs</Row>
-        </Container>
-      );
-    else
-      return (
-        <Container>
-          <GenericForm tableName="island_configs" />
-        </Container>
-      )
-  }
+
+  if (aggs == null)
+    return (
+      <Container>
+        <Row>No Aggs</Row>
+      </Container>
+    );
+  else
+    return (
+      <Container>
+        <GenericForm tableName="island_configs" />
+      </Container>
+    )
 }
 
 export default EditAggIslandsPage;
