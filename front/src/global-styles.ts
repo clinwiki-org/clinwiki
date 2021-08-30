@@ -659,6 +659,7 @@ div.DraftEditor-editorContainer{
     z-index: 10;
     max-width: 100%;
     margin: auto;
+    margin-right: 50px;
   }
   .search-form {
     margin-bottom: 10px;
@@ -678,6 +679,18 @@ div.DraftEditor-editorContainer{
     padding: 10px 20px;
     font-size: 218.75%;
     margin: 0px;
+  }
+  .search-container input[type=text] {
+    @media (max-width: 854px) {
+      font-size: 175%;
+      height: 48px;
+      padding: 8px 14px;
+    }
+    @media (max-width: 640px) {
+      font-size: 105%;
+      height: 35px;
+      padding: 8px 14px;
+    }
   }
   .dis-autocomplete-bottom .buttons a.paginator.disabled {
     border: 1px solid #eeeeee;

@@ -19,11 +19,23 @@ const SearchBox = styled.div`
   margin-right: 200px;
   position: relative;
   background-color: white;
+  @media (max-width: 854px) {
+    margin-right: 162px;
+  }
+  @media (max-width: 640px) {
+    margin-right: 105px;
+  }
 `
 const ButtonBox = styled.div`
   display: block;
   float: right;
   width: 200px;
+  @media (max-width: 854px) {
+    width: 162px;
+  }
+  @media (max-width: 640px) {
+    width: 105px;
+  }
 `
 
 const ButtonLarge = styled.button`
@@ -51,6 +63,16 @@ const ButtonLarge = styled.button`
   &:hover {
     box-shadow: 0 0 10px 0 #6BA5D6 inset, 0 0 10px 0px #6BA5D6;
   }
+  @media (max-width: 854px) {
+    font-size: 175%;
+    height: 48px;
+    padding: 5px 25px;
+  }
+  @media (max-width: 640px) {
+    font-size: 105%;
+    height: 35px;
+    padding: 5px 25px;
+  }
 `
 
 const AutoCompleteWrapper = styled.div`
@@ -60,6 +82,12 @@ const AutoCompleteWrapper = styled.div`
   box-shadow: 0px 0px 1px #555;
   position: absolute;
   width: 100%;
+  @media (max-width: 854px) {
+    top: 48px;
+  }
+  @media (max-width: 640px) {
+    top: 35px;
+  }
 `
 
 const DisAutocompleteLoading = styled.li`
@@ -106,6 +134,9 @@ const ResultLink = styled.a`
   background: transparent !important;
   border: 0px none;
   border-radius: 0px;
+  @media (max-width: 640px) {
+    padding: 5px 20px;
+  }
 `
 
 const SearchAutoComplete = styled.ul`
@@ -130,7 +161,7 @@ const DisAutocompleteCloseResult = styled.a`
   text-decoration: none;
   color: #01093d;
   font-family: RockwellLight;
-  font-size: 125%;  
+  font-size: 87.5%;
 `
 
 const ButtonsContainer = styled.div`
@@ -311,7 +342,7 @@ function InputFilter(props: InputFilterProps) {
                     <br />
                     <SearchText>Please type a disease name to search ... </SearchText>
                   </DisAutocompleteLoading>
-                <DisAutocompleteCloseResult title="close" onClick={() => setDisplaySearch(false)}>Close LiveSearch
+                  <DisAutocompleteCloseResult title="close" onClick={() => setDisplaySearch(false)}>Close LiveSearch
                     <span className="fa fa-arrow-circle-up"></span>
                   </DisAutocompleteCloseResult>
                 </>}
@@ -322,7 +353,7 @@ function InputFilter(props: InputFilterProps) {
                       <StrongTerm>{inputFilter}</StrongTerm>:
                     </span>
                   </DisAutoCompleteAutoCorrect>
-                <DisAutocompleteCloseResult title="close" onClick={() => setDisplaySearch(false)}>Close LiveSearch&nbsp;
+                  <DisAutocompleteCloseResult title="close" onClick={() => setDisplaySearch(false)}>Close LiveSearch&nbsp;
                     <span className="fa fa-arrow-circle-up"></span>
                   </DisAutocompleteCloseResult>
                   <SearchAutoComplete role="listbox" aria-activedescendant="ui-active-menuitem" >
