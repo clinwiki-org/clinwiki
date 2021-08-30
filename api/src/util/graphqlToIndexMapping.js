@@ -454,7 +454,7 @@ export const graphqlToIndexMapping =  {
         "dataTypeToIndex": "sub_query"
         
         },
-        "ctgov_prod_studies_brief_summaries_description" : {
+        "ctgov_prod_studies_brief_summaries.description" : {
         
         "fieldNameIndex": "ctgov_prod_studies_brief_summaries_description",
         
@@ -469,7 +469,7 @@ export const graphqlToIndexMapping =  {
         "dataTypeToIndex": "sub_query"
         
         },
-        "ctgov_prod_studies_browse_conditions_mesh_term" : {
+        "ctgov_prod_studies_browse_conditions.mesh_term" : {
         
         "fieldNameIndex": "ctgov_prod_studies_browse_conditions_mesh_term",
         
@@ -484,7 +484,7 @@ export const graphqlToIndexMapping =  {
         "dataTypeToIndex": "sub_query"
         
         },
-        "ctgov_prod_studies_browse_interventions_mesh_term" : {
+        "ctgov_prod_studies_browse_interventions.mesh_term" : {
         
         "fieldNameIndex": "ctgov_prod_studies_browse_interventions_mesh_term",
         
@@ -499,7 +499,7 @@ export const graphqlToIndexMapping =  {
         "dataTypeToIndex": "sub_query"
         
         },
-        "ctgov_prod_studies_conditions_downcase_name" : {
+        "ctgov_prod_studies_conditions.downcase_name" : {
         
         "fieldNameIndex": "ctgov_prod_studies_conditions_downcase_name",
         
@@ -514,28 +514,28 @@ export const graphqlToIndexMapping =  {
         "dataTypeToIndex": "sub_query"
         
         },
-        "ctgov_prod_studies_central_contacts_name" : {
+        "ctgov_prod_studies_central_contacts.name" : {
         
         "fieldNameIndex": "ctgov_prod_studies_central_contacts_name",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "ctgov_prod_studies_central_contacts_email" : {
+        "ctgov_prod_studies_central_contacts.email" : {
         
         "fieldNameIndex": "ctgov_prod_studies_central_contacts_email",
         
         "dataTypeToIndex": ""
         
         },
-        "ctgov_prod_studies_central_contacts_phone" : {
+        "ctgov_prod_studies_central_contacts.phone" : {
         
         "fieldNameIndex": "ctgov_prod_studies_central_contacts_phone",
         
         "dataTypeToIndex": ""
         
         },
-        "ctgov_prod_studies_central_contacts_contact_type" : {
+        "ctgov_prod_studies_central_contacts.contact_type" : {
         
         "fieldNameIndex": "ctgov_prod_studies_central_contacts_contact_type",
         
@@ -545,19 +545,19 @@ export const graphqlToIndexMapping =  {
         
         "ctgov_prod_studies_clinwiki_crowd_key_value_ids" : {
         
-        "fieldNameIndex": "ctgov_prod_studies_clinwiki_crowd_key_value_ids",
+        "fieldNameIndex": "",
         
-        "dataTypeToIndex": "sub_query"
+        "dataTypeToIndex": "Crowd"
         
         },
-        "crowd_key" : {
+        "ctgov_prod_studies_clinwiki_crowd_key_value_ids.crowd_key" : {
         
         "fieldNameIndex": "crowd_key",
         
         "dataTypeToIndex": "Crowd"
         
         },
-        "crowd_value" : {
+        "ctgov_prod_studies_clinwiki_crowd_key_value_ids.crowd_value" : {
         
         "fieldNameIndex": "crowd_value",
         
@@ -572,7 +572,7 @@ export const graphqlToIndexMapping =  {
         "dataTypeToIndex": "sub_query"
         
         },
-        "ctgov_prod_studies_detailed_descriptions_description" : {
+        "ctgov_prod_studies_detailed_descriptions.description" : {
         
         "fieldNameIndex": "ctgov_prod_studies_detailed_descriptions_description",
         
@@ -587,35 +587,35 @@ export const graphqlToIndexMapping =  {
         "dataTypeToIndex": "sub_query"
         
         },
-        "facilities_name" : {
+        "ctgov_prod_studies_facilities.name" : {
         
         "fieldNameIndex": "facilities_name",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "facilities_city" : {
+        "ctgov_prod_studies_facilities.city" : {
         
         "fieldNameIndex": "facilities_city",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "facilities_state" : {
+        "ctgov_prod_studies_facilities.state" : {
         
         "fieldNameIndex": "facilities_state",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "facilities_zip" : {
+        "ctgov_prod_studies_facilities.zip" : {
         
         "fieldNameIndex": "facilities_zip",
         
         "dataTypeToIndex": "SKIP"
         
         },
-        "facilities_country" : {
+        "ctgov_prod_studies_facilities.country" : {
         
         "fieldNameIndex": "facilities_country",
         
@@ -644,40 +644,52 @@ export const graphqlToIndexMapping =  {
         
         },
         
-        "contacts" : {
+        "ctgov_prod_studies_facilities.contacts" : {
         
         "fieldNameIndex": "contacts",
         
         "dataTypeToIndex": "sub_query"
         
         },
-        "ctgov_prod_studies_facilities_contacts_name" : {
+        "ctgov_prod_studies_facilities.contacts.name" : {
         
         "fieldNameIndex": "ctgov_prod_studies_facilities_contacts_name",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "ctgov_prod_studies_facilities_contacts_email" : {
+        "ctgov_prod_studies_facilities.contacts.email" : {
         
         "fieldNameIndex": "ctgov_prod_studies_facilities_contacts_email",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "ctgov_prod_studies_facilities_contacts_phone" : {
+        "ctgov_prod_studies_facilities.contacts.phone" : {
         
         "fieldNameIndex": "ctgov_prod_studies_facilities_contacts_phone",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "ctgov_prod_studies_facilities_contacts_contact_type" : {
+        "ctgov_prod_studies_facilities_contacts.contacts.contact_type" : {
         
         "fieldNameIndex": "ctgov_prod_studies_facilities_contacts_contact_type",
         
         "dataTypeToIndex": "keyword"
         
+        },
+        "ctgov_prod_studies_facilities.ctgov_prod_facilities_clinwiki_facility_locations": {
+        "fieldNameIndex": "",
+        "dataTypeToIndex": "sub_query"
+        },
+        "ctgov_prod_studies_facilities.ctgov_prod_facilities_clinwiki_facility_locations.latitude": {
+            "fieldNameIndex": "location.lat",
+            "dataTypeToIndex": "geo_point"
+        },
+        "ctgov_prod_studies_facilities.ctgov_prod_facilities_clinwiki_facility_locations.longitude": {
+            "fieldNameIndex": "location.lon",
+            "dataTypeToIndex": "geo_point"
         },
         
         
@@ -688,21 +700,21 @@ export const graphqlToIndexMapping =  {
         "dataTypeToIndex": "sub_query"
         
         },
-        "ctgov_prod_studies_overall_officials_name" : {
+        "ctgov_prod_studies_overall_officials.name" : {
         
         "fieldNameIndex": "ctgov_prod_studies_overall_officials_name",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "ctgov_prod_studies_overall_officials_role" : {
+        "ctgov_prod_studies_overall_officials.role" : {
         
         "fieldNameIndex": "ctgov_prod_studies_overall_officials_role",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "ctgov_prod_studies_overall_officials_affiliation" : {
+        "ctgov_prod_studies_overall_officials.affiliation" : {
         
         "fieldNameIndex": "ctgov_prod_studies_overall_officials_affiliation",
         
@@ -717,21 +729,21 @@ export const graphqlToIndexMapping =  {
         "dataTypeToIndex": "sub_query"
         
         },
-        "ctgov_prod_studies_sponsors_name" : {
+        "ctgov_prod_studies_sponsors.name" : {
         
         "fieldNameIndex": "ctgov_prod_studies_sponsors_name",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "ctgov_prod_studies_sponsors_lead_or_collaborator" : {
+        "ctgov_prod_studies_sponsors.lead_or_collaborator" : {
         
         "fieldNameIndex": "ctgov_prod_studies_sponsors_lead_or_collaborator",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "ctgov_prod_studies_sponsors_agency_class" : {
+        "ctgov_prod_studies_sponsors.agency_class" : {
         
         "fieldNameIndex": "ctgov_prod_studies_sponsors_agency_class",
         
@@ -746,35 +758,35 @@ export const graphqlToIndexMapping =  {
         "dataTypeToIndex": "sub_query"
         
         },
-        "ctgov_prod_studies_responsible_parties_name" : {
+        "ctgov_prod_studies_responsible_parties.name" : {
         
         "fieldNameIndex": "ctgov_prod_studies_responsible_parties_name",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "ctgov_prod_studies_responsible_parties_affiliation" : {
+        "ctgov_prod_studies_responsible_parties.affiliation" : {
         
         "fieldNameIndex": "ctgov_prod_studies_responsible_parties_affiliation",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "ctgov_prod_studies_responsible_parties_title" : {
+        "ctgov_prod_studies_responsible_parties.title" : {
         
         "fieldNameIndex": "ctgov_prod_studies_responsible_parties_title",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "ctgov_prod_studies_responsible_parties_organization" : {
+        "ctgov_prod_studies_responsible_parties.organization" : {
         
         "fieldNameIndex": "ctgov_prod_studies_responsible_parties_organization",
         
         "dataTypeToIndex": "keyword"
         
         },
-        "ctgov_prod_studies_responsible_parties_responsible_party_type" : {
+        "ctgov_prod_studies_responsible_parties.responsible_party_type" : {
         
         "fieldNameIndex": "ctgov_prod_studies_responsible_parties_responsible_party_type",
         
