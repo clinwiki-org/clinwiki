@@ -101,9 +101,12 @@ export function registerHandlebarsHelpers() {
    
   });
 Handlebars.registerHelper('formatDate', function(dateString) {
-  return new Handlebars.SafeString(
+  if(dateString){
+    return new Handlebars.SafeString(
       moment(dateString).format("MM/DD/YYYY").toUpperCase()
-  );
+      );
+    }
+    return
 });
 Handlebars.registerHelper('runConditional', (a: any, operator: string, b: string, opts?:string) => {
   var bool = false;
