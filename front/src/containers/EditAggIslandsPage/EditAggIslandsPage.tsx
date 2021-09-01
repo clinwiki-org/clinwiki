@@ -7,6 +7,8 @@ import { Row, Col, FormControl, Nav, NavItem, Panel } from 'react-bootstrap';
 import { fetchIslandConfig, updateFacetConfig } from 'services/search/actions'
 import { BeatLoader } from 'react-spinners';
 
+import GenericForm from 'components/GenericForm'
+
 interface EditWorkflowsPageProps { }
 interface EditWorkflowsPageState {
   currentAggName: string | null;
@@ -41,8 +43,8 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
 
 
   useEffect(() => {
-  dispatch(fetchIslandConfig());
-  setCurrentAggId("3")
+    dispatch(fetchIslandConfig());
+    setCurrentAggId("3")
   }, [dispatch]);
 
   useEffect(() => {
@@ -76,7 +78,7 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
   const handleNewFacet = (e) => {
     let mainConfig = islandConfig
     let index = Object.keys(aggs).length
-    let mainDefaultString = islandConfig && JSON.stringify(mainConfig);    
+    let mainDefaultString = islandConfig && JSON.stringify(mainConfig);
     let newDefaultObject = JSON.parse(mainDefaultString)
     mainConfig = {
       ...mainConfig,
@@ -91,6 +93,7 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
     dispatch(updateFacetConfig({ input: variables }))
 
   }
+
   if (aggs == null)
     return (
       <Container>
@@ -100,45 +103,7 @@ function EditAggIslandsPage(props: EditWorkflowsPageProps) {
   else
     return (
       <Container>
-        <Row>
-          <Col md={2}>
-            <Nav
-              bsStyle="pills"
-              stacked
-              activeKey={currentAggId}
-              onSelect={key => setCurrentAggId(key)}>
-              {
-                aggsArray.map(agg => (console.log(agg),
-                  <NavItem key={agg} eventKey={agg} >
-                    {agg}
-                  </NavItem>
-                ))}
-              <ThemedButton
-                style={{ marginTop: 15 }}
-                onClick={(handleNewFacet)}>
-                New Facet
-                </ThemedButton>
-            </Nav>
-          </Col>
-          <Col md={10}>
-            <StyledPanel>
-
-              <StyledFormInput
-                componentClass="textarea"
-                name="reactionsConfig"
-                placeholder={"SOmething"}
-                value={aggConfig}
-                onChange={(e) => handleConfigChange(e)}
-              />
-              <ThemedButton
-                style={{ marginTop: 15 }}
-                onClick={(e) => handleSaveIsland(e)}>
-                Save
-                </ThemedButton>
-
-            </StyledPanel>
-          </Col>
-        </Row>
+        <GenericForm tableName="island_configs" />
       </Container>
     )
 }

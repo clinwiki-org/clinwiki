@@ -40,7 +40,8 @@ export default function StudyInfiniteScroll() {
   const finalFragment = itemFragment.slice(1, itemFragment.length - 1).join(", ")
 
   const data = useSelector((state: RootState) => state.search.searchResults);
-  const studyData = useSelector((state: RootState) => state.study.studyPage.data.search.studies)
+  const studyData = useSelector((state: RootState) => state.study.studyPage?.data.search.studies)
+  const recordsTotal = useSelector((state: RootState) => state.study.studyPage?.data.search.recordsTotal)
 
   const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
 
@@ -94,7 +95,6 @@ export default function StudyInfiniteScroll() {
     const InfiniteScrollContainer = document.querySelector('.InfiniteScrollContainer');
     setStudyDocumentHeight(InfiniteScrollContainer?.scrollHeight);
     const shouldScroll = Number(InfiniteScrollContainerHeight) * 6 / 7
-    InfiniteScrollContainer?.scrollIntoView()
 
     if (studyData.length <= 25) {
       hasMoreHelper()
@@ -119,7 +119,7 @@ export default function StudyInfiniteScroll() {
   }
 
   const handleLoadMoreHelper = () => {
-    if (studyData.length >= 24) {
+    if (studyData.length >= 24 && studyData.length < recordsTotal) {
       handleLoadMore()
     } else {
       return

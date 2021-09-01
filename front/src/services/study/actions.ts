@@ -182,6 +182,26 @@ export const fetchStudyPageError = (
     type: types.FETCH_STUDY_PAGE_ERROR,
     payload: { message },
 });
+export const fetchStudyPageNearby = (
+    params: any,
+    QUERY: any
+): types.StudyActionTypes => ({
+    type: types.FETCH_STUDY_PAGE_NEARBY_SEND,
+    params,
+    QUERY,
+});
+export const fetchStudyPageNearbySuccess = (
+    payload: any
+): types.StudyActionTypes => ({
+    type: types.FETCH_STUDY_PAGE_NEARBY_SUCCESS,
+    payload,
+});
+export const fetchStudyPageNearbyError = (
+    message: string
+): types.StudyActionTypes => ({
+    type: types.FETCH_STUDY_PAGE_NEARBY_ERROR,
+    payload: { message },
+});
 export const fetchSearchPageMM = (
     params: any,
     QUERY: any
@@ -232,6 +252,14 @@ export const fetchStudyPageHasura = (
 ): types.StudyActionTypes => ({
     type: types.FETCH_STUDY_PAGE_HASURA_SEND,
     nctId,
+    HASURA_STUDY_QUERY,
+});
+export const fetchStudyPageHasuraDIS = (
+    conditionId: string,
+    HASURA_STUDY_QUERY: any
+): types.StudyActionTypes => ({
+    type: types.FETCH_STUDY_PAGE_HASURA_SEND_DIS,
+    conditionId,
     HASURA_STUDY_QUERY,
 });
 export const fetchStudyPageHasuraSuccess = (

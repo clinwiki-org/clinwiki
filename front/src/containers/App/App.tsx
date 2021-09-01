@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Switch, Route, withRouter, Redirect } from 'react-router-dom';
 import NotFoundPage from 'containers/NotFoundPage';
 import NotConfiguredPage from 'containers/NotConfiguredPage';
-import SearchPage from 'containers/SearchPage';
 import { ProfilePage, EditProfilePage } from 'containers/ProfilePage';
 import LandingPage from 'containers/LandingPage';
 import AboutPage from 'containers/AboutPage';
@@ -29,6 +28,7 @@ import HasuraMMTest from 'components/MailMerge/HasuraMMTestComponent'
 import GenericPageWrapper from 'containers/GenericPage/GenericPageWrapper';
 import HasuraGenericPage from 'containers/HasuraGenericPage/HasuraGenericPage.';
 import Reindex from 'containers/Reindex';
+import ProtectedRoute from 'components/ProtectedRoute/ProtectedRoute';
 
 interface AppProps {
   history: History;
@@ -58,10 +58,11 @@ class App extends React.PureComponent<AppProps> {
                 <Route exact path="/about" component={AboutPage} />
                 <Route exact path="/version" component={ReleaseNotes} />
                 <Route path="/search/" render={(props) => <GenericPageWrapper />} />
-                <Route path="/search2/" component={SearchPage} />
-                <Route path="/search2/:siteviewUrl" component={SearchPage} />
                 <Route path="/study/:nctId"
                   render={(props) => <GenericPageWrapper arg={props.match.params.nctId} />}
+                />
+                <Route path="/condition/:conditionId"
+                  render={(props) => <GenericPageWrapper arg={props.match.params.conditionId} />}
                 />
                 <Route path="/hasurastudy/:nctId"
                   render={(props) => <HasuraGenericPage arg={props.match.params.nctId} />}
@@ -72,14 +73,14 @@ class App extends React.PureComponent<AppProps> {
                 <Route path="/p/:hasurapage/:arg?"
                   render={(props) => <HasuraGenericPage url={props.match.params.page} arg={props.match.params.arg} />}
                 />
-                <Route path="/aggIslands" component={EditAggIslandsPage} />
+                <ProtectedRoute path="/aggIslands" component={EditAggIslandsPage} />
                 <Route exact path="/profile" component={EditProfilePage} />
                 <Route path="/profile/:id/" component={ProfilePage} />
                 <Route path="/workflows" component={EditWorkflowsPage} />
                 <Route path={`/bulk`} component={BulkEditPage} />
                 <Route path="/sites/:id/edit" component={SitesEditPage} />
                 <Route path="/sites/new" component={SitesNewPage} />
-                <Route path="/sites" component={SitesPage} />
+                <ProtectedRoute path="/sites" component={SitesPage} />
                 <Route path="/reset_password" component={ResetPasswordPage} />
                 <Route path="/sign_in" component={SignInPage} />
                 <Route path="/sign_up" component={SignUpPage} />
@@ -87,7 +88,7 @@ class App extends React.PureComponent<AppProps> {
                 <Route path="/update_password" component={UpdatePassword} />
                 <Route path="/mmtest" component={MMTest} />
                 <Route path="/hasurammtest" component={HasuraMMTest} />
-                <Route path="/reindex" component={Reindex} />
+                <ProtectedRoute path="/reindex" component={Reindex} />
                 <Route component={NotFoundPage} />
               </Switch>
             </div>

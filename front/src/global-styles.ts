@@ -324,7 +324,7 @@ div.DraftEditor-editorContainer{
   display: flex;
   flex-wrap:wrap;
   position: relative;
-  overflow: hidden;
+  overflow: scroll;
   
   a {
     ${props => props.theme.button};
@@ -648,5 +648,52 @@ div.DraftEditor-editorContainer{
  .mail-merge .three.loader-container.subgrid .mail-merge-island div:nth-child(1) {
     display: flex;
     flex-wrap: wrap;
+  }
+  .disabled-btn {
+    background-color: #b4b4b4 !important;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .search-container {
+    position: relative;
+    z-index: 10;
+    max-width: 100%;
+    margin: auto;
+    margin-right: 50px;
+  }
+  .search-form {
+    margin-bottom: 10px;
+  }
+  .search-box-wrapper {
+    display: block;
+    max-width: 1000px;
+    margin: auto;
+  }
+  .search-container input[type=text] {
+    position: relative;
+    z-index: 10;
+    outline: none;
+    width: 100%;
+    max-width: none;
+    height: 60px;
+    padding: 10px 20px;
+    font-size: 218.75%;
+    margin: 0px;
+  }
+  .search-container input[type=text] {
+    @media (max-width: 854px) {
+      font-size: 175%;
+      height: 48px;
+      padding: 8px 14px;
+    }
+    @media (max-width: 640px) {
+      font-size: 105%;
+      height: 35px;
+      padding: 8px 14px;
+    }
+  }
+  .dis-autocomplete-bottom .buttons a.paginator.disabled {
+    border: 1px solid #eeeeee;
+    color: #eeeeee;
   }
 `);

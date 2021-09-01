@@ -48,3 +48,17 @@ export const reindexDocumentError = (errors: Array<string>) => ({
     type: types.REINDEX_DOCUMENT_ERROR,
     payload: errors
 });
+export const reindexAllDocuments = ( primaryKey, indexName ) => ({
+    type: types.REINDEX_ALL_DOCUMENT_SEND,
+    primaryKey,
+    indexName
+});
+
+export const reindexAllDocumentsSuccess = (payload: String) => ({
+    type: types.REINDEX_ALL_DOCUMENT_SUCCESS
+});
+
+export const reindexAllDocumentsError = (errors: Array<string>) => ({
+    type: types.REINDEX_ALL_DOCUMENT_ERROR,
+    payload: errors
+});

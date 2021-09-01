@@ -10,23 +10,116 @@ const CHUNK_SIZE = 1000;
 
 let IS_RUNNING = false;
 
-const SAMPLE_QUERY = (docKey) => `
+const QUERY_ALL_CONDITION_IDS = `
+query MyQuery {
+  disyii2_prod_20210704_2_tbl_conditions {
+    condition_id
+  }
+}
+`
+const QUERY_ALL_NCT_IDS = `
+query MyQuery {
+  ctgov_prod_studies {
+    nct_id
+  }
+}
+`
+
+const SAMPLE_QUERY_CLINWIKI = (docKey) => `
 
 query MyQuery(
     $idList: [String!]
     ) {
     ctgov_prod_studies (where: {${docKey}: {_in: $idList}}) {
-      nct_id
+      acronym
+      baseline_population
+      biospec_description
+      biospec_retention
       brief_title
-      overall_status
-      phase
-      study_type
-      start_date
-      last_update_posted_date
       completion_date
       completion_date_type
+      completion_month_year
+      created_at
+      disposition_first_posted_date
+      disposition_first_posted_date_type
+      disposition_first_submitted_date
+      disposition_first_submitted_qc_date
       enrollment
+      enrollment_type
+      expanded_access_type_individual
+      expanded_access_type_intermediate
+      expanded_access_type_treatment
+      has_dmc
       has_expanded_access
+      ipd_access_criteria
+      ipd_time_frame
+      ipd_url
+      is_fda_regulated_device
+      is_fda_regulated_drug
+      is_ppsd
+      is_unapproved_device
+      is_us_export
+      last_known_status
+      last_update_posted_date
+      last_update_posted_date_type
+      last_update_submitted_date
+      last_update_submitted_qc_date
+      limitations_and_caveats
+      nct_id
+      nlm_download_date_description
+      number_of_arms
+      number_of_groups
+      official_title
+      overall_status
+      phase
+      plan_to_share_ipd
+      plan_to_share_ipd_description
+      primary_completion_date
+      primary_completion_date_type
+      primary_completion_month_year
+      results_first_posted_date
+      results_first_posted_date_type
+      results_first_submitted_date
+      results_first_submitted_qc_date
+      source
+      start_date
+      start_date_type
+      start_month_year
+      study_first_posted_date
+      study_first_posted_date_type
+      study_first_submitted_date
+      study_first_submitted_qc_date
+      study_type
+      target_duration
+      updated_at
+      verification_date
+      verification_month_year
+      why_stopped
+      ctgov_prod_studies_brief_summaries {
+        description
+      }
+      ctgov_prod_studies_browse_conditions {
+        mesh_term
+      }
+      ctgov_prod_studies_browse_interventions {
+        mesh_term
+      }
+      ctgov_prod_studies_conditions {
+        downcase_name
+      }
+      ctgov_prod_studies_central_contacts {
+        name
+        email
+        phone
+        contact_type
+      }
+      ctgov_prod_studies_clinwiki_crowd_key_value_ids {
+        crowd_key
+        crowd_value
+      }
+      ctgov_prod_studies_detailed_descriptions {
+        description
+      }
       ctgov_prod_studies_facilities {
         name
         city
@@ -39,16 +132,61 @@ query MyQuery(
         }
         contacts {
           name
+          email
+          phone
+          contact_type
         }
       }
-      updated_at
-      ctgov_prod_studies_clinwiki_crowd_key_value_ids {
-        crowd_key
-        crowd_value
+      ctgov_prod_studies_overall_officials {
+        name
+        role
+        affiliation
       }
-  
+      ctgov_prod_studies_sponsors {
+        name
+        lead_or_collaborator
+        agency_class
+      }
+      ctgov_prod_studies_responsible_parties {
+        name
+        affiliation
+        title
+        organization
+        responsible_party_type
+      }
     }
   }
+  
+`
+const SAMPLE_QUERY_DIS = (docKey) => `
+
+query MyQuery(
+  $idList: [bigint!]
+  ) {
+  disyii2_prod_20210704_2_tbl_conditions(where: {${docKey}: {_in: $idList}}) {
+    condition_id
+    conditions_condition_name {
+      name
+      mod_date
+      mod_by
+    }
+    description
+    mesh
+    ncbi
+    pubmed
+    snomedct
+    umls
+    condition_conditions_tags {
+      fk_condition_id
+      fk_tag_id
+      cr_date
+      conditions_tags_condition_tags {
+        tag_name
+      }
+    }
+  }
+}
+
   
 `
 const chunkList = (list, size) => {
@@ -81,7 +219,53 @@ export const genericDocumentJob = async (args) => {
   }
 };
 
+const getAllDocuments = async (primaryKey) => {
+  const hasuraInstance =  primaryKey == "nct_id" ? "studies":"dis";
+  const HASURA_QUERY = hasuraInstance == "dis" ? QUERY_ALL_CONDITION_IDS: QUERY_ALL_NCT_IDS
+  console.log("GETTING ALL DOCS");
+  let result = await queryHasura(HASURA_QUERY, {} ,hasuraInstance );
+
+console.log("RESULTS FOR ALL DOPCS", result)
+
+  return hasuraInstance == "dis" ? result.data.disyii2_prod_20210704_2_tbl_conditions.map( row => row.condition_id)
+  : result.data.ctgov_prod_studies.map( row => row.nct_id);
+};
+
+
+
+
+export const allGenericDocumentsJob = async (args) => {
+  try {
+    if (!IS_RUNNING) {
+      IS_RUNNING = true;
+      logger.info('Starting Reindex all');
+
+      const genericDocumentIds = await getAllDocuments(args.primaryKey);
+
+
+      const bulkList = chunkList(genericDocumentIds, CHUNK_SIZE);
+      const docKey = args.primaryKey
+      const indexName = args.indexName
+      // console.log("LIST", bulkList)
+      
+      for (let j = 0; j < bulkList.length; j++) {
+        const idList = bulkList[j];
+        console.log(docKey, indexName)
+        // Queue these up for reindexing
+        await enqueueJob(JOB_TYPES.DOCUMENT_REINDEX, { ...args, primaryKeyList: idList, primaryKey: docKey, indexName: indexName });
+      }
+      logger.info('Job GENERIC Doc. Finished.')
+      IS_RUNNING = false;
+    }
+  }
+  catch (err) {
+    logger.error(err);
+    IS_RUNNING = false;
+  }
+};
+
 const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
+  // console.log(key, data)
   let tempObj = {};
   switch (dataTypeToIndex) {
     case "PrimaryKey":
@@ -91,7 +275,8 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
       tempObj[fieldNameIndex] = data
       return tempObj
     case "date":
-      tempObj[fieldNameIndex] = moment(data).format('YYYY-MM-DD');
+      //Need to handle null dates, currently passing todays date
+      tempObj[fieldNameIndex] = moment(data || "2021-07-28").format('YYYY-MM-DD');
       return tempObj
     case "long":
       tempObj[fieldNameIndex] = parseInt(data);
@@ -121,11 +306,13 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
     case "Crowd":
       let crowdObject = {};
       let frontMatterKeys = [];
+      let crowdKeyArray = []
 
       if (data.map) {
         data.map((val, i) => {
           const key = val.crowd_key;
           const value = val.crowd_value
+          crowdKeyArray.push({crowd_key: key, crowd_value: value})
           if (i == 0) {
             frontMatterKeys.push(key)
             crowdObject[`fm_${key}`] = [value];
@@ -136,6 +323,7 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
           }
         })
       }
+        crowdObject['crowd_keys'] = crowdKeyArray
 
       return { front_matter_keys: frontMatterKeys, ...crowdObject }
     case "sub_query":
@@ -173,7 +361,10 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
               }
             } else {
               for (const [key, value] of Object.entries(doc)) {
-                currentObject[key] = [...currentObject[key], value]
+                // console.log("KEY KEY", currentObject[key])
+                let currentValue = currentObject[key]
+                let valueTobeAdded = [value]
+                currentObject[key] = valueTobeAdded.concat(currentValue)
               }
             }
             // console.log("KURENT", currentObject)
@@ -200,6 +391,9 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
               }));
       }
 
+      if(!data){
+        return
+      }
       //handles array values such as facilities
       if (data.map) {
         //Async hell 
@@ -218,9 +412,9 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
   }
 }
 const getBulkDocuments = async (dockKey, idList, gqlQuery) => {
-
+const hasuraInstance = dockKey == "nct_id"? "studies":" dis"
   // console.log(dockKey, idList, gqlQuery);
-  let result = await queryHasura(gqlQuery, { idList });
+  let result = await queryHasura(gqlQuery, { idList },hasuraInstance );
   // console.log("PEW PEW", util.inspect(result, false, null, true));
 
   return result;
@@ -250,31 +444,54 @@ export const reindexDocument = async (payload) => {
   //PAYLOAD: 
   // PrimaryKey
   // PrimaryKeyList 
-  //GraphQlQuery
   //IndexName
 
-  console.log("PAYLOAD", payload)
+  // console.log("PAYLOAD", payload)
 
   const docKey = payload.primaryKey;
   const idList = payload.primaryKeyList;
-  const gqlQuery = SAMPLE_QUERY(docKey)
-  const indexName = payload.indexName
+  const indexName = payload.indexName;
 
-  const results = await getBulkDocuments(docKey, idList, gqlQuery);
-  console.log(util.inspect(results, false, null, true))
-
-  let documents = [];
-  for (let i = 0; i < results.data.ctgov_prod_studies.length; i++) {
-    let document = results.data.ctgov_prod_studies[i];
-
-    let mappedDoc = await getDocumentMapping(document);
-
-    let currentTime = Date.now();
-    let formattedTime = moment(currentTime).format('YYYY-MM-DD');
-    mappedDoc.indexed_at = formattedTime
-    documents.push(mappedDoc);
+  const gqlQuery = (index) =>{
+    if( index == "studies_development" || index == "studies_production"){
+      return SAMPLE_QUERY_CLINWIKI(docKey);
+    }
+    if( index == "dis_development" || index == "dis_production"){
+      return SAMPLE_QUERY_DIS(docKey);
+    }
   }
 
+  const results = await getBulkDocuments(docKey, idList, gqlQuery(indexName));
+  // console.log(util.inspect(results, false, null, true))
+
+  let documents = [];
+
+  if(payload.indexName == "studies_development" || payload.indexName ==  "studies_production"){
+    for (let i = 0; i < results?.data?.ctgov_prod_studies.length; i++) {
+      let document = results.data.ctgov_prod_studies[i];
+
+      let mappedDoc = await getDocumentMapping(document);
+
+      let currentTime = Date.now();
+      let formattedTime = moment(currentTime).format('YYYY-MM-DD');
+      mappedDoc.indexed_at = formattedTime
+      documents.push(mappedDoc);
+    }
+  } 
+  if(payload.indexName == "dis_development" || payload.indexName ==  "dis_production"){
+
+    for (let i = 0; i < results?.data?.disyii2_prod_20210704_2_tbl_conditions?.length; i++) {
+      let document = results.data.disyii2_prod_20210704_2_tbl_conditions[i];
+      
+      let mappedDoc = await getDocumentMapping(document);
+      
+      let currentTime = Date.now();
+      let formattedTime = moment(currentTime).format('YYYY-MM-DD');
+      mappedDoc.indexed_at = formattedTime
+      documents.push(mappedDoc);
+    }
+  } 
+    
   logger.info("Sending bulk update of " + idList.length);
   logger.info("Sending bulk update of " + documents);
 
@@ -283,8 +500,4 @@ export const reindexDocument = async (payload) => {
   console.log("-------------------");
   console.log("Bulk Upsert Response")
   console.log(util.inspect(response, false, null, true));
-
-
-
-
 }

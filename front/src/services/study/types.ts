@@ -71,6 +71,11 @@ export const FETCH_STUDY_PAGE_SEND = 'FETCH_STUDY_PAGE_SEND';
 export const FETCH_STUDY_PAGE_SUCCESS = 'FETCH_STUDY_PAGE_SUCCESS';
 export const FETCH_STUDY_PAGE_ERROR = 'FETCH_STUDY_PAGE_ERROR';
 
+export const FETCH_STUDY_PAGE_NEARBY_SEND = 'FETCH_STUDY_PAGE_NEARBY_SEND';
+export const FETCH_STUDY_PAGE_NEARBY_SUCCESS =
+    'FETCH_STUDY_PAGE_NEARBY_SUCCESS';
+export const FETCH_STUDY_PAGE_NEARBY_ERROR = 'FETCH_STUDY_PAGE_NEARBY_ERROR';
+
 export const FETCH_SEARCH_PAGE_MM_SEND = 'FETCH_SEARCH_PAGE_MM_SEND';
 export const FETCH_SEARCH_PAGE_MM_SUCCESS = 'FETCH_SEARCH_PAGE_MM_SUCCESS';
 export const FETCH_SEARCH_PAGE_MM_ERROR = 'FETCH_SEARCH_PAGE_MM_ERROR';
@@ -81,6 +86,7 @@ export const FETCH_SEARCH_PAGE_STUDY_SUCCESS =
 export const FETCH_SEARCH_PAGE_STUDY_ERROR = 'FETCH_SEARCH_PAGE_STUDY_ERROR';
 
 export const FETCH_STUDY_PAGE_HASURA_SEND = 'FETCH_STUDY_PAGE_HASURA_SEND';
+export const FETCH_STUDY_PAGE_HASURA_SEND_DIS = 'FETCH_STUDY_PAGE_HASURA_SEND_DIS';
 export const FETCH_STUDY_PAGE_HASURA_SUCCESS =
     'FETCH_STUDY_PAGE_HASURA_SUCCESS';
 export const FETCH_STUDY_PAGE_HASURA_ERROR = 'FETCH_STUDY_PAGE_HASURA_ERROR';
@@ -258,7 +264,9 @@ export interface StudyState {
     isFetchingSampleStudyHasura: boolean;
     hasuraSampleStudy: any | undefined;
     isFetchingStudy: boolean;
+    isFetchingStudyNearby: boolean;
     studyPage: any | undefined;
+    studyList: any | undefined;
     isFetchingPageViews: boolean;
     pageViews: any | PageViewsQuery | undefined;
     isFetchingPageView: boolean;
@@ -445,13 +453,25 @@ export interface fetchStudyPageSendAction {
     nctId: any;
     QUERY: any;
 }
-
 export interface fetchStudyPageSuccessAction {
     type: typeof FETCH_STUDY_PAGE_SUCCESS;
     payload: SearchStudyPageQuery;
 }
 export interface fetchStudyPageErrorAction {
     type: typeof FETCH_STUDY_PAGE_ERROR;
+    payload: StudyDataError;
+}
+export interface fetchStudyPageNearbySendAction {
+    type: typeof FETCH_STUDY_PAGE_NEARBY_SEND;
+    params: any;
+    QUERY: any;
+}
+export interface fetchStudyPageNearbySuccessAction {
+    type: typeof FETCH_STUDY_PAGE_NEARBY_SUCCESS;
+    payload: SearchStudyPageQuery;
+}
+export interface fetchStudyPageNearbyErrorAction {
+    type: typeof FETCH_STUDY_PAGE_NEARBY_ERROR;
     payload: StudyDataError;
 }
 export interface fetchSearchPageMMSendAction {
@@ -483,6 +503,11 @@ export interface fetchSearchPageStudyErrorAction {
 export interface fetchStudyPageHasuraSendAction {
     type: typeof FETCH_STUDY_PAGE_HASURA_SEND;
     nctId: any;
+    HASURA_STUDY_QUERY: any;
+}
+export interface fetchStudyPageHasuraSendActionDIS {
+    type: typeof FETCH_STUDY_PAGE_HASURA_SEND_DIS;
+    conditionId: any;
     HASURA_STUDY_QUERY: any;
 }
 
@@ -1019,6 +1044,9 @@ export type StudyActionTypes =
     | fetchStudyPageSendAction
     | fetchStudyPageSuccessAction
     | fetchStudyPageErrorAction
+    | fetchStudyPageNearbySendAction
+    | fetchStudyPageNearbySuccessAction
+    | fetchStudyPageNearbyErrorAction
     | fetchSearchPageMMSendAction
     | fetchSearchPageMMSuccessAction
     | fetchSearchPageMMErrorAction
@@ -1149,6 +1177,7 @@ export type StudyActionTypes =
     | FetchSampleStudyHasuraSuccessAction
     | FetchSampleStudyHasuraErrorAction
     | fetchStudyPageHasuraSendAction
+    | fetchStudyPageHasuraSendActionDIS
     | fetchStudyPageHasuraSuccessAction
     | fetchStudyPageHasuraErrorAction
     | setShowLoginModalSendAction;
