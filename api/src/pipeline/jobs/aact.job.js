@@ -9,7 +9,7 @@ const util = require('util')
 const STUDIES_TO_INDEX_QUERY = "select nct_id from studies where updated_at > localtimestamp - INTERVAL '1 day'";
 const REINDEX_ALL_QUERY = "select nct_id from studies";
 const REINDEX_STUDY_QUERY = "select nct_id from studies where nct_id=$1";
-const CHUNK_SIZE = 100;
+const CHUNK_SIZE = 1000;
 
 let IS_RUNNING = false;
 
