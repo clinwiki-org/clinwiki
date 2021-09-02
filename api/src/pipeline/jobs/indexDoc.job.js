@@ -203,7 +203,7 @@ export const genericDocumentJob = async (args) => {
       IS_RUNNING = true;
       logger.info('Starting Doc. Job');
       const bulkList = chunkList(args.primaryKeyList, CHUNK_SIZE);
-      console.log("LIST", bulkList)
+      // console.log("LIST", bulkList)
       for (let j = 0; j < bulkList.length; j++) {
         const idList = bulkList[j];
         // Queue these up for reindexing
@@ -225,7 +225,7 @@ const getAllDocuments = async (primaryKey) => {
   console.log("GETTING ALL DOCS");
   let result = await queryHasura(HASURA_QUERY, {} ,hasuraInstance );
 
-console.log("RESULTS FOR ALL DOPCS", result)
+// console.log("RESULTS FOR ALL DOPCS", result)
 
   return hasuraInstance == "dis" ? result.data.disyii2_prod_20210704_2_tbl_conditions.map( row => row.condition_id)
   : result.data.ctgov_prod_studies.map( row => row.nct_id);
@@ -250,7 +250,7 @@ export const allGenericDocumentsJob = async (args) => {
       
       for (let j = 0; j < bulkList.length; j++) {
         const idList = bulkList[j];
-        console.log(docKey, indexName)
+        // console.log(docKey, indexName)
         // Queue these up for reindexing
         await enqueueJob(JOB_TYPES.DOCUMENT_REINDEX, { ...args, primaryKeyList: idList, primaryKey: docKey, indexName: indexName });
       }
@@ -301,7 +301,7 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
       });
       return finalObject
     case "SKIP":
-      console.log("Skipping", key)
+      // console.log("Skipping", key)
       return
     case "Crowd":
       let crowdObject = {};
@@ -425,7 +425,7 @@ const getDocumentMapping = async (document, parentField) => {
   for (const [key, value] of Object.entries(document)) {
     // console.log("KEY", key)
     // console.log("VALUE", value)
-    // console.log("PARENT", parentField)
+      // console.log("PARENT", parentField)
 
     let parsedValue = parentField ? await parseDataType(graphqlToIndexMapping[`${parentField}.${key}`].fieldNameIndex, graphqlToIndexMapping[`${parentField}.${key}`].dataTypeToIndex, value, `${parentField}.${key}`) : await parseDataType(graphqlToIndexMapping[key].fieldNameIndex, graphqlToIndexMapping[key].dataTypeToIndex, value, key)
 
@@ -499,5 +499,5 @@ export const reindexDocument = async (payload) => {
 
   console.log("-------------------");
   console.log("Bulk Upsert Response")
-  console.log(util.inspect(response, false, null, true));
+  // console.log(util.inspect(response, false, null, true));
 }
