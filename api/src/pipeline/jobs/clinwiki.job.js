@@ -5,7 +5,7 @@ import {query} from '../../util/db';
 import moment from 'moment';
 const util = require('util')
 
-const CHUNK_SIZE = 1000;
+const CHUNK_SIZE = 1;
 
 export const clinwikiJob = async nctIdList => {
     try {
