@@ -6,7 +6,7 @@ import { JOB_TYPES, enqueueJob } from '../pipeline.queue';
 import moment from 'moment';
 const util = require('util')
 
-const CHUNK_SIZE = 1000;
+const CHUNK_SIZE = 250;
 
 let IS_RUNNING = false;
 

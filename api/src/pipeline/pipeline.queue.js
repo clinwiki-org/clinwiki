@@ -8,7 +8,7 @@ import {wikiPageReindex,crowdKeyReindex} from './jobs/clinwiki.job';
 import { reindexDocument } from './jobs/indexDoc.job';
 const util = require('util')
 
-const POLL_QUERY = 'select * from pipeline_queue where processed = false order by created_at asc';
+const POLL_QUERY = 'select * from pipeline_queue where processed = false order by created_at asc limit 10';
 const CREATE_PIPELINE_QUEUE_TABLE = 'create table pipeline_queue (id serial primary key, created_at timestamp DEFAULT CURRENT_TIMESTAMP, updated_at, timestamp  DEFAULT CURRENT_TIMESTAMP, job_type text, payload text, processed boolean DEFAULT false)';
 const DEQUEUE_JOB_QUERY = 'update pipeline_queue set "processed" = true, updated_at = Now() where id=$1'; //should be trigger based
 const ENQUEUE_JOB_QUERY = 'insert into pipeline_queue (job_type,payload) values ($1,$2)';
