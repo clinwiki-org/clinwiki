@@ -80,7 +80,7 @@ class App extends React.PureComponent<AppProps> {
                 <Route path={`/bulk`} component={BulkEditPage} />
                 <Route path="/sites/:id/edit" component={SitesEditPage} />
                 <Route path="/sites/new" component={SitesNewPage} />
-                <ProtectedRoute path="/sites" component={SitesPage} />
+                <Route path="/sites" component={SitesPage} />
                 <Route path="/reset_password" component={ResetPasswordPage} />
                 <Route path="/sign_in" component={SignInPage} />
                 <Route path="/sign_up" component={SignUpPage} />
