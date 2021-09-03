@@ -13,12 +13,16 @@ export const translateSearch = async (criteria,includeSize,lastDate) => {
 
     if(criteria.q.key === 'AND' && criteria.q.children) {
         criteria.q.children.forEach( child => {
-            boolQuery.must(esb.simpleQueryStringQuery('('+child.key+')') );
+            boolQuery.must(
+				esb.simpleQueryStringQuery('*' + child.key + '*').analyzeWildcard(true)
+			);
         })
     }
     if(criteria.q.key === 'OR' && criteria.q.children) {
         criteria.q.children.forEach( child => {
-            boolQuery.should(esb.simpleQueryStringQuery('('+child.key+')') );
+            boolQuery.should(
+                esb.simpleQueryStringQuery('*' + child.key + '*').analyzeWildcard(true)
+            );
         })
     }
 
@@ -147,12 +151,16 @@ export const translateOpenAggBuckets = async (criteria, aggBucketsWanted) => {
 
     if(criteria.q.key === 'AND' && criteria.q.children) {
         criteria.q.children.forEach( child => {
-            boolQuery.must(esb.simpleQueryStringQuery('('+child.key+')') );
+            boolQuery.must(
+				esb.simpleQueryStringQuery('*' + child.key + '*').analyzeWildcard(true)
+			);
         })
     }
     if(criteria.q.key === 'OR' && criteria.q.children) {
         criteria.q.children.forEach( child => {
-            boolQuery.should(esb.simpleQueryStringQuery('('+child.key+')') );
+            boolQuery.should(
+				esb.simpleQueryStringQuery('*' + child.key + '*').analyzeWildcard(true)
+			);
         })
     }
 
