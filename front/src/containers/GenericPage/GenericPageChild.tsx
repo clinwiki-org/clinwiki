@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 import { RootState } from 'reducers';
 import { useHasuraFragment } from 'components/MailMerge/HasuraMMFragment';
+import { insertPageViewLog } from 'services/genericPage/actions';
 
 
 interface Props {
@@ -46,7 +47,8 @@ export default function GenericPageWrapper(props: Props) {
     const data = useSelector((state: RootState) => state.search.searchResults);
     const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
     const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
-
+    const currentUser = useSelector((state:RootState)=> state.user.current);
+    const isFetchingCurrentUser = useSelector((state:RootState)=> state.user.isLoading);
     const getPageType = (val) => {
         switch (val) {
             case 1:
@@ -173,6 +175,10 @@ export default function GenericPageWrapper(props: Props) {
     const pageType = getPageType(currentPage?.page_type);
 
     const title = microMailMerge(currentPage?.title, searchData(pageType)) || "Add a Title";
+
+    useEffect(()=>{
+      !isFetchingCurrentUser &&  dispatch(insertPageViewLog( currentUser?.id || null, window.location.href ))
+    }, [dispatch, window.location.href, isFetchingCurrentUser,currentUser]);
 
     const islands = pageType == 'Study' ? studyIslands : searchIslands;
     if (pageType == 'Study' && !studyData) {
