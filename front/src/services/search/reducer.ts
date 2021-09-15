@@ -335,21 +335,6 @@ const searchReducer = (
                     [action.islandId]: newConfig,
                 },
             };
-        case types.UPDATE_FACET_CONFIG_SEND:
-            return {
-                ...state,
-                isUpdatingFacetConfig: true,
-            };
-        case types.UPDATE_FACET_CONFIG_SUCCESS:
-            return {
-                ...state,
-                isUpdatingFacetConfig: false,
-            };
-        case types.UPDATE_FACET_CONFIG_ERROR:
-            return {
-                ...state,
-                isUpdatingFacetConfig: false,
-            };
         case types.CREATE_SAVED_SEARCH_SEND:
             return {
                 ...state,

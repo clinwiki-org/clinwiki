@@ -137,7 +137,22 @@ const MailMergeView = (props: Props) => {
 
 
   useEffect(() => {
-    !islandConfig && dispatch(fetchIslandConfig());
+    let uniqueAggIds = uniq(aggIslandsCurrent.current.currentAggIsalnds);
+    let aggIdArray: any[] = [];
+
+    let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds);
+    let wfLabels: any[] = [];
+
+    uniqueWFIds.map((WF) => {
+      wfLabels.push(parseInt(WF.id))
+    });
+
+     uniqueAggIds.map((agg) => {
+      aggIdArray.push(parseInt(agg.id))
+      
+    });
+
+    !islandConfig && dispatch(fetchIslandConfig(aggIdArray.concat(wfLabels)));
   }, [dispatch]);
 
   useEffect(() => {

@@ -435,8 +435,8 @@ export const FIND_SHORT_LINK = `
   }
 `;
 
-export const ISLAND_CONFIG_QUERY = `
-query HasuraIslandConfigsQuery {
+export const ISLAND_CONFIG_QUERY_ALL = `
+query HasuraIslandConfigsQueryAll {
   island_configs {
     id
     island_type
@@ -445,6 +445,17 @@ query HasuraIslandConfigsQuery {
 }
 `;
 
+export const ISLAND_CONFIG_QUERY = `
+query HasuraIslandConfigsQuery($idList: [Int!]) {
+  island_configs(where: {id: {_in: $idList}}) {
+    id
+    island_type
+    updated_at
+    created_at
+    config
+  }
+}
+`;
 export const SEARCH_EXPORT_QUERY = `
   query SearchExportQuery($searchExportId: Int!) {
     searchExport(searchExportId: $searchExportId) {

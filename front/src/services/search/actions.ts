@@ -299,8 +299,9 @@ export const fetchFacetConfigError = (
     payload: { message },
 });
 
-export const fetchIslandConfig = (): types.SearchActionTypes => ({
+export const fetchIslandConfig = ( aggId: any): types.SearchActionTypes => ({
     type: types.FETCH_ISLAND_CONFIG_SEND,
+    aggId
 });
 
 export const fetchIslandConfigSuccess = (
@@ -323,25 +324,6 @@ export const convertDisplayName = (
     type: types.CONVERT_DISPLAY_NAME,
     displayName,
     islandId,
-});
-
-export const updateFacetConfig = (
-    input: UpdateFacetConfigInput
-): types.SearchActionTypes => ({
-    type: types.UPDATE_FACET_CONFIG_SEND,
-    input,
-});
-export const updateFacetConfigSuccess = (
-    payload: any
-): types.SearchActionTypes => ({
-    type: types.UPDATE_FACET_CONFIG_SUCCESS,
-    payload,
-});
-export const updateFacetConfigError = (
-    message: string
-): types.SearchActionTypes => ({
-    type: types.UPDATE_FACET_CONFIG_ERROR,
-    payload: { message },
 });
 
 export const searchExport = (
