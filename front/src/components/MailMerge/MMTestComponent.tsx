@@ -1,287 +1,267 @@
 import React, { useEffect, useState } from 'react';
+import MailMergeView, {
+    microMailMerge,
+} from 'components/MailMerge/MailMergeView';
+import CollapsiblePanel from 'components/CollapsiblePanel';
+
 import MailMerge from './MailMerge';
-import { FormControl, DropdownButton, MenuItem } from 'react-bootstrap';
-import { getStudyQuery, getSearchQuery, getHasuraStudyQuery } from 'components/MailMerge/MailMergeUtils';
-import { commonIslands } from 'containers/Islands/CommonIslands';
-import { useFragment } from './MailMergeFragment';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchNodeIntrospection, fetchIntrospection, fetchHasuraIntrospection } from 'services/introspection/actions';
-import { RootState } from 'reducers';
-import { introspectionQuery } from 'graphql/utilities';
-import { BeatLoader } from 'react-spinners';
-import { fetchStudyPage, fetchSearchPageMM, fetchStudyPageHasura } from 'services/study/actions';
+
+import { useRouteMatch } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import { getStudyQuery, getSearchQuery, getHasuraStudyQuery, getSearchQueryDIS, getHasuraStudyQueryDIS, getSearchNearbyQuery } from 'components/MailMerge/MailMergeUtils';
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
+import useUrlParams from 'utils/UrlParamsProvider';
+import { useFragment } from 'components/MailMerge/MailMergeFragment';
+import { fetchStudyPage, fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS, fetchStudyPageNearby } from 'services/study/actions';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { BeatLoader } from 'react-spinners';
+import { RootState } from 'reducers';
 import { useHasuraFragment } from 'components/MailMerge/HasuraMMFragment';
+import { introspectionQuery } from 'graphql/utilities';
+import { fetchNodeIntrospection, fetchHasuraIntrospection } from 'services/introspection/actions';
+
+import { fetchSearchParams } from 'services/search/actions';
 import { GraphqlSchemaType } from './SchemaSelector';
 
+interface Props {
+    url?: string;
+    arg?: string;
+}
+type Mode = 'Study' | 'Search_Study' | 'Condition' | 'Search_Condition';
 
-type Mode = 'Study' | 'Search';
-// return a tuple of the elements that differ with the mode
-// query, params, schema
 function getClassForMode(mode: Mode) {
-  switch (mode) {
-    case 'Study':
-      return 'ctgov_prod';
-    case 'Search':
-      return 'ElasticStudy';
-  }
+    switch (mode) {
+        case 'Study':
+            return 'ctgov_prod_studies';
+        case 'Search_Study':
+            return 'ElasticStudy';
+        case 'Condition':
+            return 'Condition';
+        case 'Search_Condition':
+            return 'ElasticStudyDIS';
+    }
 }
 
+export default function GenericPageWrapper(props: Props) {
+    const match = useRouteMatch();
+    const dispatch = useDispatch();
+    const params = useUrlParams();
+    const hasuraIntrospection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
+    const nodeIntrospection = useSelector((state: RootState) => state.introspection.nodeIntrospection);
 
-const STUDY_TEMPLATE3 = `
-<div>
-{{#each ctgov_prod_studies_clinwiki_crowd_key_value_ids}}
-{{#if ( runConditional crowd_key "==" "Mutations Targeted" crowd_key )}}
-<b>{{crowd_key}} :</b>  {{crowd_value}}
+    const studyData = useSelector((state: RootState) => state.study.studyPage);
+    const studyList = useSelector((state: RootState) => state.study.studyList);
+    const upsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel);
+    const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
+    const data = useSelector((state: RootState) => state.search.searchResults);
+    const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
+    const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
+    const [template, setTemplate] = useState(currentPage?.template);
 
-{{/if}}
+    const getPageType = (val) => {
+        switch (val) {
+            case 1:
+                return 'Study'
+            case 2:
+                return 'Search_Study'
+            case 3:
+                return 'Condition'
+            case 4:
+                return 'Search_Condition'
+            default:
+                return "Search_Study"
+        }
+    }
 
-{{/each}}
-
-</div>
-
-<span class="crumb-wrapper">
-
-
-{{#each ( $Reduce ctgov_prod_studies_clinwiki_crowd_key_value_ids )}}
-<b>{{crowd_key}} :</b> 
-  <span class="crumb-container">&nbsp;{{crowd_value}}  &nbsp;</span> 
-{{/each}}
-
-
-
-
-
-</span>
-`
-const STUDY_TEMPLATE2 = `
-
-<div style="max-width: 80%; padding-left: 10%;">
-<a class=btn title='Back to Search Results' href=/search?hash={{querystring hash}}&pv=cards><i class="fa fa-arrow-circle-left fa-2x">&nbsp;Back to Search Results</a>
-
-<h2 style="text-align:center">{{brief_title}}</h2>
-
-
-
-
-<Expander header="Clinwiki Tags">
-<a href="/study/{{nct_id}}?hash={{querystring hash}}&pv=workflow1">Edit</a>
-
-<span class="crumb-wrapper">
-
-
-{{#each ( $Reduce ctgov_prod_studies_clinwiki_crowd_key_value_ids )}}
-<b>{{crowd_key}} :</b> 
-  <span class="crumb-container">&nbsp;{{crowd_value}}  &nbsp;</span> 
-{{/each}}
-
-
-
-
-
-</span>
-</Expander>
-
-</div>
-
-`;
-const STUDY_TEMPLATE = `
-<div style="max-width: 80%; padding-left: 10%;">
-<a class=btn title='Back to Search Results' href=/search?hash={{querystring hash}}&pv=cards><i class="fa fa-arrow-circle-left fa-2x">&nbsp;Back to Search Results</a>
-
-<h2 style="text-align:center">{{brief_title}}</h2>
-
-<Expander header="Clinwiki Tags">
-<a href="/study/{{nct_id}}?hash={{querystring hash}}&pv=workflow1">Edit</a>
-
-<span class="crumb-wrapper">
-
-{{#each ctgov_prod_studies_clinwiki_crowd_key_value_ids}}
-<b>{{crowd_key}} :</b> 
-  <span class="crumb-container">&nbsp;{{crowd_value}}  &nbsp;</span> 
-{{/each}}
-
-
-
-
-
-</span>
-</Expander>
-
-
-
-
-
-</div>
-`;
-const SEARCH_TEMPLATE = `
-
-<div class="grid-container">
-<div class="grid3">
-  <div class="one">
-    <agg id='2'></agg>
-    <agg id='3'></agg>
-    <agg id='2'></agg>    
-
-  <div class="mm-card2 card-subgrid">
-    <span class="a1"> A1 </span>
-    <span class="a2">A2</span>
-    <span class="b3"> B3 </span>
-    <span class="b4">B4</span>
-    <span class="c1">C1</span>
-    <span class="c2"> C2 </span>
-    <span class="d3"> D3 </span>
-    <span class="d4">D4</span>
-    <span class="e1"> E1 </span>
-    <span class="e2">E2</span>
-    <span class="f3"> F3 </span>
-    <span class="f4">F4</span>
-  </div>
-
-
-</div>
-  <div class="two">    
-<searchwithin></searchwithin>
-<div class="mm-single-line-center">
-    <agg id='2'></agg>
-    <agg id='3'></agg>
-    <agg id='2'></agg>
-</div>
-
-</div>
-  <div class="three  loader-container subgrid">
-  <resultloader></resultloader>
-<div class="mm-single-line a1">
-<savesearch></savesearch>
-<csv></csv>
-</div>
-<div class="a2"></div>
-
-<div class="a3">
-<resultsort></resultsort>
-</div>
-<div class="a4"></div>
-
-<div class="cards-container b1" key={{querystring ALL}}>
-{{#each studies }}
-<div class="mm-card2">
-  <div class ="mail-merge" >
-    <span> ID: <a href="/search{{querystring ALL}} ">{{nctId}}</a></span><br/>
-    <span>Title: {{briefTitle}}</span><br/><span>Summary: {{briefSummary}}</span>
-  </div>
-</div>
-{{/each }}
-</div>
-
-</div>
-
-</div>
-
+    useEffect(() => {
+      dispatch(fetchSearchParams(params.hash));
+    }, [dispatch, params.hash]);
   
+    const currentPageType = getPageType(currentPage?.page_type);
+    const schemaType = getClassForMode(currentPageType);
 
- </div>
-
-`
-export default function TestComponent() {
-  const [template, setTemplate] = useState(STUDY_TEMPLATE3);
-  const [mode, setMode] = useState<Mode>('Study');
-  const defaultNctId = 'NCT04507503';
-  const defaultSearchHash = 'tqxCyI9M';
-  let [nctOrSearchHash, setNctOrSearchHash] = useState(defaultNctId);
-  const dispatch = useDispatch();
-  const data = useSelector((state: RootState) => state.search.searchResults);
-
-  useEffect(() => {
-    const QUERY = introspectionQuery
-    mode == "Search" ? dispatch(fetchNodeIntrospection(QUERY)): dispatch(fetchHasuraIntrospection(QUERY));
-  }, [dispatch]);
-
-
-  const introspection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
-  const schemaType = getClassForMode(mode);
-  const [fragmentName, fragment] = useFragment(schemaType, SEARCH_TEMPLATE || '');
-  const [hasuraFragmentName, hasuraFragment] = useHasuraFragment('ctgov_prod_studies', template || '');
-
-  const studyData = useSelector((state: RootState) => state.study.studyPage);
-  const aggsList = useSelector((state: RootState) => state.search.aggs);
-  const recordsTotal = aggsList?.data?.search?.recordsTotal;
-
-  useEffect(() => {
-    let searchParams = mode == "Search" ? { ...data.data.searchParams } : null;
-
+    const [hasuraFragmentName, hasuraFragment] = useHasuraFragment('ctgov_prod_studies', template || '');
     const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(hasuraFragmentName, hasuraFragment)}`
+
+    const [fragmentName, fragment] = useFragment(schemaType, template || '');
     const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
 
-    dispatch(mode == "Study" ?  fetchStudyPageHasura(defaultNctId ?? "", HASURA_STUDY_QUERY) : fetchSearchPageMM(searchParams.searchParams, SEARCH_QUERY))
-  }, [dispatch, fragment, hasuraFragment]);
-  const updateMode = mode => {
-    setMode(mode);
-    if (mode === 'Study') {
-      setTemplate(STUDY_TEMPLATE)
-      setNctOrSearchHash(defaultNctId);
-    }
-    if (mode === 'Search') {
-      setTemplate(SEARCH_TEMPLATE)
-      setNctOrSearchHash(defaultSearchHash);
-    }
-  };
-  let islands = mode == 'Study' ? studyIslands : searchIslands;
-  islands = {
-    ...islands,
-    groot: (attributes: Record<string, string>) => {
-      return (
-        <img src="https://media.giphy.com/media/11vDNL1PrUUo0/source.gif" />
-      );
-    },
-  };
-  if (!introspection || !studyData) {
-    return <BeatLoader />;
-  }
-  const searchData = () => {
-    let studies: any[] = []
-    studyData?.data?.search?.studies?.map((study, index) => {
-      studies.push({ ...study, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' })
-    })
-    return { studies, recordsTotal }
-  }
+    const [fragmentNameDis, fragmentDis] = useFragment(schemaType, template || '');
+    const HASURA_SEARCH_QUERY = `${getSearchQueryDIS(fragmentNameDis, fragmentDis)}`
 
-  const schema: GraphqlSchemaType = {
-    kind: 'graphql',
-    typeName: 'ctgov_prod_studies',
-    types: introspection.data.__schema.types,
-};
+    const [hasuraFragmentNameDis, hasuraFragmentDis] = useHasuraFragment('disyii2_prod_20210704_2_tbl_conditions', currentPage?.template || '');
+    const HASURA_STUDY_QUERY_DIS = `${getHasuraStudyQueryDIS(hasuraFragmentNameDis, hasuraFragmentDis)}`
 
-  if (introspection) {
+    useEffect(() => {
+
+        let searchParams = { ...data?.data?.searchParams };
+
+        switch (pageType) {
+            case 'Study':
+                dispatch(fetchStudyPageHasura(currentStudy ?? "", HASURA_STUDY_QUERY));
+                const SEARCH_NEARBY_QUERY = `${getSearchNearbyQuery()}`
+                const pageSize = searchParams.searchParams.pageSize = studyList?.data?.search?.recordsTotal
+                const finalPageSize = pageSizeHelper(pageSize)
+                dispatch(fetchStudyPageNearby({ ...searchParams.searchParams, pageSize: finalPageSize }, SEARCH_NEARBY_QUERY))
+                return
+            case 'Search_Study':
+                dispatch(fetchSearchPageMM(searchParams.searchParams, SEARCH_QUERY));
+                return
+            case 'Search_Condition':
+                dispatch(fetchSearchPageMM(searchParams.searchParams, HASURA_SEARCH_QUERY));
+                return
+            case 'Condition':
+                dispatch(fetchStudyPageHasuraDIS(props.arg ?? "", HASURA_STUDY_QUERY_DIS));
+                return
+            default:
+                console.log("No PAGE TYPE ")
+                return
+        }
+    }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data, suggestedLabels, studyList?.data?.search?.recordsTotal]);
+
+    useEffect(() => {
+      const QUERY = introspectionQuery
+      pageType == "Search_Study" ? dispatch(fetchNodeIntrospection(QUERY)): dispatch(fetchHasuraIntrospection(QUERY));
+    }, [dispatch]);
+  
+    const pageSizeHelper = (pageSize) => {
+        if (pageSize > 500) {
+            return 500
+        } else {
+            return pageSize
+        }
+    }
+
+    const searchData = (pageType) => {
+        switch (pageType) {
+            case 'Study':
+                return { ...studyData?.data?.ctgov_prod_studies[0], nextStudy, previousStudy }
+            case 'Search_Study':
+                let studies: any[] = []
+                studyData?.data?.search?.studies?.map((study, index) => {
+                    studies.push({ ...study, ALL: 'ALL', hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', })
+                })
+                return {
+                    studies,
+                    recordsTotal: studyData?.data?.search?.recordsTotal
+                }
+            case 'Search_Condition':
+                let diseases: any[] = []
+                studyData?.data?.searchDIS.diseases.map((disease, index) => {
+                    diseases.push({ ...disease, ALL: 'ALL', hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', })
+                })
+                return {
+                    diseases,
+                    recordsTotal: studyData?.data?.searchDIS.recordsTotal
+                }
+            case 'Condition':
+                return studyData?.data?.disyii2_prod_20210704_2_tbl_conditions[0]
+            default:
+                console.log("No PAGE TYPE ")
+                return
+        }
+    }
+
+    const currentStudy = match.params['nctId']
+    console.log("Match?", match)
+    const nctIdObject = studyList?.data?.search?.studies?.find(study => study.nctId == currentStudy);
+    const currentIndexOfStudyList = studyList?.data?.search?.studies?.indexOf(nctIdObject)
+    // console.log('studyList?.data?.search?.studies', studyList?.data?.search?.studies.length);
+
+    const nextStudy = () => {
+        const nextNctId = studyList?.data?.search?.studies[currentIndexOfStudyList + 1]
+        console.log("currentIndexOfStudyList", currentIndexOfStudyList);
+        if (nextNctId && nextNctId.nctId) {
+            console.log("nextNctId is", nextNctId.nctId);
+            return nextNctId.nctId
+        } else {
+            console.log("adjust nextButton");
+            return document.querySelector(".next-btn")?.classList.add("disabled-btn")
+        }
+    }
+
+    const previousStudy = () => {
+        const previousNctId = studyList?.data?.search?.studies[currentIndexOfStudyList - 1]
+        if (previousNctId && previousNctId.nctId) {
+            return previousNctId.nctId
+        } else {
+            return document.querySelector('.prev-btn')?.classList.add('disabled-btn')
+        }
+    }
+
+    const pageType = getPageType(currentPage?.page_type);
+
+    const title = microMailMerge(currentPage?.title, searchData(pageType)) || "Add a Title";
+
+    const islands = pageType == 'Study' ? studyIslands : searchIslands;
+  
+
+
+  
+    if (pageType == 'Study' && !studyData) {
+      console.log("FUCK ONE")
+        return <BeatLoader />
+    }
+    const introspection = pageType == 'Search_Study' ? nodeIntrospection : hasuraIntrospection;
+
+if(!introspection){
+  return <BeatLoader/>
+}
+    // if((!introspection && pageType !== 'Search_Study' )|| (!introspection && pageType !== 'Search_Condition')){
+    //   console.log("FUCK TWO", pageType)
+    //   return<BeatLoader/>
+    // }
+    // if((!introspection && pageType == 'Search_Study' ) || (!introspection && pageType == 'Search_Condition')){
+    //   console.log("FUCK Three")
+    //   return<BeatLoader/>
+    // }
     const types = introspection.data.__schema.types;
+
     return (
-      <div>
-        <DropdownButton
-          bsStyle="default"
-          title={`Type: ${mode}`}
-          key={mode}
-          style={{ marginBottom: '10px' }}>
-          <MenuItem onClick={_ => updateMode('Study')}>Study</MenuItem>
-          <MenuItem onClick={_ => updateMode('Search')}>Search</MenuItem>
-        </DropdownButton>
-        <FormControl
-          placeholder="Select an nctid"
-          value={nctOrSearchHash}
-          onChange={e => setNctOrSearchHash(e.target.value || defaultNctId)}
-        />
+      <>  
+        <div>
         <MailMerge
-          schema={mode == "Study" ? schema : { kind: 'graphql', typeName: schemaType, types } }
-          sample={studyData?.data?.ctgov_prod_studies[0] || searchData()}
+          schema={ { kind: 'graphql', typeName: schemaType, types } }
+          sample={searchData(pageType)}
           template={template}
           onTemplateChanged={setTemplate}
           islands={islands}
-          pageType={mode}
+          pageType={pageType}
         />
-        <pre>{mode =='Study' ? hasuraFragment: fragment}</pre>
-        <pre>
-          {JSON.stringify(studyData?.data?.study || studyData.data?.search?.studies, null, 2)}
-        </pre>
-      </div>
+        </div>
+
+        <CollapsiblePanel
+        header={"TEMPLATE RENDERED "}
+        collapsed={false}
+        id='template'>
+        {
+        
+        <div>
+            <Helmet>
+                <title>{title}</title>
+            </Helmet>
+            {currentPage && studyData && <MailMergeView
+                template={template}
+                context={searchData(pageType)}
+                islands={islands}
+                />}
+        </div>
+              }
+            </CollapsiblePanel>
+            <CollapsiblePanel
+        header={"TEMPLATE FRAGMENT & RAW RESPONSE"}
+        collapsed={false}
+        id="frag">{
+          
+        }
+      <h2>Fragment</h2>
+      <pre>{fragment}</pre>
+      <h2>Response</h2>
+      <pre>
+        {JSON.stringify(searchData(pageType), null, 2)}
+      </pre>
+          </CollapsiblePanel>  
+      </>
     );
-  }
-  return <div>?</div>;
 }
