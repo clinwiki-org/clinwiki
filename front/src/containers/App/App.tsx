@@ -23,7 +23,7 @@ import EditWorkflowsPage from 'containers/EditWorkflowsPage';
 import EditAggIslandsPage from 'containers/EditAggIslandsPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
-import MMTest from 'components/MailMerge/MMTestComponent'
+import MMTest from 'components/MailMerge/MMTestComponentWrapper'
 import HasuraMMTest from 'components/MailMerge/HasuraMMTestComponent'
 import GenericPageWrapper from 'containers/GenericPage/GenericPageWrapper';
 import HasuraGenericPage from 'containers/HasuraGenericPage/HasuraGenericPage.';
@@ -80,13 +80,14 @@ class App extends React.PureComponent<AppProps> {
                 <Route path={`/bulk`} component={BulkEditPage} />
                 <Route path="/sites/:id/edit" component={SitesEditPage} />
                 <Route path="/sites/new" component={SitesNewPage} />
-                <ProtectedRoute path="/sites" component={SitesPage} />
+                <Route path="/sites" component={SitesPage} />
                 <Route path="/reset_password" component={ResetPasswordPage} />
                 <Route path="/sign_in" component={SignInPage} />
                 <Route path="/sign_up" component={SignUpPage} />
                 <Route path="/not-configured" component={NotConfiguredPage} />
                 <Route path="/update_password" component={UpdatePassword} />
-                <Route path="/mmtest" component={MMTest} />
+                <Route exact path="/mmtest" component={MMTest} />
+                <Route exact path="/mmtest/:nctId" component={MMTest} />
                 <Route path="/hasurammtest" component={HasuraMMTest} />
                 <ProtectedRoute path="/reindex" component={Reindex} />
                 <Route component={NotFoundPage} />
