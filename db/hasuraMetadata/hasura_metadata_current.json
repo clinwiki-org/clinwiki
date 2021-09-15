@@ -1,5 +1,5 @@
 {
-  "resource_version": 38,
+  "resource_version": 34,
   "metadata": {
     "version": 3,
     "sources": [
@@ -1970,60 +1970,6 @@
                 "role": "user",
                 "permission": {
                   "filter": {}
-                }
-              }
-            ]
-          },
-          {
-            "table": {
-              "schema": "public",
-              "name": "crowd_key_value_ids_audit"
-            },
-            "insert_permissions": [
-              {
-                "role": "contributor",
-                "permission": {
-                  "check": {},
-                  "columns": [
-                    "id",
-                    "created_at",
-                    "updated_at",
-                    "ckvi_id",
-                    "crowd_key",
-                    "crowd_value",
-                    "crowd_key_value_id_association",
-                    "user_id",
-                    "verified",
-                    "approved",
-                    "evidence",
-                    "indexed",
-                    "ckvi_created_at",
-                    "ckvi_updated_at"
-                  ],
-                  "backend_only": false
-                }
-              },
-              {
-                "role": "user",
-                "permission": {
-                  "check": {},
-                  "columns": [
-                    "approved",
-                    "indexed",
-                    "verified",
-                    "ckvi_id",
-                    "id",
-                    "user_id",
-                    "crowd_key",
-                    "crowd_key_value_id_association",
-                    "crowd_value",
-                    "evidence",
-                    "ckvi_created_at",
-                    "ckvi_updated_at",
-                    "created_at",
-                    "updated_at"
-                  ],
-                  "backend_only": false
                 }
               }
             ]
