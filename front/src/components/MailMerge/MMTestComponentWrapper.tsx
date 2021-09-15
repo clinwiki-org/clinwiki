@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import MMTestComponent from './MMTestComponent';
 import { fetchSearchParams } from 'services/search/actions';
+import Unauthorized from 'components/ProtectedRoute/Unauthorized';
+import { isAdmin } from 'utils/auth';
 interface Props {
   url?: string;
   arg?: string;
@@ -39,7 +41,8 @@ export default function GenericPageWrapper(props: Props) {
   const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
   const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
   const data = useSelector((state: RootState) => state.search.searchResults);
-
+  const user = useSelector((state: RootState) => state.user.current);
+  
 console.log(params)
 
   const url =
@@ -59,7 +62,10 @@ console.log(params)
   useEffect(() => {
     dispatch(fetchSearchParams(params.hash));
   }, [dispatch, params.hash]);
-
+  
+  if (!isAdmin(user)) {
+    return <Unauthorized />
+  }
   if (!currentPage) {
     return <BeatLoader />
   }
