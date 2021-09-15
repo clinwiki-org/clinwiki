@@ -2,15 +2,13 @@ import createSubscriber from "pg-listen"
 import logger from '../util/logger';
 import {query} from '../util/db';
 import config from '../../config';
-import {indexWikiPage, indexCrowdKeyValueIds, indexCrowdKeys, indexCrowdValues} from './jobs/clinwiki.triggers';
+import {indexWikiPage,triggerCrowdKeyValueIdsJobs} from './jobs/clinwiki.triggers';
 const util = require('util')
 
 const CHECK_TABLE_TRIGGER_QUERY = "SELECT trigger_name FROM  information_schema.triggers WHERE event_object_table = $1 AND trigger_name like 'notify_pipeline%'";
 const TABLES_TO_MONITOR = [
     { name:'wiki_pages', callback: indexWikiPage },
-    { name:'crowd_key_value_ids', callback: indexCrowdKeyValueIds },
-    // { name:'crowd_keys', callback: indexCrowdKeys },
-    // { name:'crowd_values', callback: indexCrowdValues},
+    { name:'crowd_key_value_ids', callback: triggerCrowdKeyValueIdsJobs }
 ];
 
 const handleTableEvent = async (data) => {
