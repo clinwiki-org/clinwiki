@@ -88,7 +88,7 @@ export default function PageForm(props: Props) {
   const pageViewSaveSuccessMessage = useSelector((state: RootState) => state.study.updatePageViewSuccessMessage);
 
   const stringToIntPageType = (pageType: any) => {
-    switch(pageType){
+    switch (pageType) {
       case 'hasuraStudy':
         return 1
       case 'search':
@@ -112,39 +112,38 @@ export default function PageForm(props: Props) {
       toast(pageViewSaveSuccessMessage);
     }
   }, [pageViewSaveSuccessMessage]);
-  const selectedMailMergeType = () =>{
+  const selectedMailMergeType = () => {
 
-    switch(pageType){
+    switch (pageType) {
       case 'hasuraStudy':
         return <HasuraMailMergeFormControl
-        template={template}
-        onTemplateChanged={setTemplate}
-        islands={studyIslands}
-        pageType={capitalize(mode)}
-
-      /> 
+          template={template}
+          onTemplateChanged={setTemplate}
+          islands={studyIslands}
+          pageType={capitalize(mode)}
+        />
       case 'search':
-        return       <MailMergeFormControl
-        template={template}
-        onTemplateChanged={setTemplate}
-        islands={studyIslands}
-        pageType={capitalize(mode)}
-      />
+        return <MailMergeFormControl
+          template={template}
+          onTemplateChanged={setTemplate}
+          islands={studyIslands}
+          pageType={capitalize(mode)}
+        />
       case 'hasuraCondition':
         return <HasuraMailMergeFormControl
-        template={template}
-        onTemplateChanged={setTemplate}
-        islands={studyIslands}
-        pageType={capitalize(mode)}
-  
-      /> 
+          template={template}
+          onTemplateChanged={setTemplate}
+          islands={studyIslands}
+          pageType={capitalize(mode)}
+
+        />
       case 'searchDis':
-        return       <MailMergeFormControl
-        template={template}
-        onTemplateChanged={setTemplate}
-        islands={studyIslands}
-        pageType={capitalize(mode)}
-      />
+        return <MailMergeFormControl
+          template={template}
+          onTemplateChanged={setTemplate}
+          islands={studyIslands}
+          pageType={capitalize(mode)}
+        />
     }
   }
 
@@ -156,6 +155,14 @@ export default function PageForm(props: Props) {
     }
     if (mode === 'Hasura Study') {
       setPageType('hasuraStudy');
+      setNctOrSearchHash(default_hash);
+    }
+    if (mode === 'Condition') {
+      setPageType('hasuraCondition');
+      setNctOrSearchHash(default_hash);
+    }
+    if (mode === 'Search Condition') {
+      setPageType('searchDis');
       setNctOrSearchHash(default_hash);
     }
 
@@ -198,6 +205,8 @@ export default function PageForm(props: Props) {
           {/* <MenuItem onClick={_ => updateMode("Study")}>Study</MenuItem> */}
           <MenuItem onClick={() => updateMode("Search")}>Search</MenuItem>
           <MenuItem onClick={() => updateMode("Hasura Study")}>Hasura Study</MenuItem>
+          <MenuItem onClick={() => updateMode("Hasura Condition")}>Hasura Condition</MenuItem>
+          <MenuItem onClick={() => updateMode("Search Condition")}>Search Condition</MenuItem>
         </DropdownButton>
         <FormControl
           placeholder="Select an nctid"
