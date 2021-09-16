@@ -10,7 +10,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchSampleStudy, fetchSampleStudyHasura } from 'services/study/actions';
 import { getHasuraSampleStudyQuery, getSampleStudyQuery } from '../../components/MailMerge/MailMergeUtils';
 import { RootState } from 'reducers';
-import { fetchHasuraIntrospection, fetchIntrospection } from 'services/introspection/actions';
+import { getStudyQuery, getSearchQuery, getHasuraStudyQuery, getSearchQueryDIS, getHasuraStudyQueryDIS } from 'components/MailMerge/MailMergeUtils';
+import { fetchHasuraIntrospection, fetchHasuraIntrospectionDIS, fetchIntrospection } from 'services/introspection/actions';
+import { fetchStudyPage, fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS } from 'services/study/actions';
+
 //import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 import { introspectionQuery } from 'graphql/utilities';
 import { useHasuraFragment } from './HasuraMMFragment';
@@ -27,6 +30,7 @@ interface HasuraMailMergeFormControlProps {
     template: string;
     onTemplateChanged: (t: string) => void;
     islands?: Record<string, IslandConstructor>;
+    pageType:any;
 }
 
 const default_nctid = 'NCT00102700';
@@ -35,48 +39,90 @@ export default function HasuraMailMergeFormControl(props: HasuraMailMergeFormCon
     const [nctId, setNctId] = useState(default_nctid);
     const dispatch = useDispatch();
 
-    const [fragmentName, fragment] = useHasuraFragment('ctgov_prod_studies', props.template);
+    const [hasuraFragmentName, hasuraFragment] = useHasuraFragment('ctgov_prod_studies', props.template || '');
+    const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(hasuraFragmentName, hasuraFragment)}`
 
-    useEffect(() => {
-        const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
-        dispatch(fetchHasuraIntrospection(QUERY));
-    }, [dispatch]);
+    const [hasuraFragmentNameDis, hasuraFragmentDis] = useHasuraFragment('disyii2_prod_20210704_2_tbl_conditions', props.template || '');
+    const HASURA_STUDY_QUERY_DIS = `${getHasuraStudyQueryDIS(hasuraFragmentNameDis, hasuraFragmentDis)}`
+
 
     const introspection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
+    const QUERY = introspectionQuery  //`${gql(ge tIntrospectionQuery({ descriptions: false }))}`
 
     useEffect(() => {
-        const QUERY = `${getHasuraSampleStudyQuery(fragmentName, fragment)}`
 
-        dispatch(fetchSampleStudyHasura(nctId ?? "", QUERY));
-    }, [dispatch, fragment]);
+        switch(props.pageType){
+        case 'HasuraStudy':
+            dispatch(fetchHasuraIntrospection(QUERY));
+            return
+        case 'HasuraCondition':
+            dispatch(fetchHasuraIntrospectionDIS(QUERY));
+            return
+            default:
+                return
+        }
+
+    }, [dispatch]);
 
     const study = useSelector((state: RootState) => state.study.hasuraSampleStudy);
     console.log('HI from HMMAILMERGE')
-    if (!study || !introspection) {
+    if (!introspection) {
         return <BeatLoader />;
     }
 
-    const schema: GraphqlSchemaType = {
-        kind: 'graphql',
-        typeName: 'ctgov_prod_studies',
-        types: introspection.data.__schema.types,
-    };
+    switch(props.pageType){
+        case 'HasuraStudy':
+            const schema: GraphqlSchemaType = {
+                kind: 'graphql',
+                typeName: 'ctgov_prod_studies',
+                types: introspection.data.__schema.types,
+            };
+        
+            return (
+                <Container>
+                    <StyledFormControl
+                        placeholder={default_nctid}
+                        value={nctId}
+                        onChange={e => setNctId(e.target.value || default_nctid)}
+                    />
+                    <MailMerge
+                        schema={schema}
+                        sample={study?.data?.ctgov_prod_studies[0] || {}}
+                        template={props.template}
+                        onTemplateChanged={props.onTemplateChanged}
+                        islands={props.islands}
+                    />
+                    {/* <CollapsiblePanel></CollapsiblePanel> */}
+                </Container>
+            );
+        case 'HasuraCondition':
+            const schema2: GraphqlSchemaType = {
+                kind: 'graphql',
+                typeName: 'disyii2_prod_20210704_2_tbl_conditions',
+                types: introspection?.data?.__schema?.types,
+            };
+        
+            return (
+                <Container>
+                    <StyledFormControl
+                        placeholder={default_nctid}
+                        value={nctId}
+                        onChange={e => setNctId(e.target.value || default_nctid)}
+                    />
+                    <MailMerge
+                        schema={schema2}
+                        sample={study?.data?.disyii2_prod_20210704_2_tbl_conditions[0] || {}}
+                        template={props.template}
+                        onTemplateChanged={props.onTemplateChanged}
+                        islands={props.islands}
+                    />
+                    {/* <CollapsiblePanel></CollapsiblePanel> */}
+                </Container>
+            );            
+        default:
+            return <>
+                {"No Page Type"}
+                </>
+        }
 
-    return (
-        <Container>
-            <StyledFormControl
-                placeholder={default_nctid}
-                value={nctId}
-                onChange={e => setNctId(e.target.value || default_nctid)}
-            />
-            <MailMerge
-                schema={schema}
-                sample={study?.data?.ctgov_prod_studies[0] || {}}
-                template={props.template}
-                onTemplateChanged={props.onTemplateChanged}
-                islands={props.islands}
-            />
-            {/* <CollapsiblePanel></CollapsiblePanel> */}
-        </Container>
-    );
 }

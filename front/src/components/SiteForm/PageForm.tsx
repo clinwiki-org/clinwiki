@@ -66,6 +66,10 @@ export default function PageForm(props: Props) {
         return 'hasuraStudy';
       case 2:
         return 'search';
+      case 3:
+        return 'hasuraCondition';
+      case 4:
+        return 'searchDis';
       default:
         return 'hasuraStudy';
     }
@@ -89,6 +93,10 @@ export default function PageForm(props: Props) {
         return 1
       case 'search':
         return 2
+      case 'hasuraCondition':
+        return 3
+      case 'searchDis':
+        return 4
     }
   }
 
@@ -104,21 +112,41 @@ export default function PageForm(props: Props) {
       toast(pageViewSaveSuccessMessage);
     }
   }, [pageViewSaveSuccessMessage]);
-  const selectedMailMergeType =
-    pageType === 'hasuraStudy' ?
-      <HasuraMailMergeFormControl
+  const selectedMailMergeType = () =>{
+
+    switch(pageType){
+      case 'hasuraStudy':
+        return <HasuraMailMergeFormControl
         template={template}
         onTemplateChanged={setTemplate}
         islands={studyIslands}
-      /> :
+        pageType={capitalize(mode)}
 
-      <MailMergeFormControl
+      /> 
+      case 'search':
+        return       <MailMergeFormControl
         template={template}
         onTemplateChanged={setTemplate}
         islands={studyIslands}
         pageType={capitalize(mode)}
       />
-    ;
+      case 'hasuraCondition':
+        return <HasuraMailMergeFormControl
+        template={template}
+        onTemplateChanged={setTemplate}
+        islands={studyIslands}
+        pageType={capitalize(mode)}
+  
+      /> 
+      case 'searchDis':
+        return       <MailMergeFormControl
+        template={template}
+        onTemplateChanged={setTemplate}
+        islands={studyIslands}
+        pageType={capitalize(mode)}
+      />
+    }
+  }
 
   const updateMode = mode => {
     setMode(mode);
@@ -182,7 +210,7 @@ export default function PageForm(props: Props) {
       {formControl('Title', title, setTitle)}
       <label>Content Template</label>
 
-      {selectedMailMergeType}
+      {selectedMailMergeType()}
       <hr />
       <ThemedButton
         onClick={_ => handleSavePageView()}
