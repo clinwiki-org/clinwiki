@@ -696,4 +696,8 @@ div.DraftEditor-editorContainer{
     border: 1px solid #eeeeee;
     color: #eeeeee;
   }
+  .three-table-inline {
+    width: 33%;
+    display: inline-grid;
+  }
 `);
