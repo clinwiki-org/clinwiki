@@ -700,4 +700,12 @@ div.DraftEditor-editorContainer{
     width: 33%;
     display: inline-grid;
   }
+  .reset-button {
+    font-size: 15px;
+  }
+  .reset-button:hover {
+    transform: scale(1.05);
+    transition-duration: 0.1s;
+    background: #1B2A38;
+}
 `);
