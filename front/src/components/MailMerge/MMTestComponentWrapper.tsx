@@ -16,7 +16,7 @@ interface Props {
 }
 
 
-export default function GenericPageWrapper(props: Props) {
+export default function MMTestComponentWrapper(props: Props) {
   const match = useRouteMatch();
   const defaultPage = () => {
     if (props.url) {
@@ -75,6 +75,6 @@ console.log(params)
 
 
   return (
-    <MMTestComponent/>
+    <MMTestComponent arg ={match.params['nctId']}/>
   );
 }

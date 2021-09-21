@@ -24,7 +24,6 @@ import EditAggIslandsPage from 'containers/EditAggIslandsPage';
 import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
 import MMTest from 'components/MailMerge/MMTestComponentWrapper'
-import HasuraMMTest from 'components/MailMerge/HasuraMMTestComponent'
 import GenericPageWrapper from 'containers/GenericPage/GenericPageWrapper';
 import HasuraGenericPage from 'containers/HasuraGenericPage/HasuraGenericPage.';
 import Reindex from 'containers/Reindex';
@@ -88,7 +87,6 @@ class App extends React.PureComponent<AppProps> {
                 <Route path="/update_password" component={UpdatePassword} />
                 <Route exact path="/mmtest" component={MMTest} />
                 <Route exact path="/mmtest/:nctId" component={MMTest} />
-                <Route path="/hasurammtest" component={HasuraMMTest} />
                 <ProtectedRoute path="/reindex" component={Reindex} />
                 <Route component={NotFoundPage} />
               </Switch>

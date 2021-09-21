@@ -78,11 +78,6 @@ const MailMergeView = (props: Props) => {
   const data = useSelector((state: RootState) => state.search.searchResults);
 
   const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
-
-  const isFetchingAggBuckets = useSelector((state: RootState) => state.search.isFetchingAggBuckets);
-  const isFetchingCrowdAggBuckets = useSelector((state: RootState) => state.search.isFetchingCrowdAggBuckets);
-  const isFetchingStudy = useSelector((state: RootState) => state.study.isFetchingStudy);
-  const isUpdatingParams = useSelector((state: RootState) => state.search.isUpdatingParams);
   const searchHash = useSelector((state: RootState) => state.search.searchHash);
   const searchParams = data?.data?.searchParams;
   const params = useUrlParams();
@@ -173,23 +168,6 @@ const MailMergeView = (props: Props) => {
 
     if (searchParams && crowdAggArray.length !== 0 || searchParams && aggArray.length !== 0) {
 
-
-      // const variables = {
-      //   ...searchParams.searchParams,
-      //   url: params.sv,
-      //   configType: 'presearch',
-      //   returnAll: false,
-      //   agg: aggArray,
-      //   crowdAgg: crowdAggArray,
-      //   aggOptionsSort: aggSortArray,
-      //   crowdAggOptionsSort: crowdAggSortArray,
-      //   pageSize: 100,
-      //   page: 1,
-      //   q: searchParams.searchParams.q,
-      //   aggBucketsWanted: aggBucketsWanted,
-      //   crowdBucketsWanted: crowdBucketsWanted
-
-      // };
       crowdAggArray.forEach((agg, i) => {
 
         const variables = {
@@ -198,19 +176,14 @@ const MailMergeView = (props: Props) => {
           configType: 'presearch',
           returnAll: false,
           agg: `fm_${agg}`,
-          // crowdAgg: crowdAggArray,
-          // aggOptionsSort: aggSortArray,
           aggOptionsSort: crowdAggSortArray[i],
           pageSize: 100,
           page: 1,
           q: searchParams.searchParams.q,
           aggBucketsWanted: crowdBucketsWanted[i]
-          // crowdBucketsWanted: 
 
         };
 
-        let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
-        // !shouldNotDispatch && 
         dispatch(fetchSearchPageAggBuckets(variables, crowdAggIdArray[i].id))
       });
       aggArray.forEach((agg, i) => {
@@ -221,19 +194,14 @@ const MailMergeView = (props: Props) => {
           configType: 'presearch',
           returnAll: false,
           agg: agg,
-          // crowdAgg: crowdAggArray,
           aggOptionsSort: aggSortArray[i],
-          // crowdAggOptionsSort: crowdAggSortArray[i],
           pageSize: 25,
           page: 1,
           q: searchParams.searchParams.q,
           aggBucketsWanted: aggBucketsWanted[i]
-          // crowdBucketsWanted: 
 
         };
 
-        let shouldNotDispatch = isFetchingCrowdAggBuckets || isFetchingAggBuckets || isFetchingStudy || isUpdatingParams
-        // !shouldNotDispatch && 
         dispatch(fetchSearchPageAggBuckets(variables, aggIdArray[i].id))
       });
     }
@@ -261,15 +229,12 @@ const MailMergeView = (props: Props) => {
 
   useEffect(() => {
     let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds);
-    let wfLabels: any[] = [];
 
     suggestedLabels && uniqueWFIds.map((WF) => {
       let currentKeyObjects = suggestedLabels.data.crowd_keys.filter((x) => x.crowd_key === islandConfig[WF.id].name)
       if (islandConfig[WF.id]?.defaultToOpen == true) {
         const compiled = islandConfig[WF.id] && compileTemplate(islandConfig[WF.id].displayName)
-      // console.log(compiled)
         const raw = applyTemplate(compiled, currentKeyObjects[0])
-        //console.log("🚀 ~ ~ raw", raw);
         if (raw !== islandConfig[WF.id].displayName) {
           dispatch(convertDisplayName(raw, WF.id))
         }

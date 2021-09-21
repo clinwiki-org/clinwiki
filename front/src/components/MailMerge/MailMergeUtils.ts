@@ -105,14 +105,3 @@ query HasuraSampleStudyQuery($nctId: String!) {
 ${frag}
 `;
 };
-
-//nctId  wont work, need snake cased  nct_id
-
-/* const HASURA_STUDY_QUERY = `query hasuraStudyQuery($nctId:String!) {
-  ctgov_prod_studies(where: {nct_id: {_eq: $nctId}}){
-      nct_id
-      brief_title
-  }
-}
-`;
- */
