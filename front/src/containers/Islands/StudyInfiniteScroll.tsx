@@ -64,12 +64,10 @@ export default function StudyInfiniteScroll() {
     }
   }
 
-  const renderStudyTemplate = (nctId, overallStatus, briefTitle, studyType, phase, enrollmentType, enrollment, startDate, completionDate, lastUpdatePostedDate) => {
-    let studyContext = {
-      nctId, overallStatus, briefTitle, studyType, phase, enrollmentType, enrollment, startDate, completionDate, lastUpdatePostedDate
-    }
+  const renderStudyTemplate = (study) => {
+
     const compiled = compileTemplate(cardsTemplate)
-    const raw = applyTemplate(compiled, studyContext)
+    const raw = applyTemplate(compiled, study)
     const parser = new HtmlToReact.Parser();
     const reactElementHelperText = parser.parse(raw)
     return reactElementHelperText
@@ -140,7 +138,7 @@ export default function StudyInfiniteScroll() {
       >
         <div>{studyData.map((study, index) => {
           return (<div key={index}>
-            {renderStudyTemplate(study.nctId, study.overallStatus, study.briefTitle, study.studyType, study.phase, study.enrollmentType, study.enrollment, study.startDate, study.completionDate, study.lastUpdatePostedDate)
+            {renderStudyTemplate(study)
             }
           </div>
           )
