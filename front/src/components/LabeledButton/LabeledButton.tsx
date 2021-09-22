@@ -29,6 +29,7 @@ interface LabeledButtonProps {
   theClick?: any;
   iconName?: string;
   theType?: string;
+  buttonTitle?: string;
 }
 
 class LabeledButton extends React.PureComponent<LabeledButtonProps, LabeledButtonState> {
@@ -46,7 +47,7 @@ class LabeledButton extends React.PureComponent<LabeledButtonProps, LabeledButto
 
 
   render() {
-    const { helperText, theClick, iconName, theType } = this.props;
+    const { helperText, theClick, iconName, theType, buttonTitle } = this.props;
 
     return (
       <ThemedButton
@@ -58,7 +59,7 @@ class LabeledButton extends React.PureComponent<LabeledButtonProps, LabeledButto
         {this.state.showLabel ? <LabelSpan>{helperText}</LabelSpan> : null}
         &nbsp;
         <FontAwesome name={iconName} />
-        &nbsp; Save Search
+        &nbsp; {buttonTitle}
       </ThemedButton>
 
     );
