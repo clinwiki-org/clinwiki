@@ -5,7 +5,6 @@ import { BeatLoader } from 'react-spinners';
 import { RootState } from 'reducers';
 import WfIslandAggChild from './WfIslandAggChild'
 import { fetchIslandConfig } from 'services/search/actions'
-import { fetchWorkFlowPage } from 'services/study/actions';
 
 interface Props {
   aggId?: string;
@@ -14,7 +13,7 @@ interface Props {
 }
 
 function IslandAggWrapper(props: Props) {
-  const { aggId, nctId } = props;
+  const { aggId } = props;
   const dispatch = useDispatch();
 
   const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
@@ -22,20 +21,16 @@ function IslandAggWrapper(props: Props) {
   const isFetchingSearchParams = useSelector((state: RootState) => state.search.isFetchingSearchParams);
   const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
 
-  // useEffect(() => {  //! No Rails
-  //   dispatch(fetchWorkFlowPage( nctId || "" ));
-  //   }, [dispatch, nctId])
 
 
   useEffect(() => {
-    !islandConfig && !isFetchingFacetConfig && !isFetchingSearchParams && dispatch(fetchIslandConfig());
+    !islandConfig && !isFetchingFacetConfig && !isFetchingSearchParams && dispatch(fetchIslandConfig(aggId));
   }, [dispatch, islandConfig]);
 
   if (!aggId || !islandConfig || !suggestedLabels) {
     return <BeatLoader />
   }
 
-  //console.log("suggestedLabels", suggestedLabels)
   return (
     <WfIslandAggChild
       aggId={props.aggId}
