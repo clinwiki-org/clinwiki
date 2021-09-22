@@ -72,13 +72,22 @@ function ResultSort(props: Props) {
   console.log(currentIsland)
   
   let itemsArray = currentIsland ? currentIsland?.sortables : DEFAULT_CONFIG.sortables
+  let currentSort = () => {
+    let currentItem = "Sort Selection"
+    itemsArray.map(item => {
+      if (item.fieldName == searchParamsCurrent.current?.sorts[0]?.id && item.desc == searchParamsCurrent.current?.sorts[0].desc) {
+        currentItem = item.displayName
+      }
+    })
+    return currentItem
+  }
   return (
     <>
       <div style={{ display: 'flex', flexDirection: 'row', marginLeft: 'auto' }}>
         <div style={{ display: 'flex' }}>
           <DropdownButton
             bsStyle="default"
-            title={`Sort`}
+            title={currentSort()}
             key="default"
             id="dropdown-basic-default"
             style={{
