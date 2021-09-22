@@ -52,6 +52,14 @@ label {
   transition: 0.5s;
   height: 38px;
 }
+#dropdown-basic-default{
+  text-align: left;
+}
+.btn .caret{
+  position: absolute;
+  right: 1em;
+  top: 50%;
+}
 .crumb-container {
   border: 2px solid ${props => props.theme.crumbs.crumbBackground};
   border-radius: 4px;
