@@ -114,6 +114,7 @@ services:
         environment:
             - DATABASE_URL_NODE=$DATABASE_URL
             - SEARCHBOX_URL_NODE=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
+            - DOCKERIZED=true
         depends_on:
             - db
             - elastic
