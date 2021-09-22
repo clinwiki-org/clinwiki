@@ -127,7 +127,6 @@ app.listen(config.port, () => {
                                                                      
   logger.info('Server started on port '+config.port);
   logger.info('on enviornment '+ config.nodeEnv);
-  logger.info('Dockerized: _'+ config.dockerized);
 });
 
 const r = parse(config.postgresUrl);
@@ -162,7 +161,7 @@ const options = {
     }
   },
 };
-  var dbm = DBMigrate.getInstance(true, config.nodeEnv == 'development' || config.dockerized ? optionsDev:options)
+  var dbm = DBMigrate.getInstance(true, config.nodeEnv == 'development'? optionsDev:options)
   dbm.up()
  .then(function() {
   console.log("...") 
