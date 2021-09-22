@@ -12,8 +12,11 @@ import fs from 'fs';
 import dotenv from 'dotenv';
 import {loadConfig} from './config';
 import getAuthenticatedUser from './src/users/user.context';
-
 import config from './config';
+
+
+const DBMigrate = require('db-migrate');
+const parse = require('pg-connection-string').parse;
 
 const envPath = path.resolve(process.cwd()+'/../', '.env');
 logger.info('Loading .env from '+envPath);
@@ -123,4 +126,45 @@ app.listen(config.port, () => {
   logger.info("        \\/             \\/      \\/          \\/     ");
                                                                      
   logger.info('Server started on port '+config.port);
+  logger.info('on enviornment '+ config.nodeEnv);
+  logger.info('Dockerized: _'+ config.dockerized);
+});
+
+const r = parse(config.postgresUrl);
+console.log("PARSED OBJECT", r)
+const optionsDev = {
+  config: {
+    env: "dev",
+    dev: {
+      driver: "postgress",
+      user: r.user,
+      password: r.password,
+      host: r.host,
+      database: r.database,
+      port: r.port,
+    }
+  },
+};
+const options = {
+  config: {
+    env: "dev",
+    dev: {
+      driver: "postgress",
+      user: r.user,
+      password: r.password,
+      host: r.host,
+      database: r.database,
+      port: r.port,
+      ssl: {
+        sslmode: 'require',
+        rejectUnauthorized: false
+      },
+    }
+  },
+};
+  var dbm = DBMigrate.getInstance(true, config.nodeEnv == 'development' || config.dockerized ? optionsDev:options)
+  dbm.up()
+ .then(function() {
+  console.log("...") 
+  return;
 });

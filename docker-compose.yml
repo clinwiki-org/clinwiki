@@ -22,6 +22,7 @@ services:
         environment:
             - POSTGRES_USER=$POSTGRES_USER
             - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+            - DATABASE_URL=$DATABASE_URL
     elastic:
         image: elasticsearch:6.8.8
         container_name: elastic
@@ -111,8 +112,9 @@ services:
         ports:
             - 8088:8088
         environment:
-            - DATABASE_URL_NODE=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@db:5432
+            - DATABASE_URL_NODE=$DATABASE_URL
             - SEARCHBOX_URL_NODE=http://elastic:$ELASTIC_PASSWORD@elastic:9200/
+            - DOCKERIZED=true
         depends_on:
             - db
             - elastic
