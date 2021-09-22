@@ -132,44 +132,39 @@ app.listen(config.port, () => {
 
 const r = parse(config.postgresUrl);
 console.log("PARSED OBJECT", r)
+const optionsDev = {
+  config: {
+    env: "dev",
+    dev: {
+      driver: "postgress",
+      user: r.user,
+      password: r.password,
+      host: r.host,
+      database: r.database,
+      port: r.port,
+    }
+  },
+};
 const options = {
   config: {
     env: "dev",
-
-    prod: {
-      driver: "postgress",
-      user: r.user,
-      password: r.password,
-      host: r.host,
-      database: r.database,
-      port: r.port,
-      ssl: { 
-        sslmode: 'require',
-        rejectUnauthorized: false
-       },
-    },
     dev: {
-      // DATABASE_URL_NODE: config.postgresUrl
       driver: "postgress",
       user: r.user,
       password: r.password,
       host: r.host,
       database: r.database,
       port: r.port,
-      ssl: { 
+      ssl: {
         sslmode: 'require',
         rejectUnauthorized: false
-       },    }
+      },
+    }
   },
 };
-if (config.nodeEnv == 'development') {
-  var dbm = DBMigrate.getInstance(true, options)
+  var dbm = DBMigrate.getInstance(true, config.nodeEnv == 'development'? optionsDev:options)
   dbm.up()
-} else {
-  var dbmProd = DBMigrate.getInstance(true, options);
-  dbmProd.up();
-}
-  // .then(function() {
-// // console.log("No more migrations") 
-//  return;
-// });
+ .then(function() {
+console.log("...") 
+ return;
+});
