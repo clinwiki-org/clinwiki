@@ -127,6 +127,7 @@ app.listen(config.port, () => {
                                                                      
   logger.info('Server started on port '+config.port);
   logger.info('on enviornment '+ config.nodeEnv);
+  logger.info('----->TESTING');
 });
 
 const r = parse(config.postgresUrl);
@@ -155,8 +156,10 @@ const options = {
       host: r.host,
       database: r.database,
       port: r.port,
-      // ssl: { rejectUnauthorized: true },
-    }
+      ssl: { 
+        sslmode: 'require',
+        rejectUnauthorized: false
+       },    }
   },
 };
 if (config.nodeEnv == 'development') {
