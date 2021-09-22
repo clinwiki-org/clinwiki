@@ -106,7 +106,6 @@ export default function SaveSearch(props: SaveSearchProps) {
         helperText={"Save Search"}
         theClick={onClick}
         iconName={"bookmark"}
-        buttonTitle={"Save Search"}
       />
     </>
   );

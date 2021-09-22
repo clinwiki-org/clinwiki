@@ -303,7 +303,6 @@ export default function SearchWithin(props: Props) {
             theType={"Submit"}
             helperText={"Search"}
             iconName={"search"}
-            buttonTitle={"Search"}
           />
         </div>
       );

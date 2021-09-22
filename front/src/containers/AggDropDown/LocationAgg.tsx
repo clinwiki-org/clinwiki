@@ -152,10 +152,9 @@ function LocationAgg(props: LocationAggProps) {
               display: 'flex',
             }}>
             <LabeledButton
-              helperText={"Use Current "}
+              helperText={"Use Current Location"}
               theClick={handleCurrentLocation}
               iconName={"compass"}
-              buttonTitle={"Use Current Location"}
             />
           </div>
           <FormControl
@@ -165,7 +164,7 @@ function LocationAgg(props: LocationAggProps) {
             onChange={e => setZip(e.target.value)}
             onBlur={() => handleZipcode()
             }
-            style={{ flex: 4, marginBottom: '7px' }}
+            style={{ flex: 4, margin: '4px' }}
           />
         </div>
 

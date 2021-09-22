@@ -59,7 +59,7 @@ class LabeledButton extends React.PureComponent<LabeledButtonProps, LabeledButto
         {this.state.showLabel ? <LabelSpan>{helperText}</LabelSpan> : null}
         &nbsp;
         <FontAwesome name={iconName} />
-        &nbsp; {buttonTitle}
+        &nbsp; {buttonTitle || ''}
       </ThemedButton>
 
     );
