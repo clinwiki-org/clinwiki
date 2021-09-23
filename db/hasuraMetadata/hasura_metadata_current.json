@@ -1,5 +1,5 @@
 {
-  "resource_version": 38,
+  "resource_version": 18,
   "metadata": {
     "version": 3,
     "sources": [
@@ -2466,9 +2466,11 @@
                 "role": "anonymous",
                 "permission": {
                   "columns": [
-                    "id",
                     "config",
-                    "island_type"
+                    "created_at",
+                    "id",
+                    "island_type",
+                    "updated_at"
                   ],
                   "filter": {}
                 }

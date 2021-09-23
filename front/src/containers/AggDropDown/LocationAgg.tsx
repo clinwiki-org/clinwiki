@@ -133,7 +133,9 @@ function LocationAgg(props: LocationAggProps) {
     removeFilters,
     agg
   } = props;
+  
   const buckets: number[] = [25, 50, 100, 250, 500, 1000, 2500, 3500]
+
   return (
     <>
       <FormGroup style={{ marginTop: '1.5em' }}>

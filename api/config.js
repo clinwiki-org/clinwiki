@@ -25,6 +25,7 @@ export const loadConfig = () => {
   config.secretKeyClinwiki = process.env.HASURA_CLINWIKI_SECRET_KEY || 'changeme';
   config.adminSecretKey = process.env.HASURA_ADMIN_SECRET_KEY || 'changeme';
   config.defaultApp = process.env.DEFAULT_APPLICATION || 'clinwiki';
+  config.nodeEnv = process.env.NODE_ENV || 'development';
 };
 
 export default config;
