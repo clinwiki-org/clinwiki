@@ -48,8 +48,8 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
     if (!location.lat && !location.long) return `Within ${location.radius} miles of ${location.zipcode}`
 
   }
-   removeFilter = (aggName, isCrowd) => {
-    const searchParams = this.props.searchResultData?.data?.searchParams;
+  removeFilter = (aggName, isCrowd) => {
+    const searchParams = this.props.searchResultData?.data?.searchParams.searchParams;
 
     const grouping = isCrowd ? 'crowdAggFilters' : 'aggFilters';
 
@@ -74,12 +74,13 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
   render() {
     const { field } = this.props
 
+
     if (this.props.selectedItems.length > 0) {
       //console.log("CRUMBS PROPS", field.name, this.props.selectedItems)
       let displayedCrumbs: any[] = this.props.selectedItems.slice(0, field.maxCrumbs)
       let otherValues = { key: `... ${this.props.selectedItems.length - displayedCrumbs.length} others` }
       displayedCrumbs.push(otherValues)
-      if (field.maxCrumbs == 0 || field.maxCrumbs == null || !field) return<span></span>
+      if (field.maxCrumbs == 0 || field.maxCrumbs == null || !field) return <span></span>
       //the fields in the if block below technically will only ever have one crumb 
       //so we pop the last index which holds our "... and others" to prevent a duplicate crumb
       if (
@@ -145,17 +146,18 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
           let chevronDirection = this.state.showAdditionalCrumbs ? 'left' : 'right';
           if (this.state.showAdditionalCrumbs) {
             let otherCrumbs: any[] = this.props.selectedItems.slice(field.maxCrumbs, this.props.selectedItems.length)
-            otherCrumbs.push({key:"<" })
+            otherCrumbs.push({ key: "<" })
             return otherCrumbs.map(item => {
-          if(item.key=="<"){              
-              return (
-                <div className='select-box--crumb-container' key={item.key}>
-                  <FontAwesome
-                className={`chevron-${chevronDirection} crumb-icon`}
-                name={`chevron-${chevronDirection}`}
-                onClick={() => this.setState({ showAdditionalCrumbs: !this.state.showAdditionalCrumbs })}
-                  />
-                </div>)}
+              if (item.key == "<") {
+                return (
+                  <div className='select-box--crumb-container' key={item.key}>
+                    <FontAwesome
+                      className={`chevron-${chevronDirection} crumb-icon`}
+                      name={`chevron-${chevronDirection}`}
+                      onClick={() => this.setState({ showAdditionalCrumbs: !this.state.showAdditionalCrumbs })}
+                    />
+                  </div>)
+              }
               return (
                 <div className='select-box--crumb-container' key={item.key}>
                   {item.key}
