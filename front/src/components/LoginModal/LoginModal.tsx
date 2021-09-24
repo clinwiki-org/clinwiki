@@ -20,7 +20,7 @@ class LoginModal extends React.PureComponent<LoginModalProps> {
   render() {
     const { title, body, cancel, show } = this.props;
     return (
-      <Modal show={show} style={{ minHeight: '250px' }}>
+      <Modal show={show} style={{ minHeight: '250px', zIndex:10000 }}>
         <Modal.Dialog style={{ minHeight: '250px' }}>
           <Modal.Header>
             <Modal.Title style={{ textAlign: 'center' }}>
