@@ -630,13 +630,13 @@ export const graphqlToIndexMapping =  {
             },
             "ctgov_prod_studies_facilities.ctgov_prod_facilities_clinwiki_facility_locations.latitude": {
 
-                "fieldNameIndex": "location.lat",
+                "fieldNameIndex": "locations.lat",
 
                 "dataTypeToIndex": "geo_point"
             },
             "ctgov_prod_studies_facilities.ctgov_prod_facilities_clinwiki_facility_locations.longitude": {
 
-                "fieldNameIndex": "location.lon",
+                "fieldNameIndex": "locations.lon",
 
                 "dataTypeToIndex": "geo_point"
             },
