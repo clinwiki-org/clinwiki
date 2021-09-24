@@ -289,17 +289,21 @@ const parseDataType = async (fieldNameIndex, dataTypeToIndex, data, key) => {
       return tempObj
     case "geo_point":
       //building object from field name location.lat || location.long 
-      let tempObject = {};
-      let finalObject = {};
-      fieldNameIndex.split('.').map((k, i, values) => {
-        if (i == 0) {
-          finalObject[values[i]] = tempObject;
-        } else {
-          tempObject[k] = data
-          finalObject = { ...finalObject };
-        }
-      });
-      return finalObject
+      if(data){
+        let tempObject = {};
+        let finalObject = {};
+        fieldNameIndex.split('.').map((k, i, values) => {
+          if (i == 0) {
+            finalObject[values[i]] = tempObject;
+          } else {
+            tempObject[k] = data
+            finalObject = { ...finalObject };
+          }
+        });
+         return finalObject
+      }else{
+        return
+      }
     case "SKIP":
       // console.log("Skipping", key)
       return
