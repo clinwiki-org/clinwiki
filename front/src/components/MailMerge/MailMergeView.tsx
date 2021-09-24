@@ -1,16 +1,8 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import { convertDisplayName, fetchIslandConfig, fetchSearchPageAggBuckets } from 'services/search/actions'
-import { fetchSuggestedLabels, setShowLoginModal } from '../../services/study/actions';
-import { useDispatch, useSelector } from 'react-redux';
-
+import React, { useMemo } from 'react';
 import Handlebars from 'handlebars';
 import HtmlToReact from 'html-to-react';
-import LoginModal from 'components/LoginModal';
-import { RootState } from 'reducers';
 import marked from 'marked';
-import { uniq } from 'ramda';
 import useHandlebars from 'hooks/useHandlebars';
-import useUrlParams from 'utils/UrlParamsProvider';
 
 export type IslandConstructor = (
   attributes: Record<string, string>,
@@ -70,17 +62,9 @@ export function microMailMerge(template = '', context?: object | null) {
 }
 
 const MailMergeView = (props: Props) => {
-  let aggIslands: any[] = [];
 
   useHandlebars();
-  const dispatch = useDispatch();
-  const showLoginModal = useSelector((state: RootState) => state.study.showLoginModal);
-  const data = useSelector((state: RootState) => state.search.searchResults);
 
-  const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
-  const searchHash = useSelector((state: RootState) => state.search.searchHash);
-  const searchParams = data?.data?.searchParams;
-  const params = useUrlParams();
 
   const compiled = useMemo(() => compileTemplate(marked(props.template)), [
     props.template,
@@ -89,12 +73,6 @@ const MailMergeView = (props: Props) => {
     compiled,
     props.context,
   ]);
-  const aggIslandsCurrent = useRef({
-    currentAggIsalnds: [] as any[]
-  })
-  const wfIslandsCurrent = useRef({
-    currentWFIsalnds: [] as any[]
-  })
 
   const style = props.style
     ? { ...defaultStyle, ...props.style }
@@ -106,12 +84,6 @@ const MailMergeView = (props: Props) => {
     {
       shouldProcessNode: node => islandKeys.has(node.name),
       processNode: (node, children) => {
-        if (node.name == "agg") {
-          aggIslandsCurrent.current.currentAggIsalnds = [...aggIslandsCurrent.current.currentAggIsalnds, node.attribs]
-        }
-        if (node.name == "wfagg") {
-          wfIslandsCurrent.current.currentWFIsalnds = [...wfIslandsCurrent.current.currentWFIsalnds, node.attribs]
-        }
         const create = props.islands?.[node.name];
         return (
           <div
@@ -128,136 +100,6 @@ const MailMergeView = (props: Props) => {
     },
   ];
 
-  const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
-
-
-  useEffect(() => {
-    let uniqueAggIds = uniq(aggIslandsCurrent.current.currentAggIsalnds);
-    let aggIdArray: any[] = [];
-
-    let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds);
-    let wfLabels: any[] = [];
-
-    uniqueWFIds.map((WF) => {
-      wfLabels.push(parseInt(WF.id))
-    });
-
-     uniqueAggIds.map((agg) => {
-      aggIdArray.push(parseInt(agg.id))
-      
-    });
-
-    !islandConfig && dispatch(fetchIslandConfig(aggIdArray.concat(wfLabels)));
-  }, [dispatch]);
-
-  useEffect(() => {
-    // Duplicate code// Refactor // IslandsAggChild is other file
-    let uniqueAggIds = uniq(aggIslandsCurrent.current.currentAggIsalnds);
-    let aggArray: any[] = [];
-    let aggIdArray: any[] = [];
-    let aggBucketsWanted: any[] = [];
-    let aggSortArray: any[] = [];
-    let crowdAggArray: any[] = [];
-    let crowdAggIdArray: any[] = [];
-    let crowdBucketsWanted: any[] = [];
-    let crowdAggSortArray: any[] = [];
-
-    islandConfig && uniqueAggIds.map((agg) => {
-      if (islandConfig[agg.id]?.defaultToOpen == true) {
-        let sort = {
-          id: islandConfig[agg.id].order.sortKind,
-          desc: islandConfig[agg.id].order.desc
-        };
-
-        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggArray.push(islandConfig[agg.id].name);
-        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggIdArray.push({ id: agg.id, name: islandConfig[agg.id].name });
-        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdBucketsWanted.push(islandConfig[agg.id].visibleOptions);
-        islandConfig[agg.id].aggKind == 'crowdAggs' && crowdAggSortArray.push(sort);
-        islandConfig[agg.id].aggKind == 'aggs' && aggArray.push(islandConfig[agg.id].name);
-        islandConfig[agg.id].aggKind == 'aggs' && aggIdArray.push({ id: agg.id, name: islandConfig[agg.id].name });
-        islandConfig[agg.id].aggKind == 'aggs' && aggBucketsWanted.push(islandConfig[agg.id].visibleOptions);
-        islandConfig[agg.id].aggKind == 'aggs' && aggSortArray.push(sort);
-      }
-    });
-
-
-    if (searchParams && crowdAggArray.length !== 0 || searchParams && aggArray.length !== 0) {
-
-      crowdAggArray.forEach((agg, i) => {
-
-        const variables = {
-          ...searchParams.searchParams,
-          url: params.sv,
-          configType: 'presearch',
-          returnAll: false,
-          agg: `fm_${agg}`,
-          aggOptionsSort: crowdAggSortArray[i],
-          pageSize: 100,
-          page: 1,
-          q: searchParams.searchParams.q,
-          aggBucketsWanted: crowdBucketsWanted[i]
-
-        };
-
-        dispatch(fetchSearchPageAggBuckets(variables, crowdAggIdArray[i].id))
-      });
-      aggArray.forEach((agg, i) => {
-
-        const variables = {
-          ...searchParams.searchParams,
-          url: params.sv,
-          configType: 'presearch',
-          returnAll: false,
-          agg: agg,
-          aggOptionsSort: aggSortArray[i],
-          pageSize: 25,
-          page: 1,
-          q: searchParams.searchParams.q,
-          aggBucketsWanted: aggBucketsWanted[i]
-
-        };
-
-        dispatch(fetchSearchPageAggBuckets(variables, aggIdArray[i].id))
-      });
-    }
-
-  }, [dispatch, islandConfig, searchHash, searchParams])
-
-  useEffect(() => {
-    let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds);
-    let wfLabels: any[] = [];
-
-    islandConfig && uniqueWFIds.map((WF) => {
-      if (islandConfig[WF.id]?.defaultToOpen == true) {
-        islandConfig[WF.id] && wfLabels.push(islandConfig[WF.id].name);
-      }
-    })
-
-    if (wfLabels) {
-      //@ts-ignore
-      wfLabels[0] && dispatch(fetchSuggestedLabels(props.context?.nct_id, wfLabels));
-
-    }
-
-
-  }, [dispatch, islandConfig])
-
-  useEffect(() => {
-    let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds);
-
-    suggestedLabels && uniqueWFIds.map((WF) => {
-      let currentKeyObjects = suggestedLabels.data.crowd_keys.filter((x) => x.crowd_key === islandConfig[WF.id].name)
-      if (islandConfig[WF.id]?.defaultToOpen == true) {
-        const compiled = islandConfig[WF.id] && compileTemplate(islandConfig[WF.id].displayName)
-        const raw = applyTemplate(compiled, currentKeyObjects[0])
-        if (raw !== islandConfig[WF.id].displayName) {
-          dispatch(convertDisplayName(raw, WF.id))
-        }
-      }
-    })
-
-  }, [suggestedLabels])
-
   const parser = new HtmlToReact.Parser();
   const reactElement = parser.parseWithInstructions(
     raw,
@@ -266,10 +108,6 @@ const MailMergeView = (props: Props) => {
   );
   return (
     <div className="mail-merge" style={style}>
-      <LoginModal
-        show={showLoginModal}
-        cancel={() => dispatch(setShowLoginModal(false))}
-      />
       {reactElement}
     </div>
   );
