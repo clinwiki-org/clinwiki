@@ -3,7 +3,7 @@ import { MailMergeEditor } from 'components/MailMerge';
 import { FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
 import { BeatLoader } from 'react-spinners';
-import { useFragment } from '../MailMerge/MailMergeFragment'
+import { useHasuraFragment } from '../MailMerge/HasuraMMFragment';
 import { getStudyQuery } from '../MailMerge/MailMergeUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchIntrospection } from 'services/introspection/actions';
@@ -47,7 +47,7 @@ function SearchTemplate(props: Props) {
   const introspection = useSelector((state:RootState) => state.introspection.introspection);
 
 
-  const [fragmentName, fragment] = useFragment('Study', props.template);
+  const [fragmentName, fragment] = useHasuraFragment('Study', props.template);
 
 
   const study= useSelector((state:RootState) => state.study.studyPage);

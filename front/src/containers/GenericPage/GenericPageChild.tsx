@@ -9,7 +9,6 @@ import { fetchSuggestedLabels, setShowLoginModal } from '../../services/study/ac
 import {  getSearchQuery, getHasuraStudyQuery, getSearchQueryDIS, getHasuraStudyQueryDIS, getSearchNearbyQuery } from 'components/MailMerge/MailMergeUtils';
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
-import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import {  fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS, fetchStudyPageNearby } from 'services/study/actions';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -82,10 +81,10 @@ export default function GenericPageWrapper(props: Props) {
     const [hasuraFragmentName, hasuraFragment] = useHasuraFragment('ctgov_prod_studies', currentPage?.template || '');
     const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(hasuraFragmentName, hasuraFragment)}`
 
-    const [fragmentName, fragment] = useFragment(schemaType, currentPage.template || '');
+    const [fragmentName, fragment] = useHasuraFragment(schemaType, currentPage.template || '');
     const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
 
-    const [fragmentNameDis, fragmentDis] = useFragment(schemaType, currentPage.template || '');
+    const [fragmentNameDis, fragmentDis] = useHasuraFragment(schemaType, currentPage.template || '');
     const HASURA_SEARCH_QUERY = `${getSearchQueryDIS(fragmentNameDis, fragmentDis)}`
 
     const [hasuraFragmentNameDis, hasuraFragmentDis] = useHasuraFragment('disyii2_prod_20210704_2_tbl_conditions', currentPage?.template || '');

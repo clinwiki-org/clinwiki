@@ -41,11 +41,25 @@ export default function GenericPageWrapper(props: Props) {
   const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
   const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
   const data = useSelector((state: RootState) => state.search.searchResults);
-
+  // const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
+  const getPageType = (val) => {
+      switch (val) {
+          case 1:
+              return 'Study'
+          case 2:
+              return 'Search_Study'
+          case 3:
+              return 'Condition'
+          case 4:
+              return 'Search_Condition'
+          default:
+              return "Search_Study"
+      }
+  }
   //Currently making assumption anything diplayed in our search route is of pageType study 
   //Ideally should be set from PageView but was having issues , response was not saving 
-  const pageType = match.path == "/search/" ? "Search" : "Study"
-
+  // const pageType = match.path == "/search/" ? "Search" : "Study"
+const pageType = getPageType(currentPage?.page_type);
   /*   useEffect(() => {
       dispatch(fetchHasuraPresentSiteProvider(undefined, params.sv));
     }, [dispatch, params.sv])
@@ -71,7 +85,7 @@ export default function GenericPageWrapper(props: Props) {
     dispatch(fetchSearchParams(params.hash));
   }, [dispatch, params.hash]);
 
-  if (!params.hash && pageType == "Search") {
+  if (!params.hash && pageType == "Search_Study") {
     history.push(`/search?hash=${site.default_hash}&pv=${site.default_search_page}`)
     //window.location.reload()
   }
@@ -84,7 +98,7 @@ export default function GenericPageWrapper(props: Props) {
   if (!props.arg && pageType == "Study") {
     return <h1>Missing NCTID in URL</h1>;
   }
-  if (!params.pv && pageType == "Search") {
+  if (!params.pv && pageType == "Search_Study") {
     return <h1>Missing PageView in URL</h1>;
   }
 

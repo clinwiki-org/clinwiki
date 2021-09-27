@@ -5,13 +5,11 @@ import { BeatLoader } from 'react-spinners';
 import MailMerge from './MailMerge';
 import { GraphqlSchemaType } from './SchemaSelector';
 import { IslandConstructor } from './MailMergeView';
-import { useFragment } from './MailMergeFragment';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSampleStudy, fetchSampleStudyHasura } from 'services/study/actions';
-import { getHasuraSampleStudyQuery, getSampleStudyQuery } from '../../components/MailMerge/MailMergeUtils';
+import { fetchSampleStudyHasura } from 'services/study/actions';
+import { getHasuraSampleStudyQuery } from '../../components/MailMerge/MailMergeUtils';
 import { RootState } from 'reducers';
-import { fetchHasuraIntrospection, fetchIntrospection } from 'services/introspection/actions';
-//import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
+import { fetchHasuraIntrospection } from 'services/introspection/actions';
 import { introspectionQuery } from 'graphql/utilities';
 import { useHasuraFragment } from './HasuraMMFragment';
 
@@ -51,7 +49,6 @@ export default function HasuraMailMergeFormControl(props: HasuraMailMergeFormCon
     }, [dispatch, fragment]);
 
     const study = useSelector((state: RootState) => state.study.hasuraSampleStudy);
-    console.log('HI from HMMAILMERGE')
     if (!study || !introspection) {
         return <BeatLoader />;
     }

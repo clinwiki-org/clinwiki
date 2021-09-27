@@ -56,6 +56,11 @@ function tokensToGraphQLOb(tags: string[]) {
             pushScope(scopeName);
             scope[propName] = 'x';
             popScope();
+        }
+        // REMOVES RECORDSTOTAL AND THIS FROM FRAGMENT
+        // RECORDSTOTAL IS HARDCODED IN THE QUERY
+        if (name == 'this' || name == 'recordsTotal') {
+            console.log(name);
         } else {
             // single value
             scope[name] = 'x';
@@ -68,13 +73,16 @@ function tokensToGraphQLOb(tags: string[]) {
             const parts = t.split(/\s/).filter(id => id);
             if (parts.length > 1) {
                 const name = parts[1];
-                if (parts[0] == '#each' && parts.length > 2) {
+                //LIST OF THINGS TO SKIP (SPECIFIC TO MM WITH # , ie. #EACH, #IF )
+                if (
+                    parts[0] == '#each' && parts[1] == 'studies' ||
+                    parts[0] == '#each' && parts[1] == 'diseases' ||
+                    parts[0] == '#if' && parts.length > 2
+                ) {
+                } else if (parts[0] == '#each' && parts.length > 2) {
                     let index = parts.length - 2;
                     pushScope(parts[index]);
-                } else if (parts[0] == '#if' && parts.length > 2) {
-                    //
                 } else {
-                    console.log(name, parts);
                     pushScope(name);
                 }
             }
@@ -96,14 +104,15 @@ function tokensToGraphQLOb(tags: string[]) {
                     parts[0] == 'formatDate' ||
                     parts[0] == 'else' ||
                     parts[0] == 'runConditional'
+                    ||
+                    // WAS IN MM BUT NOT CERTAIN WHAT IT DOES 
+                    typeof parts[0] == typeof 1
                 ) {
                 } else {
-                    console.log('PARTS', parts);
                     setProperty(name);
                 }
             }
         } else {
-            // console.log(t);
             if (t == 'else' || t == 'previousStudy' || t == 'nextStudy') {
             } else {
                 setProperty(t);

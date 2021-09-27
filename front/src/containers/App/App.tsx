@@ -25,7 +25,6 @@ import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
 import MMTest from 'components/MailMerge/MMTestComponentWrapper'
 import GenericPageWrapper from 'containers/GenericPage/GenericPageWrapper';
-import HasuraGenericPage from 'containers/HasuraGenericPage/HasuraGenericPage.';
 import Reindex from 'containers/Reindex';
 import ProtectedRoute from 'components/ProtectedRoute/ProtectedRoute';
 
@@ -63,14 +62,8 @@ class App extends React.PureComponent<AppProps> {
                 <Route path="/condition/:conditionId"
                   render={(props) => <GenericPageWrapper arg={props.match.params.conditionId} />}
                 />
-                <Route path="/hasurastudy/:nctId"
-                  render={(props) => <HasuraGenericPage arg={props.match.params.nctId} />}
-                />
                 <Route path="/p/:page/:arg?"
                   render={(props) => <GenericPageWrapper url={props.match.params.page} arg={props.match.params.arg} />}
-                />
-                <Route path="/p/:hasurapage/:arg?"
-                  render={(props) => <HasuraGenericPage url={props.match.params.page} arg={props.match.params.arg} />}
                 />
                 <ProtectedRoute path="/aggIslands" component={EditAggIslandsPage} />
                 <Route exact path="/profile" component={EditProfilePage} />
@@ -86,7 +79,7 @@ class App extends React.PureComponent<AppProps> {
                 <Route path="/not-configured" component={NotConfiguredPage} />
                 <Route path="/update_password" component={UpdatePassword} />
                 <Route exact path="/mmtest" component={MMTest} />
-                <Route exact path="/mmtest/:nctId" component={MMTest} />
+                <Route exact path="/mmtest/:docId" component={MMTest} />
                 <ProtectedRoute path="/reindex" component={Reindex} />
                 <Route component={NotFoundPage} />
               </Switch>

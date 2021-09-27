@@ -3,16 +3,13 @@ import { FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
 import { BeatLoader } from 'react-spinners';
 import MailMerge from './MailMerge';
-import { GraphqlSchemaType } from './SchemaSelector';
 import { IslandConstructor } from './MailMergeView';
-import { useFragment } from './MailMergeFragment';
+import { useHasuraFragment } from './HasuraMMFragment';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSampleStudy, fetchSampleStudyHasura  } from 'services/study/actions';
 import { getSampleStudyQuery, getSampleSearchQuery } from 'services/study/queries';
 import { RootState } from 'reducers';
 import { fetchSearchParams, updateSearchParamsAction } from 'services/search/actions';
-// import { fetchIntrospection } from 'services/introspection/actions';
-//import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 import { introspectionQuery } from 'graphql/utilities';
 import { fetchHasuraIntrospection, fetchIntrospection, fetchNodeIntrospection } from 'services/introspection/actions';
 
@@ -62,8 +59,7 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   const hasuraIntrospection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
   const nodeIntrospection = useSelector((state: RootState) => state.introspection.nodeIntrospection);
   const schemaType = getClassForMode(mode);
-  const [fragmentName, fragment] = useFragment(schemaType, props.template);
-  // const [fragmentName, fragment] = useFragment('Study', props.template);
+  const [fragmentName, fragment] = useHasuraFragment(schemaType, props.template);
   useEffect(() => {
     const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
     dispatch( mode == "Study" ? fetchHasuraIntrospection(QUERY) : fetchNodeIntrospection(QUERY));
@@ -96,17 +92,6 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   }
 
 
-  // const schema : GraphqlSchemaType = {
-  //   kind: 'graphql',
-  //   typeName: 'Study',
-  //   types: introspection.data.__schema.types,
-  // };
-
-  // const schema2: GraphqlSchemaType = {
-  //   kind: 'graphql',
-  //   typeName: 'Search',
-  //   types: introspection.data.__schema.types,
-  // };
   const types = mode == "Study" ? hasuraIntrospection.data.__schema.types : nodeIntrospection.data.__schema.types  ;
   const searchData = () => {
     let studies: any[] = []
