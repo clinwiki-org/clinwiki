@@ -56,14 +56,14 @@ class App extends React.PureComponent<AppProps> {
                 <Route exact path="/about" component={AboutPage} />
                 <Route exact path="/version" component={ReleaseNotes} />
                 <Route path="/search/" render={(props) => <GenericPageWrapper />} />
-                <Route path="/study/:nctId"
-                  render={(props) => <GenericPageWrapper arg={props.match.params.nctId} />}
+                <Route path="/study/:docId"
+                  render={(props) => <GenericPageWrapper arg={props.match.params.docId} />}
                 />
-                <Route path="/condition/:conditionId"
-                  render={(props) => <GenericPageWrapper arg={props.match.params.conditionId} />}
+                <Route path="/condition/:docId"
+                  render={(props) => <GenericPageWrapper arg={props.match.params.docId} />}
                 />
-                <Route path="/p/:page/:arg?"
-                  render={(props) => <GenericPageWrapper url={props.match.params.page} arg={props.match.params.arg} />}
+                <Route path="/p/:docId?"
+                  render={(props) => <GenericPageWrapper url={props.match.params.page} arg={props.match.params.docId} />}
                 />
                 <ProtectedRoute path="/aggIslands" component={EditAggIslandsPage} />
                 <Route exact path="/profile" component={EditProfilePage} />

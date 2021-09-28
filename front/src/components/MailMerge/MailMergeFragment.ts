@@ -1,5 +1,42 @@
 import { useMemo, useState } from 'react';
 
+export function schemaTokens(input: string) {
+    let tokens: string[] = [];
+    const yeet = (t: string) => {
+        if (t !== ''){
+            const parts = t.split(/\s/).filter(id => id);
+            for(const each of parts ){
+
+                tokens.push(each);
+            }
+        }
+    };
+    let current = '';
+    let last = '';
+    let inside = false;
+    for (const ch of input) {
+        if (ch === '[' && last !== '[') {
+            // Begin {{
+            inside = true;
+            current = ch;
+        } else if (last === '[' && ch !== '[') {
+            // Begin inside token
+            current = ch;
+
+        } else if (ch === ']' && last !== ']' && inside) {
+            inside = false;
+            // Begin }}
+            yeet(current);
+            current = ch;
+        } else {
+            current += ch;
+        }
+        last = ch;
+    }
+    //hard coded to index 0 to start
+    return tokens;
+}
+
 function mustacheTokens(input: string) {
     let tokens: string[] = [];
     const yeet = (t: string) => {
@@ -28,6 +65,8 @@ function mustacheTokens(input: string) {
     }
     return tokens;
 }
+
+
 
 type Marker = 'x';
 function tokensToGraphQLOb(tags: string[]) {
@@ -75,6 +114,7 @@ function tokensToGraphQLOb(tags: string[]) {
                 const name = parts[1];
                 //LIST OF THINGS TO SKIP (SPECIFIC TO MM WITH # , ie. #EACH, #IF )
                 if (
+                    parts[0] == '#with' && parts[1] == '$schema_name' ||
                     parts[0] == '#each' && parts[1] == 'studies' ||
                     parts[0] == '#each' && parts[1] == 'diseases' ||
                     parts[0] == '#if' && parts.length > 2
@@ -201,12 +241,26 @@ export function islandTokens(input: string) {
     }
     return tokens;
 }
+export function removeSchemaValues(template){
+    var prevTemplate;
+    let cleanedTemplate =  template
+    do {
+        prevTemplate = cleanedTemplate;
+        cleanedTemplate = cleanedTemplate.replace(/\[[^\)\(]*\]/, "");
+    } while (prevTemplate != cleanedTemplate);
+    return cleanedTemplate
+}
 export function compileFragment(
     fragmentName: string,
     className: string,
     template: string
 ) {
-    const tokens = mustacheTokens(template);
+    const schemaValues = schemaTokens(template);
+    
+    var prevTemplate;
+    let cleanedTemplate = removeSchemaValues(template)
+    const tokens = mustacheTokens(cleanedTemplate);
+
     const json = tokensToGraphQLOb(tokens);
     const fragmentBody = jsonToFragmentBody(json);
     return toFragment(fragmentName, className, fragmentBody);

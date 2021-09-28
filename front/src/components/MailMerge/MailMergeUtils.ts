@@ -11,7 +11,7 @@ export function getStudyQuery(name: string, frag: string) {
 `;
 }
 
-export function getSearchQuery(name: string, frag: string) {
+export function getSearchQuery(name: string, frag: string, parentQuery?: string) {
     frag = frag || `fragment ${name} on ElasticStudy { nctId }`;
     return `
   query Search${name}Query($params:SearchInput!) {
@@ -21,6 +21,20 @@ export function getSearchQuery(name: string, frag: string) {
         ...${name}
       }
       recordsTotal
+    }
+  }
+  ${frag}
+  `;
+}
+export function getMyQuery(name: string, frag: string, schemaName: string, primaryKey: string, pkType:string, endPoint: string, options: string, parentQuery?: string) {
+    frag = frag || `fragment ${name} on ${schemaName} { ${primaryKey} }`;
+    return `
+  query My${name}Query($${primaryKey}:${pkType}) {
+    ${endPoint}(${options}) {
+      ${parentQuery ?`${parentQuery}{
+        ...${name}
+      }`: `...${name}`
+     } 
     }
   }
   ${frag}

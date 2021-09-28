@@ -3,6 +3,7 @@ import Handlebars from 'handlebars';
 import HtmlToReact from 'html-to-react';
 import marked from 'marked';
 import useHandlebars from 'hooks/useHandlebars';
+import { removeSchemaValues } from './MailMergeFragment';
 
 export type IslandConstructor = (
   attributes: Record<string, string>,
@@ -65,8 +66,8 @@ const MailMergeView = (props: Props) => {
 
   useHandlebars();
 
-
-  const compiled = useMemo(() => compileTemplate(marked(props.template)), [
+  let cleanedTemplate =  removeSchemaValues(props.template);
+  const compiled = useMemo(() => compileTemplate(marked(cleanedTemplate)), [
     props.template,
   ]);
   const raw = useMemo(() => applyTemplate(compiled, props.context), [

@@ -6,14 +6,14 @@ import CollapsiblePanel from 'components/CollapsiblePanel';
 import MailMerge from './MailMerge';
 import { useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { getSearchQuery, getHasuraStudyQuery, getSearchQueryDIS, getHasuraStudyQueryDIS, getSearchNearbyQuery } from 'components/MailMerge/MailMergeUtils';
+import { getMyQuery, getSearchNearbyQuery } from 'components/MailMerge/MailMergeUtils';
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import { fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS, fetchStudyPageNearby } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 import { RootState } from 'reducers';
-import { useFragment } from 'components/MailMerge/MailMergeFragment';
+import { useFragment, schemaTokens } from 'components/MailMerge/MailMergeFragment';
 import { introspectionQuery } from 'graphql/utilities';
 import { fetchNodeIntrospection, fetchHasuraIntrospection } from 'services/introspection/actions';
 import { fetchSearchParams } from 'services/search/actions';
@@ -74,18 +74,10 @@ export default function GenericPageWrapper(props: Props) {
   
     const currentPageType = getPageType(currentPage?.page_type);
     const schemaType = getClassForMode(currentPageType);
+    const templateSchemaTokens = schemaTokens(currentPage?.template)
 
-    const [hasuraFragmentName, hasuraFragment] = useFragment('ctgov_prod_studies', template || '');
-    const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(hasuraFragmentName, hasuraFragment)}`
-
-    const [fragmentName, fragment] = useFragment(schemaType, template || '');
-    const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
-
-    const [fragmentNameDis, fragmentDis] = useFragment(schemaType, template || '');
-    const HASURA_SEARCH_QUERY = `${getSearchQueryDIS(fragmentNameDis, fragmentDis)}`
-
-    const [hasuraFragmentNameDis, hasuraFragmentDis] = useFragment('disyii2_prod_20210704_2_tbl_conditions', currentPage?.template || '');
-    const HASURA_STUDY_QUERY_DIS = `${getHasuraStudyQueryDIS(hasuraFragmentNameDis, hasuraFragmentDis)}`
+    const [fragmentName, fragment] = useFragment(templateSchemaTokens[1], template || '');
+    const GENERIC_QUERY = `${getMyQuery(fragmentName, fragment, templateSchemaTokens[1], templateSchemaTokens[2],templateSchemaTokens[3], templateSchemaTokens[4], templateSchemaTokens[5], templateSchemaTokens[6] && templateSchemaTokens[6]  )}`
 
     useEffect(() => {
 
@@ -93,20 +85,20 @@ export default function GenericPageWrapper(props: Props) {
 
         switch (pageType) {
             case 'Study':
-                dispatch(fetchStudyPageHasura(props.arg ?? "", HASURA_STUDY_QUERY));
+                dispatch(fetchStudyPageHasura(currentStudy ?? "", GENERIC_QUERY));
                 const SEARCH_NEARBY_QUERY = `${getSearchNearbyQuery()}`
                 const pageSize = searchParams.searchParams.pageSize = studyList?.data?.search?.recordsTotal
                 const finalPageSize = pageSizeHelper(pageSize)
                 dispatch(fetchStudyPageNearby({ ...searchParams.searchParams, pageSize: finalPageSize }, SEARCH_NEARBY_QUERY))
                 return
             case 'Search_Study':
-                dispatch(fetchSearchPageMM(searchParams.searchParams, SEARCH_QUERY));
+                dispatch(fetchSearchPageMM(searchParams.searchParams, GENERIC_QUERY));
                 return
             case 'Search_Condition':
-                dispatch(fetchSearchPageMM(searchParams.searchParams, HASURA_SEARCH_QUERY));
+                dispatch(fetchSearchPageMM(searchParams.searchParams, GENERIC_QUERY));
                 return
             case 'Condition':
-                dispatch(fetchStudyPageHasuraDIS(props.arg ?? "", HASURA_STUDY_QUERY_DIS));
+                dispatch(fetchStudyPageHasuraDIS(props.arg ?? "", GENERIC_QUERY));
                 return
             default:
                 console.log("No PAGE TYPE ")
@@ -157,7 +149,7 @@ export default function GenericPageWrapper(props: Props) {
         }
     }
 
-    const currentStudy = match.params['nctId']
+    const currentStudy = match.params['docId']
     console.log("Match?", match)
     const nctIdObject = studyList?.data?.search?.studies?.find(study => study.nctId == currentStudy);
     const currentIndexOfStudyList = studyList?.data?.search?.studies?.indexOf(nctIdObject)

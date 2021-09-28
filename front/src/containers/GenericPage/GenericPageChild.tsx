@@ -151,7 +151,9 @@ export default function GenericPageWrapper(props: Props) {
         }
     }
 
-    const currentStudy = match.params['nctId']
+    // TO-DO: GENERALIZE NAV CODE 
+
+    const currentStudy = match.params['docId']
     const nctIdObject = studyList?.data?.search?.studies?.find(study => study.nctId == currentStudy);
     const currentIndexOfStudyList = studyList?.data?.search?.studies?.indexOf(nctIdObject)
 
