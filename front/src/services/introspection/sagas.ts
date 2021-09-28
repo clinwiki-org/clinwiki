@@ -35,6 +35,21 @@ function* getHasuraIntrospection(action) {
         yield put(actions.fetchHasuraIntrospectionError(err.message));
     }
 }
+function* getHasuraIntrospectionDIS(action) {
+    try {
+        let response = yield call(() => api.fetchHasuraIntrospectionDIS(action.QUERY));
+        if(response) {
+            yield put(actions.fetchHasuraIntrospectionSuccess(response));
+        }
+        else {
+            yield put(actions.fetchHasuraIntrospectionError(response.message));
+        }
+    }
+    catch(err) {
+        console.log(err);
+        yield put(actions.fetchHasuraIntrospectionError(err.message));
+    }
+}
 function* getNodeIntrospection(action) {
     try {
         let response = yield call(() => api.fetchNodeIntrospection(action.QUERY));
@@ -55,5 +70,6 @@ function* getNodeIntrospection(action) {
 export default function* introspectionSagas() {
     yield takeLatest(types.FETCH_INTROSPECTION_SEND, getIntrospection);
     yield takeLatest(types.FETCH_HASURA_INTROSPECTION_SEND, getHasuraIntrospection);
+    yield takeLatest(types.FETCH_HASURA_INTROSPECTION_DIS_SEND, getHasuraIntrospectionDIS);
     yield takeLatest(types.FETCH_NODE_INTROSPECTION_SEND, getNodeIntrospection);
 }
