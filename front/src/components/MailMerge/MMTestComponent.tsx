@@ -213,7 +213,6 @@ if(!introspection){
           template={template}
           onTemplateChanged={setTemplate}
           islands={islands}
-          pageType={pageType}
         />
         </div>
 

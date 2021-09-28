@@ -1,7 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import MailMergeView, {
-    microMailMerge,
-} from 'components/MailMerge/MailMergeView';
+import MailMergeView, { microMailMerge, applyTemplate, compileTemplate } from 'components/MailMerge/MailMergeView';
 import { useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { convertDisplayName, fetchIslandConfig, fetchSearchPageAggBuckets } from 'services/search/actions'
@@ -10,16 +8,13 @@ import {  getSearchQuery, getHasuraStudyQuery, getSearchQueryDIS, getHasuraStudy
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import {  fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS, fetchStudyPageNearby } from 'services/study/actions';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 import { RootState } from 'reducers';
-import { useHasuraFragment } from 'components/MailMerge/HasuraMMFragment';
+import {  useHasuraFragment, islandTokens } from 'components/MailMerge/HasuraMMFragment';
 import { insertPageViewLog } from 'services/genericPage/actions';
 import LoginModal from 'components/LoginModal';
-
 import { uniq } from 'ramda';
-import Handlebars from 'handlebars';
 import useHandlebars from 'hooks/useHandlebars';
 interface Props {
     url?: string;
@@ -198,54 +193,6 @@ export default function GenericPageWrapper(props: Props) {
     })
 
     console.log(islandKeys)
-    function islandTokens(input: string) {
-        let tokens: any[] = [];
-        const yeet = (t: string) => {
-            //replace() to remove any line breaks \n
-            if (t !== '') {
-                t = t.replace(/[\r\n]+/gm, "");
-                if (t.startsWith('<')) {
-                    const parts = t.split(/\s/).filter(id => id);
-                    let object = {}
-                    if (parts.length > 1) {
-                        object['name'] = parts[0].slice(1)
-                        let attributesArray = parts[1].split("=")
-                        let attributes = {};
-                        attributes[attributesArray[0]] = attributesArray[1] ?
-                            attributesArray[1]
-                                .replace(/\"/g, "")
-                                .replace(/\'/g, "") : attributesArray[1]
-                        object['attribs'] = attributes
-                        tokens.push(object)
-                    } else {
-                        object['name'] = parts[0].slice(1)
-                        tokens.push(object)
-                    }
-
-                }
-
-            }
-        };
-        let current = '';
-        let last = '';
-        let inside = false;
-        for (const ch of input) {
-            if (ch === '<') {
-                // Begin <
-                inside = true;
-                current = ch;
-            } else if (ch === '>' && current[1] !== '/') {
-                inside = false;
-                // Begin >
-                yeet(current);
-                current = ch;
-            } else {
-                current += ch;
-            }
-            last = ch;
-        }
-        return tokens;
-    }
 
 
 
@@ -372,30 +319,6 @@ export default function GenericPageWrapper(props: Props) {
 
     }, [dispatch, islandConfig])
     // END
-    function compileTemplate(template: string) {
-        try {
-            return Handlebars.compile(template);
-        } catch (e) {
-            const errMsg = `Template error: ${e}`;
-            return _ => errMsg;
-        }
-    }
-    function randomIdentifier() {
-        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
-        const randomChar = () => chars[Math.floor((Math.random() * chars.length))]
-        return Array.from({ length: 12 }, randomChar).join('');
-    }
-    function applyTemplate(
-        template: HandlebarsTemplateDelegate<any>,
-        context?: object,
-    ) {
-        try {
-            context = { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
-            return template(context);
-        } catch (e) {
-            return `#Template apply error:\n   ${e}`;
-        }
-    }
     // WFISLANDS CONVERTDISPLAY NAME 
 
     useEffect(() => {

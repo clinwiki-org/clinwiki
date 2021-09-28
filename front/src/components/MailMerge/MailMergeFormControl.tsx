@@ -113,7 +113,7 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
         template={props.template}
         onTemplateChanged={props.onTemplateChanged}
         islands={props.islands}
-        pageType={mode}
+        // pageType={mode}
       />
       {/* <CollapsiblePanel></CollapsiblePanel> */}
     </Container>

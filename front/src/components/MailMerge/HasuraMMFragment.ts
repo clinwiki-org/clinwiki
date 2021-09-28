@@ -153,7 +153,54 @@ function toFragment(name: string, className: string, body: string) {
         return '';
     }
 }
+export function islandTokens(input: string) {
+    let tokens: any[] = [];
+    const yeet = (t: string) => {
+        //replace() to remove any line breaks \n
+        if (t !== '') {
+            t = t.replace(/[\r\n]+/gm, "");
+            if (t.startsWith('<')) {
+                const parts = t.split(/\s/).filter(id => id);
+                let object = {}
+                if (parts.length > 1) {
+                    object['name'] = parts[0].slice(1)
+                    let attributesArray = parts[1].split("=")
+                    let attributes = {};
+                    attributes[attributesArray[0]] = attributesArray[1] ?
+                        attributesArray[1]
+                            .replace(/\"/g, "")
+                            .replace(/\'/g, "") : attributesArray[1]
+                    object['attribs'] = attributes
+                    tokens.push(object)
+                } else {
+                    object['name'] = parts[0].slice(1)
+                    tokens.push(object)
+                }
 
+            }
+
+        }
+    };
+    let current = '';
+    let last = '';
+    let inside = false;
+    for (const ch of input) {
+        if (ch === '<') {
+            // Begin <
+            inside = true;
+            current = ch;
+        } else if (ch === '>' && current[1] !== '/') {
+            inside = false;
+            // Begin >
+            yeet(current);
+            current = ch;
+        } else {
+            current += ch;
+        }
+        last = ch;
+    }
+    return tokens;
+}
 export function compileFragment(
     fragmentName: string,
     className: string,

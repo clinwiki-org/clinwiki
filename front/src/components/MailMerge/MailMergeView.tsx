@@ -28,7 +28,7 @@ const defaultStyle: React.CSSProperties = {
   background: '#ffffff',
 };
 
-function compileTemplate(template: string) {
+export function compileTemplate(template: string) {
   try {
     return Handlebars.compile(template);
   } catch (e) {
@@ -41,7 +41,7 @@ function randomIdentifier() {
   const randomChar = () => chars[Math.floor((Math.random() * chars.length))]
   return Array.from({ length: 12 }, randomChar).join('');
 }
-function applyTemplate(
+export function applyTemplate(
   template: HandlebarsTemplateDelegate<any>,
   context?: object,
 ) {
