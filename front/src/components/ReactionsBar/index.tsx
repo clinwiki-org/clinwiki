@@ -9,7 +9,7 @@ import { find, propEq } from 'ramda';
 import { fetchReactionsIsland, createReaction, fetchStudyReactions } from 'services/study/actions';
 import { BeatLoader } from 'react-spinners';
 import { getStudyQuery } from '../MailMerge/MailMergeUtils';
-import { useHasuraFragment } from '../MailMerge/HasuraMMFragment';
+import { useFragment } from '../MailMerge/MailMergeFragment';
 interface ReactionsBarProps {
   user: any;
   studyData: any;
@@ -68,7 +68,7 @@ export default function ReactionsBar(props: ReactionsBarProps) {
   const isDeletingReaction = useSelector((state:RootState) => state.study.isDeletingReaction);
   const pageViewData = useSelector((state:RootState) => state.study.pageView);
   const currentPage = pageViewData ?  pageViewData?.data.site?.pageView : null;
-  const [ fragmentName, fragment ] = useHasuraFragment('Study', currentPage?.template || '');
+  const [ fragmentName, fragment ] = useFragment('Study', currentPage?.template || '');
   const studyQuery = `${getStudyQuery(fragmentName, fragment)}`
   const createReactionMutation = (action)=>{
     if(!action.variables.nctId || !action.variables.reactionKindId) return

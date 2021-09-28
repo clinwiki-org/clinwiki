@@ -4,7 +4,7 @@ import { RootState } from 'reducers';
 import InfiniteScroll from 'react-infinite-scroller';
 import { BeatLoader } from 'react-spinners';
 import HtmlToReact from 'html-to-react';
-import { useHasuraFragment } from 'components/MailMerge/HasuraMMFragment';
+import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import { useRouteMatch } from 'react-router-dom';
 import { getSearchQuery } from 'components/MailMerge/MailMergeUtils';
 import { fetchSearchPageStudy } from 'services/study/actions';
@@ -32,7 +32,7 @@ export default function StudyInfiniteScroll() {
   const beginCardsTemplate = template.search('<div class="cards-container"')
   const endCardsTemplate = template.search("'></studyinfinitescroll>")
   const cardsTemplate = template.slice(beginCardsTemplate, endCardsTemplate).replace('{{#each studies }} ', '').replace('{{/each }} ', '')
-  const [fragmentName, fragment] = useHasuraFragment(schemaType, cardsTemplate || '');
+  const [fragmentName, fragment] = useFragment(schemaType, cardsTemplate || '');
   const beginFragment = fragment.search('{') + 1
   const endFragment = fragment.search('}')
   const itemFragment = fragment.slice(beginFragment, endFragment).split("\n")

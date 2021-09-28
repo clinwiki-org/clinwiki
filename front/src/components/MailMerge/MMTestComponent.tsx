@@ -13,7 +13,7 @@ import { fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS, fetch
 import { useDispatch, useSelector } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 import { RootState } from 'reducers';
-import { useHasuraFragment } from 'components/MailMerge/HasuraMMFragment';
+import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import { introspectionQuery } from 'graphql/utilities';
 import { fetchNodeIntrospection, fetchHasuraIntrospection } from 'services/introspection/actions';
 import { fetchSearchParams } from 'services/search/actions';
@@ -75,16 +75,16 @@ export default function GenericPageWrapper(props: Props) {
     const currentPageType = getPageType(currentPage?.page_type);
     const schemaType = getClassForMode(currentPageType);
 
-    const [hasuraFragmentName, hasuraFragment] = useHasuraFragment('ctgov_prod_studies', template || '');
+    const [hasuraFragmentName, hasuraFragment] = useFragment('ctgov_prod_studies', template || '');
     const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(hasuraFragmentName, hasuraFragment)}`
 
-    const [fragmentName, fragment] = useHasuraFragment(schemaType, template || '');
+    const [fragmentName, fragment] = useFragment(schemaType, template || '');
     const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
 
-    const [fragmentNameDis, fragmentDis] = useHasuraFragment(schemaType, template || '');
+    const [fragmentNameDis, fragmentDis] = useFragment(schemaType, template || '');
     const HASURA_SEARCH_QUERY = `${getSearchQueryDIS(fragmentNameDis, fragmentDis)}`
 
-    const [hasuraFragmentNameDis, hasuraFragmentDis] = useHasuraFragment('disyii2_prod_20210704_2_tbl_conditions', currentPage?.template || '');
+    const [hasuraFragmentNameDis, hasuraFragmentDis] = useFragment('disyii2_prod_20210704_2_tbl_conditions', currentPage?.template || '');
     const HASURA_STUDY_QUERY_DIS = `${getHasuraStudyQueryDIS(hasuraFragmentNameDis, hasuraFragmentDis)}`
 
     useEffect(() => {

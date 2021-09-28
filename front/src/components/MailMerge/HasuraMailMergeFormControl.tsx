@@ -11,7 +11,7 @@ import { fetchHasuraIntrospection, fetchHasuraIntrospectionDIS } from 'services/
 
 //import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 import { introspectionQuery } from 'graphql/utilities';
-import { useHasuraFragment } from './HasuraMMFragment';
+import { useFragment } from './MailMergeFragment';
 
 const StyledFormControl = styled(FormControl)`
     margin-bottom: 20px;

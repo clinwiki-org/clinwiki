@@ -218,7 +218,7 @@ function randomIdentifier() {
     return Array.from({ length: 12 }, randomChar).join('');
 }
 
-export function useHasuraFragment(className: string, template: string) {
+export function useFragment(className: string, template: string) {
     const [fragmentName, _] = useState<string>(randomIdentifier());
     return useMemo(
         () => [

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { BeatLoader } from 'react-spinners';
 import MailMerge from './MailMerge';
 import { IslandConstructor } from './MailMergeView';
-import { useHasuraFragment } from './HasuraMMFragment';
+import { useFragment } from './MailMergeFragment';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSampleStudy, fetchSampleStudyHasura  } from 'services/study/actions';
 import { getSampleStudyQuery, getSampleSearchQuery } from 'services/study/queries';
@@ -62,7 +62,7 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   const hasuraIntrospection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
   const nodeIntrospection = useSelector((state: RootState) => state.introspection.nodeIntrospection);
   const schemaType = getClassForMode(mode);
-  const [fragmentName, fragment] = useHasuraFragment(schemaType, props.template);
+  const [fragmentName, fragment] = useFragment(schemaType, props.template);
   useEffect(() => {
     const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
     dispatch( mode == "Study" ? fetchHasuraIntrospection(QUERY) : fetchNodeIntrospection(QUERY));

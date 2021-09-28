@@ -11,7 +11,7 @@ import {  fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS, fetc
 import { useDispatch, useSelector } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 import { RootState } from 'reducers';
-import {  useHasuraFragment, islandTokens } from 'components/MailMerge/HasuraMMFragment';
+import {  useFragment, islandTokens } from 'components/MailMerge/MailMergeFragment';
 import { insertPageViewLog } from 'services/genericPage/actions';
 import LoginModal from 'components/LoginModal';
 import { uniq } from 'ramda';
@@ -73,16 +73,16 @@ export default function GenericPageWrapper(props: Props) {
     const currentPageType = getPageType(currentPage?.page_type);
     const schemaType = getClassForMode(currentPageType);
 
-    const [hasuraFragmentName, hasuraFragment] = useHasuraFragment('ctgov_prod_studies', currentPage?.template || '');
+    const [hasuraFragmentName, hasuraFragment] = useFragment('ctgov_prod_studies', currentPage?.template || '');
     const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(hasuraFragmentName, hasuraFragment)}`
 
-    const [fragmentName, fragment] = useHasuraFragment(schemaType, currentPage.template || '');
+    const [fragmentName, fragment] = useFragment(schemaType, currentPage.template || '');
     const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
 
-    const [fragmentNameDis, fragmentDis] = useHasuraFragment(schemaType, currentPage.template || '');
+    const [fragmentNameDis, fragmentDis] = useFragment(schemaType, currentPage.template || '');
     const HASURA_SEARCH_QUERY = `${getSearchQueryDIS(fragmentNameDis, fragmentDis)}`
 
-    const [hasuraFragmentNameDis, hasuraFragmentDis] = useHasuraFragment('disyii2_prod_20210704_2_tbl_conditions', currentPage?.template || '');
+    const [hasuraFragmentNameDis, hasuraFragmentDis] = useFragment('disyii2_prod_20210704_2_tbl_conditions', currentPage?.template || '');
     const HASURA_STUDY_QUERY_DIS = `${getHasuraStudyQueryDIS(hasuraFragmentNameDis, hasuraFragmentDis)}`
 
     useEffect(() => {

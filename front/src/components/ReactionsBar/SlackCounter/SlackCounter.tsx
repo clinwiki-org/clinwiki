@@ -9,7 +9,7 @@ import { Icon, InlineIcon } from '@iconify/react';
 import smilePlus from '@iconify/icons-fe/smile-plus';
 import { createReaction, deleteReaction} from '../../../services/study/actions';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
-import { useHasuraFragment } from '../../MailMerge/HasuraMMFragment';
+import { useFragment } from '../../MailMerge/MailMergeFragment';
 import { getStudyQuery } from '../../MailMerge/MailMergeUtils';
 import { RootState } from 'reducers';
 interface SlackCounterProps {
@@ -63,7 +63,7 @@ export const ThemedCounter = withTheme(StyledCounter);
 export default function SlackCounter(props: SlackCounterProps) {
     const pageViewData = useSelector((state:RootState) => state.study.pageView);
     const currentPage = pageViewData ? pageViewData?.data?.site?.pageView : null;
-    const [ fragmentName, fragment ] = useHasuraFragment('Study', currentPage?.template || '');
+    const [ fragmentName, fragment ] = useFragment('Study', currentPage?.template || '');
     const studyQuery = `${getStudyQuery(fragmentName, fragment)}`
     const dispatch = useDispatch();
     const [currentUserAndStudy, setCurrentUserAndStudy] = useState([]);
