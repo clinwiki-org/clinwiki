@@ -3,6 +3,7 @@ import {
     get_gql_url,
     getGraphQLMigrationURL,
     getHasuraClinwikiURL,
+    getHasuraDISURL,
     callHasuraClinwiki,
 } from 'utils/graphqlUtil';
 
@@ -12,6 +13,7 @@ import {
 const ENDPOINT = get_gql_url();
 //const HASURA_AACT = getHasuraURLAACT();
 const HASURA_CW = getHasuraClinwikiURL();
+const HASURA_DIS = getHasuraDISURL();
 const NODE_ENDPOINT = getGraphQLMigrationURL();
 
 let vars = {};
@@ -22,6 +24,9 @@ export const fetchIntrospection = (QUERY: any) => {
 
 export const fetchHasuraIntrospection = (QUERY: any) => {
     return callHasuraClinwiki(HASURA_CW, QUERY, vars);
+};
+export const fetchHasuraIntrospectionDIS = (QUERY: any) => {
+    return callHasuraClinwiki(HASURA_DIS, QUERY, vars);
 };
 export const fetchNodeIntrospection = (QUERY: any) => {
     return callGraphql(NODE_ENDPOINT, QUERY, vars);
