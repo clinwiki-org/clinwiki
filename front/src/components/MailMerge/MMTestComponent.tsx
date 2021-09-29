@@ -100,7 +100,7 @@ export default function GenericPageWrapper(props: Props) {
 
         switch (pageType) {
             case 'Study':
-                dispatch(fetchStudyPageHasura(currentStudy ?? "", GENERIC_QUERY));
+                dispatch(fetchStudyPageHasura(currentDoc ?? "", GENERIC_QUERY));
                 const SEARCH_NEARBY_QUERY = `${getSearchNearbyQuery()}`
                 const pageSize = searchParams.searchParams.pageSize = studyList?.data?.search?.recordsTotal
                 const finalPageSize = pageSizeHelper(pageSize)
@@ -113,7 +113,7 @@ export default function GenericPageWrapper(props: Props) {
                 dispatch(fetchSearchPageMM(searchParams.searchParams, GENERIC_QUERY));
                 return
             case 'Condition':
-                dispatch(fetchStudyPageHasuraDIS(props.arg ?? "", GENERIC_QUERY));
+                dispatch(fetchStudyPageHasuraDIS(currentDoc?? "", GENERIC_QUERY));
                 return
             default:
                 console.log("No PAGE TYPE ")
@@ -164,9 +164,9 @@ export default function GenericPageWrapper(props: Props) {
         }
     }
 
-    const currentStudy = match.params['docId']
+    const currentDoc = match.params['docId']
     console.log("Match?", match)
-    const nctIdObject = studyList?.data?.search?.studies?.find(study => study.nctId == currentStudy);
+    const nctIdObject = studyList?.data?.search?.studies?.find(study => study.nctId == currentDoc);
     const currentIndexOfStudyList = studyList?.data?.search?.studies?.indexOf(nctIdObject)
     // console.log('studyList?.data?.search?.studies', studyList?.data?.search?.studies.length);
 
@@ -344,11 +344,11 @@ export default function GenericPageWrapper(props: Props) {
 
         suggestedLabels && uniqueWFIds.map((WF) => {
             const wfID = WF.attribs.id;
-            let currentKeyObjects = suggestedLabels.data.crowd_keys.filter((x) => x.crowd_key === islandConfig[wfID].name)
+            let currentKeyObjects = suggestedLabels?.data?.crowd_keys.filter((x) => x.crowd_key === islandConfig[wfID].name)
 
             if (islandConfig[wfID]?.defaultToOpen == true) {
                 const compiled = islandConfig[wfID] && compileTemplate(islandConfig[wfID].displayName)
-                const raw = applyTemplate(compiled, currentKeyObjects[0])
+                const raw = currentKeyObjects && applyTemplate(compiled, currentKeyObjects[0])
                 if (raw !== islandConfig[wfID].displayName) {
                     dispatch(convertDisplayName(raw, wfID))
                 }

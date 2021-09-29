@@ -1,17 +1,26 @@
-import React, { useEffect, useRef } from 'react';
-import MailMergeView, { microMailMerge, applyTemplate, compileTemplate } from 'components/MailMerge/MailMergeView';
+import React, { useEffect, useState } from 'react';
+import MailMergeView, {
+    microMailMerge,
+} from 'components/MailMerge/MailMergeView';
+import CollapsiblePanel from 'components/CollapsiblePanel';
+// import MailMerge from './MailMerge';
 import { useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { convertDisplayName, fetchIslandConfig, fetchSearchPageAggBuckets } from 'services/search/actions'
-import { fetchSuggestedLabels, setShowLoginModal } from '../../services/study/actions';
-import {  getSearchQuery, getHasuraStudyQuery, getSearchQueryDIS, getHasuraStudyQueryDIS, getSearchNearbyQuery } from 'components/MailMerge/MailMergeUtils';
+import { getMyQuery } from 'components/MailMerge/MailMergeUtils';
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
-import {  fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS, fetchStudyPageNearby } from 'services/study/actions';
+import { fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS, fetchStudyPageNearby } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 import { RootState } from 'reducers';
-import {  useFragment, islandTokens } from 'components/MailMerge/MailMergeFragment';
+import { useFragment, schemaTokens } from 'components/MailMerge/MailMergeFragment';
+import { fetchSearchParams } from 'services/search/actions';
+import { useRef } from 'react';
+import { applyTemplate, compileTemplate } from 'components/MailMerge/MailMergeView';
+import { convertDisplayName, fetchIslandConfig, fetchSearchPageAggBuckets } from 'services/search/actions'
+import { fetchSuggestedLabels, setShowLoginModal } from '../../services/study/actions';
+import { getSearchNearbyQuery } from 'components/MailMerge/MailMergeUtils';
+import { islandTokens } from 'components/MailMerge/MailMergeFragment';
 import { insertPageViewLog } from 'services/genericPage/actions';
 import LoginModal from 'components/LoginModal';
 import { uniq } from 'ramda';
@@ -25,7 +34,7 @@ type Mode = 'Study' | 'Search_Study' | 'Condition' | 'Search_Condition';
 function getClassForMode(mode: Mode) {
     switch (mode) {
         case 'Study':
-            return 'Study';
+            return 'ctgov_prod_studies';
         case 'Search_Study':
             return 'ElasticStudy';
         case 'Condition':
@@ -35,25 +44,29 @@ function getClassForMode(mode: Mode) {
     }
 }
 
-export default function GenericPageWrapper(props: Props) {
+export default function GenericPageChild(props: Props) {
     useHandlebars();
-    const dispatch = useDispatch();
+
     const match = useRouteMatch();
+    const dispatch = useDispatch();
     const params = useUrlParams();
 
-    const currentUser = useSelector((state: RootState) => state.user.current);
+    const studyData = useSelector((state: RootState) => state.study.studyPage);
+    const studyList = useSelector((state: RootState) => state.study.studyList);
+    const upsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel);
+    const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
     const data = useSelector((state: RootState) => state.search.searchResults);
+    const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
+    const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
+
+    const currentUser = useSelector((state: RootState) => state.user.current);
     const isFetchingCurrentUser = useSelector((state: RootState) => state.user.isLoading);
     const islandConfig = useSelector((state: RootState) => state.search.islandConfig);
-    const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
     const searchHash = useSelector((state: RootState) => state.search.searchHash);
     const searchParams = data?.data?.searchParams;
     const showLoginModal = useSelector((state: RootState) => state.study.showLoginModal);
-    const studyData = useSelector((state: RootState) => state.study.studyPage);
-    const studyList = useSelector((state: RootState) => state.study.studyList);
-    const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
-    const upsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel);
-    const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
+    const currentDoc = match.params['docId']
+
     const getPageType = (val) => {
         switch (val) {
             case 1:
@@ -69,21 +82,16 @@ export default function GenericPageWrapper(props: Props) {
         }
     }
 
+    useEffect(() => {
+        dispatch(fetchSearchParams(params.hash));
+    }, [dispatch, params.hash]);
 
     const currentPageType = getPageType(currentPage?.page_type);
     const schemaType = getClassForMode(currentPageType);
+    const templateSchemaTokens = schemaTokens(currentPage?.template)
 
-    const [hasuraFragmentName, hasuraFragment] = useFragment('ctgov_prod_studies', currentPage?.template || '');
-    const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(hasuraFragmentName, hasuraFragment)}`
-
-    const [fragmentName, fragment] = useFragment(schemaType, currentPage.template || '');
-    const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
-
-    const [fragmentNameDis, fragmentDis] = useFragment(schemaType, currentPage.template || '');
-    const HASURA_SEARCH_QUERY = `${getSearchQueryDIS(fragmentNameDis, fragmentDis)}`
-
-    const [hasuraFragmentNameDis, hasuraFragmentDis] = useFragment('disyii2_prod_20210704_2_tbl_conditions', currentPage?.template || '');
-    const HASURA_STUDY_QUERY_DIS = `${getHasuraStudyQueryDIS(hasuraFragmentNameDis, hasuraFragmentDis)}`
+    const [fragmentName, fragment] = useFragment(templateSchemaTokens[1], currentPage?.template || '');
+    const GENERIC_QUERY = `${getMyQuery(fragmentName, fragment, templateSchemaTokens[1], templateSchemaTokens[2], templateSchemaTokens[3], templateSchemaTokens[4], templateSchemaTokens[5], templateSchemaTokens[6] && templateSchemaTokens[6])}`
 
     useEffect(() => {
 
@@ -91,20 +99,20 @@ export default function GenericPageWrapper(props: Props) {
 
         switch (pageType) {
             case 'Study':
-                dispatch(fetchStudyPageHasura(props.arg ?? "", HASURA_STUDY_QUERY));
+                dispatch(fetchStudyPageHasura(currentDoc ?? "", GENERIC_QUERY));
                 const SEARCH_NEARBY_QUERY = `${getSearchNearbyQuery()}`
                 const pageSize = searchParams.searchParams.pageSize = studyList?.data?.search?.recordsTotal
                 const finalPageSize = pageSizeHelper(pageSize)
                 dispatch(fetchStudyPageNearby({ ...searchParams.searchParams, pageSize: finalPageSize }, SEARCH_NEARBY_QUERY))
                 return
             case 'Search_Study':
-                dispatch(fetchSearchPageMM(searchParams.searchParams, SEARCH_QUERY));
+                dispatch(fetchSearchPageMM(searchParams.searchParams, GENERIC_QUERY));
                 return
             case 'Search_Condition':
-                dispatch(fetchSearchPageMM(searchParams.searchParams, HASURA_SEARCH_QUERY));
+                dispatch(fetchSearchPageMM(searchParams.searchParams, GENERIC_QUERY));
                 return
             case 'Condition':
-                dispatch(fetchStudyPageHasuraDIS(props.arg ?? "", HASURA_STUDY_QUERY_DIS));
+                dispatch(fetchStudyPageHasuraDIS(currentDoc ?? "", GENERIC_QUERY));
                 return
             default:
                 console.log("No PAGE TYPE ")
@@ -151,11 +159,9 @@ export default function GenericPageWrapper(props: Props) {
         }
     }
 
-    // TO-DO: GENERALIZE NAV CODE 
-
-    const currentStudy = match.params['docId']
-    const nctIdObject = studyList?.data?.search?.studies?.find(study => study.nctId == currentStudy);
+    const nctIdObject = studyList?.data?.search?.studies?.find(study => study.nctId == currentDoc);
     const currentIndexOfStudyList = studyList?.data?.search?.studies?.indexOf(nctIdObject)
+    // console.log('studyList?.data?.search?.studies', studyList?.data?.search?.studies.length);
 
     const nextStudy = () => {
         const nextNctId = studyList?.data?.search?.studies[currentIndexOfStudyList + 1]
@@ -194,7 +200,6 @@ export default function GenericPageWrapper(props: Props) {
         currentWFIslands: [] as any[]
     })
 
-    console.log(islandKeys)
 
 
 
@@ -328,11 +333,11 @@ export default function GenericPageWrapper(props: Props) {
 
         suggestedLabels && uniqueWFIds.map((WF) => {
             const wfID = WF.attribs.id;
-            let currentKeyObjects = suggestedLabels.data.crowd_keys.filter((x) => x.crowd_key === islandConfig[wfID].name)
+            let currentKeyObjects = suggestedLabels?.data?.crowd_keys.filter((x) => x.crowd_key === islandConfig[wfID].name)
 
             if (islandConfig[wfID]?.defaultToOpen == true) {
                 const compiled = islandConfig[wfID] && compileTemplate(islandConfig[wfID].displayName)
-                const raw = applyTemplate(compiled, currentKeyObjects[0])
+                const raw = currentKeyObjects && applyTemplate(compiled, currentKeyObjects[0])
                 if (raw !== islandConfig[wfID].displayName) {
                     dispatch(convertDisplayName(raw, wfID))
                 }

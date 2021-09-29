@@ -255,9 +255,7 @@ export function compileFragment(
     className: string,
     template: string
 ) {
-    const schemaValues = schemaTokens(template);
     
-    var prevTemplate;
     let cleanedTemplate = removeSchemaValues(template)
     const tokens = mustacheTokens(cleanedTemplate);
 
