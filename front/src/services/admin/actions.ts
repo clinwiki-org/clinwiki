@@ -12,6 +12,19 @@ export const reindexAllError = (errors: Array<string>) => ({
     type: types.REINDEX_ALL_ERROR,
     payload: errors
 });
+export const reindexByDate = (date?: string) => (console.log("two",date),{
+    type: types.REINDEX_BY_DATE_SEND,
+    date
+});
+
+export const reindexByDateSuccess = (payload: String) => ({
+    type: types.REINDEX_BY_DATE_SUCCESS
+});
+
+export const reindexByDateError = (errors: Array<string>) => ({
+    type: types.REINDEX_BY_DATE_ERROR,
+    payload: errors
+});
 
 export const reindexStudy = (nctId : String) => ({
     type: types.REINDEX_STUDY_SEND,
