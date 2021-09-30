@@ -130,33 +130,26 @@ export default function GenericPageChild(props: Props) {
     }
 
     const searchData = (pageType) => {
-        switch (pageType) {
-            case 'Study':
-                return { ...studyData?.data?.ctgov_prod_studies[0], nextStudy, previousStudy }
-            case 'Search_Study':
-                let studies: any[] = []
-                studyData?.data?.search?.studies?.map((study, index) => {
-                    studies.push({ ...study, ALL: 'ALL', hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', })
+        // For first pass, working under the assumption that if given a value for parentQuery it is an elastic value with recordsTotal
+        if(templateSchemaTokens[6] ){
+            let documentsArray: any[] = []
+            studyData?.data[templateSchemaTokens[4]][templateSchemaTokens[6]].map((document, index) => {
+                    documentsArray.push({ ...document, ALL: 'ALL', hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', })
                 })
+                let documentsObject = {};
+                documentsObject[templateSchemaTokens[6]]= documentsArray
+
                 return {
-                    studies,
-                    recordsTotal: studyData?.data?.search?.recordsTotal
+                    ...documentsObject                 ,
+                    recordsTotal: studyData?.data[templateSchemaTokens[4]]?.recordsTotal
                 }
-            case 'Search_Condition':
-                let diseases: any[] = []
-                studyData?.data?.searchDIS.diseases.map((disease, index) => {
-                    diseases.push({ ...disease, ALL: 'ALL', hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', })
-                })
-                return {
-                    diseases,
-                    recordsTotal: studyData?.data?.searchDIS.recordsTotal
+        
+                } else{
+                let documents = studyData?.data[templateSchemaTokens[4]][0] || []
+                // Currently commented out until generalized otherwise breaks dis 
+                // return { ...documents, nextStudy, previousStudy }
+                return { ...documents }
                 }
-            case 'Condition':
-                return studyData?.data?.disyii2_prod_20210704_2_tbl_conditions[0]
-            default:
-                console.log("No PAGE TYPE ")
-                return
-        }
     }
 
     const nctIdObject = studyList?.data?.search?.studies?.find(study => study.nctId == currentDoc);
