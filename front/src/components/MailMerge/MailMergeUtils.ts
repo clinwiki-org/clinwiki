@@ -26,6 +26,7 @@ export function getSearchQuery(name: string, frag: string, parentQuery?: string)
   ${frag}
   `;
 }
+
 export function getMyQuery(name: string, frag: string, schemaName: string, primaryKey: string, pkType:string, endPoint: string, options: string, parentQuery?: string) {
     frag = frag || `fragment ${name} on ${schemaName} { ${primaryKey} }`;
     return `
@@ -35,6 +36,7 @@ export function getMyQuery(name: string, frag: string, schemaName: string, prima
         ...${name}
       }`: `...${name}`
      } 
+     ${parentQuery ? 'recordsTotal': ''}
     }
   }
   ${frag}
