@@ -21,7 +21,7 @@ import { convertDisplayName, fetchIslandConfig, fetchSearchPageAggBuckets } from
 import { fetchSuggestedLabels, setShowLoginModal } from '../../services/study/actions';
 import { getSearchNearbyQuery } from 'components/MailMerge/MailMergeUtils';
 import { islandTokens } from 'components/MailMerge/MailMergeFragment';
-import { insertPageViewLog } from 'services/genericPage/actions';
+import { fetchGenericPage, insertPageViewLog } from 'services/genericPage/actions';
 import LoginModal from 'components/LoginModal';
 import { uniq } from 'ramda';
 import useHandlebars from 'hooks/useHandlebars';
@@ -50,8 +50,8 @@ export default function GenericPageChild(props: Props) {
     const match = useRouteMatch();
     const dispatch = useDispatch();
     const params = useUrlParams();
+    const genericPageData = useSelector((state: RootState) => state.genericPage.genericPageData);
 
-    const studyData = useSelector((state: RootState) => state.study.studyPage);
     const studyList = useSelector((state: RootState) => state.study.studyList);
     const upsertingLabel = useSelector((state: RootState) => state.study.isUpsertingLabel);
     const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
@@ -97,27 +97,7 @@ export default function GenericPageChild(props: Props) {
 
         let searchParams = { ...data?.data?.searchParams };
 
-        switch (pageType) {
-            case 'Study':
-                dispatch(fetchStudyPageHasura(currentDoc ?? "", GENERIC_QUERY));
-                const SEARCH_NEARBY_QUERY = `${getSearchNearbyQuery()}`
-                const pageSize = searchParams.searchParams.pageSize = studyList?.data?.search?.recordsTotal
-                const finalPageSize = pageSizeHelper(pageSize)
-                dispatch(fetchStudyPageNearby({ ...searchParams.searchParams, pageSize: finalPageSize }, SEARCH_NEARBY_QUERY))
-                return
-            case 'Search_Study':
-                dispatch(fetchSearchPageMM(searchParams.searchParams, GENERIC_QUERY));
-                return
-            case 'Search_Condition':
-                dispatch(fetchSearchPageMM(searchParams.searchParams, GENERIC_QUERY));
-                return
-            case 'Condition':
-                dispatch(fetchStudyPageHasuraDIS(currentDoc ?? "", GENERIC_QUERY));
-                return
-            default:
-                console.log("No PAGE TYPE ")
-                return
-        }
+                dispatch(fetchGenericPage(templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc,templateSchemaTokens[2], GENERIC_QUERY, true));
     }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data, suggestedLabels, studyList?.data?.search?.recordsTotal]);
 
 
@@ -131,9 +111,10 @@ export default function GenericPageChild(props: Props) {
 
     const searchData = (pageType) => {
         // For first pass, working under the assumption that if given a value for parentQuery it is an elastic value with recordsTotal
-        if(templateSchemaTokens[6] ){
+         if(templateSchemaTokens[6] && genericPageData?.data){
             let documentsArray: any[] = []
-            studyData?.data[templateSchemaTokens[4]][templateSchemaTokens[6]].map((document, index) => {
+            let arrayToMap: any[] = genericPageData?.data[templateSchemaTokens[4]][templateSchemaTokens[6]] ? genericPageData?.data[templateSchemaTokens[4]][templateSchemaTokens[6]]: [];
+            arrayToMap.map((document, index) => {
                     documentsArray.push({ ...document, ALL: 'ALL', hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', })
                 })
                 let documentsObject = {};
@@ -141,15 +122,15 @@ export default function GenericPageChild(props: Props) {
 
                 return {
                     ...documentsObject                 ,
-                    recordsTotal: studyData?.data[templateSchemaTokens[4]]?.recordsTotal
+                    recordsTotal: genericPageData?.data[templateSchemaTokens[4]]?.recordsTotal
                 }
         
                 } else{
-                let documents = studyData?.data[templateSchemaTokens[4]][0] || []
+                let documents = genericPageData?.data ? genericPageData.data[templateSchemaTokens[4]][0] : []
                 // Currently commented out until generalized otherwise breaks dis 
                 // return { ...documents, nextStudy, previousStudy }
                 return { ...documents }
-                }
+        }
     }
 
     const nctIdObject = studyList?.data?.search?.studies?.find(study => study.nctId == currentDoc);
@@ -339,7 +320,7 @@ export default function GenericPageChild(props: Props) {
 
     }, [suggestedLabels])
 
-    if (pageType == 'Study' && !studyData || !searchParams) {
+    if (!genericPageData ) {
         return <BeatLoader />
     }
 
@@ -354,7 +335,7 @@ export default function GenericPageChild(props: Props) {
             <Helmet>
                 <title>{title}</title>
             </Helmet>
-            {currentPage && studyData && <MailMergeView
+            { <MailMergeView
                 template={currentPage?.template || ''}
                 context={searchData(pageType)}
                 islands={islands}

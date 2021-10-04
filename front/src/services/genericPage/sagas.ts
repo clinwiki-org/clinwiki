@@ -21,7 +21,23 @@ function* insertPageViewLog(action) {
     }
 }
 
+function* getGenericPage(action) {
+    try {
+        let response = yield call(() =>
+            api.fetchGenericPage(action.params, action.primaryKey, action.QUERY, action.useHasura)
+        );
+        if (response) {
+            yield put(actions.fetchGenericPageSuccess(response));
+        } else {
+            yield put(actions.fetchGenericPageError(response.message));
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.fetchGenericPageError(err.message));
+    }
+}
 export default function* genericPageSagas() {
     yield takeLatest(types.INSERT_PAGE_VIEW_LOG_SEND, insertPageViewLog);
+    yield takeLatest(types.FETCH_GENERIC_PAGE_SEND, getGenericPage);
 
 }

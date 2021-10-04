@@ -28,8 +28,7 @@ export function getSearchQuery(name: string, frag: string, parentQuery?: string)
 }
 
 export function getMyQuery(name: string, frag: string, schemaName: string, primaryKey: string, pkType:string, endPoint: string, options: string, parentQuery?: string) {
-    frag = frag || `fragment ${name} on ${schemaName} { ${primaryKey} }`;
-    return `
+    return frag ?  `
   query My${name}Query($${primaryKey}:${pkType}) {
     ${endPoint}(${options}) {
       ${parentQuery ?`${parentQuery}{
@@ -38,9 +37,16 @@ export function getMyQuery(name: string, frag: string, schemaName: string, prima
      } 
      ${parentQuery ? 'recordsTotal': ''}
     }
+
   }
   ${frag}
-  `;
+  ` : `
+  query My${name}Query($${primaryKey}:${pkType}) {
+    ${endPoint}(${options}) {
+     ${parentQuery ? 'recordsTotal': ''}
+    }
+
+  }`;
 }
 export function getSearchQueryDIS(name: string, frag: string) {
     frag = frag || `fragment ${name} on ElasticStudyDIS { conditionId }`;
