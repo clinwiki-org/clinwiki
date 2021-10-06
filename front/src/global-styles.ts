@@ -52,6 +52,14 @@ label {
   transition: 0.5s;
   height: 38px;
 }
+#dropdown-basic-default{
+  text-align: left;
+}
+.btn .caret{
+  position: absolute;
+  right: 1em;
+  top: 50%;
+}
 .crumb-container {
   border: 2px solid ${props => props.theme.crumbs.crumbBackground};
   border-radius: 4px;
@@ -696,4 +704,16 @@ div.DraftEditor-editorContainer{
     border: 1px solid #eeeeee;
     color: #eeeeee;
   }
+  .three-table-inline {
+    width: 33%;
+    display: inline-grid;
+  }
+  .reset-button {
+    font-size: 15px;
+  }
+  .reset-button:hover {
+    transform: scale(1.05);
+    transition-duration: 0.1s;
+    background: #1B2A38;
+}
 `);

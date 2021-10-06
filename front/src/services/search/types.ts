@@ -80,9 +80,6 @@ export const FETCH_ISLAND_CONFIG_ERROR = 'FETCH_ISLAND_CONFIG_ERROR';
 
 export const CONVERT_DISPLAY_NAME = 'CONVERT_DISPLAY_NAME';
 
-export const UPDATE_FACET_CONFIG_SEND = 'UPDATE_FACET_CONFIG_SEND';
-export const UPDATE_FACET_CONFIG_SUCCESS = 'UPDATE_FACET_CONFIG_SUCCESS';
-export const UPDATE_FACET_CONFIG_ERROR = 'UPDATE_FACET_CONFIG_ERROR';
 export const SEARCH_EXPORT_SEND = 'SEARCH_EXPORT_SEND';
 export const SEARCH_EXPORT_SUCCESS = 'SEARCH_EXPORT_SUCCESS';
 export const SEARCH_EXPORT_ERROR = 'SEARCH_EXPORT_ERROR';
@@ -325,6 +322,7 @@ export interface FetchFacetConfigErrorAction {
 }
 export interface FetchIslandConfigSendAction {
     type: typeof FETCH_ISLAND_CONFIG_SEND;
+    aggId: [Number];
 }
 export interface FetchIslandConfigSuccessAction {
     type: typeof FETCH_ISLAND_CONFIG_SUCCESS;
@@ -341,20 +339,6 @@ export interface convertDisplayNameAction {
     islandId: any;
 }
 
-export interface UpdateFacetConfigSendAction {
-    type: typeof UPDATE_FACET_CONFIG_SEND;
-    input: UpdateFacetConfigInput;
-}
-
-export interface UpdateFacetConfigSuccessAction {
-    type: typeof UPDATE_FACET_CONFIG_SUCCESS;
-    payload: FacetConfigQuery;
-}
-
-export interface UpdateFacetConfigErrorAction {
-    type: typeof UPDATE_FACET_CONFIG_ERROR;
-    payload: SearchDataError;
-}
 export interface SearchExportSendAction {
     type: typeof SEARCH_EXPORT_SEND;
     searchExportId: number;
@@ -434,9 +418,6 @@ export type SearchActionTypes =
     | DeleteSavedSearchSuccessAction
     | DeleteSavedSearchErrorAction
     | FetchFacetConfigErrorAction
-    | UpdateFacetConfigSendAction
-    | UpdateFacetConfigSuccessAction
-    | UpdateFacetConfigErrorAction
     | SearchExportSendAction
     | SearchExportSuccessAction
     | SearchExportErrorAction
@@ -447,9 +428,6 @@ export type SearchActionTypes =
     | FetchIslandConfigSuccessAction
     | FetchIslandConfigErrorAction
     | convertDisplayNameAction
-    | UpdateFacetConfigSendAction
-    | UpdateFacetConfigSuccessAction
-    | UpdateFacetConfigErrorAction
     | SearchExportSendAction
     | SearchExportSuccessAction
     | SearchExportErrorAction

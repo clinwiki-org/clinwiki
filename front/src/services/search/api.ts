@@ -109,8 +109,10 @@ export const deleteSavedSearch = id => {
     });
 };
 
-export const fetchIslandConfig = () => {
-    return callHasuraClinwiki(HASURA_CW, query.ISLAND_CONFIG_QUERY, {});
+export const fetchIslandConfig = (idList) => {
+    return callHasuraClinwiki(HASURA_CW, query.ISLAND_CONFIG_QUERY, {
+        idList: idList
+    });
 };
 
 export const updateFacetConfig = input => {

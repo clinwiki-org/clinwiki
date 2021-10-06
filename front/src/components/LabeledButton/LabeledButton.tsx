@@ -21,18 +21,19 @@ const LabelSpan = styledComponents.span`
 `;
 
 interface LabeledButtonState {
-    showLabel?: Boolean;
-  }
-  
+  showLabel?: Boolean;
+}
+
 interface LabeledButtonProps {
   helperText?: string;
   theClick?: any;
   iconName?: string;
   theType?: string;
+  buttonTitle?: string;
 }
 
 class LabeledButton extends React.PureComponent<LabeledButtonProps, LabeledButtonState> {
-      
+
   state = {
     showLabel: false,
   };
@@ -43,24 +44,24 @@ class LabeledButton extends React.PureComponent<LabeledButtonProps, LabeledButto
       showLabel: !this.state.showLabel,
     });
   };
-  
+
 
   render() {
-    const { helperText, theClick, iconName, theType } = this.props;
+    const { helperText, theClick, iconName, theType, buttonTitle } = this.props;
 
     return (
       <ThemedButton
-      type={theType}
-      className="labeled-btn" 
-      onClick={theClick}
-      onMouseEnter={() => this.setShowLabel()}
-      onMouseLeave={() => this.setShowLabel()}>
-       {this.state.showLabel ? <LabelSpan>{helperText}</LabelSpan> : null}
+        type={theType}
+        className="labeled-btn"
+        onClick={theClick}
+        onMouseEnter={() => this.setShowLabel()}
+        onMouseLeave={() => this.setShowLabel()}>
+        {this.state.showLabel ? <LabelSpan>{helperText}</LabelSpan> : null}
         &nbsp;
         <FontAwesome name={iconName} />
-        &nbsp;
+        &nbsp; {buttonTitle || ''}
       </ThemedButton>
-       
+
     );
   }
 }

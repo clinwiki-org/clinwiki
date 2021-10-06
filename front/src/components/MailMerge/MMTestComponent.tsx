@@ -3,24 +3,20 @@ import MailMergeView, {
     microMailMerge,
 } from 'components/MailMerge/MailMergeView';
 import CollapsiblePanel from 'components/CollapsiblePanel';
-
 import MailMerge from './MailMerge';
-
 import { useRouteMatch } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { getStudyQuery, getSearchQuery, getHasuraStudyQuery, getSearchQueryDIS, getHasuraStudyQueryDIS, getSearchNearbyQuery } from 'components/MailMerge/MailMergeUtils';
+import { getSearchQuery, getHasuraStudyQuery, getSearchQueryDIS, getHasuraStudyQueryDIS, getSearchNearbyQuery } from 'components/MailMerge/MailMergeUtils';
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
-import { fetchStudyPage, fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS, fetchStudyPageNearby } from 'services/study/actions';
-
+import { fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS, fetchStudyPageNearby } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 import { RootState } from 'reducers';
 import { useHasuraFragment } from 'components/MailMerge/HasuraMMFragment';
 import { introspectionQuery } from 'graphql/utilities';
 import { fetchNodeIntrospection, fetchHasuraIntrospection } from 'services/introspection/actions';
-
 import { fetchSearchParams } from 'services/search/actions';
 import { GraphqlSchemaType } from './SchemaSelector';
 
@@ -99,7 +95,7 @@ export default function GenericPageWrapper(props: Props) {
 
         switch (pageType) {
             case 'Study':
-                dispatch(fetchStudyPageHasura(currentStudy ?? "", HASURA_STUDY_QUERY));
+                dispatch(fetchStudyPageHasura(props.arg ?? "", HASURA_STUDY_QUERY));
                 const SEARCH_NEARBY_QUERY = `${getSearchNearbyQuery()}`
                 const pageSize = searchParams.searchParams.pageSize = studyList?.data?.search?.recordsTotal
                 const finalPageSize = pageSizeHelper(pageSize)
@@ -200,7 +196,6 @@ export default function GenericPageWrapper(props: Props) {
 
   
     if (pageType == 'Study' && !studyData) {
-      console.log("FUCK ONE")
         return <BeatLoader />
     }
     const introspection = pageType == 'Search_Study' ? nodeIntrospection : hasuraIntrospection;
@@ -208,14 +203,7 @@ export default function GenericPageWrapper(props: Props) {
 if(!introspection){
   return <BeatLoader/>
 }
-    // if((!introspection && pageType !== 'Search_Study' )|| (!introspection && pageType !== 'Search_Condition')){
-    //   console.log("FUCK TWO", pageType)
-    //   return<BeatLoader/>
-    // }
-    // if((!introspection && pageType == 'Search_Study' ) || (!introspection && pageType == 'Search_Condition')){
-    //   console.log("FUCK Three")
-    //   return<BeatLoader/>
-    // }
+
     const types = introspection.data.__schema.types;
 
     return (

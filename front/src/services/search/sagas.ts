@@ -341,24 +341,11 @@ function* deleteSavedSearch(action) {
     }
 }
 
-// function* getFacetConfig() {
-//     try {
-//         let response = yield call(() => api.fetchFacetConfig());
-//         if (response) {
-//             yield put(actions.fetchFacetConfigSuccess(response));
-//         }
-//         else {
-//             yield put(actions.fetchFacetConfigError(response.message));
-//         }
-//     }  catch (err) {
-//         console.log(err);
-//         yield put(actions.fetchFacetConfigError(err.message));
-//     }
-// }
 
-function* getIslandConfig() {
+function* getIslandConfig(action) {
+    console.log(action)
     try {
-        let response = yield call(() => api.fetchIslandConfig());
+        let response = yield call(() => api.fetchIslandConfig(action.aggId));
         if (response) {
             yield put(actions.fetchIslandConfigSuccess(response));
         } else {
@@ -370,23 +357,6 @@ function* getIslandConfig() {
     }
 }
 
-function* updateFacetConfig(action) {
-    try {
-        // console.log("SAGA Updating PAGE VIEW", action);
-        let updateResponse = yield call(() =>
-            api.updateFacetConfig(action.input)
-        );
-        if (updateResponse.data.updateFacetConfig.errors === null) {
-            let response = yield getIslandConfig();
-            yield put(actions.updateFacetConfigSuccess(response));
-        } else {
-            yield put(actions.updateFacetConfigError(updateResponse.message));
-        }
-    } catch (err) {
-        console.log(err);
-        yield put(actions.updateFacetConfigError(err.message));
-    }
-}
 
 function* getSearchExport(action) {
     //console.log("Search EXPORT", action)
@@ -533,7 +503,6 @@ export default function* userSagas() {
         types.CONVERT_DISPLAY_NAME,
         convertIslandConfigDisplayName
     );
-    yield takeLatest(types.UPDATE_FACET_CONFIG_SEND, updateFacetConfig);
     yield takeLatest(types.SEARCH_EXPORT_SEND, getSearchExport);
     yield takeLatest(types.EXPORT_T0_CSV_SEND, exportToCsv);
     yield takeLatest(types.TOGGLE_AGG, toggleAgg);

@@ -1,5 +1,5 @@
 {
-  "resource_version": 447,
+  "resource_version": 18,
   "metadata": {
     "version": 3,
     "sources": [
@@ -9,7 +9,59 @@
         "tables": [
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
+              "name": "brief_summaries"
+            },
+            "select_permissions": [
+              {
+                "role": "anonymous",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "nct_id",
+                    "description"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "contributor",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "nct_id",
+                    "description"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "indexer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "nct_id",
+                    "description"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "nct_id",
+                    "description"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "schema": "ctgov_prod",
               "name": "browse_conditions"
             },
             "select_permissions": [
@@ -62,7 +114,7 @@
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "browse_interventions"
             },
             "select_permissions": [
@@ -115,7 +167,7 @@
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "central_contacts"
             },
             "select_permissions": [
@@ -177,7 +229,7 @@
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "conditions"
             },
             "select_permissions": [
@@ -230,16 +282,16 @@
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "design_group_interventions"
             },
             "array_relationships": [
               {
-                "name": "ctgov_design_group_interventions_design_groups",
+                "name": "ctgov_prod_design_group_interventions_design_groups",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "design_groups"
                     },
                     "insertion_order": null,
@@ -250,11 +302,11 @@
                 }
               },
               {
-                "name": "ctgov_design_group_interventions_interventions",
+                "name": "ctgov_prod_design_group_interventions_interventions",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "interventions"
                     },
                     "insertion_order": null,
@@ -267,6 +319,18 @@
             ],
             "select_permissions": [
               {
+                "role": "anonymous",
+                "permission": {
+                  "columns": [
+                    "nct_id",
+                    "design_group_id",
+                    "id",
+                    "intervention_id"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
                 "role": "contributor",
                 "permission": {
                   "columns": [
@@ -277,21 +341,45 @@
                   ],
                   "filter": {}
                 }
+              },
+              {
+                "role": "indexer",
+                "permission": {
+                  "columns": [
+                    "nct_id",
+                    "design_group_id",
+                    "id",
+                    "intervention_id"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "nct_id",
+                    "design_group_id",
+                    "id",
+                    "intervention_id"
+                  ],
+                  "filter": {}
+                }
               }
             ]
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "design_groups"
             },
             "array_relationships": [
               {
-                "name": "ctgov_design_groups_design_group_interventions",
+                "name": "ctgov_prod_design_groups_design_group_interventions",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "design_group_interventions"
                     },
                     "insertion_order": null,
@@ -304,6 +392,19 @@
             ],
             "select_permissions": [
               {
+                "role": "anonymous",
+                "permission": {
+                  "columns": [
+                    "group_type",
+                    "nct_id",
+                    "title",
+                    "id",
+                    "description"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
                 "role": "contributor",
                 "permission": {
                   "columns": [
@@ -315,18 +416,186 @@
                   ],
                   "filter": {}
                 }
+              },
+              {
+                "role": "indexer",
+                "permission": {
+                  "columns": [
+                    "group_type",
+                    "nct_id",
+                    "title",
+                    "id",
+                    "description"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "group_type",
+                    "nct_id",
+                    "title",
+                    "id",
+                    "description"
+                  ],
+                  "filter": {}
+                }
               }
             ]
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "designs"
-            }
+            },
+            "select_permissions": [
+              {
+                "role": "anonymous",
+                "permission": {
+                  "columns": [
+                    "caregiver_masked",
+                    "investigator_masked",
+                    "outcomes_assessor_masked",
+                    "subject_masked",
+                    "allocation",
+                    "intervention_model",
+                    "masking",
+                    "nct_id",
+                    "observational_model",
+                    "primary_purpose",
+                    "time_perspective",
+                    "id",
+                    "intervention_model_description",
+                    "masking_description"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "contributor",
+                "permission": {
+                  "columns": [
+                    "caregiver_masked",
+                    "investigator_masked",
+                    "outcomes_assessor_masked",
+                    "subject_masked",
+                    "allocation",
+                    "intervention_model",
+                    "masking",
+                    "nct_id",
+                    "observational_model",
+                    "primary_purpose",
+                    "time_perspective",
+                    "id",
+                    "intervention_model_description",
+                    "masking_description"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "indexer",
+                "permission": {
+                  "columns": [
+                    "caregiver_masked",
+                    "investigator_masked",
+                    "outcomes_assessor_masked",
+                    "subject_masked",
+                    "allocation",
+                    "intervention_model",
+                    "masking",
+                    "nct_id",
+                    "observational_model",
+                    "primary_purpose",
+                    "time_perspective",
+                    "id",
+                    "intervention_model_description",
+                    "masking_description"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "caregiver_masked",
+                    "investigator_masked",
+                    "outcomes_assessor_masked",
+                    "subject_masked",
+                    "allocation",
+                    "intervention_model",
+                    "masking",
+                    "nct_id",
+                    "observational_model",
+                    "primary_purpose",
+                    "time_perspective",
+                    "id",
+                    "intervention_model_description",
+                    "masking_description"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
+              "name": "detailed_descriptions"
+            },
+            "select_permissions": [
+              {
+                "role": "anonymous",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "nct_id",
+                    "description"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "contributor",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "nct_id",
+                    "description"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "indexer",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "nct_id",
+                    "description"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "nct_id",
+                    "description"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "schema": "ctgov_prod",
               "name": "eligibilities"
             },
             "select_permissions": [
@@ -407,12 +676,12 @@
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "facilities"
             },
             "object_relationships": [
               {
-                "name": "ctgov_facilities_clinwiki_facility_locations",
+                "name": "ctgov_prod_facilities_clinwiki_facility_locations",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
@@ -437,7 +706,7 @@
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "facility_contacts"
                     },
                     "insertion_order": null,
@@ -535,7 +804,7 @@
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "facility_contacts"
             },
             "select_permissions": [
@@ -600,10 +869,23 @@
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "facility_investigators"
             },
             "select_permissions": [
+              {
+                "role": "anonymous",
+                "permission": {
+                  "columns": [
+                    "name",
+                    "nct_id",
+                    "role",
+                    "facility_id",
+                    "id"
+                  ],
+                  "filter": {}
+                }
+              },
               {
                 "role": "contributor",
                 "permission": {
@@ -644,10 +926,22 @@
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "intervention_other_names"
             },
             "select_permissions": [
+              {
+                "role": "anonymous",
+                "permission": {
+                  "columns": [
+                    "name",
+                    "nct_id",
+                    "id",
+                    "intervention_id"
+                  ],
+                  "filter": {}
+                }
+              },
               {
                 "role": "contributor",
                 "permission": {
@@ -668,21 +962,33 @@
                   ],
                   "filter": {}
                 }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "name",
+                    "nct_id",
+                    "id",
+                    "intervention_id"
+                  ],
+                  "filter": {}
+                }
               }
             ]
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "interventions"
             },
             "array_relationships": [
               {
-                "name": "ctgov_interventions_design_group_interventions",
+                "name": "ctgov_prod_interventions_design_group_interventions",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "design_group_interventions"
                     },
                     "insertion_order": null,
@@ -693,11 +999,11 @@
                 }
               },
               {
-                "name": "ctgov_interventions_intervention_other_names",
+                "name": "ctgov_prod_interventions_intervention_other_names",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "intervention_other_names"
                     },
                     "insertion_order": null,
@@ -763,7 +1069,7 @@
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "overall_officials"
             },
             "select_permissions": [
@@ -821,7 +1127,7 @@
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "responsible_parties"
             },
             "select_permissions": [
@@ -887,7 +1193,7 @@
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "sponsors"
             },
             "select_permissions": [
@@ -944,7 +1250,7 @@
           },
           {
             "table": {
-              "schema": "ctgov",
+              "schema": "ctgov_prod",
               "name": "studies"
             },
             "array_relationships": [
@@ -953,7 +1259,7 @@
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "conditions"
                     },
                     "insertion_order": null,
@@ -964,11 +1270,26 @@
                 }
               },
               {
-                "name": "ctgov_studies_browse_conditions",
+                "name": "ctgov_prod_studies_brief_summaries",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
+                      "name": "brief_summaries"
+                    },
+                    "insertion_order": null,
+                    "column_mapping": {
+                      "nct_id": "nct_id"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "ctgov_prod_studies_browse_conditions",
+                "using": {
+                  "manual_configuration": {
+                    "remote_table": {
+                      "schema": "ctgov_prod",
                       "name": "browse_conditions"
                     },
                     "insertion_order": null,
@@ -979,11 +1300,11 @@
                 }
               },
               {
-                "name": "ctgov_studies_browse_interventions",
+                "name": "ctgov_prod_studies_browse_interventions",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "browse_interventions"
                     },
                     "insertion_order": null,
@@ -994,11 +1315,11 @@
                 }
               },
               {
-                "name": "ctgov_studies_central_contacts",
+                "name": "ctgov_prod_studies_central_contacts",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "central_contacts"
                     },
                     "insertion_order": null,
@@ -1009,7 +1330,7 @@
                 }
               },
               {
-                "name": "ctgov_studies_clinwiki_crowd_key_value_ids",
+                "name": "ctgov_prod_studies_clinwiki_crowd_key_value_ids",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
@@ -1024,7 +1345,7 @@
                 }
               },
               {
-                "name": "ctgov_studies_clinwiki_wiki_pages",
+                "name": "ctgov_prod_studies_clinwiki_wiki_pages",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
@@ -1039,11 +1360,11 @@
                 }
               },
               {
-                "name": "ctgov_studies_conditions",
+                "name": "ctgov_prod_studies_conditions",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "conditions"
                     },
                     "insertion_order": null,
@@ -1054,11 +1375,11 @@
                 }
               },
               {
-                "name": "ctgov_studies_design_groups",
+                "name": "ctgov_prod_studies_design_groups",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "design_groups"
                     },
                     "insertion_order": null,
@@ -1069,11 +1390,26 @@
                 }
               },
               {
-                "name": "ctgov_studies_eligibilities",
+                "name": "ctgov_prod_studies_detailed_descriptions",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
+                      "name": "detailed_descriptions"
+                    },
+                    "insertion_order": null,
+                    "column_mapping": {
+                      "nct_id": "nct_id"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "ctgov_prod_studies_eligibilities",
+                "using": {
+                  "manual_configuration": {
+                    "remote_table": {
+                      "schema": "ctgov_prod",
                       "name": "eligibilities"
                     },
                     "insertion_order": null,
@@ -1084,11 +1420,11 @@
                 }
               },
               {
-                "name": "ctgov_studies_facilities",
+                "name": "ctgov_prod_studies_facilities",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "facilities"
                     },
                     "insertion_order": null,
@@ -1099,11 +1435,11 @@
                 }
               },
               {
-                "name": "ctgov_studies_interventions",
+                "name": "ctgov_prod_studies_interventions",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "interventions"
                     },
                     "insertion_order": null,
@@ -1114,11 +1450,11 @@
                 }
               },
               {
-                "name": "ctgov_studies_overall_officials",
+                "name": "ctgov_prod_studies_overall_officials",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "overall_officials"
                     },
                     "insertion_order": null,
@@ -1129,11 +1465,11 @@
                 }
               },
               {
-                "name": "ctgov_studies_responsible_parties",
+                "name": "ctgov_prod_studies_responsible_parties",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "responsible_parties"
                     },
                     "insertion_order": null,
@@ -1144,11 +1480,11 @@
                 }
               },
               {
-                "name": "ctgov_studies_sponsors",
+                "name": "ctgov_prod_studies_sponsors",
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "sponsors"
                     },
                     "insertion_order": null,
@@ -1163,7 +1499,7 @@
                 "using": {
                   "manual_configuration": {
                     "remote_table": {
-                      "schema": "ctgov",
+                      "schema": "ctgov_prod",
                       "name": "facilities"
                     },
                     "insertion_order": null,
@@ -1622,6 +1958,74 @@
                   "check": {}
                 }
               }
+            ],
+            "delete_permissions": [
+              {
+                "role": "contributor",
+                "permission": {
+                  "filter": {}
+                }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "schema": "public",
+              "name": "crowd_key_value_ids_audit"
+            },
+            "insert_permissions": [
+              {
+                "role": "contributor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "id",
+                    "created_at",
+                    "updated_at",
+                    "ckvi_id",
+                    "crowd_key",
+                    "crowd_value",
+                    "crowd_key_value_id_association",
+                    "user_id",
+                    "verified",
+                    "approved",
+                    "evidence",
+                    "indexed",
+                    "ckvi_created_at",
+                    "ckvi_updated_at"
+                  ],
+                  "backend_only": false
+                }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "approved",
+                    "indexed",
+                    "verified",
+                    "ckvi_id",
+                    "id",
+                    "user_id",
+                    "crowd_key",
+                    "crowd_key_value_id_association",
+                    "crowd_value",
+                    "evidence",
+                    "ckvi_created_at",
+                    "ckvi_updated_at",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "backend_only": false
+                }
+              }
             ]
           },
           {
@@ -2062,9 +2466,11 @@
                 "role": "anonymous",
                 "permission": {
                   "columns": [
-                    "id",
                     "config",
-                    "island_type"
+                    "created_at",
+                    "id",
+                    "island_type",
+                    "updated_at"
                   ],
                   "filter": {}
                 }
@@ -2098,6 +2504,76 @@
                     "id",
                     "config",
                     "island_type"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "schema": "public",
+              "name": "locations"
+            }
+          },
+          {
+            "table": {
+              "schema": "public",
+              "name": "page_view_logs"
+            },
+            "insert_permissions": [
+              {
+                "role": "anonymous",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "url",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "backend_only": false
+                }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "url",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "backend_only": false
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "anonymous",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "url",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "url",
+                    "created_at",
+                    "updated_at"
                   ],
                   "filter": {}
                 }
@@ -2183,6 +2659,12 @@
                 }
               }
             ]
+          },
+          {
+            "table": {
+              "schema": "public",
+              "name": "pipeline_queue"
+            }
           },
           {
             "table": {
@@ -3045,13 +3527,24 @@
         "configuration": {
           "connection_info": {
             "use_prepared_statements": false,
-            "database_url": "postgres://clinwiki:ZetIFOnXd78H@db:5432/clinwiki",
+            "database_url": "CHANGE ME",
             "isolation_level": "read-committed",
             "pool_settings": {
               "connection_lifetime": 600
             }
           }
         }
+      }
+    ],
+    "remote_schemas": [
+      {
+        "name": "Clinwiki-node",
+        "definition": {
+          "url": "https://clinwiki-node.herokuapp.com/graphql",
+          "timeout_seconds": 60,
+          "forward_client_headers": true
+        },
+        "comment": ""
       }
     ]
   }

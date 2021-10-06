@@ -91,10 +91,10 @@ export default function SearchWithin(props: Props) {
 
   const site = useSelector((state: RootState) => state.site.hasuraPresentSiteProvider.sites[0]);
   const presentSiteView = site?.siteView;
-  const searchParams = 
-  // \searchParamsFromQuery(
+  const searchParams =
+    // \searchParamsFromQuery(
     data?.data?.searchParams.searchParams;
-    // presentSiteView
+  // presentSiteView
   // );
   //TO-DO, currently hardcoding previously reading from siteview config. Not sure which direction we're going 
   // let showCrumbsBar = presentSiteView.search.config.fields.showBreadCrumbs;
@@ -125,11 +125,11 @@ export default function SearchWithin(props: Props) {
 
 
   const newRemoveSearchTerm = (term: string) => {
-    let currentParams:SearchParams = searchParams;
+    let currentParams: SearchParams = searchParams;
     console.log(term, currentParams)
     const children = reject(
       propEq('key', term),
-     searchParams.q.children || []
+      searchParams.q.children || []
     ) as SearchQuery[];
     currentParams = {
       ...searchParams,
@@ -311,7 +311,7 @@ export default function SearchWithin(props: Props) {
     }
   };
   let crumbValues: string[] = [];
-  searchParams.q.children.map(v=>{
+  searchParams.q.children.map(v => {
     crumbValues.push(v.key)
   })
   return (
@@ -321,17 +321,17 @@ export default function SearchWithin(props: Props) {
         category="search"
         values={crumbValues}
         onClick={term => newRemoveSearchTerm(term)}
-      > 
-      <Form
-        inline
-        className="searchInput"
-        onSubmit={onSubmit}
-        style={{ color: 'black', display: 'inline' }}>
-        {renderAutoSuggest(
-          searchTerm,
-          showAutoSuggest
-        )}
-      </Form>
+      >
+        <Form
+          inline
+          className="searchInput"
+          onSubmit={onSubmit}
+          style={{ color: 'black', display: 'inline' }}>
+          {renderAutoSuggest(
+            searchTerm,
+            showAutoSuggest
+          )}
+        </Form>
       </MultiCrumb>
     </div>
   );

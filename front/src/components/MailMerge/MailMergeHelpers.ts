@@ -1,7 +1,5 @@
 import Handlebars from 'handlebars';
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
-import { link } from 'fs';
-import {ThemedSearchCard} from 'components/StyledComponents';
 import moment from 'moment';
 
 export function registerHandlebarsHelpers() {
@@ -121,7 +119,6 @@ Handlebars.registerHelper('runConditional', (a: any, operator: string, b: string
          bool = a < b;
          return bool;
      default:
-        //  throw "Unknown operator " + operator;
         return a==b;
       }
 });
