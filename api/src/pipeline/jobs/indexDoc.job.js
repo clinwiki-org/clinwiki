@@ -12,7 +12,7 @@ let IS_RUNNING = false;
 
 const QUERY_ALL_CONDITION_IDS = `
 query MyQuery {
-  disyii2_prod_20210704_2_tbl_conditions {
+  dis_prod_tbl_conditions {
     condition_id
   }
 }
@@ -163,7 +163,7 @@ const SAMPLE_QUERY_DIS = (docKey) => `
 query MyQuery(
   $idList: [bigint!]
   ) {
-  disyii2_prod_20210704_2_tbl_conditions(where: {${docKey}: {_in: $idList}}) {
+  dis_prod_tbl_conditions(where: {${docKey}: {_in: $idList}}) {
     condition_id
     conditions_condition_name {
       name
@@ -227,7 +227,7 @@ const getAllDocuments = async (primaryKey) => {
 
 // console.log("RESULTS FOR ALL DOPCS", result)
 
-  return hasuraInstance == "dis" ? result.data.disyii2_prod_20210704_2_tbl_conditions.map( row => row.condition_id)
+  return hasuraInstance == "dis" ? result.data.dis_prod_tbl_conditions.map( row => row.condition_id)
   : result.data.ctgov_prod_studies.map( row => row.nct_id);
 };
 
@@ -480,8 +480,8 @@ export const reindexDocument = async (payload) => {
   } 
   if(payload.indexName == "dis_development" || payload.indexName ==  "dis_production"){
 
-    for (let i = 0; i < results?.data?.disyii2_prod_20210704_2_tbl_conditions?.length; i++) {
-      let document = results.data.disyii2_prod_20210704_2_tbl_conditions[i];
+    for (let i = 0; i < results?.data?.dis_prod_tbl_conditions?.length; i++) {
+      let document = results.data.dis_prod_tbl_conditions[i];
       
       let mappedDoc = await getDocumentMapping(document);
       

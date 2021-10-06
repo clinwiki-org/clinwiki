@@ -77,7 +77,7 @@ export default function GenericPageWrapper(props: Props) {
     const [fragmentNameDis, fragmentDis] = useFragment(schemaType, currentPage.template || '');
     const HASURA_SEARCH_QUERY = `${getSearchQueryDIS(fragmentNameDis, fragmentDis)}`
 
-    const [hasuraFragmentNameDis, hasuraFragmentDis] = useHasuraFragment('disyii2_prod_20210704_2_tbl_conditions', currentPage?.template || '');
+    const [hasuraFragmentNameDis, hasuraFragmentDis] = useHasuraFragment('dis_prod_tbl_conditions', currentPage?.template || '');
     const HASURA_STUDY_QUERY_DIS = `${getHasuraStudyQueryDIS(hasuraFragmentNameDis, hasuraFragmentDis)}`
 
     useEffect(() => {
@@ -139,7 +139,7 @@ export default function GenericPageWrapper(props: Props) {
                     recordsTotal: studyData?.data?.searchDIS.recordsTotal
                 }
             case 'Condition':
-                return studyData?.data?.disyii2_prod_20210704_2_tbl_conditions[0]
+                return studyData?.data?.dis_prod_tbl_conditions[0]
             default:
                 console.log("No PAGE TYPE ")
                 return
