@@ -153,6 +153,7 @@ function schemaToInternal(schemaType: SchemaType) {
     case 'json':
       return jsonSchemaToInternal(schemaType.schema);
     case 'graphql':
+      console.log(schemaType)
       return graphqlToInternal(schemaType);
   }
 }

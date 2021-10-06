@@ -6,6 +6,7 @@ export const FETCH_INTROSPECTION_ERROR = 'FETCH_INTROSPECTION_ERROR';
 
 
 export const FETCH_HASURA_INTROSPECTION_SEND = 'FETCH_HASURA_INTROSPECTION_SEND';
+export const FETCH_HASURA_INTROSPECTION_DIS_SEND = 'FETCH_HASURA_INTROSPECTION_DIS_SEND';
 export const FETCH_HASURA_INTROSPECTION_SUCCESS = 'FETCH_HASURA_INTROSPECTION_SUCCESS';
 export const FETCH_HASURA_INTROSPECTION_ERROR = 'FETCH_HASURA_INTROSPECTION_ERROR';
 
@@ -47,6 +48,10 @@ export interface FetchHasuraIntrospectionSendAction {
     type: typeof FETCH_HASURA_INTROSPECTION_SEND
     QUERY: any
 };
+export interface FetchHasuraIntrospectionDISSendAction {
+    type: typeof FETCH_HASURA_INTROSPECTION_DIS_SEND
+    QUERY: any
+};
 
 export interface FetchHasuraIntrospectionSuccessAction {
     type: typeof FETCH_HASURA_INTROSPECTION_SUCCESS,
@@ -78,6 +83,7 @@ FetchIntrospectionSendAction |
 FetchIntrospectionSuccessAction |
 FetchIntrospectionErrorAction  |
 FetchHasuraIntrospectionSendAction |
+FetchHasuraIntrospectionDISSendAction |
 FetchHasuraIntrospectionSuccessAction |
 FetchHasuraIntrospectionErrorAction |
 FetchNodeIntrospectionSendAction |

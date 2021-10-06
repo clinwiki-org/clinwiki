@@ -23,19 +23,22 @@ const Container = styled.div`
   max-width: 1200px;
   margin-bottom: 20px;
 `;
-type Mode = 'Study' | 'Search';
+type Mode = 'Study' | 'Search' | 'Condition' | 'SearchDis';
 
 // return a tuple of the elements that differ with the mode
 // query, params, schema
 
 function getClassForMode(mode: Mode) {
-  switch (mode) {
-    case 'Study':
-      return 'ctgov_prod_studies';
-    case 'Search':
-      return 'ElasticStudy';
-      
-  }
+    switch (mode) {
+        case 'Study':
+            return 'Study';
+        case 'Search':
+            return 'ElasticStudy';
+        case 'Condition':
+            return 'Condition';
+        case 'SearchDis':
+            return 'ElasticStudyDIS';
+    }
 }
 interface MailMergeFormControlProps {
   template: string;
@@ -76,10 +79,10 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   useEffect(() => {
     const STUDY_QUERY = `${getSampleStudyQuery(fragmentName, fragment)}`
     const SEARCH_QUERY = `${getSampleSearchQuery(fragmentName, fragment)}`
-    dispatch(mode == "Study" ? fetchSampleStudyHasura(nctId ?? "", STUDY_QUERY) : fetchSampleStudy(searchParams ?? "", SEARCH_QUERY));
+    // dispatch(mode == "Study" ? fetchSampleStudyHasura(nctId ?? "", STUDY_QUERY) : fetchSampleStudy(searchParams ?? "", SEARCH_QUERY));
   }, [dispatch, fragment, mode, searchParams]);
 
-  const sample = useSelector((state: RootState) => state.study.hasuraSampleStudy);
+  // const sample = useSelector((state: RootState) => state.study.hasuraSampleStudy);
   const sampleSearch = useSelector((state: RootState) => state.study.sampleStudy);
 
   if (!nodeIntrospection && mode == "Search") {
@@ -88,12 +91,12 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
   if (!hasuraIntrospection && mode == "Study") {
     return <BeatLoader />;
   }
-  if (!sample && mode == "Study") {
-    return <BeatLoader />;
-  }
-  if (!sampleSearch && mode == "Search") {
-    return <BeatLoader />;
-  }
+  // if ( mode == "Study") {
+  //   return <BeatLoader />;
+  // }
+  // if ( mode == "Search") {
+  //   return <BeatLoader />;
+  // }
 
 
   // const schema : GraphqlSchemaType = {
@@ -124,7 +127,7 @@ export default function MailMergeFormControl(props: MailMergeFormControlProps) {
       /> */}
       <MailMerge
         schema={{ kind: 'graphql', typeName: schemaType, types }}
-        sample={mode == 'Study' ? (sample?.data?.study) : searchData()}
+        // sample={mode == 'Study' ? (sample?.data?.study) : searchData()}
         template={props.template}
         onTemplateChanged={props.onTemplateChanged}
         islands={props.islands}
