@@ -1,63 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- The first thing in any HTML file should be the charset -->
-    <meta charset="utf-8" />
-    <!-- Make the page mobile compatible -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Allow installing the app to the homescreen -->
-    <!-- <link rel="manifest" href="manifest.json"> -->
-    <meta name="mobile-web-app-capable" content="yes" />
-    <!-- Fontawesome -->
-    <script src="https://kit.fontawesome.com/f93a50d6eb.js" crossorigin="anonymous"></script>
-    <!-- <script
+    <head>
+        <!-- The first thing in any HTML file should be the charset -->
+        <meta charset="utf-8" />
+        <!-- Make the page mobile compatible -->
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- Allow installing the app to the homescreen -->
+        <!-- <link rel="manifest" href="manifest.json"> -->
+        <meta name="mobile-web-app-capable" content="yes" />
+        <!-- Fontawesome -->
+        <script
+            src="https://kit.fontawesome.com/f93a50d6eb.js"
+            crossorigin="anonymous"
+        ></script>
+        <!-- <script
   type="text/javascript"
   src="https://use.fontawesome.com/releases/v5.15.1/js/conflict-detection.js">
 </script> -->
-    <!-- <link
+        <!-- <link
       rel="stylesheet"
       href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
     /> -->
-    <!-- Latest compiled and minified CSS -->
-    <link
-      href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-      crossorigin="anonymous"
-    />
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <script src="//code.jquery.com/jquery-3.3.1.slim.min.js" />
-    <script
-      src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-GZNGYD968N"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag('js', new Date());
-      gtag('config', 'G-GZNGYD968N');
-    </script>
-    <title>Clinwiki</title>
-  </head>
-  <body>
-    <!-- Display a message if JS has been disabled on the browser. -->
-    <noscript
-      >If you're seeing this message, that means
-      <strong>JavaScript has been disabled on your browser</strong>, please
-      <strong>enable JS</strong> to make this app work.</noscript
-    >
+        <!-- Latest compiled and minified CSS -->
+        <link
+            href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+            crossorigin="anonymous"
+        />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,400;0,700;1,400&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://use.fontawesome.com/releases/v5.0.1/css/all.css"
+            rel="stylesheet"
+        />
+        <script src="//code.jquery.com/jquery-3.3.1.slim.min.js" />
+        <script
+            src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-GZNGYD968N"
+        ></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', 'G-GZNGYD968N');
+        </script>
+        <title>Clinwiki</title>
+    </head>
+    <body>
+        <!-- Display a message if JS has been disabled on the browser. -->
+        <noscript
+            >If you're seeing this message, that means
+            <strong>JavaScript has been disabled on your browser</strong>,
+            please <strong>enable JS</strong> to make this app work.</noscript
+        >
 
-    <!-- The app hooks into this div -->
-    <div id="app"></div>
-    <!-- A lot of magic happens in this file. HtmlWebpackPlugin automatically includes all assets (e.g. bundle.js, main.css) with the correct HTML tags, which is why they are missing in this HTML file. Don't add any assets here! (Check out webpackconfig.js if you want to know more) -->
-  </body>
+        <!-- The app hooks into this div -->
+        <div id="app"></div>
+        <!-- A lot of magic happens in this file. HtmlWebpackPlugin automatically includes all assets (e.g. bundle.js, main.css) with the correct HTML tags, which is why they are missing in this HTML file. Don't add any assets here! (Check out webpackconfig.js if you want to know more) -->
+    </body>
 </html>
