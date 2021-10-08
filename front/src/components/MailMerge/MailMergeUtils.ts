@@ -29,13 +29,13 @@ export function getSearchQuery(name: string, frag: string, parentQuery?: string)
 
 export function getMyQuery(name: string, frag: string, schemaName: string, primaryKey: string, pkType:string, endPoint: string, options: string, parentQuery?: string) {
     return frag ?  `
-  query My${name}Query($${primaryKey}:${pkType}) {
+  query My${name}Query${(primaryKey == 'null' ? '{': '($'+primaryKey+':'+pkType+'){')}
     ${endPoint}(${options}) {
-      ${parentQuery ?`${parentQuery}{
+      ${(parentQuery && parentQuery !== endPoint )?`${parentQuery}{
         ...${name}
       }`: `...${name}`
      } 
-     ${parentQuery ? 'recordsTotal': ''}
+     ${( parentQuery && parentQuery !== endPoint ) ? 'recordsTotal': ''}
     }
 
   }

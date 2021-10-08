@@ -97,7 +97,7 @@ export default function GenericPageWrapper(props: Props) {
     useEffect(() => {
 
         let searchParams = { ...data?.data?.searchParams };
-        dispatch(fetchGenericPage(templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc, templateSchemaTokens[2], GENERIC_QUERY, templateSchemaTokens[6] ? false:true));
+        dispatch(fetchGenericPage(templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc, templateSchemaTokens[2], GENERIC_QUERY, templateSchemaTokens[6] ? true:true));
 
     }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data, suggestedLabels, studyList?.data?.search?.recordsTotal]);
 
@@ -116,31 +116,43 @@ export default function GenericPageWrapper(props: Props) {
 
     const searchData = (pageType) => {
         // For first pass, working under the assumption that if given a value for parentQuery it is an elastic value with recordsTotal
-         if(templateSchemaTokens[6] && genericPageData?.data){
+        if (templateSchemaTokens[6] && genericPageData?.data && templateSchemaTokens[6] !== templateSchemaTokens[4]) {
             let documentsArray: any[] = []
-            let arrayToMap: any[] = genericPageData?.data[templateSchemaTokens[4]][templateSchemaTokens[6]] ? genericPageData?.data[templateSchemaTokens[4]][templateSchemaTokens[6]]: [];
+            let arrayToMap: any[] = genericPageData?.data[templateSchemaTokens[4]][templateSchemaTokens[6]] ? genericPageData?.data[templateSchemaTokens[4]][templateSchemaTokens[6]] : [];
             arrayToMap.map((document, index) => {
-                    documentsArray.push({ ...document, ALL: 'ALL', hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', })
-                })
-                let documentsObject = {};
-                documentsObject[templateSchemaTokens[6]]= documentsArray
+                documentsArray.push({ ...document, ALL: 'ALL', hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', })
+            })
+            let documentsObject = {};
+            documentsObject[templateSchemaTokens[6]] = documentsArray
 
-                return {
-                    ...documentsObject                 ,
-                    recordsTotal: genericPageData?.data[templateSchemaTokens[4]]?.recordsTotal
-                }
-        
-                } else{
+            return {
+                ...documentsObject,
+                recordsTotal: genericPageData?.data[templateSchemaTokens[4]]?.recordsTotal
+            }
 
-                let documents = genericPageData?.data ? genericPageData.data[templateSchemaTokens[4]][0] : []
-                // Currently commented out until generalized otherwise breaks dis 
-                // return { ...documents, nextStudy, previousStudy }
-                return { ...documents }
+        } else if (templateSchemaTokens[6] && genericPageData?.data) {
+            let documentsArray: any[] = []
+            let arrayToMap: any[] = genericPageData?.data[templateSchemaTokens[4]] ? genericPageData?.data[templateSchemaTokens[4]] : [];
+            arrayToMap.map((document, index) => {
+                documentsArray.push({ ...document, ALL: 'ALL', hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', })
+            })
+            let documentsObject = {};
+            documentsObject[templateSchemaTokens[4]] = documentsArray
+
+            return {
+                ...documentsObject,
+                recordsTotal: genericPageData?.data[templateSchemaTokens[4]]?.recordsTotal
+            }
+        } else {
+            let documents = genericPageData?.data ? genericPageData.data[templateSchemaTokens[4]][0] : []
+            // Currently commented out until generalized otherwise breaks dis 
+            // return { ...documents, nextStudy, previousStudy }
+            return { ...documents }
         }
+
     }
 
     const currentDoc = match.params['docId']
-    console.log("Match?", match)
     const nctIdObject = studyList?.data?.search?.studies?.find(study => study.nctId == currentDoc);
     const currentIndexOfStudyList = studyList?.data?.search?.studies?.indexOf(nctIdObject)
     // console.log('studyList?.data?.search?.studies', studyList?.data?.search?.studies.length);

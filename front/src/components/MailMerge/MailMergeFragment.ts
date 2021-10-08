@@ -69,7 +69,7 @@ function mustacheTokens(input: string) {
 
 
 type Marker = 'x';
-function tokensToGraphQLOb(tags: string[]) {
+function tokensToGraphQLOb(tags: string[], tagToSkip:string) {
     let result: Record<string, object | Marker> = {};
     let scope = result;
     let stack = [result];
@@ -115,8 +115,7 @@ function tokensToGraphQLOb(tags: string[]) {
                 //LIST OF THINGS TO SKIP (SPECIFIC TO MM WITH # , ie. #EACH, #IF )
                 if (
                     parts[0] == '#with' && parts[1] == '$schema_name' ||
-                    parts[0] == '#each' && parts[1] == 'studies' ||
-                    parts[0] == '#each' && parts[1] == 'diseases' ||
+                    parts[0] == '#each' && parts[1] == tagToSkip ||
                     parts[0] == '#if' && parts.length > 2
                 ) {
                 } else if (parts[0] == '#each' && parts.length > 2) {
@@ -256,10 +255,11 @@ export function compileFragment(
     template: string
 ) {
     
+    const templateSchemaTokens = schemaTokens(template)
     let cleanedTemplate = removeSchemaValues(template)
     const tokens = mustacheTokens(cleanedTemplate);
 
-    const json = tokensToGraphQLOb(tokens);
+    const json = tokensToGraphQLOb(tokens,templateSchemaTokens[6] &&  templateSchemaTokens[6]);
     const fragmentBody = jsonToFragmentBody(json);
     return toFragment(fragmentName, className, fragmentBody);
 }
