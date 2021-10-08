@@ -81,7 +81,7 @@ function* getSiteProviderHasura(action) {
 export function* getGeneric(action) {
     //console.log("getSitesPageHasura called in hasuraSites sagas");
     try {
-        let response = yield call(() => api.fetchGeneric(action.payload));
+        let response = yield call(() => api.fetchGeneric(action.params, action.primaryKey, action.QUERY, action.useHasura));
     	// console.log(response);
         const genericData = response.data
         console.log('SAGA GENERIC FETCH', genericData);

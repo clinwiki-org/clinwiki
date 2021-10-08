@@ -11,10 +11,13 @@ import FormEditor from './FormEditor';
 import styled from 'styled-components'
 import {ThemedButton} from '../StyledComponents'
 import { ToastContainer, toast } from 'react-toastify';
+import { schemaTokens, randomIdentifier } from 'components/MailMerge/MailMergeFragment';
+import { useRouteMatch } from 'react-router-dom';
 import {
   IntrospectionType,
   IntrospectionOutputTypeRef,
 } from 'graphql';
+import { getMyQuery } from 'components/MailMerge/MailMergeUtils';
 
 
 export type SchemaType = JsonSchemaType | GraphqlSchemaType;
@@ -114,14 +117,16 @@ const StyledGrid = styled.div`
 }
 
 `
-const TABLES = ['island_configs', 'sites', 'page_views', 'crowd_values', 'crowd_keys']
+const ALL_TABLES = ['island_configs', 'sites', 'page_views', 'crowd_values', 'crowd_keys'];
 const GenericForm = (props) => {
+  const TABLES = props.table ? [props.table] : ALL_TABLES
   const dispatch = useDispatch();
+  const match = useRouteMatch();
   // const [fields, setFields] = useState([])
   const [row, setRow] = useState(0)
   const [isInsert, setIsInsert] = useState(false)
   const [shortFields, setShortFields] = useState([])
-  const [activeTable, setActiveTable] = useState('island_configs')
+  const [activeTable, setActiveTable] = useState(props.table || 'island_configs')
   const [activeSchema, setActiveSchema] = useState({})
   const tableName = activeTable || props.tableName
   const [isForm, setIsForm] = useState(false)
@@ -132,10 +137,18 @@ const GenericForm = (props) => {
   const isFetchingGeneric = useSelector((state: RootState) => state.hasuraSite.isFetchingGeneric);
   const genericSaveSuccessMessage = useSelector((state: RootState) => state.hasuraSite.genericUpdateSuccessMessage);
   const genericSaveErrorMessage = useSelector((state: RootState) => state.hasuraSite.genericUpdateErrorMessage);
+ 
+  const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
+  const data = useSelector((state: RootState) => state.search.searchResults);
+  const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
+  const templateSchemaTokens = schemaTokens(currentPage?.template || "")
+  const searchParams = data?.data?.searchParams;
+
+  const currentDoc = match.params['docId']
 
   useEffect(() => {
     const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
-    dispatch(fetchHasuraIntrospection(QUERY));
+   !introspection &&  dispatch(fetchHasuraIntrospection(QUERY));
 }, [dispatch]);
 
 
@@ -157,7 +170,8 @@ useEffect(() => {
     //@ts-ignore
     setActiveSchema(newSchema)
     const genericQuery = await genericQueryString(newSchema)
-    dispatch(fetchGeneric(genericQuery))
+    dispatch(fetchGeneric(templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc, templateSchemaTokens[2], genericQuery, templateSchemaTokens[6] ? true:true));
+
   })()  
  }
 }, [introspection, activeTable])
@@ -324,25 +338,30 @@ function schemaToInternal(schemaType: SchemaType) {
 
 
   const genericQueryString = async (schema) => {
-
     if (typeof schema == "object") {
       // const fieldNames = schema.map((field => field.name))
       const fieldNames = Object.values(schema)
         .map((field) => {
-    
-        //@ts-ignore
-        const newField = field.name
-        return newField
-      })
 
-    return `
-    query GenericTableQuery {
-      ${tableName} {
+          //@ts-ignore
+          const newField = field.name
+          return newField
+        })
+      const fragmentId = randomIdentifier();
+      const fragment = ` fragment ${fragmentId} on ${templateSchemaTokens[1]}{
         ${fieldNames.join('\n')}
-      }
-    }`
-  }
-  else return
+
+        }`
+      const GENERIC_TABLE_QUERY = `
+      query GenericTableQuery {
+        ${tableName} {
+          ${fieldNames.join('\n')}
+        }
+      }`
+      const GENERIC_QUERY = `${getMyQuery(fragmentId, fragment, templateSchemaTokens[1], templateSchemaTokens[2], templateSchemaTokens[3], templateSchemaTokens[4], templateSchemaTokens[5], templateSchemaTokens[6] && templateSchemaTokens[6])}`
+      return templateSchemaTokens.length > 0 ? GENERIC_QUERY : GENERIC_TABLE_QUERY
+    }
+    else return
   }
 
   const genericTableUpdateMutation = (formData) => {

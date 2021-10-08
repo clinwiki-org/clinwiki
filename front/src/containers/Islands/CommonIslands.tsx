@@ -19,7 +19,7 @@ import IslandAggWrapper from './IslandAggWrappper';
 import IslandAggWrapper2 from './WfIslandAggWrappper';
 import CrumbsBarIsland from './CrumbsBarIsland';
 import RandNumberLoader from './RandNumberLoader';
-
+import GenericForm from 'components/GenericForm';
 /*
   Common island configuration for MailMerge pages
 */
@@ -32,6 +32,12 @@ export const commonIslands = {
         collapsed={attributes['collapsed'] == 'true'}>
         {children}
       </CollapsiblePanel>
+    );
+  },
+  genericform: (attributes: Record<string, string>, context, children) => {
+    return (
+      <GenericForm
+        table={attributes['table']}/>
     );
   },
 };

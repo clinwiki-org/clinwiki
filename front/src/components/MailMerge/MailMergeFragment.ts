@@ -264,7 +264,7 @@ export function compileFragment(
     return toFragment(fragmentName, className, fragmentBody);
 }
 
-function randomIdentifier() {
+export function randomIdentifier() {
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
     const randomChar = () => chars[Math.floor(Math.random() * chars.length)];
     return Array.from({ length: 12 }, randomChar).join('');

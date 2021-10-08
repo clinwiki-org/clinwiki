@@ -3,7 +3,7 @@ import Handlebars from 'handlebars';
 import HtmlToReact from 'html-to-react';
 import marked from 'marked';
 import useHandlebars from 'hooks/useHandlebars';
-import { removeSchemaValues } from './MailMergeFragment';
+import { removeSchemaValues, randomIdentifier } from './MailMergeFragment';
 
 export type IslandConstructor = (
   attributes: Record<string, string>,
@@ -36,11 +36,6 @@ export function compileTemplate(template: string) {
     const errMsg = `Template error: ${e}`;
     return _ => errMsg;
   }
-}
-function randomIdentifier() {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
-  const randomChar = () => chars[Math.floor((Math.random() * chars.length))]
-  return Array.from({ length: 12 }, randomChar).join('');
 }
 export function applyTemplate(
   template: HandlebarsTemplateDelegate<any>,

@@ -22,5 +22,5 @@ export const fetchGenericPage= (value: any, variable: any,  QUERY: any, useHasur
         let endPoint = useHasura ? HASURA_CW : NODE_ENDPOINT;
         let object ={}
         object[variable] = value
-    return callGraphql(endPoint, QUERY,object);
+    return variable == 'null' ? callGraphql(endPoint, QUERY, undefined): callGraphql(endPoint, QUERY,object);
 };
