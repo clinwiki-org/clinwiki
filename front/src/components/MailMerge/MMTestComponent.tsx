@@ -97,7 +97,7 @@ export default function GenericPageWrapper(props: Props) {
     useEffect(() => {
 
         let searchParams = { ...data?.data?.searchParams };
-        dispatch(fetchGenericPage(templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc, templateSchemaTokens[2], GENERIC_QUERY, templateSchemaTokens[6] ? true:true));
+        dispatch(fetchGenericPage(templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc, templateSchemaTokens[2], GENERIC_QUERY,( templateSchemaTokens[6] && templateSchemaTokens[2]== 'params' ? false :true)));
 
     }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data, suggestedLabels, studyList?.data?.search?.recordsTotal]);
 
