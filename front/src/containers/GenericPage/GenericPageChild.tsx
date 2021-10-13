@@ -92,12 +92,12 @@ export default function GenericPageChild(props: Props) {
 
     const [fragmentName, fragment] = useFragment(templateSchemaTokens[1], currentPage?.template || '');
     const GENERIC_QUERY = `${getMyQuery(fragmentName, fragment, templateSchemaTokens[1], templateSchemaTokens[2], templateSchemaTokens[3], templateSchemaTokens[4], templateSchemaTokens[5], templateSchemaTokens[6] && templateSchemaTokens[6])}`
-
+    const currentPageData = genericPageData && genericPageData[fragmentName]?.data; 
     useEffect(() => {
 
         let searchParams = { ...data?.data?.searchParams };
 
-        dispatch(fetchGenericPage(templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc, templateSchemaTokens[2], GENERIC_QUERY,( templateSchemaTokens[6] && templateSchemaTokens[2]== 'params' ? false :true)));
+        dispatch(fetchGenericPage(fragmentName, templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc, templateSchemaTokens[2], GENERIC_QUERY,( templateSchemaTokens[6] && templateSchemaTokens[2]== 'params' ? false :true)));
     }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data, suggestedLabels, studyList?.data?.search?.recordsTotal]);
 
 
@@ -111,9 +111,9 @@ export default function GenericPageChild(props: Props) {
 
     const searchData = (pageType) => {
         // For first pass, working under the assumption that if given a value for parentQuery it is an elastic value with recordsTotal
-        if (templateSchemaTokens[6] && genericPageData?.data && templateSchemaTokens[6] !== templateSchemaTokens[4]) {
+        if (templateSchemaTokens[6] && currentPageData && templateSchemaTokens[6] !== templateSchemaTokens[4]) {
             let documentsArray: any[] = []
-            let arrayToMap: any[] = genericPageData?.data[templateSchemaTokens[4]][templateSchemaTokens[6]] ? genericPageData?.data[templateSchemaTokens[4]][templateSchemaTokens[6]] : [];
+            let arrayToMap: any[] = currentPageData[templateSchemaTokens[4]][templateSchemaTokens[6]] ? currentPageData[templateSchemaTokens[4]][templateSchemaTokens[6]] : [];
             arrayToMap.map((document, index) => {
                 documentsArray.push({ ...document, ALL: 'ALL', hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', })
             })
@@ -122,11 +122,11 @@ export default function GenericPageChild(props: Props) {
 
             return {
                 ...documentsObject,
-                recordsTotal: genericPageData?.data[templateSchemaTokens[4]]?.recordsTotal
+                recordsTotal: currentPageData[templateSchemaTokens[4]]?.recordsTotal
             }
-        } else if (templateSchemaTokens[6] && genericPageData?.data) {
+        } else if (templateSchemaTokens[6] && currentPageData) {
             let documentsArray: any[] = []
-            let arrayToMap: any[] = genericPageData?.data[templateSchemaTokens[4]] ? genericPageData?.data[templateSchemaTokens[4]] : [];
+            let arrayToMap: any[] = currentPageData[templateSchemaTokens[4]] ? currentPageData[templateSchemaTokens[4]] : [];
             arrayToMap.map((document, index) => {
                 documentsArray.push({ ...document, ALL: 'ALL', hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', })
             })
@@ -135,10 +135,10 @@ export default function GenericPageChild(props: Props) {
 
             return {
                 ...documentsObject,
-                recordsTotal: genericPageData?.data[templateSchemaTokens[4]]?.recordsTotal
+                recordsTotal: currentPageData[templateSchemaTokens[4]]?.recordsTotal
             }
         } else {
-            let documents = genericPageData?.data ? genericPageData.data[templateSchemaTokens[4]][0] : []
+            let documents = currentPageData ? currentPageData.data[templateSchemaTokens[4]][0] : []
             // Currently commented out until generalized otherwise breaks dis 
             // return { ...documents, nextStudy, previousStudy }
             return { ...documents }
@@ -333,7 +333,7 @@ export default function GenericPageChild(props: Props) {
 
     }, [suggestedLabels])
 
-    if (!genericPageData ) {
+    if (!currentPageData ) {
         return <BeatLoader />
     }
 

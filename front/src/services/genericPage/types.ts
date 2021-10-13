@@ -37,6 +37,7 @@ export interface InsertPageViewLogErrorAction {
 }
 export interface fetchGenericPageSendAction {
     type: typeof FETCH_GENERIC_PAGE_SEND;
+    name:any;
     params: any;
     primaryKey:any;
     QUERY: any;
@@ -45,6 +46,7 @@ export interface fetchGenericPageSendAction {
 
 export interface fetchGenericPageSuccessAction {
     type: typeof FETCH_GENERIC_PAGE_SUCCESS;
+    name:any;
     payload: any;
 }
 

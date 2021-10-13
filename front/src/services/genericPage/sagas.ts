@@ -27,7 +27,7 @@ function* getGenericPage(action) {
             api.fetchGenericPage(action.params, action.primaryKey, action.QUERY, action.useHasura)
         );
         if (response) {
-            yield put(actions.fetchGenericPageSuccess(response));
+            yield put(actions.fetchGenericPageSuccess(action.name, response));
         } else {
             yield put(actions.fetchGenericPageError(response.message));
         }
