@@ -256,7 +256,7 @@ const MailMergeView = (props: Props) => {
   useEffect(() => {
     let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds);
 
-    suggestedLabels && uniqueWFIds.map((WF) => {
+    suggestedLabels?.data && uniqueWFIds.map((WF) => {
       let currentKeyObjects = suggestedLabels.data.crowd_keys.filter((x) => x.crowd_key === islandConfig[WF.id].name)
       if (islandConfig[WF.id]?.defaultToOpen == true) {
         const compiled = islandConfig[WF.id] && compileTemplate(islandConfig[WF.id].displayName)
