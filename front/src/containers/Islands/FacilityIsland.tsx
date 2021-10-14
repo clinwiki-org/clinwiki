@@ -210,7 +210,7 @@ export default function FacilityIsland(props: Props) {
                 options={MAPOPTIONS}
                 key={nctId}>
                 {facilities.map((item, index) => {
-                  console.log('MAP ITEM', item)
+                  // console.log('MAP ITEM', item)
                   let location = item.location[0]
                   if ((location?.status ?? 'bad') === 'bad') {
                     return null;
