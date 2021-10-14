@@ -38,7 +38,7 @@ function LocationAgg(props: LocationAggProps) {
 
   useEffect(() => {
     const aggSettings = find(
-      (x) => x.field == "location",
+      (x) => x.field == "locations",
       searchParams["aggFilters"]
     );
     if (aggSettings) {
@@ -51,12 +51,12 @@ function LocationAgg(props: LocationAggProps) {
   const newChangeDistance = (positionData: any[]) => {
 
     const aggSettings = find(
-      (x) => x.field == "location",
+      (x) => x.field == "locations",
       searchParams["aggFilters"]
     );
     if (!aggSettings) {
       let locationFilter = {
-        field: "location",
+        field: "locations",
         gte: null,
         lte: null,
         values: [],
@@ -71,9 +71,9 @@ function LocationAgg(props: LocationAggProps) {
       let newParams = { ...searchParams, aggFilters: searchParams["aggFilters"] }
       dispatch(updateSearchParamsAction(newParams));
     }
-    let index = findIndex((x) => x.field == "location", searchParams["aggFilters"])
+    let index = findIndex((x) => x.field == "locations", searchParams["aggFilters"])
     searchParams['aggFilters'][index] = {
-      field: "location",
+      field: "locations",
       gte: null,
       lte: null,
       values: [],
