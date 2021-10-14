@@ -138,7 +138,7 @@ export default function GenericPageChild(props: Props) {
                 recordsTotal: currentPageData[templateSchemaTokens[4]]?.recordsTotal
             }
         } else {
-            let documents = currentPageData ? currentPageData.data[templateSchemaTokens[4]][0] : []
+            let documents = currentPageData ? currentPageData[templateSchemaTokens[4]][0] : []
             // Currently commented out until generalized otherwise breaks dis 
             // return { ...documents, nextStudy, previousStudy }
             return { ...documents }
