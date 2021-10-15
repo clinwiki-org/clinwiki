@@ -13,6 +13,8 @@ import { useHistory } from 'react-router-dom';
 export interface Theme {
   button: string;
   buttonSecondary: string;
+  buttonText: string;
+  buttonSecondaryText: string;
   buttonDanger: string;
   buttonDisabled: string;
   sorterColor: string;
@@ -170,6 +172,8 @@ function themeFromSite(site): Theme {
   return {
     button: colors.primaryColor,
     buttonSecondary: colors.secondaryColor,
+    buttonText: colors.lightTextColor,
+    buttonSecondaryText: colors.secondaryTextColor,
     buttonDanger: colors.warningColor,
     buttonDisabled: colors.grayHeaderFont,
     sorterColor: colors.primaryColor,
