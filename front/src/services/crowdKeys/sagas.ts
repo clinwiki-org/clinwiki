@@ -26,7 +26,8 @@ function* insertCrowdKeyValueId(action) {
         //console.log(action)
         if (updateResponse?.data?.insert_crowd_key_value_ids) {
             let crowdKeysArray = currentKeys.map(a => a.crowd_key);
-            yield put(
+//TO-DO revisit and check why this fetch suggested label is here, was sending empty crowdKeysArray and clearing our data in store 
+            yield crowdKeysArray[0] && put(
                 fetchSuggestedLabels(action.crowdKeyValueId, crowdKeysArray)
             );
             yield put(
@@ -88,7 +89,8 @@ function* updateCrowdKeyValueId(action) {
         console.log('update CKVID res', updateResponse);
         if (updateResponse?.data?.update_crowd_key_value_ids_by_pk) {
             let crowdKeysArray = currentKeys.map(a => a.crowd_key);
-            yield put(
+//TO-DO revisit and check why this fetch suggested label is here, was sending empty crowdKeysArray and clearing our data in store 
+            yield  crowdKeysArray[0] && put(
                 fetchSuggestedLabels(action.crowdKeyValueId, crowdKeysArray)
             );
             yield put(

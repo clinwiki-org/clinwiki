@@ -95,6 +95,9 @@ const MailMergeView = (props: Props) => {
   const wfIslandsCurrent = useRef({
     currentWFIsalnds: [] as any[]
   })
+  const resultSortIslandsCurrent = useRef({
+    currentResultSortIslands: [] as any[]
+})
 
   const style = props.style
     ? { ...defaultStyle, ...props.style }
@@ -111,6 +114,9 @@ const MailMergeView = (props: Props) => {
         }
         if (node.name == "wfagg") {
           wfIslandsCurrent.current.currentWFIsalnds = [...wfIslandsCurrent.current.currentWFIsalnds, node.attribs]
+        }
+        if (node.name == "resultsort") {
+          resultSortIslandsCurrent.current.currentResultSortIslands = [...resultSortIslandsCurrent.current.currentResultSortIslands, node.attribs]
         }
         const create = props.islands?.[node.name];
         return (
@@ -137,6 +143,8 @@ const MailMergeView = (props: Props) => {
 
     let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds);
     let wfLabels: any[] = [];
+    let uniqueSorts = uniq(resultSortIslandsCurrent.current.currentResultSortIslands);
+    let sortIdArray: any[] = [];
 
     uniqueWFIds.map((WF) => {
       wfLabels.push(parseInt(WF.id))
@@ -146,8 +154,11 @@ const MailMergeView = (props: Props) => {
       aggIdArray.push(parseInt(agg.id))
       
     });
+     uniqueSorts.map((sort) => {
+      sortIdArray.push(parseInt(sort.id)) 
+    });
 
-    !islandConfig && dispatch(fetchIslandConfig(aggIdArray.concat(wfLabels)));
+    !islandConfig && dispatch(fetchIslandConfig(aggIdArray.concat(wfLabels).concat(sortIdArray)));
   }, [dispatch]);
 
   useEffect(() => {
@@ -245,7 +256,7 @@ const MailMergeView = (props: Props) => {
   useEffect(() => {
     let uniqueWFIds = uniq(wfIslandsCurrent.current.currentWFIsalnds);
 
-    suggestedLabels && uniqueWFIds.map((WF) => {
+    suggestedLabels?.data && uniqueWFIds.map((WF) => {
       let currentKeyObjects = suggestedLabels.data.crowd_keys.filter((x) => x.crowd_key === islandConfig[WF.id].name)
       if (islandConfig[WF.id]?.defaultToOpen == true) {
         const compiled = islandConfig[WF.id] && compileTemplate(islandConfig[WF.id].displayName)
