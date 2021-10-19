@@ -389,7 +389,7 @@ div.DraftEditor-editorContainer{
   
   .mm-tooltip .mm-tooltiptext {
     visibility: hidden;
-    background: rgba(0,0,0,.7);
+    background: #6BA5D6;
     color: #fff;
     text-align: center;
     border-radius: 6px;
@@ -398,7 +398,14 @@ div.DraftEditor-editorContainer{
     opacity: 0;
     transition: .5s;
     padding: 5px;
-    font-size: 8px;
+    font-size: 9px;
+    border-bottom: 1px dotted;
+    border-right: 1px dotted;
+  }
+
+  .mm-tooltip:hover {
+    border-bottom: 1px dashed #333;
+    text-decoration: none;
   }
   
   .mm-tooltip:hover .mm-tooltiptext {
