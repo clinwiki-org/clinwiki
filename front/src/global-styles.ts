@@ -438,6 +438,8 @@ div.DraftEditor-editorContainer{
     display: inline-block;
     z-index: 10000;
     font-size: medium;
+    border-bottom: 1px dashed #333;
+    text-decoration: none;
   }
   
   .mm-tooltip .mm-tooltiptext {
@@ -451,14 +453,9 @@ div.DraftEditor-editorContainer{
     opacity: 0;
     transition: .5s;
     padding: 5px;
-    font-size: 9px;
+    font-size: 10px;
     border-bottom: 1px dotted;
     border-right: 1px dotted;
-  }
-
-  .mm-tooltip:hover {
-    border-bottom: 1px dashed #333;
-    text-decoration: none;
   }
   
   .mm-tooltip:hover .mm-tooltiptext {
