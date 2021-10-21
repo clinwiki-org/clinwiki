@@ -273,6 +273,59 @@ div.DraftEditor-editorContainer{
 .text-s{
   font-size: 8px;
 }
+.toggle-active{
+  background:  ${props => props.theme.buttonSecondary} !important;
+  color: ${props => props.theme.buttonText} !important;
+}
+.toggle-inactive{
+    background:${props => props.theme.button} !important;
+    border: solid 1px ${props => props.theme.button} !important;
+    color: ${props => props.theme.buttonText} !important;
+}
+.toggle-active:hover, .toggle-inactive:hover{
+    background:${props => props.theme.buttonSecondary}!important;
+    border: solid 1px ${props => props.theme.button}!important;
+    color: ${props => props.theme.buttonText}!important;
+}
+.input-btn{
+  /* padding: 10px 15px; */
+  /* display: inline-block; */
+  padding: 6px 12px;
+  /* margin: 0 0.5em 0.5em 0; */
+  margin: 0 !important;
+  font-size: 11px;
+  /* font-weight: 400; */
+  line-height: 1.42857143;
+  /* text-align: center; */
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: 4px; 
+  -webkit-transition: 0.5s;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  height: 34px;
+}
+.vl {
+  border-left: 2px solid lightgrey;
+  height: 34px;
+  position: absolute;
+  left: 81%;
+  margin-left: -3px;
+  top: 4px;
+  z-index: 65789;
+}
+.half-me{
+  margin-left: -1em;
+  background: lightgrey;
+  border-radius: 50%;
+  padding: 0.3em;
+  font-size: .75em;
+  margin-top: 7px;
+  color: grey;
+  position: absolute;
+  word-break: normal;
+  }
 
 .mail-merge pre {
   background-color: white;
@@ -385,11 +438,13 @@ div.DraftEditor-editorContainer{
     display: inline-block;
     z-index: 10000;
     font-size: medium;
+    border-bottom: 1px dashed #333;
+    text-decoration: none;
   }
   
   .mm-tooltip .mm-tooltiptext {
     visibility: hidden;
-    background: rgba(0,0,0,.7);
+    background: #6BA5D6;
     color: #fff;
     text-align: center;
     border-radius: 6px;
@@ -398,7 +453,9 @@ div.DraftEditor-editorContainer{
     opacity: 0;
     transition: .5s;
     padding: 5px;
-    font-size: 8px;
+    font-size: 10px;
+    border-bottom: 1px dotted;
+    border-right: 1px dotted;
   }
   
   .mm-tooltip:hover .mm-tooltiptext {

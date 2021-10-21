@@ -410,7 +410,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
       let searchParams = this.props.searchResultData?.data?.searchParams.searchParams
       const aggSettings = find(
-        (x) => x.field == "location",
+        (x) => x.field == "locations",
         searchParams["aggFilters"]
       );
 
@@ -436,7 +436,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     if (this.props.field.display == "LOCATION" && prevState.selectedItems == this.state.selectedItems) {
       let searchParams = this.props.searchResultData?.data?.searchParams.searchParams
       const aggSettings = find(
-        (x) => x.field == "location",
+        (x) => x.field == "locations",
         searchParams["aggFilters"]
       );
 

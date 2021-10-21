@@ -71,10 +71,10 @@ export function getHasuraStudyQuery(name: string, frag: string) {
 export function getHasuraStudyQueryDIS(name: string, frag: string) {
     frag =
         frag ||
-        `fragment ${name} on disyii2_prod_20210704_2_tbl_conditions{condition_id}`;
+        `fragment ${name} on dis_prod_tbl_conditions{condition_id}`;
     return `
-  query disyii2_prod_20210704_2_tbl_conditions${name}Query($conditionId: bigint) {
-    disyii2_prod_20210704_2_tbl_conditions(where: {condition_id: {_eq: $conditionId}}) {
+  query dis_prod_tbl_conditions${name}Query($conditionId: bigint) {
+    dis_prod_tbl_conditions(where: {condition_id: {_eq: $conditionId}}) {
       ...${name}
     }
   }

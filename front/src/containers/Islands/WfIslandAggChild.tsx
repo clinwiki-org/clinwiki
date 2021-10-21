@@ -67,6 +67,11 @@ function WfIslandAggChild(props: Props) {
   const [editorText, setEditorText] = useState(crowdKeyValueTitle ? crowdKeyValueTitle : "Enter title value");
   const [richEditorText, setRichEditorText] = useState(RichTextEditor.createValueFromString(editorText, 'markdown'));
   const [isEditing, setIsEditing] = useState(false);
+  const showLoginModal = useSelector((state: RootState) => state.study.showLoginModal);
+  
+  useEffect(() => {
+    user && showLoginModal && dispatch(setShowLoginModal(false))
+  }, [user]);
 
 
   useEffect(() => {
@@ -287,7 +292,7 @@ function WfIslandAggChild(props: Props) {
         desc={true}
         sortKind={SortKind.Alpha}
         selectAll={() => console.log("Hi")}
-        checkSelect={() => console.log("Hi")}
+        checkSelect={() => null}
         checkboxValue={false}
         removeSelectAll={() => console.log("Hi")}
         showLabel={false}
