@@ -491,7 +491,20 @@ export const graphqlToIndexMapping =  {
         "dataTypeToIndex": "keyword"
         
         },
+        "ctgov_prod_studies_interventions" : {
         
+            "fieldNameIndex": "ctgov_prod_studies_interventions",
+                
+                "dataTypeToIndex": "sub_query"
+                
+         }, 
+         "ctgov_prod_studies_interventions.name" : {
+        
+            "fieldNameIndex": "ctgov_prod_studies_interventions_name",
+                
+                "dataTypeToIndex": "keyword"
+                
+         },               
         "ctgov_prod_studies_conditions" : {
         
         "fieldNameIndex": "ctgov_prod_studies_conditions",
