@@ -14,7 +14,7 @@ import { fetchSearchParams, updateSearchParamsAction } from 'services/search/act
 // import { fetchIntrospection } from 'services/introspection/actions';
 //import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 import { introspectionQuery } from 'graphql/utilities';
-import { fetchHasuraIntrospection, fetchIntrospection, fetchNodeIntrospection } from 'services/introspection/actions';
+import { fetchHasuraIntrospection, fetchNodeIntrospection } from 'services/introspection/actions';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;
