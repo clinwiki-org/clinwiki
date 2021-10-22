@@ -1366,7 +1366,8 @@ type ResetPasswordPayload {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
-  success: Boolean!
+  success: Boolean!,
+  message: String,
 }
 
 type ResultButtonItems {
@@ -2105,7 +2106,9 @@ type UpdatePasswordPayload {
   Sign in token if no error
   """
   jwt: String
-  user: User!
+  user: User
+  message: String
+  success: Boolean
 }
 
 """

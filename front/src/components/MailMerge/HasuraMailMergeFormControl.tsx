@@ -11,7 +11,7 @@ import { fetchSampleStudy, fetchSampleStudyHasura } from 'services/study/actions
 import { getHasuraSampleStudyQuery, getSampleStudyQuery } from '../../components/MailMerge/MailMergeUtils';
 import { RootState } from 'reducers';
 import { getStudyQuery, getSearchQuery, getHasuraStudyQuery, getSearchQueryDIS, getHasuraStudyQueryDIS } from 'components/MailMerge/MailMergeUtils';
-import { fetchHasuraIntrospection, fetchHasuraIntrospectionDIS, fetchIntrospection } from 'services/introspection/actions';
+import { fetchHasuraIntrospection, fetchHasuraIntrospectionDIS } from 'services/introspection/actions';
 import { fetchStudyPage, fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS } from 'services/study/actions';
 
 //import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';

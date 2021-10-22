@@ -2,7 +2,6 @@ import * as query from './queries';
 import * as mutate from './mutations';
 import {
     callGraphql,
-    get_gql_url,
     callHasuraClinwiki,
     getHasuraClinwikiURL,
 } from 'utils/graphqlUtil';
@@ -10,7 +9,7 @@ import {
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
 // Once that is complete, all endpoint URLs should be pulled from a common constant
 
-const ENDPOINT = get_gql_url();
+const ENDPOINT ="CHECKME";
 const HASURA_CW = getHasuraClinwikiURL();
 
 export const fetchAdminSiteView = () => {
