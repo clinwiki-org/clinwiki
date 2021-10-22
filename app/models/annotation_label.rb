@@ -1,2 +1,0 @@
-class AnnotationLabel < ApplicationRecord
-end
