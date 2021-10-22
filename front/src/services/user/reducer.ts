@@ -3,6 +3,7 @@ import * as types from './types';
 const initialState: types.UserState = {
     current: null,
     user: undefined,
+    message: undefined,
     isFetchingUser: false,
     isLoading: false,
     isSigningIn: false,
@@ -99,6 +100,7 @@ const userReducer = ( state = initialState, action: types.UserActionTypes) : typ
         case types.UPDATE_PASSWORD_ERROR:
             return {
                 ...state,
+                message: action.payload[0],
                 isUpdatingPassword: false
             };
         case types.RESET_PASSWORD_SEND:
@@ -109,11 +111,13 @@ const userReducer = ( state = initialState, action: types.UserActionTypes) : typ
         case types.RESET_PASSWORD_SUCCESS:
             return {
                 ...state,
+                message: action.payload.data.resetPassword.message,
                 isResettingPassword: false
             };
         case types.RESET_PASSWORD_ERROR:
             return {
                 ...state,
+                message: action.payload.data.resetPassword.message,
                 isResettingPassword: false
             };
         

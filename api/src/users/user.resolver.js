@@ -14,6 +14,18 @@ const userResolver = {
 	const payload = await UserManager.signUp(args.input.email,args.input.password,args.input.oAuthToken);
         //console.log('payload', payload);
 	return payload;
+    },
+    resetPassword: async (args,context) => {
+        //console.log("signUp called in resolver");
+	const payload = await UserManager.requestPasswordReset(args.input.email);
+        //console.log('payload', payload);
+	return payload;
+    },
+    updatePassword: async (args,context) => {
+        // console.log("updatePassword called in resolver");
+	const payload = await UserManager.updatePassword(args.input.resetPasswordToken,args.input.password, args.input.passwordConfirmation);
+        console.log('payload', payload);
+	return payload;
     }
     
 }

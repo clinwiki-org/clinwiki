@@ -99,14 +99,16 @@ function* updatePassword(action) {
         action.passwordConfirmation
       )
     );
-    if (response) {
+    if (response.data.updatePassword.success) {
       yield put(actions.updatePasswordSuccess(response));
+      yield signIn({ email: response.data.updatePassword.user.email, password: action.password });
+      yield call(() => history.push('/'));
     } else {
-      yield put(actions.updatePasswordError(response.message));
+      yield put(actions.updatePasswordError([response.data.updatePassword.message]));
     }
   } catch (err) {
     console.log(err);
-    yield put(actions.updatePasswordError([err.message]));
+    yield put(actions.updatePasswordError([`${err}`]));
   }
 }
 
