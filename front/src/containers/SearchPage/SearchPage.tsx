@@ -35,19 +35,12 @@ import { AggFilterInput, SortInput } from 'types/globalTypes';
 import Aggs from './components/Aggs';
 import { defaultPageSize } from './Types';
 import { SiteViewFragment } from 'services/site/model/SiteViewFragment';
-import {
-  PresentSiteFragment,
-  PresentSiteFragment_siteView,
-} from 'services/site/model/PresentSiteFragment';
 import { preselectedFilters } from 'utils/siteViewHelpers';
 import { match } from 'react-router';
-import SearchPageHashMutation from 'queries/SearchPageHashMutation';
 import withTheme from 'containers/ThemeProvider';
-import RichTextEditor, { EditorValue, getTextAlignClassName, getTextAlignStyles } from 'react-rte';
 //import { withPresentSite2 } from "../PresentSiteProvider/PresentSiteProvider";
 import useUrlParams, { queryStringAll } from 'utils/UrlParamsProvider';
 import { BeatLoader } from 'react-spinners';
-import { assertNullableType } from 'graphql';
 import HtmlToReact from 'html-to-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPresentSiteProvider } from 'services/site/actions';

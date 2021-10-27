@@ -10,12 +10,10 @@ import { BeatLoader } from 'react-spinners';
 import { studyIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
 import { find, propEq } from 'ramda';
-import { useFragment } from 'components/MailMerge/MailMergeFragment';
-import StudyViewLogMutaion from 'queries/StudyViewLogMutation';
+
 import { fetchPageViews, fetchPageView, fetchStudyPage, updateStudyViewLogCount, fetchStudyPageHasura } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
-import { fetchPresentSiteProvider } from 'services/site/actions';
 import { useHasuraFragment } from 'components/MailMerge/HasuraMMFragment';
 
 interface Props {
