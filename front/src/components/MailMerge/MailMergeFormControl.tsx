@@ -11,7 +11,7 @@ import { getSampleStudyQuery, getSampleSearchQuery } from 'services/study/querie
 import { RootState } from 'reducers';
 import { fetchSearchParams, updateSearchParamsAction } from 'services/search/actions';
 import { introspectionQuery } from 'graphql/utilities';
-import { fetchHasuraIntrospection, fetchIntrospection, fetchNodeIntrospection } from 'services/introspection/actions';
+import { fetchHasuraIntrospection, fetchNodeIntrospection } from 'services/introspection/actions';
 
 const StyledFormControl = styled(FormControl)`
   margin-bottom: 20px;

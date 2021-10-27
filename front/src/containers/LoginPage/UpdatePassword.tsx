@@ -1,17 +1,19 @@
 import React,{useState} from 'react';
-import {useDispatch} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {updatePassword} from 'services/user/actions';
 import StyledFormControl from './StyledFormControl';
 import StyledContainer from './StyledContainer';
 import ThemedButton from '../../components/StyledComponents';
 import StyledWrapper from './StyledWrapper';
 import StyledError from './StyledError';
+import { RootState } from 'reducers';
 
 const UpdatePassword = (props) => {
   const dispatch = useDispatch();
   const [password,setPassword] = useState('');
   const [passwordConfirmation,setPasswordConfirmation] = useState('');
   const [error,setError] = useState('');
+  const userMessage = useSelector((state: RootState) => state.user.message);
 
   const  handleResetSubmit = () => {
 
@@ -23,14 +25,21 @@ const UpdatePassword = (props) => {
     } 
     else {
       let token = new URLSearchParams(props.history.location.search).getAll(
-        'reset_password_token'
+        'token'
       );
       const resetPasswordToken = token.toString();
       dispatch(updatePassword( resetPasswordToken, password, passwordConfirmation))
     }
   };
 
-
+  const  renderMessage = () => {
+    if (!userMessage ) return
+        return (
+          <div style={{ marginTop: 20 }}>
+            {userMessage}
+          </div>
+        );
+      };
   return (
     <StyledWrapper>
     <StyledContainer>
@@ -52,6 +61,8 @@ const UpdatePassword = (props) => {
         onClick={handleResetSubmit}>
         Submit
       </ThemedButton>
+      {renderMessage()}
+
     </StyledContainer>
   </StyledWrapper>
   );

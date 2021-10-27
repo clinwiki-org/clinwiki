@@ -3,7 +3,7 @@ import React, {useEffect, useState, useMemo} from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import { introspectionQuery } from 'graphql/utilities';
-import { fetchHasuraIntrospection, fetchIntrospection } from 'services/introspection/actions';
+import { fetchHasuraIntrospection } from 'services/introspection/actions';
 import { fetchGeneric, updateGeneric} from 'services/hasuraSite/actions' 
 import { BeatLoader } from 'react-spinners';
 import RowSelector from './RowSelector';
