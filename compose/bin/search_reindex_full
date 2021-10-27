@@ -1,1 +1,0 @@
-time docker exec -it clinwiki bundle exec rake search:reindex

@@ -1,6 +1,6 @@
 import * as types from './types';
 
-import { exportToCsv, searchExport } from './api';
+// import { exportToCsv, searchExport } from './api';
 
 import { IslandConfigQuery } from './model/IslandConfigQuery';
 import { filter } from 'ramda';

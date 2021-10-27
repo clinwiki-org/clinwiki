@@ -1,4 +1,3 @@
-import { getSitesPage } from '../site/sagas'
 import { call, put, takeLatest } from 'redux-saga/effects';
 import * as api from './api';
 import * as actions from './actions';
@@ -12,8 +11,8 @@ function* updateSiteHasura(action) {
         //console.log("updateSiteHasura called in hasiraSite/sagas", action);
         let updateResponse = yield call(() => api.updateSiteHasura(action.input));
         //console.log('response = ', updateResponse);
-        if (updateResponse.data.updateSitehasura.errors === null){ 
-            let response = yield getSitesPage(action);
+        if (updateResponse.data){ 
+            let response = yield getSitesPageHasura(action);
             yield put(actions.updateSiteHasuraSuccess(response.data));
         }
         else {

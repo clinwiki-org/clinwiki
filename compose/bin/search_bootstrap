@@ -1,1 +1,0 @@
-docker exec -it clinwiki bundle exec rake search:bootstrap
