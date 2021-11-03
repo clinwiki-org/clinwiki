@@ -98,12 +98,12 @@ export default function GenericPageWrapper(props: Props) {
   if (!data) {
     return <BeatLoader />
   }
-  if (!props.arg && pageType == "Study") {
-    return <h1>Missing NCTID in URL</h1>;
-  }
-  if (!params.pv && pageType == "Search_Study") {
-    return <h1>Missing PageView in URL</h1>;
-  }
+  // if (!props.arg && pageType == "Study") {
+  //   return <h1>Missing NCTID in URL</h1>;
+  // }
+  // if (!params.pv && pageType == "Search_Study") {
+  //   return <h1>Missing PageView in URL</h1>;
+  // }
 
   const renderSchemaTokens = () => {
     return (

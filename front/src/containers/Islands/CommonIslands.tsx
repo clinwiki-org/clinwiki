@@ -35,9 +35,12 @@ export const commonIslands = {
     );
   },
   genericform: (attributes: Record<string, string>, context, children) => {
+   console.log("ATRIBS", attributes)
     return (
       <GenericForm
-        table={attributes['table']}/>
+        table={attributes['table']}
+        defaultToForm={attributes['defaulttoform']}
+        />
     );
   },
 };

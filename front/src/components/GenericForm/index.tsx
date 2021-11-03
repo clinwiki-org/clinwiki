@@ -124,12 +124,12 @@ const GenericForm = (props) => {
   const match = useRouteMatch();
   // const [fields, setFields] = useState([])
   const [row, setRow] = useState(0)
-  const [isInsert, setIsInsert] = useState(false)
+  const [isInsert, setIsInsert] = useState(props.defaultToForm)
   const [shortFields, setShortFields] = useState([])
   const [activeTable, setActiveTable] = useState(props.table || 'island_configs')
   const [activeSchema, setActiveSchema] = useState({})
   const tableName = activeTable || props.tableName
-  const [isForm, setIsForm] = useState(false)
+  const [isForm, setIsForm] = useState(props.defaultToForm)
   const [tableColumns, setTableColumns] = useState([])
 
   const introspection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
@@ -141,10 +141,10 @@ const GenericForm = (props) => {
   const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
   const data = useSelector((state: RootState) => state.search.searchResults);
   const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
-  const templateSchemaTokens = schemaTokens(currentPage?.template || "")
+  const templateSchemaTokens = schemaTokens(currentPage?.template || "")[0]
   const searchParams = data?.data?.searchParams;
 
-  const currentDoc = match.params['docId']
+  const currentDoc = parseInt(match.params['docId']);
 
   useEffect(() => {
     const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`

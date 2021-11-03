@@ -67,7 +67,7 @@ export default function GenericPageChild(props: Props) {
     const searchHash = useSelector((state: RootState) => state.search.searchHash);
     const searchParams = data?.data?.searchParams;
     const showLoginModal = useSelector((state: RootState) => state.study.showLoginModal);
-    const currentDoc = match.params['docId']
+    const currentDoc = parseInt(match.params['docId']);
 
     const getPageType = (val) => {
         switch (val) {

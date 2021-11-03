@@ -28,7 +28,7 @@ export function getSearchQuery(name: string, frag: string, parentQuery?: string)
 }
 
 export function getMyQuery(name: string, frag: string, schemaName: string, primaryKey: string, pkType:string, endPoint: string, options: string, parentQuery?: string) {
-    return frag ?  `
+  return frag ?  `
   query My${name}Query${(primaryKey == 'null' ? '{': '($'+primaryKey+':'+pkType+'){')}
     ${endPoint}(${options}) {
       ${(parentQuery && parentQuery !== endPoint )?`${parentQuery}{
@@ -40,10 +40,12 @@ export function getMyQuery(name: string, frag: string, schemaName: string, prima
 
   }
   ${frag}
-  ` : `
+  ` : 
+  // added the parentQuery!== crowd_values. Break in logic due to recordsTotal not existing in that schema 
+  `
   query My${name}Query($${primaryKey}:${pkType}) {
     ${endPoint}(${options}) {
-     ${parentQuery ? 'recordsTotal': ''}
+     ${parentQuery && parentQuery!== 'crowd_values' ? 'recordsTotal': 'id'}
     }
 
   }`;

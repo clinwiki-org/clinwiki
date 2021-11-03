@@ -77,15 +77,14 @@ export default function MMTestComponentWrapper(props: Props) {
 
 
     console.log(templates.length, templates)
-    return (<span>
+    return (<>
 
       {templates.map((template => {
         let templateTokens = schemaTokens(template);
-        console.log(templateTokens)
         return templateTokens.length > 0 && <MMTestComponent arg={match.params['nctId']} schemaTokens={templateTokens[0]} template={template} />
       }))}
 
-    </span>)
+    </>)
   }
   return (
     <>
