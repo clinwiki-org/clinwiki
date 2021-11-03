@@ -157,7 +157,7 @@ export default function GenericPageWrapper(props: Props) {
 
     }
 
-    const currentDoc = parseInt(match.params['docId'])
+    const currentDoc = currentPageType == "Study" ? match.params['docId']:parseInt(match.params['docId']);
     const nctIdObject = studyList?.data?.search?.studies?.find(study => study.nctId == currentDoc);
     const currentIndexOfStudyList = studyList?.data?.search?.studies?.indexOf(nctIdObject)
     // console.log('studyList?.data?.search?.studies', studyList?.data?.search?.studies.length);

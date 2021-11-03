@@ -67,7 +67,6 @@ export default function GenericPageChild(props: Props) {
     const searchHash = useSelector((state: RootState) => state.search.searchHash);
     const searchParams = data?.data?.searchParams;
     const showLoginModal = useSelector((state: RootState) => state.study.showLoginModal);
-    const currentDoc = parseInt(match.params['docId']);
 
     const getPageType = (val) => {
         switch (val) {
@@ -89,6 +88,8 @@ export default function GenericPageChild(props: Props) {
     }, [dispatch, params.hash]);
 
     const currentPageType = getPageType(currentPage?.page_type);
+    const currentDoc = currentPageType == "Study" ? match.params['docId']:parseInt(match.params['docId']);
+
     const schemaType = getClassForMode(currentPageType);
     const templateSchemaTokens = props.schemaTokens
 
