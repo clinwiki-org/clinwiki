@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import {  useRouteMatch } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 import { BeatLoader } from 'react-spinners';
 import useUrlParams from 'utils/UrlParamsProvider';
 import { find, propEq } from 'ramda';
@@ -10,6 +10,7 @@ import MMTestComponent from './MMTestComponent';
 import { fetchSearchParams } from 'services/search/actions';
 import Unauthorized from 'components/ProtectedRoute/Unauthorized';
 import { isAdmin } from 'utils/auth';
+import { schemaTokens, templateSplit } from 'components/MailMerge/MailMergeFragment';
 interface Props {
   url?: string;
   arg?: string;
@@ -42,8 +43,7 @@ export default function MMTestComponentWrapper(props: Props) {
   const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
   const data = useSelector((state: RootState) => state.search.searchResults);
   const user = useSelector((state: RootState) => state.user.current);
-  
-console.log(params)
+  const templates = currentPage && currentPage.template && templateSplit(currentPage.template)
 
   const url =
     window.location.search;
@@ -59,10 +59,11 @@ console.log(params)
   useEffect(() => {
     dispatch(fetchPageViewHasura(site?.id, params.pv || defaultPage() || urlFinal));
   }, [dispatch, params.pv]);
+
   useEffect(() => {
     dispatch(fetchSearchParams(params.hash));
   }, [dispatch, params.hash]);
-  
+
   if (!isAdmin(user)) {
     return <Unauthorized />
   }
@@ -72,9 +73,23 @@ console.log(params)
   if (!data) {
     return <BeatLoader />
   }
+  const renderSchemaTokens = () => {
 
 
+    console.log(templates.length, templates)
+    return (<span>
+
+      {templates.map((template => {
+        let templateTokens = schemaTokens(template);
+        console.log(templateTokens)
+        return templateTokens.length > 0 && <MMTestComponent arg={match.params['nctId']} schemaTokens={templateTokens[0]} template={template} />
+      }))}
+
+    </span>)
+  }
   return (
-    <MMTestComponent arg ={match.params['nctId']}/>
+    <>
+      {renderSchemaTokens()}
+    </>
   );
 }

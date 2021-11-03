@@ -2,7 +2,7 @@ import * as actions from './actions';
 import * as api from './api';
 import * as types from './types';
 
-import { call, put, select, takeLatest } from 'redux-saga/effects';
+import { call, put, select, takeLatest, takeEvery } from 'redux-saga/effects';
 
 
 
@@ -38,6 +38,6 @@ function* getGenericPage(action) {
 }
 export default function* genericPageSagas() {
     yield takeLatest(types.INSERT_PAGE_VIEW_LOG_SEND, insertPageViewLog);
-    yield takeLatest(types.FETCH_GENERIC_PAGE_SEND, getGenericPage);
+    yield takeEvery(types.FETCH_GENERIC_PAGE_SEND, getGenericPage);
 
 }

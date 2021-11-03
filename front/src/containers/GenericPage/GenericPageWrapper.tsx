@@ -3,12 +3,13 @@ import { useHistory, useRouteMatch } from 'react-router-dom';
 import { BeatLoader } from 'react-spinners';
 import useUrlParams from 'utils/UrlParamsProvider';
 import { find, propEq } from 'ramda';
-import { fetchPageViews, fetchPageView, fetchPageViewsHasura, fetchPageViewHasura } from 'services/study/actions';
+import { fetchPageViewsHasura, fetchPageViewHasura } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
-import { fetchPresentSiteProvider } from 'services/site/actions';
 import GenericPageChild from './GenericPageChild';
 import { fetchSearchParams } from 'services/search/actions';
+import { schemaTokens, templateSplit } from 'components/MailMerge/MailMergeFragment';
+
 interface Props {
   url?: string;
   arg?: string;
@@ -42,24 +43,26 @@ export default function GenericPageWrapper(props: Props) {
   const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
   const data = useSelector((state: RootState) => state.search.searchResults);
   // const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
+  const templates = currentPage && currentPage.template && templateSplit(currentPage.template)
+
   const getPageType = (val) => {
-      switch (val) {
-          case 1:
-              return 'Study'
-          case 2:
-              return 'Search_Study'
-          case 3:
-              return 'Condition'
-          case 4:
-              return 'Search_Condition'
-          default:
-              return "Search_Study"
-      }
+    switch (val) {
+      case 1:
+        return 'Study'
+      case 2:
+        return 'Search_Study'
+      case 3:
+        return 'Condition'
+      case 4:
+        return 'Search_Condition'
+      default:
+        return "Search_Study"
+    }
   }
   //Currently making assumption anything diplayed in our search route is of pageType study 
   //Ideally should be set from PageView but was having issues , response was not saving 
   // const pageType = match.path == "/search/" ? "Search" : "Study"
-const pageType = getPageType(currentPage?.page_type);
+  const pageType = getPageType(currentPage?.page_type);
   /*   useEffect(() => {
       dispatch(fetchHasuraPresentSiteProvider(undefined, params.sv));
     }, [dispatch, params.sv])
@@ -102,8 +105,20 @@ const pageType = getPageType(currentPage?.page_type);
     return <h1>Missing PageView in URL</h1>;
   }
 
+  const renderSchemaTokens = () => {
+    return (
+      <span>
+        {templates.map((template => {
+          let templateTokens = schemaTokens(template);
+          console.log(templateTokens)
+          return templateTokens.length > 0 && <GenericPageChild arg={match.params['nctId']} schemaTokens={templateTokens[0]} template={template} />
+        }))}
+      </span>
+    )
+  }
   return (
-    <GenericPageChild
-      arg={props.arg} />
+    <span>
+      {renderSchemaTokens()}
+    </span>
   );
 }

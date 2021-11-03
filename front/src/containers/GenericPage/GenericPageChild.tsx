@@ -28,6 +28,8 @@ import useHandlebars from 'hooks/useHandlebars';
 interface Props {
     url?: string;
     arg?: string;
+    schemaTokens: any;
+    template: any;
 }
 type Mode = 'Study' | 'Search_Study' | 'Condition' | 'Search_Condition';
 
@@ -88,9 +90,9 @@ export default function GenericPageChild(props: Props) {
 
     const currentPageType = getPageType(currentPage?.page_type);
     const schemaType = getClassForMode(currentPageType);
-    const templateSchemaTokens = schemaTokens(currentPage?.template)
+    const templateSchemaTokens = props.schemaTokens
 
-    const [fragmentName, fragment] = useFragment(templateSchemaTokens[1], currentPage?.template || '');
+    const [fragmentName, fragment] = useFragment(templateSchemaTokens[1], props.template );
     const GENERIC_QUERY = `${getMyQuery(fragmentName, fragment, templateSchemaTokens[1], templateSchemaTokens[2], templateSchemaTokens[3], templateSchemaTokens[4], templateSchemaTokens[5], templateSchemaTokens[6] && templateSchemaTokens[6])}`
     const currentPageData = genericPageData && genericPageData[fragmentName]?.data; 
     useEffect(() => {
@@ -98,7 +100,7 @@ export default function GenericPageChild(props: Props) {
         let searchParams = { ...data?.data?.searchParams };
 
         dispatch(fetchGenericPage(fragmentName, templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc, templateSchemaTokens[2], GENERIC_QUERY,( templateSchemaTokens[6] && templateSchemaTokens[2]== 'params' ? false :true)));
-    }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data, suggestedLabels, studyList?.data?.search?.recordsTotal]);
+    }, [dispatch, props.template, currentPage, props.arg, upsertingLabel, params.hash, data, suggestedLabels, studyList?.data?.search?.recordsTotal]);
 
 
     const pageSizeHelper = (pageSize) => {
@@ -349,7 +351,7 @@ export default function GenericPageChild(props: Props) {
                 <title>{title}</title>
             </Helmet>
             { <MailMergeView
-                template={currentPage?.template || ''}
+                template={props.template}
                 context={searchData(pageType)}
                 islands={islands}
             />}

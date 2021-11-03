@@ -1,14 +1,16 @@
 import { useMemo, useState } from 'react';
 
 export function schemaTokens(input: string) {
-    let tokens: string[] = [];
+    let tokens: any[] = [];
+
     const yeet = (t: string) => {
+        let tempArray : string[]=[];
         if (t !== ''){
             const parts = t.split(/\s/).filter(id => id);
             for(const each of parts ){
-
-                tokens.push(each);
+                tempArray.push(each);
             }
+            tokens.push(tempArray)
         }
     };
     let current = '';
@@ -23,18 +25,27 @@ export function schemaTokens(input: string) {
             // Begin inside token
             current = ch;
 
-        } else if (ch === ']' && last !== ']' && inside) {
+        } else if (ch === ']' && last !== ']') {
             inside = false;
             // Begin }}
-            yeet(current);
+            //Ignore closing tag
+            current !== '/schema_name' && yeet(current);
             current = ch;
+        } else if (ch === ']' && last == ']') {
+            current = '';
         } else {
             current += ch;
         }
         last = ch;
     }
-    //hard coded to index 0 to start
     return tokens;
+}
+export function templateSplit(fullPageTemplate:string){
+    let templateArray = fullPageTemplate.split('[[/schema_name]]');
+
+    console.log(templateArray)
+    return templateArray
+    // let 
 }
 
 function mustacheTokens(input: string) {
@@ -255,11 +266,12 @@ export function compileFragment(
     template: string
 ) {
     
-    const templateSchemaTokens = schemaTokens(template)
+    const Tokens = schemaTokens(template)
+    const templateSchemaTokens = Tokens[0]
     let cleanedTemplate = removeSchemaValues(template)
     const tokens = mustacheTokens(cleanedTemplate);
 
-    const json = tokensToGraphQLOb(tokens,templateSchemaTokens[6] &&  templateSchemaTokens[6]);
+    const json = templateSchemaTokens &&  tokensToGraphQLOb(tokens,templateSchemaTokens[6] &&  templateSchemaTokens[6]) || "" ;
     const fragmentBody = jsonToFragmentBody(json);
     return toFragment(fragmentName, className, fragmentBody);
 }

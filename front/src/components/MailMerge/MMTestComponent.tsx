@@ -30,6 +30,8 @@ import useHandlebars from 'hooks/useHandlebars';
 interface Props {
     url?: string;
     arg?: string;
+    schemaTokens: any;
+    template: any;
 }
 type Mode = 'Study' | 'Search_Study' | 'Condition' | 'Search_Condition';
 
@@ -60,7 +62,7 @@ export default function GenericPageWrapper(props: Props) {
     const data = useSelector((state: RootState) => state.search.searchResults);
     const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
     const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
-    const [template, setTemplate] = useState(currentPage?.template);
+    const [template, setTemplate] = useState(props.template);
 
     const currentUser = useSelector((state: RootState) => state.user.current);
     const isFetchingCurrentUser = useSelector((state: RootState) => state.user.isLoading);
@@ -89,9 +91,9 @@ export default function GenericPageWrapper(props: Props) {
   
     const currentPageType = getPageType(currentPage?.page_type);
     const schemaType = getClassForMode(currentPageType);
-    const templateSchemaTokens = schemaTokens(currentPage?.template)
-console.log(templateSchemaTokens)
-    const [fragmentName, fragment] = useFragment(templateSchemaTokens[1], template || '');
+
+    const templateSchemaTokens = props.schemaTokens
+    const [fragmentName, fragment] = useFragment(templateSchemaTokens[1], template);
     const GENERIC_QUERY = `${getMyQuery(fragmentName, fragment, templateSchemaTokens[1], templateSchemaTokens[2],templateSchemaTokens[3], templateSchemaTokens[4], templateSchemaTokens[5], templateSchemaTokens[6] && templateSchemaTokens[6]  )}`
     const currentPageData = genericPageData && genericPageData[fragmentName]?.data; 
     console.log(genericPageData)
