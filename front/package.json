@@ -89,6 +89,9 @@
   "resolutions": {
     "graphql": "14.6.0"
   },
+  "peerDependencies": {
+    "babel-loader": "8.1.0"
+  },
   "eslintConfig": {
     "extends": "react-app",
     "overrides": [

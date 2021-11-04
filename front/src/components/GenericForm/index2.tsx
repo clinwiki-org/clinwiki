@@ -5,7 +5,6 @@ import { RootState } from 'reducers';
 import { introspectionQuery } from 'graphql/utilities';
 import { fetchHasuraIntrospection } from 'services/introspection/actions';
 import { fetchGeneric, updateGeneric} from 'services/hasuraSite/actions' 
-import { getMetaFields} from 'services/genericPage/actions' 
 import { BeatLoader } from 'react-spinners';
 import RowSelector from './RowSelector';
 import FormEditor from './FormEditor';
@@ -133,18 +132,15 @@ const GenericForm = (props) => {
   const isFetchingGeneric = useSelector((state: RootState) => state.hasuraSite.isFetchingGeneric);
   const genericSaveSuccessMessage = useSelector((state: RootState) => state.hasuraSite.genericUpdateSuccessMessage);
   const genericSaveErrorMessage = useSelector((state: RootState) => state.hasuraSite.genericUpdateErrorMessage);
-  const metaFields = useSelector((state: RootState) => state.genericForm.metaFields);
 
   useEffect(() => {
     const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
     dispatch(fetchHasuraIntrospection(QUERY));
-    dispatch(getMetaFields('Admin_Crowd_Keys'));
 }, [dispatch]);
 
 
   
 useEffect(() => {
-  console.log('INTRO', introspection)
   if (introspection) {
   let schema: GraphqlSchemaType = {
     kind: 'graphql',
@@ -156,12 +152,6 @@ useEffect(() => {
     const newSchema =schemaToInternal(schema);
     const cleanSchema = await cleanFields(newSchema)
     const tableColumns = await buildTableColumns(newSchema)
-
-    ///new meta combined with intro fucntion call... we probably need to do something here additionally to check against mismatched table names (ie if it tries to read island_configs but we're passing in a diff meta_field form)
-    const metaWithType = await getGQLTypes(newSchema, metaFields)
-    // console.log('MERGED', newObj)
-    console.log('clean Schema',metaWithType)
-    console.log('table columns META', metaFields)
     setShortFields(cleanSchema)
     setTableColumns(tableColumns)
     //@ts-ignore
@@ -171,24 +161,6 @@ useEffect(() => {
   })()  
  }
 }, [introspection, activeTable])
-
-
-const getGQLTypes = (arr1,arr2) => {
-  console.log('arr1', arr1, arr2)
-  const array2Conv = arr2.meta_fields
-
-  // arr1.forEach(item => map.set(item.name, item));
-  console.log('new array 2', array2Conv)
-  const mergedArray = array2Conv.map(item => {
-    let matchedItem = arr1.find(x => x.name == item.field_name)
-    if (!matchedItem) {
-      return
-    }
-   return  {
-    ...item, type: matchedItem.type
-  }})
-  return mergedArray
-}
 
 
 useEffect(()=>{
@@ -209,7 +181,6 @@ useEffect(() => {
 const cleanFields = async (schema) => {
   //@ts-ignore
   const cleaned = schema.filter(field => field.name !== "id" && field.name !== "updated_at" && field.name !== "created_at") 
-  console.log('cleaned', cleaned)
   return cleaned
 }
 

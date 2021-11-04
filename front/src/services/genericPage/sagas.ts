@@ -21,7 +21,24 @@ function* insertPageViewLog(action) {
     }
 }
 
+function* fetchMetaFields(action) {
+    try {
+        console.log('META - GENERIC SAGE', action)
+       let response = yield call(()=>api.fetchMetaFields(action.formName))
+        //No success action or error action called as this may be replaced by HasuraGenericTable editor 
+       if (response){
+           console.log('RESPONSE FROM META TABLE', response)
+           yield put(actions.getMetaFieldsSuccess(response.data));
+
+       }
+    } catch (err) {
+        console.log(err);
+        // yield put(actions.InsertPageviewError(err.message));
+    }
+}
+
 export default function* genericPageSagas() {
     yield takeLatest(types.INSERT_PAGE_VIEW_LOG_SEND, insertPageViewLog);
+    yield takeLatest(types.FETCH_META_FIELDS, fetchMetaFields);
 
 }
