@@ -2,6 +2,10 @@ export const REINDEX_ALL_SEND = 'REINDEX_ALL_SEND';
 export const REINDEX_ALL_SUCCESS = 'REINDEX_ALL_SUCCESS';
 export const REINDEX_ALL_ERROR = 'REINDEX_ALL_ERROR';
 
+export const REINDEX_BY_DATE_SEND = 'REINDEX_BY_DATE_SEND';
+export const REINDEX_BY_DATE_SUCCESS = 'REINDEX_BY_DATE_SUCCESS';
+export const REINDEX_BY_DATE_ERROR = 'REINDEX_BY_DATE_ERROR';
+
 export const REINDEX_STUDY_SEND = 'REINDEX_STUDY_SEND';
 export const REINDEX_STUDY_SUCCESS = 'REINDEX_STUDY_SUCCESS';
 export const REINDEX_STUDY_ERROR = 'REINDEX_STUDY_ERROR';
@@ -29,6 +33,18 @@ export interface ReindexAllSuccessAction {
 
 export interface ReindexAllErrorAction {
     type: typeof REINDEX_ALL_ERROR
+};
+export interface ReindexByDateSendAction {
+    type: typeof REINDEX_BY_DATE_SEND,
+    date: String
+};
+
+export interface ReindexByDateSuccessAction {
+    type: typeof REINDEX_BY_DATE_SUCCESS
+};
+
+export interface ReindexByDateErrorAction {
+    type: typeof REINDEX_BY_DATE_ERROR
 };
 
 export interface ReindexStudySendAction {

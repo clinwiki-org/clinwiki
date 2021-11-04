@@ -8,12 +8,13 @@ import {
     StyledProfileForm
 } from 'components/StyledComponents';
 import { ThemedButton } from '../LoginPage/StyledButton';
-import { reindexAll, reindexStudy, reindexDocument, reindexAllDocuments } from '../../services/admin/actions';
+import { reindexAll, reindexStudy, reindexDocument, reindexAllDocuments, reindexByDate } from '../../services/admin/actions';
 import { MenuItem, DropdownButton } from 'react-bootstrap';
 
 
 const Reindex = (props) => {
     const dispatch = useDispatch();
+    let [date, setDate] = useState('');
     let [nctid, setNctid] = useState('');
     let [primaryKey, setPrimaryKey] = useState('');
     let [primaryKeyList, setPrimaryKeyList] = useState('');
@@ -48,6 +49,9 @@ const Reindex = (props) => {
                     'dis_production'
                 ));
         }
+    }
+    const handleReindexByDate = () =>{
+        dispatch(reindexByDate(date))
     }
     return (
         <div>
@@ -147,6 +151,25 @@ const Reindex = (props) => {
                 <ThemedButton onClick={() => {
                     handleReindexAll(currentIndex)
                 }}>Start Full Reindex</ThemedButton>
+            </ThemedSearchContainer>
+            <ThemedSearchContainer>
+                <StyledProfileLabel>
+                    Updates any studies updated after the date input. 
+
+                <b>Warning:</b> Once started, this process can not be stopped.<p />
+                </StyledProfileLabel>
+
+                <StyledProfileLabel> Date </StyledProfileLabel>
+
+                                <StyledProfileForm
+                    name="date"
+                    placeholder="YYYY-MM-DD"
+                    value={date}
+                    onChange={(ev) => setDate(ev.target.value)}
+                />
+                <ThemedButton onClick={() => {
+                    handleReindexByDate()
+                }}>Start Reindex</ThemedButton>
             </ThemedSearchContainer>
 
         </div>

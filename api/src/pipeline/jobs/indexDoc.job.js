@@ -1,6 +1,7 @@
 import logger from '../../util/logger';
 import { queryHasura } from '../../util/db';
 import { graphqlToIndexMapping } from '../../util/graphqlToIndexMapping';
+import config from '../../../config';
 import { bulkUpsertDocs, bulkUpdate } from '../../search/elastic';
 import { JOB_TYPES, enqueueJob } from '../pipeline.queue';
 import moment from 'moment';
@@ -23,6 +24,23 @@ query MyQuery {
     nct_id
   }
 }
+`
+
+const QUERY_UPDATED_NCT_IDS =(date) => `
+query MyQuery {
+  ctgov_prod_studies(where: {updated_at: {_gte:${date}}}) {
+    nct_id
+  }
+}
+
+`
+const QUERY_UPDATED_CONDITION_IDS =(date) => `
+query MyQuery {
+  disyii2_prod_20210704_2_tbl_conditions(where: {updated_at: {_gte:${date}}}) {
+    condition_id
+  }
+}
+
 `
 
 const SAMPLE_QUERY_CLINWIKI = (docKey) => `
@@ -231,6 +249,20 @@ const getAllDocuments = async (primaryKey) => {
   : result.data.ctgov_prod_studies.map( row => row.nct_id);
 };
 
+const getUpdatedDocuments = async (date) => {
+  const hasuraInstance =  config.defaultApp  == "clinwiki" ? "studies":"dis";
+
+  const HASURA_QUERY = hasuraInstance == "dis" ? QUERY_UPDATED_CONDITION_IDS(date): QUERY_UPDATED_NCT_IDS(date)
+  console.log("GETTING ALL DOCS");
+  let result = await queryHasura(HASURA_QUERY, {} ,hasuraInstance );
+
+console.log(HASURA_QUERY)
+console.log("RESULTS FOR UPDATED DOCS", result)
+
+  return hasuraInstance == "dis" ? result.data.disyii2_prod_20210704_2_tbl_conditions.map( row => row.condition_id)
+  : result.data.ctgov_prod_studies.map( row => row.nct_id);
+};
+
 
 
 
@@ -253,6 +285,38 @@ export const allGenericDocumentsJob = async (args) => {
         // console.log(docKey, indexName)
         // Queue these up for reindexing
         await enqueueJob(JOB_TYPES.DOCUMENT_REINDEX, { ...args, primaryKeyList: idList, primaryKey: docKey, indexName: indexName });
+      }
+      logger.info('Job GENERIC Doc. Finished.')
+      IS_RUNNING = false;
+    }
+  }
+  catch (err) {
+    logger.error(err);
+    IS_RUNNING = false;
+  }
+};
+const scheduledDocJob = async (date) => {
+
+  try {
+    if (!IS_RUNNING) {
+      IS_RUNNING = true;
+      logger.info('Starting Reindex By Date');
+      const yesterday = moment().subtract(1, 'days').format("YYYY-MM-DD")
+      logger.info('Date used ' + (date ?date: yesterday));
+      const genericDocumentIds = await getUpdatedDocuments(date? `"${date}"` : `"${yesterday}"`);
+
+
+      const bulkList = chunkList(genericDocumentIds, CHUNK_SIZE);
+      const docKey = config.defaultApp == 'clinwiki' ? 'nct_id' : 'condition_id';
+      const indexName = config.defaultApp == 'clinwiki'? config.elasticIndex : config.elasticIndexDIS;
+
+      // console.log("LIST", bulkList)
+      
+      for (let j = 0; j < bulkList.length; j++) {
+        const idList = bulkList[j];
+        // console.log(docKey, indexName)
+        // Queue these up for reindexing
+        await enqueueJob(JOB_TYPES.DOCUMENT_REINDEX, {primaryKey: docKey, indexName: indexName,  primaryKeyList: idList});
       }
       logger.info('Job GENERIC Doc. Finished.')
       IS_RUNNING = false;
@@ -505,3 +569,4 @@ export const reindexDocument = async (payload) => {
   console.log("Bulk Upsert Response")
   // console.log(util.inspect(response, false, null, true));
 }
+export default scheduledDocJob

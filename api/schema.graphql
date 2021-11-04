@@ -1184,6 +1184,7 @@ type Mutation {
   upsertWikiLabel(input: UpsertWikiLabelInput!): UpsertWikiLabelPayload
   upsertWikiTag(input: UpsertWikiTagInput!): UpsertWikiTagPayload
   reindexAll: String
+  reindexByDate(date: String): String
   reindexStudy(input: String): String
   reindexDocument(primaryKey: String, primaryKeyList: String, indexName: String): String
   reindexAllDocuments(primaryKey: String, indexName: String): String
