@@ -9,11 +9,11 @@ import { Helmet } from 'react-helmet';
 import { getMyQuery } from 'components/MailMerge/MailMergeUtils';
 import { studyIslands, searchIslands } from 'containers/Islands/CommonIslands'
 import useUrlParams from 'utils/UrlParamsProvider';
-import { fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS, fetchStudyPageNearby } from 'services/study/actions';
+import { fetchStudyPageNearby } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 import { RootState } from 'reducers';
-import { useFragment, schemaTokens } from 'components/MailMerge/MailMergeFragment';
+import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import { fetchSearchParams } from 'services/search/actions';
 import { useRef } from 'react';
 import { applyTemplate, compileTemplate } from 'components/MailMerge/MailMergeView';
@@ -88,19 +88,19 @@ export default function GenericPageChild(props: Props) {
     }, [dispatch, params.hash]);
 
     const currentPageType = getPageType(currentPage?.page_type);
-    const currentDoc = currentPageType == "Study" ? match.params['docId']:parseInt(match.params['docId']);
-
+    const currentDocId = match.params['docId'] && match.params['docId']
+    const currentDoc=currentDocId  &&  currentDocId[0] == 'N' ? currentDocId:parseInt(currentDocId);
     const schemaType = getClassForMode(currentPageType);
     const templateSchemaTokens = props.schemaTokens
 
-    const [fragmentName, fragment] = useFragment(templateSchemaTokens[1], props.template );
+    const [fragmentName, fragment] = useFragment(templateSchemaTokens[1], props.template, templateSchemaTokens );
     const GENERIC_QUERY = `${getMyQuery(fragmentName, fragment, templateSchemaTokens[1], templateSchemaTokens[2], templateSchemaTokens[3], templateSchemaTokens[4], templateSchemaTokens[5], templateSchemaTokens[6] && templateSchemaTokens[6])}`
     const currentPageData = genericPageData && genericPageData[fragmentName]?.data; 
     useEffect(() => {
 
         let searchParams = { ...data?.data?.searchParams };
 
-        dispatch(fetchGenericPage(fragmentName, templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc, templateSchemaTokens[2], GENERIC_QUERY,( templateSchemaTokens[6] && templateSchemaTokens[2]== 'params' ? false :true)));
+        dispatch(fetchGenericPage(fragmentName, templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc || undefined, templateSchemaTokens[2], GENERIC_QUERY,( templateSchemaTokens[6] && templateSchemaTokens[2]== 'params' ? false :true)));
     }, [dispatch, props.template, currentPage, props.arg, upsertingLabel, params.hash, data, suggestedLabels, studyList?.data?.search?.recordsTotal]);
 
 

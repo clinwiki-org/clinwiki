@@ -13,7 +13,7 @@ import { fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS, fetch
 import { useDispatch, useSelector } from 'react-redux';
 import { BeatLoader } from 'react-spinners';
 import { RootState } from 'reducers';
-import { useFragment, schemaTokens } from 'components/MailMerge/MailMergeFragment';
+import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import { introspectionQuery } from 'graphql/utilities';
 import { fetchNodeIntrospection, fetchHasuraIntrospection } from 'services/introspection/actions';
 import { fetchSearchParams } from 'services/search/actions';
@@ -93,16 +93,15 @@ export default function GenericPageWrapper(props: Props) {
     const schemaType = getClassForMode(currentPageType);
 
     const templateSchemaTokens = props.schemaTokens
-    const [fragmentName, fragment] = useFragment(templateSchemaTokens[1], template);
+    const [fragmentName, fragment] = useFragment(templateSchemaTokens[1], template, templateSchemaTokens);
     const GENERIC_QUERY = `${getMyQuery(fragmentName, fragment, templateSchemaTokens[1], templateSchemaTokens[2],templateSchemaTokens[3], templateSchemaTokens[4], templateSchemaTokens[5], templateSchemaTokens[6] && templateSchemaTokens[6]  )}`
     const currentPageData = genericPageData && genericPageData[fragmentName]?.data; 
-    console.log(genericPageData)
 
 
     useEffect(() => {
 
         let searchParams = { ...data?.data?.searchParams };
-        dispatch(fetchGenericPage(fragmentName, (templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc), templateSchemaTokens[2], GENERIC_QUERY,( templateSchemaTokens[6] && templateSchemaTokens[2]== 'params' ? false :true)));
+        dispatch(fetchGenericPage(fragmentName, (templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc || undefined), templateSchemaTokens[2], GENERIC_QUERY,( templateSchemaTokens[6] && templateSchemaTokens[2]== 'params' ? false :true)));
 
     }, [dispatch, currentPage, props.arg, upsertingLabel, params.hash, data, suggestedLabels, studyList?.data?.search?.recordsTotal]);
 
@@ -149,7 +148,7 @@ export default function GenericPageWrapper(props: Props) {
                 recordsTotal: currentPageData[templateSchemaTokens[4]]?.recordsTotal
             }
         } else {
-            let documents = currentPageData ? currentPageData.data[templateSchemaTokens[4]][0] : []
+            let documents = currentPageData ? currentPageData[templateSchemaTokens[4]][0] : []
             // Currently commented out until generalized otherwise breaks dis 
             // return { ...documents, nextStudy, previousStudy }
             return { ...documents }
@@ -157,7 +156,8 @@ export default function GenericPageWrapper(props: Props) {
 
     }
 
-    const currentDoc = currentPageType == "Study" ? match.params['docId']:parseInt(match.params['docId']);
+    const currentDocId = match.params['docId'] && match.params['docId']
+    const currentDoc=currentDocId  &&  currentDocId[0] == 'N' ? currentDocId:parseInt(currentDocId);
     const nctIdObject = studyList?.data?.search?.studies?.find(study => study.nctId == currentDoc);
     const currentIndexOfStudyList = studyList?.data?.search?.studies?.indexOf(nctIdObject)
     // console.log('studyList?.data?.search?.studies', studyList?.data?.search?.studies.length);
@@ -202,7 +202,6 @@ export default function GenericPageWrapper(props: Props) {
         currentWFIslands: [] as any[]
     })
 
-    console.log(islandKeys)
 
 
 

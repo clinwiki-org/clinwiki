@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 
-export function schemaTokens(input: string) {
+
+export function parseSchemaIds(input: string) {
     let tokens: any[] = [];
 
     const yeet = (t: string) => {
@@ -8,7 +9,7 @@ export function schemaTokens(input: string) {
         if (t !== ''){
             const parts = t.split(/\s/).filter(id => id);
             for(const each of parts ){
-                tempArray.push(each);
+               each !== 'schema_id' && tempArray.push(each);
             }
             tokens.push(tempArray)
         }
@@ -29,7 +30,7 @@ export function schemaTokens(input: string) {
             inside = false;
             // Begin }}
             //Ignore closing tag
-            current !== '/schema_name' && yeet(current);
+            current !== '/schema_id' && yeet(current);
             current = ch;
         } else if (ch === ']' && last == ']') {
             current = '';
@@ -38,10 +39,10 @@ export function schemaTokens(input: string) {
         }
         last = ch;
     }
-    return tokens;
+    return tokens[0];
 }
 export function templateSplit(fullPageTemplate:string){
-    let templateArray = fullPageTemplate.split('[[/schema_name]]');
+    let templateArray = fullPageTemplate.split('[[/schema_id]]');
 
     console.log(templateArray)
     return templateArray
@@ -125,7 +126,7 @@ function tokensToGraphQLOb(tags: string[], tagToSkip:string) {
                 const name = parts[1];
                 //LIST OF THINGS TO SKIP (SPECIFIC TO MM WITH # , ie. #EACH, #IF )
                 if (
-                    parts[0] == '#with' && parts[1] == '$schema_name' ||
+                    parts[0] == '#with' && parts[1] == '$schema_id' ||
                     parts[0] == '#each' && parts[1] == tagToSkip ||
                     parts[0] == '#if' && parts.length > 2
                 ) {
@@ -263,15 +264,12 @@ export function removeSchemaValues(template){
 export function compileFragment(
     fragmentName: string,
     className: string,
-    template: string
+    template: string,
+    schemaValues:any
 ) {
-    
-    const Tokens = schemaTokens(template)
-    const templateSchemaTokens = Tokens[0]
     let cleanedTemplate = removeSchemaValues(template)
     const tokens = mustacheTokens(cleanedTemplate);
-
-    const json = templateSchemaTokens &&  tokensToGraphQLOb(tokens,templateSchemaTokens[6] &&  templateSchemaTokens[6]) || "" ;
+    const json = schemaValues && tokensToGraphQLOb(tokens,schemaValues[6] &&  schemaValues[6]) || "" ;
     const fragmentBody = jsonToFragmentBody(json);
     return toFragment(fragmentName, className, fragmentBody);
 }
@@ -282,12 +280,12 @@ export function randomIdentifier() {
     return Array.from({ length: 12 }, randomChar).join('');
 }
 
-export function useFragment(className: string, template: string) {
+export function useFragment(className: string, template: string, schema?:any) {
     const [fragmentName, _] = useState<string>(randomIdentifier());
     return useMemo(
         () => [
             fragmentName,
-            compileFragment(fragmentName, className, template),
+            compileFragment(fragmentName, className, template, schema),
         ],
         [fragmentName, className, template]
     );

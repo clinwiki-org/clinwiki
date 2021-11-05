@@ -1,5 +1,6 @@
 import {  getHasuraClinwikiURL } from './../../utils/graphqlUtil';
 import * as mutate from './mutations';
+import * as query from './queries';
 import {
     callHasuraClinwiki, 
     callGraphql,     
@@ -23,4 +24,8 @@ export const fetchGenericPage= (value: any, variable: any,  QUERY: any, useHasur
         let object ={}
         object[variable] = value
     return variable == 'null' ? callGraphql(endPoint, QUERY, undefined): callGraphql(endPoint, QUERY,object);
+};
+export const fetchMMSchemas= () => {
+        let endPoint = HASURA_CW 
+    return  callGraphql(endPoint, query.SCHEMA_TOKENS_QUERY, undefined);
 };

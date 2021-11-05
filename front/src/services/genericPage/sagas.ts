@@ -27,6 +27,7 @@ function* getGenericPage(action) {
             api.fetchGenericPage(action.params, action.primaryKey, action.QUERY, action.useHasura)
         );
         if (response) {
+            
             yield put(actions.fetchGenericPageSuccess(action.name, response));
         } else {
             yield put(actions.fetchGenericPageError(response.message));
@@ -36,8 +37,26 @@ function* getGenericPage(action) {
         yield put(actions.fetchGenericPageError(err.message));
     }
 }
+function* getMMSchemas(action) {
+    console.log("MMMM")
+    try {
+        let response = yield call(() =>
+            api.fetchMMSchemas()
+        );
+        console.log(response)
+        if (response) {
+            yield put(actions.fetchMMSchemasSuccess(response));
+        } else {
+            yield put(actions.fetchMMSchemasError(response.message));
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.fetchMMSchemasError(err.message));
+    }
+}
 export default function* genericPageSagas() {
     yield takeLatest(types.INSERT_PAGE_VIEW_LOG_SEND, insertPageViewLog);
     yield takeEvery(types.FETCH_GENERIC_PAGE_SEND, getGenericPage);
+    yield takeLatest(types.FETCH_MM_SCHEMAS_SEND, getMMSchemas);
 
 }

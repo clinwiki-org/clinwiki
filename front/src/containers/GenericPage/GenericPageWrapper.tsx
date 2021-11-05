@@ -8,7 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
 import GenericPageChild from './GenericPageChild';
 import { fetchSearchParams } from 'services/search/actions';
-import { schemaTokens, templateSplit } from 'components/MailMerge/MailMergeFragment';
+import { fetchMMSchemas } from 'services/genericPage/actions';
+import { parseSchemaIds, templateSplit } from 'components/MailMerge/MailMergeFragment';
 
 interface Props {
   url?: string;
@@ -43,6 +44,7 @@ export default function GenericPageWrapper(props: Props) {
   const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
   const data = useSelector((state: RootState) => state.search.searchResults);
   // const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
+  const MMSchemas= useSelector((state: RootState) => state.genericPage.MMSchemas);
   const templates = currentPage && currentPage.template && templateSplit(currentPage.template)
 
   const getPageType = (val) => {
@@ -80,7 +82,9 @@ export default function GenericPageWrapper(props: Props) {
   useEffect(() => {
     dispatch(fetchPageViewsHasura(site?.id));
   }, [dispatch, site.id]);
-
+  useEffect(() => {
+    dispatch(fetchMMSchemas());
+  }, [dispatch]);
   useEffect(() => {
     dispatch(fetchPageViewHasura(site?.id, params.pv || defaultPage() || urlFinal));
   }, [dispatch, params.pv]);
@@ -109,12 +113,16 @@ export default function GenericPageWrapper(props: Props) {
     return (
       <span>
         {templates.map((template => {
-          let templateTokens = schemaTokens(template);
-          console.log(templateTokens)
-          return templateTokens.length > 0 && <GenericPageChild arg={match.params['nctId']} schemaTokens={templateTokens[0]} template={template} />
+ let schemaId = parseSchemaIds(template);
+ let schemaValues= MMSchemas.mail_merge_schemas.filter(x=>x.id==schemaId)
+ const templateTokens=schemaValues[0] && ['schema_id', schemaValues[0]['name'], schemaValues[0].pk_value, schemaValues[0].pk_type, schemaValues[0].end_point, schemaValues[0].options, schemaValues[0].parentQuery]
+          return templateTokens && templateTokens.length > 0 && <GenericPageChild arg={match.params['nctId']} schemaTokens={templateTokens} template={template} />
         }))}
       </span>
     )
+  }
+  if(!MMSchemas){
+    return <BeatLoader/>
   }
   return (
     <span>

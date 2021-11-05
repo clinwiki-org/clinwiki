@@ -11,7 +11,7 @@ import FormEditor from './FormEditor';
 import styled from 'styled-components'
 import {ThemedButton} from '../StyledComponents'
 import { ToastContainer, toast } from 'react-toastify';
-import { schemaTokens, randomIdentifier } from 'components/MailMerge/MailMergeFragment';
+import { parseSchemaIds, randomIdentifier } from 'components/MailMerge/MailMergeFragment';
 import { useRouteMatch } from 'react-router-dom';
 import {
   IntrospectionType,
@@ -141,7 +141,7 @@ const GenericForm = (props) => {
   const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
   const data = useSelector((state: RootState) => state.search.searchResults);
   const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
-  const templateSchemaTokens = schemaTokens(currentPage?.template || "")[0]
+  const templateSchemaTokens = parseSchemaIds(currentPage?.template || "")[0]
   const searchParams = data?.data?.searchParams;
 
   const currentDoc = parseInt(match.params['docId']);

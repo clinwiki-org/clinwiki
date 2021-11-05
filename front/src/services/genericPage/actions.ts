@@ -23,3 +23,15 @@ export const fetchGenericPageError = ( message: string ): types.GenericPageActio
     payload: { message },
 
 })
+export const fetchMMSchemas = (): types.GenericPageActionTypes =>({
+    type: types.FETCH_MM_SCHEMAS_SEND,
+})
+export const fetchMMSchemasSuccess = (payload: any): types.GenericPageActionTypes =>({
+    type: types.FETCH_MM_SCHEMAS_SUCCESS,
+    payload,
+})
+export const fetchMMSchemasError = ( message: string ): types.GenericPageActionTypes =>({
+    type: types.FETCH_MM_SCHEMAS_ERROR,
+    payload: { message },
+
+})
