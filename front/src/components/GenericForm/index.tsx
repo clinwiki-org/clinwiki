@@ -122,7 +122,7 @@ const GenericForm = (props) => {
   const [row, setRow] = useState(0)
   const [isInsert, setIsInsert] = useState(false)
   const [shortFields, setShortFields] = useState([])
-  const [activeTable, setActiveTable] = useState('island_configs')
+  const [activeTable, setActiveTable] = useState('crowd_keys')
   const [activeSchema, setActiveSchema] = useState({})
   const tableName = activeTable || props.tableName
   const [isForm, setIsForm] = useState(false)
@@ -145,24 +145,26 @@ const GenericForm = (props) => {
   
 useEffect(() => {
   console.log('INTRO', introspection)
-  if (introspection) {
+  if (introspection && metaFields) {
+    const metaFieldsTable = metaFields[0].table_name
+    console.log('meta', metaFields)
   let schema: GraphqlSchemaType = {
     kind: 'graphql',
-    typeName: tableName,
+    typeName: metaFieldsTable,
     types: introspection.data.__schema.types,
   };
 
   ( async () => {
     const newSchema =schemaToInternal(schema);
     const cleanSchema = await cleanFields(newSchema)
-    const tableColumns = await buildTableColumns(newSchema)
-
+    
     ///new meta combined with intro fucntion call... we probably need to do something here additionally to check against mismatched table names (ie if it tries to read island_configs but we're passing in a diff meta_field form)
     const metaWithType = await getGQLTypes(newSchema, metaFields)
+    const tableColumns = await buildTableColumns(metaWithType)
     // console.log('MERGED', newObj)
     console.log('clean Schema',metaWithType)
     console.log('table columns META', metaFields)
-    setShortFields(cleanSchema)
+    setShortFields(metaWithType)
     setTableColumns(tableColumns)
     //@ts-ignore
     setActiveSchema(newSchema)
@@ -179,7 +181,7 @@ const getGQLTypes = (arr1,arr2) => {
 
   // arr1.forEach(item => map.set(item.name, item));
   console.log('new array 2', array2Conv)
-  const mergedArray = array2Conv.map(item => {
+  const mergedArray = arr2.map(item => {
     let matchedItem = arr1.find(x => x.name == item.field_name)
     if (!matchedItem) {
       return
@@ -216,9 +218,10 @@ const cleanFields = async (schema) => {
 const buildTableColumns = async (schema) => {
   const columns = []
   schema.map((i) => {
+    console.log('I I I I', i)
     const obj = {
-      Header: i.name,
-      accessor: i.name
+      Header: i.field_name,
+      accessor: i.field_name
     }
     //@ts-ignore
     columns.push(obj)

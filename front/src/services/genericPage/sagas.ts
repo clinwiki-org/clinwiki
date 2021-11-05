@@ -28,7 +28,7 @@ function* fetchMetaFields(action) {
         //No success action or error action called as this may be replaced by HasuraGenericTable editor 
        if (response){
            console.log('RESPONSE FROM META TABLE', response)
-           yield put(actions.getMetaFieldsSuccess(response.data));
+           yield put(actions.getMetaFieldsSuccess(response.data.meta_fields));
 
        }
     } catch (err) {
