@@ -66,8 +66,9 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
 
   const renderInsertForm = () => {
     return Object.entries(fields).map(([x, value]) => {
+      console.log('x insert Form', x)
       //@ts-ignore
-      const key = isInsert ? value.name : x
+      const key = isInsert ? value.field_name : x
       if (key =="created_at" || key == "updated_at") {
         return
       }
@@ -121,6 +122,7 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
 
   const renderUpdateForm = () => {
     return Object.entries(row).map(([key, value]) => {
+      console.log('x update Form', key, value)
       if (key =="created_at" || key == "updated_at") {
         return
       }

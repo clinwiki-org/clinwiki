@@ -155,8 +155,9 @@ useEffect(() => {
   };
 
   ( async () => {
+    // think metafields made these two use
     const newSchema =schemaToInternal(schema);
-    const cleanSchema = await cleanFields(newSchema)
+    // const cleanSchema = await cleanFields(newSchema)
     
     ///new meta combined with intro fucntion call... we probably need to do something here additionally to check against mismatched table names (ie if it tries to read island_configs but we're passing in a diff meta_field form)
     const metaWithType = await getGQLTypes(newSchema, metaFields)
@@ -164,7 +165,7 @@ useEffect(() => {
     // console.log('MERGED', newObj)
     console.log('clean Schema',metaWithType)
     console.log('table columns META', metaFields)
-    setShortFields(metaWithType)
+    setShortFields(orderFields(metaWithType))
     setTableColumns(tableColumns)
     //@ts-ignore
     setActiveSchema(newSchema)
@@ -174,6 +175,12 @@ useEffect(() => {
  }
 }, [introspection, activeTable])
 
+const orderFields = (array) => {
+  const newArray = array.sort(function(a, b) {
+    return a.field_order - b.field_order;
+  });
+  return newArray
+}
 
 const getGQLTypes = (arr1,arr2) => {
   console.log('arr1', arr1, arr2)
