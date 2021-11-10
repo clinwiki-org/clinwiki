@@ -21,7 +21,8 @@ const rootReducer = (history : History) => combineReducers({
     introspection: introspectionReducer,
     hasuraSite: hasuraSiteReducer,
     crowdKeys: crowdKeysReducer,
-    adminReducer: adminReducer
+    adminReducer: adminReducer,
+    genericForm: genericPageReducer
 });
 
 export default rootReducer;
@@ -37,6 +38,7 @@ export interface RootState {
     crowdKeys: any,
     hasuraFacility: any,
     genericPage:any,
+    genericForm:any
 };
 
 //export type RootState = ReturnType<typeof rootReducer>;

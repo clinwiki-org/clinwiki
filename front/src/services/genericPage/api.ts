@@ -7,7 +7,7 @@ import {
     getGraphQLMigrationURL,
 
 } from 'utils/graphqlUtil';
-
+import {META_TABLE_QUERY} from './queries'
 const HASURA_CW = getHasuraClinwikiURL();
 
 const NODE_ENDPOINT = getGraphQLMigrationURL();
@@ -29,3 +29,10 @@ export const fetchMMSchemas= () => {
         let endPoint = HASURA_CW 
     return  callGraphql(endPoint, query.SCHEMA_TOKENS_QUERY, undefined);
 };
+
+export const fetchMetaFields = (formName: string) => {
+    //console.log("fetchSiteProviderHasura called in hasuraSite api")
+    return callHasuraClinwiki(HASURA_CW, META_TABLE_QUERY, {
+      formName
+    });
+  };

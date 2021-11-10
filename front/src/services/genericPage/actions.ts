@@ -35,3 +35,18 @@ export const fetchMMSchemasError = ( message: string ): types.GenericPageActionT
     payload: { message },
 
 })
+
+export const getMetaFields = ( formName: string ): types.GenericPageActionTypes =>({
+    type: types.FETCH_META_FIELDS,
+    formName
+})
+
+export const getMetaFieldsSuccess = ( payload: any ): types.GenericPageActionTypes =>({
+    type: types.FETCH_META_FIELDS_SUCCESS,
+    payload
+})
+
+export const getMetaFieldsError = ( message: any ): types.GenericPageActionTypes =>({
+    type: types.FETCH_META_FIELDS_ERROR,
+    message
+})

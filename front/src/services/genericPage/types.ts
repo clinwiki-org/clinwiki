@@ -3,6 +3,9 @@
 export const INSERT_PAGE_VIEW_LOG_SEND = 'INSERT_PAGE_VIEW_LOG_SEND';
 export const INSERT_PAGE_VIEW_LOG_SUCCESS = 'INSERT_PAGE_VIEW_LOG_SUCCESS';
 export const INSERT_PAGE_VIEW_LOG_ERROR = 'INSERT_PAGE_VIEW_LOG_ERROR';
+export const FETCH_META_FIELDS = 'FETCH_META_FIELDS'
+export const FETCH_META_FIELDS_SUCCESS = 'FETCH_META_FIELDS_SUCCESS'
+export const FETCH_META_FIELDS_ERROR = 'FETCH_META_FIELDS_ERROR'
 
 export const FETCH_GENERIC_PAGE_SEND = 'FETCH_GENERIC_PAGE_SEND';
 export const FETCH_GENERIC_PAGE_SUCCESS = 'FETCH_GENERIC_PAGE_SUCCESS';
@@ -19,6 +22,7 @@ export interface GenericPageState {
     genericPageData: any;
     isFetchingMMSchemas: boolean;
     MMSchemas: any;
+    metaFields: object
 }
 
 export interface GenericPageDataError {
@@ -74,6 +78,21 @@ export interface fetchMMSchemasErrorAction {
     payload: GenericPageDataError;
 }
 
+export interface FetchMetaFields {
+   type: typeof FETCH_META_FIELDS,
+   formName: string
+}
+
+export interface FetchMetaFieldsSuccess {
+    type: typeof FETCH_META_FIELDS_SUCCESS,
+    payload: any;
+ }
+
+ export interface FetchMetaFieldsError {
+    type: typeof FETCH_META_FIELDS_ERROR,
+    message: string
+ }
+
 
 export type GenericPageActionTypes =
     | InsertPageViewLogSendAction
@@ -84,4 +103,8 @@ export type GenericPageActionTypes =
     | fetchGenericPageErrorAction
     | fetchMMSchemasSendAction
     | fetchMMSchemasSuccessAction
-    | fetchMMSchemasErrorAction;
+    | fetchMMSchemasErrorAction
+    | FetchMetaFields
+    | FetchMetaFieldsSuccess 
+    | FetchMetaFieldsError
+    ;

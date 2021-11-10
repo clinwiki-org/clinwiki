@@ -5,20 +5,16 @@ import { RootState } from 'reducers';
 import { introspectionQuery } from 'graphql/utilities';
 import { fetchHasuraIntrospection } from 'services/introspection/actions';
 import { fetchGeneric, updateGeneric} from 'services/hasuraSite/actions' 
-import { getMetaFields} from 'services/genericPage/actions' 
 import { BeatLoader } from 'react-spinners';
 import RowSelector from './RowSelector';
 import FormEditor from './FormEditor';
 import styled from 'styled-components'
 import {ThemedButton} from '../StyledComponents'
 import { ToastContainer, toast } from 'react-toastify';
-import { parseSchemaIds, randomIdentifier } from 'components/MailMerge/MailMergeFragment';
-import { useRouteMatch } from 'react-router-dom';
 import {
   IntrospectionType,
   IntrospectionOutputTypeRef,
 } from 'graphql';
-import { getMyQuery } from 'components/MailMerge/MailMergeUtils';
 
 
 export type SchemaType = JsonSchemaType | GraphqlSchemaType;
@@ -118,19 +114,17 @@ const StyledGrid = styled.div`
 }
 
 `
-const ALL_TABLES = ['island_configs', 'sites', 'page_views', 'crowd_values', 'crowd_keys'];
+const TABLES = ['island_configs', 'sites', 'page_views', 'crowd_values', 'crowd_keys']
 const GenericForm = (props) => {
-  const TABLES = props.table ? [props.table] : ALL_TABLES
   const dispatch = useDispatch();
-  const match = useRouteMatch();
   // const [fields, setFields] = useState([])
   const [row, setRow] = useState(0)
-  const [isInsert, setIsInsert] = useState(props.defaultToForm)
+  const [isInsert, setIsInsert] = useState(false)
   const [shortFields, setShortFields] = useState([])
-  const [activeTable, setActiveTable] = useState(props.table || 'island_configs')
+  const [activeTable, setActiveTable] = useState('island_configs')
   const [activeSchema, setActiveSchema] = useState({})
   const tableName = activeTable || props.tableName
-  const [isForm, setIsForm] = useState(props.defaultToForm)
+  const [isForm, setIsForm] = useState(false)
   const [tableColumns, setTableColumns] = useState([])
 
   const introspection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
@@ -138,80 +132,35 @@ const GenericForm = (props) => {
   const isFetchingGeneric = useSelector((state: RootState) => state.hasuraSite.isFetchingGeneric);
   const genericSaveSuccessMessage = useSelector((state: RootState) => state.hasuraSite.genericUpdateSuccessMessage);
   const genericSaveErrorMessage = useSelector((state: RootState) => state.hasuraSite.genericUpdateErrorMessage);
- 
-  const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
-  const data = useSelector((state: RootState) => state.search.searchResults);
-  const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
-  const templateSchemaTokens = parseSchemaIds(currentPage?.template || "")[0]
-  const searchParams = data?.data?.searchParams;
-
-  const currentDoc = parseInt(match.params['docId']);
-  const metaFields = useSelector((state: RootState) => state.genericForm.metaFields);
 
   useEffect(() => {
     const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
     dispatch(fetchHasuraIntrospection(QUERY));
-    dispatch(getMetaFields('Admin_Crowd_Keys'));
 }, [dispatch]);
 
 
   
 useEffect(() => {
-  console.log('INTRO', introspection)
-  if (introspection && metaFields) {
-    const metaFieldsTable = metaFields[0].table_name
-    console.log('meta', metaFields)
+  if (introspection) {
   let schema: GraphqlSchemaType = {
     kind: 'graphql',
-    typeName: metaFieldsTable,
+    typeName: tableName,
     types: introspection.data.__schema.types,
   };
 
   ( async () => {
-    // think metafields made these two use
     const newSchema =schemaToInternal(schema);
-    // const cleanSchema = await cleanFields(newSchema)
-    
-    ///new meta combined with intro fucntion call... we probably need to do something here additionally to check against mismatched table names (ie if it tries to read island_configs but we're passing in a diff meta_field form)
-    const metaWithType = await getGQLTypes(newSchema, metaFields)
-    const tableColumns = await buildTableColumns(metaWithType)
-    // console.log('MERGED', newObj)
-    console.log('clean Schema',metaWithType)
-    console.log('table columns META', metaFields)
-    setShortFields(orderFields(metaWithType))
+    const cleanSchema = await cleanFields(newSchema)
+    const tableColumns = await buildTableColumns(newSchema)
+    setShortFields(cleanSchema)
     setTableColumns(tableColumns)
     //@ts-ignore
     setActiveSchema(newSchema)
     const genericQuery = await genericQueryString(newSchema)
-    dispatch(fetchGeneric(templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc, templateSchemaTokens[2], genericQuery, templateSchemaTokens[6] ? true:true));
-
+    dispatch(fetchGeneric(genericQuery, null, null, false))
   })()  
  }
 }, [introspection, activeTable])
-
-const orderFields = (array) => {
-  const newArray = array.sort(function(a, b) {
-    return a.field_order - b.field_order;
-  });
-  return newArray
-}
-
-const getGQLTypes = (arr1,arr2) => {
-  console.log('arr1', arr1, arr2)
-  const array2Conv = arr2.meta_fields
-
-  // arr1.forEach(item => map.set(item.name, item));
-  console.log('new array 2', array2Conv)
-  const mergedArray = arr2.map(item => {
-    let matchedItem = arr1.find(x => x.name == item.field_name)
-    if (!matchedItem) {
-      return
-    }
-   return  {
-    ...item, type: matchedItem.type
-  }})
-  return mergedArray
-}
 
 
 useEffect(()=>{
@@ -232,17 +181,15 @@ useEffect(() => {
 const cleanFields = async (schema) => {
   //@ts-ignore
   const cleaned = schema.filter(field => field.name !== "id" && field.name !== "updated_at" && field.name !== "created_at") 
-  console.log('cleaned', cleaned)
   return cleaned
 }
 
 const buildTableColumns = async (schema) => {
   const columns = []
   schema.map((i) => {
-    console.log('I I I I', i)
     const obj = {
-      Header: i.field_name,
-      accessor: i.field_name
+      Header: i.name,
+      accessor: i.name
     }
     //@ts-ignore
     columns.push(obj)
@@ -377,30 +324,25 @@ function schemaToInternal(schemaType: SchemaType) {
 
 
   const genericQueryString = async (schema) => {
+
     if (typeof schema == "object") {
       // const fieldNames = schema.map((field => field.name))
       const fieldNames = Object.values(schema)
         .map((field) => {
+    
+        //@ts-ignore
+        const newField = field.name
+        return newField
+      })
 
-          //@ts-ignore
-          const newField = field.name
-          return newField
-        })
-      const fragmentId = randomIdentifier();
-      const fragment = ` fragment ${fragmentId} on ${templateSchemaTokens[1]}{
+    return `
+    query GenericTableQuery {
+      ${tableName} {
         ${fieldNames.join('\n')}
-
-        }`
-      const GENERIC_TABLE_QUERY = `
-      query GenericTableQuery {
-        ${tableName} {
-          ${fieldNames.join('\n')}
-        }
-      }`
-      const GENERIC_QUERY = `${getMyQuery(fragmentId, fragment, templateSchemaTokens[1], templateSchemaTokens[2], templateSchemaTokens[3], templateSchemaTokens[4], templateSchemaTokens[5], templateSchemaTokens[6] && templateSchemaTokens[6])}`
-      return templateSchemaTokens.length > 0 ? GENERIC_QUERY : GENERIC_TABLE_QUERY
-    }
-    else return
+      }
+    }`
+  }
+  else return
   }
 
   const genericTableUpdateMutation = (formData) => {

@@ -54,9 +54,25 @@ function* getMMSchemas(action) {
         yield put(actions.fetchMMSchemasError(err.message));
     }
 }
+
+function* fetchMetaFields(action) {
+    try {
+        console.log('META - GENERIC SAGE', action)
+       let response = yield call(()=>api.fetchMetaFields(action.formName))
+        //No success action or error action called as this may be replaced by HasuraGenericTable editor 
+       if (response){
+           console.log('RESPONSE FROM META TABLE', response)
+           yield put(actions.getMetaFieldsSuccess(response.data.meta_fields));
+
+       }
+    } catch (err) {
+        console.log(err);
+        // yield put(actions.InsertPageviewError(err.message));
+    }
+}
 export default function* genericPageSagas() {
     yield takeLatest(types.INSERT_PAGE_VIEW_LOG_SEND, insertPageViewLog);
     yield takeEvery(types.FETCH_GENERIC_PAGE_SEND, getGenericPage);
     yield takeLatest(types.FETCH_MM_SCHEMAS_SEND, getMMSchemas);
-
+    yield takeLatest(types.FETCH_META_FIELDS, fetchMetaFields);
 }

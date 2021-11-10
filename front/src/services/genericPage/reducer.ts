@@ -6,6 +6,7 @@ const initialState: types.GenericPageState = {
     isInsertingPageViewLog: false,
     genericPageData: undefined,
     MMSchemas: undefined,
+    metaFields: {},
 };
 
 const genericPageReducer = (
@@ -49,6 +50,12 @@ const genericPageReducer = (
                 isFetchingMMSchemas: false,
             };
             
+        case types.FETCH_META_FIELDS_SUCCESS:
+            return {
+                ...state,
+                metaFields: action.payload
+            };
+  
         default:
             return { ...state };
     }
