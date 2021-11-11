@@ -58,7 +58,7 @@ export default function GenericPageWrapper(props: Props) {
       case 4:
         return 'Search_Condition'
       default:
-        return "Search_Study"
+        return "N/A"
     }
   }
   //Currently making assumption anything diplayed in our search route is of pageType study 
@@ -89,17 +89,21 @@ export default function GenericPageWrapper(props: Props) {
     dispatch(fetchPageViewHasura(site?.id, params.pv || defaultPage() || urlFinal));
   }, [dispatch, params.pv]);
   useEffect(() => {
-    dispatch(fetchSearchParams(params.hash));
+    params.hash && dispatch(fetchSearchParams(params.hash));
   }, [dispatch, params.hash]);
 
   if (!params.hash && pageType == "Search_Study") {
+    console.log("PUSHING")
+
+    // TO-DO THIS PUSH IS BREAKING ADMIN DASHBOARD when push to the route our old data is still in the store so hits conditional
+    // Seems like we need to invalidate/clear data (current page) before pushing 
     history.push(`/search?hash=${site.default_hash}&pv=${site.default_search_page}`)
     //window.location.reload()
   }
   if (!currentPage) {
     return <BeatLoader />
   }
-  if (!data) {
+  if (!data && pageType !=="N/A") {
     return <BeatLoader />
   }
   // if (!props.arg && pageType == "Study") {
@@ -112,11 +116,11 @@ export default function GenericPageWrapper(props: Props) {
   const renderSchemaTokens = () => {
     return (
       <span>
-        {templates.map((template => {
+        {templates.map(((template, i) => {
  let schemaId = parseSchemaIds(template);
  let schemaValues= MMSchemas.mail_merge_schemas.filter(x=>x.id==schemaId)
  const templateTokens=schemaValues[0] && ['schema_id', schemaValues[0]['name'], schemaValues[0].pk_value, schemaValues[0].pk_type, schemaValues[0].end_point, schemaValues[0].options, schemaValues[0].parentQuery]
-          return templateTokens && templateTokens.length > 0 && <GenericPageChild arg={match.params['nctId']} schemaTokens={templateTokens} template={template} />
+          return templateTokens && templateTokens.length > 0 && <GenericPageChild key={i} arg={match.params['nctId']} schemaTokens={templateTokens} template={template} />
         }))}
       </span>
     )

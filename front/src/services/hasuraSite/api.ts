@@ -51,7 +51,7 @@ export const fetchGeneric = (value: any, variable: any,  QUERY: any, useHasura:b
   let endPoint = useHasura ? HASURA_CW : NODE_ENDPOINT;
   let object ={}
   object[variable] = value
-return variable == 'null' ? callGraphql(endPoint, QUERY, undefined): callGraphql(endPoint, QUERY,object);
+return variable == null ? callGraphql(endPoint, QUERY, undefined): callGraphql(endPoint, QUERY,object);
 };
 export const updateGeneric = (input, mutation?) => {
   console.log('UPDATE API', mutation)

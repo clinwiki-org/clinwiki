@@ -120,18 +120,21 @@ const StyledGrid = styled.div`
 `
 const ALL_TABLES = ['island_configs', 'sites', 'page_views', 'crowd_values', 'crowd_keys'];
 const GenericForm = (props) => {
+  console.log(props)
   const TABLES = props.table ? [props.table] : ALL_TABLES
   const dispatch = useDispatch();
   const match = useRouteMatch();
+  const useForm = props.defaultToForm == "true";
   // const [fields, setFields] = useState([])
   const [row, setRow] = useState(0)
-  const [isInsert, setIsInsert] = useState(props.defaultToForm)
+  const [isInsert, setIsInsert] = useState(useForm)
   const [shortFields, setShortFields] = useState([])
-  const [activeTable, setActiveTable] = useState(props.table || 'island_configs')
+  const [activeTable, setActiveTable] = useState(props.table || ALL_TABLES)
   const [activeSchema, setActiveSchema] = useState({})
-  const tableName = activeTable || props.tableName
-  const [isForm, setIsForm] = useState(props.defaultToForm)
+  const tableName =  props.tableName || activeTable
+  const [isForm, setIsForm] = useState(useForm)
   const [tableColumns, setTableColumns] = useState([])
+  const MMSchemas= useSelector((state: RootState) => state.genericPage.MMSchemas);
 
   const introspection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
   const genericData = useSelector((state: RootState) => state.hasuraSite.genericData);
@@ -142,7 +145,9 @@ const GenericForm = (props) => {
   const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
   const data = useSelector((state: RootState) => state.search.searchResults);
   const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
-  const templateSchemaTokens = parseSchemaIds(currentPage?.template || "")[0]
+  const schemaId = parseSchemaIds(currentPage?.template);
+  let schemaValues= MMSchemas && MMSchemas.mail_merge_schemas.filter(x=>x.id==schemaId)
+  const templateSchemaTokens= schemaValues && schemaValues[0] && ['schema_id', schemaValues[0]['name'], schemaValues[0].pk_value, schemaValues[0].pk_type, schemaValues[0].end_point, schemaValues[0].options, schemaValues[0].parentQuery]
   const searchParams = data?.data?.searchParams;
 
   const currentDoc = parseInt(match.params['docId']);
@@ -151,7 +156,7 @@ const GenericForm = (props) => {
   useEffect(() => {
     const QUERY = introspectionQuery  //`${gql(getIntrospectionQuery({ descriptions: false }))}`
     dispatch(fetchHasuraIntrospection(QUERY));
-    dispatch(getMetaFields('Admin_Crowd_Keys'));
+    dispatch(getMetaFields(tableName));
 }, [dispatch]);
 
 
@@ -178,16 +183,22 @@ useEffect(() => {
     // console.log('MERGED', newObj)
     console.log('clean Schema',metaWithType)
     console.log('table columns META', metaFields)
+    console.log('META', templateSchemaTokens )
     setShortFields(orderFields(metaWithType))
     setTableColumns(tableColumns)
     //@ts-ignore
     setActiveSchema(newSchema)
     const genericQuery = await genericQueryString(newSchema)
-    dispatch(fetchGeneric(templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc, templateSchemaTokens[2], genericQuery, templateSchemaTokens[6] ? true:true));
+    
+    templateSchemaTokens && dispatch(fetchGeneric(templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc, templateSchemaTokens[2], genericQuery, templateSchemaTokens[6] ? true:true));
 
   })()  
  }
-}, [introspection, activeTable])
+}, [introspection, tableName])
+
+useEffect(()=>{
+
+})
 
 const orderFields = (array) => {
   const newArray = array.sort(function(a, b) {
@@ -498,7 +509,7 @@ function schemaToInternal(schemaType: SchemaType) {
     setIsForm(true)
   }
 
-  if (!introspection || isFetchingGeneric) {
+  if (!introspection || isFetchingGeneric || !MMSchemas) {
     return <BeatLoader />;
 }
 
@@ -506,7 +517,7 @@ function schemaToInternal(schemaType: SchemaType) {
     <StyledGrid>
       <ToastContainer />
       <div className="generic-header-row">
-        <h3>Generic Form Take One - {activeTable}</h3>
+        {/* <h3>Generic Form Take One - {activeTable}</h3> */}
         <span>
           <select value={activeTable} onChange={handleActiveTable}>
             {TABLES.map(table => <option key={table} value={table}>{table}</option>)}

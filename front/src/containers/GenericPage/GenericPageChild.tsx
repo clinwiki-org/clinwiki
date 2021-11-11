@@ -84,7 +84,7 @@ export default function GenericPageChild(props: Props) {
     }
 
     useEffect(() => {
-        dispatch(fetchSearchParams(params.hash));
+       params.hash &&  dispatch(fetchSearchParams(params.hash));
     }, [dispatch, params.hash]);
 
     const currentPageType = getPageType(currentPage?.page_type);
@@ -97,7 +97,6 @@ export default function GenericPageChild(props: Props) {
     const GENERIC_QUERY = `${getMyQuery(fragmentName, fragment, templateSchemaTokens[1], templateSchemaTokens[2], templateSchemaTokens[3], templateSchemaTokens[4], templateSchemaTokens[5], templateSchemaTokens[6] && templateSchemaTokens[6])}`
     const currentPageData = genericPageData && genericPageData[fragmentName]?.data; 
     useEffect(() => {
-
         let searchParams = { ...data?.data?.searchParams };
 
         dispatch(fetchGenericPage(fragmentName, templateSchemaTokens[2]== 'params' ? searchParams.searchParams: currentDoc || undefined, templateSchemaTokens[2], GENERIC_QUERY,( templateSchemaTokens[6] && templateSchemaTokens[2]== 'params' ? false :true)));

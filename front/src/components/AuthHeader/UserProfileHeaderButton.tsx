@@ -173,7 +173,7 @@ const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps
 
   const handleSitesClick = () => {
     closeMenuDropdown();
-    history.push('/sites');
+    history.push('/admin?&pv=dashboard');
   };
 
   const handleProfileClick = () => {
