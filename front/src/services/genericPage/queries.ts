@@ -1,5 +1,5 @@
 export const SCHEMA_TOKENS_QUERY = `
-query SchemaTokensQuery($id: Int) {
+query SchemaTokensQuery{
     mail_merge_schemas {
       id
       name

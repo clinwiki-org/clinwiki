@@ -10,20 +10,23 @@ export const callGraphql = (
     operationName?: string
 ) => {
    
-    /*console.log("callGraphql called");
-    console.log(`endpoint = ${endpoint}`);
-    //console.log(query);
-    console.log("variables = ",variables);
-    console.log(`operationName = ${operationName}`);
-    console.log(`auth = ${getLocalJwt()}`);*/
+    // console.log("callGraphql called");
+    // console.log(`endpoint = ${endpoint}`);
+    // //console.log(query);
+    // console.log("variables = ",variables);
+    // console.log(`operationName = ${operationName}`);
+    // console.log(`auth = ${getLocalJwt()}`);
+    const headers = {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+    }
+    if(getLocalJwt()){
+           headers['Authorization'] = `Bearer ${getLocalJwt()}`;
+    }
     //console.log('endpoint being hit', endpoint);
     const abc = fetch(endpoint, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-            Authorization: getLocalJwt() ? `Bearer ${getLocalJwt()}` : "",
-        },
+        headers: headers,
         body: JSON.stringify({
             query,
             variables,
