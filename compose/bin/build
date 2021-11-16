@@ -1,0 +1,4 @@
+#!/bin/bash
+# To allow the Dockerfile access to the Gemfile it has to run with .. as its "context"
+docker build -t cwlite -f Dockerfile ..
+

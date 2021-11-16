@@ -1,0 +1,1 @@
+docker exec -it clinwiki bundle exec rails console
