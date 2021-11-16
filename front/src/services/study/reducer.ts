@@ -1,5 +1,8 @@
 import * as types from './types';
-
+import {
+    LOCATION_CHANGE
+ } from 'react-router-redux';
+ 
 const initialState: types.StudyState = {
     isFetchingPageViewsHasura: false,
     pageViewsHasura: undefined,
@@ -83,6 +86,12 @@ const studyReducer = (
     action: types.StudyActionTypes
 ): types.StudyState => {
     switch (action.type) {
+        case LOCATION_CHANGE :
+            return {
+            ...state,
+            isFetchingPageViewHasura: true,
+            pageViewHasura: undefined,
+        }
         case types.FETCH_PAGE_VIEWS_HASURA_SEND:
             return {
                 ...state,

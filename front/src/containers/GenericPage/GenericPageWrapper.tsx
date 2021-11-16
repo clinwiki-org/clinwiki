@@ -92,6 +92,9 @@ export default function GenericPageWrapper(props: Props) {
     params.hash && dispatch(fetchSearchParams(params.hash));
   }, [dispatch, params.hash]);
 
+  if (!currentPage) {
+    return <BeatLoader />
+  }
   if (!params.hash && pageType == "Search_Study") {
     console.log("PUSHING")
 
@@ -99,9 +102,6 @@ export default function GenericPageWrapper(props: Props) {
     // Seems like we need to invalidate/clear data (current page) before pushing 
     history.push(`/search?hash=${site.default_hash}&pv=${site.default_search_page}`)
     //window.location.reload()
-  }
-  if (!currentPage) {
-    return <BeatLoader />
   }
   if (!data && pageType !=="N/A") {
     return <BeatLoader />
