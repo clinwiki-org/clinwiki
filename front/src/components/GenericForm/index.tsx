@@ -165,7 +165,7 @@ useEffect(() => {
   console.log('INTRO', introspection)
   if (introspection && metaFields) {
     const metaFieldsTable = metaFields[0].table_name
-    console.log('meta', metaFields)
+    // console.log('meta', metaFields)
   let schema: GraphqlSchemaType = {
     kind: 'graphql',
     typeName: metaFieldsTable,
@@ -509,10 +509,15 @@ function schemaToInternal(schemaType: SchemaType) {
     setIsForm(true)
   }
 
+  useEffect(()=>{
+    if(genericData){
+      const row = genericData[tableName].find(x => x.id == currentDoc)
+      setRow(row)
+    }
+  },[dispatch,genericData])
   if (!introspection || isFetchingGeneric || !MMSchemas) {
     return <BeatLoader />;
 }
-
   return (
     <StyledGrid>
       <ToastContainer />
