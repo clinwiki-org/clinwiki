@@ -120,7 +120,7 @@ export default function GenericPageWrapper(props: Props) {
  let schemaId = parseSchemaIds(template);
  let schemaValues= MMSchemas.mail_merge_schemas.filter(x=>x.id==schemaId)
  const templateTokens=schemaValues[0] && ['schema_id', schemaValues[0]['name'], schemaValues[0].pk_value, schemaValues[0].pk_type, schemaValues[0].end_point, schemaValues[0].options, schemaValues[0].parentQuery]
-          return templateTokens && templateTokens.length > 0 && <GenericPageChild key={i} arg={match.params['nctId']} schemaTokens={templateTokens} template={template} />
+          return templateTokens && templateTokens.length > 0 && <GenericPageChild key={i} arg={match.params['docId']} schemaTokens={templateTokens} template={template} />
         }))}
       </span>
     )

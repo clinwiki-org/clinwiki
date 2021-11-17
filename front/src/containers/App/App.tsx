@@ -73,7 +73,8 @@ class App extends React.PureComponent<AppProps> {
                 <Route path="/sites/:id/edit" component={SitesEditPage} />
                 <Route path="/sites/new" component={SitesNewPage} />
                 <Route path="/sites" component={SitesPage} />
-                <Route path="/admin"  render={(props) => <GenericPageWrapper />} />
+                <Route exact path="/admin/"  component ={ GenericPageWrapper} />
+                <Route path="/admin/:docId"  render={(props) => <GenericPageWrapper arg={props.match.params.docId} />} />
                 <Route path="/reset_password" component={ResetPasswordPage} />
                 <Route path="/sign_in" component={SignInPage} />
                 <Route path="/sign_up" component={SignUpPage} />

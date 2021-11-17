@@ -156,7 +156,7 @@ function* getSearchPageOpenAggBuckets(action) {
 function* getSearchParams(action) {
     try {
         let response = yield call(() => api.fetchSearchParams(action.hash));
-        if (response) {
+        if (response && response.data?.searchParams?.searchParams) {
             let parsedParams = JSON.parse(
                 response.data.searchParams.searchParams
             );
