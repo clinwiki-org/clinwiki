@@ -289,7 +289,7 @@ const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps
                   </b>
                 </DropDownEmail> */}
             <ThemedDropDownItem onClick={handleSitesClick}>
-              Sites
+              Dashboard
                   </ThemedDropDownItem>
             <ThemedDropDownItem onClick={handleProfileClick}>
               Profile
