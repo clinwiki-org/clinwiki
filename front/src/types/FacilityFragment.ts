@@ -33,7 +33,7 @@ export interface FacilityFragment {
   nctId: string;
   state: string;
   status: string;
-  location: FacilityFragment_location | null;
+  location: FacilityFragment_location;
   zip: string;
   contacts: FacilityFragment_contacts[];
 }

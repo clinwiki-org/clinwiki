@@ -15,7 +15,6 @@ import MapMarker from '../../containers/FacilitiesPage/MapMarker';
 import FacilityCard from '.../../containers/FacilitiesPage//FacilityCard';
 import { fetchFacilitiesHasuraPage, fetchFacilitiesPage } from 'services/study/actions'
 import { BeatLoader } from 'react-spinners';
-
 interface Props {
   nctId?: string;
 }
@@ -43,7 +42,6 @@ const ScrollCardContainer = styled.div`
     max-height: 30vh;
   }
 `;
-
 const MapContainer = styled.div`
   height: 60vh;
   width: 55%;
@@ -57,7 +55,6 @@ const MapContainer = styled.div`
 const MAPOPTIONS = {
   minZoom: 0,
 };
-
 const processFacility = (facility: FacilityFragment, i: number) => {
   const res: {
     key: string | null;
@@ -71,9 +68,9 @@ const processFacility = (facility: FacilityFragment, i: number) => {
     name: string | null;
   }[] = [];
   const { name, country, city, state, zip, contacts, location } = facility;
-  const latitude = location?.latitude ?? null;
-  const longitude = location?.longitude ?? null;
-  const geoStatus = location?.status ?? null;
+  const latitude = location[0]?.latitude ?? null;
+  const longitude = location[0]?.longitude ?? null;
+  const geoStatus = location[0]?.status ?? null;
   const newStatus = isEmpty(facility.status)
     ? 'Status Unknown'
     : facility.status;
@@ -81,7 +78,6 @@ const processFacility = (facility: FacilityFragment, i: number) => {
     ? `${city}, ${country}`
     : `${city}, ${state} ${zip}, ${country}`;
   const uid = `${city}-${state}-${zip}-${country}`;
-
   res.push({
     name: name,
     key: uid,
@@ -95,7 +91,6 @@ const processFacility = (facility: FacilityFragment, i: number) => {
   });
   return res;
 };
-
 export default function FacilityIsland(props: Props) {
   const { nctId } = props;
   const [markerClicked, setMarkerClicked] = useState(false);
@@ -108,7 +103,6 @@ export default function FacilityIsland(props: Props) {
   const onMarkerClick = () => {
     setMarkerClicked(!markerClicked);
   };
-
   const onCardNumberClick = (lat, long, status) => {
     if (status === 'bad') {
       return null;
@@ -119,7 +113,6 @@ export default function FacilityIsland(props: Props) {
       });
     setMapZoom(8);
   };
-
   const renderFacilityCards = ({
     key,
     location,
@@ -158,40 +151,32 @@ export default function FacilityIsland(props: Props) {
       </div>
     );
   };
-
   const dispatch = useDispatch();
-
   useEffect(() => {
-
     dispatch(fetchFacilitiesHasuraPage(props.nctId || ""));
   }, [dispatch, nctId]);
-
-
   const facilityData = useSelector((state: RootState) => state.study.facilitiesPageHasura);
-
-
   if (!facilityData || !facilityData?.data?.ctgov_prod_studies[0]) {
     return <BeatLoader />
   }
-
   const K_HOVER_DISTANCE = 30;
   const facilities = facilityData?.data?.ctgov_prod_studies[0]?.facilities// facilityData?.data?.study?.facilities;
-
-  if (facilities && facilities?.length > 0) {
-    const items = pipe(addIndex(map)(processFacility), flatten)(facilities) as {
-      name: string;
-      key: string;
-      location: string;
-      index: number;
-      status: string;
-      contacts: FacilitiesPageQuery_study_facilities_contacts[];
-      latitude: number | null;
-      longitude: number | null;
-      geoStatus: string;
-    }[];
-
-    return (
-      <div>
+if (facilities && facilities?.length > 0) {
+  //flattens data 
+  //i.e. takes location nested object and makes its fields a part of overall facility object instead 
+  const items = pipe(addIndex(map)(processFacility), flatten)(facilities) as {
+    name: string;
+    key: string;
+    location: string;
+    index: number;
+    status: string;
+    contacts: FacilitiesPageQuery_study_facilities_contacts[];
+    latitude: number | null;
+    longitude: number | null;
+    geoStatus: string;
+  }[];
+  return (
+    <div>
         <StyledPanel>
           <MappingContainer>
             <ScrollCardContainer>
