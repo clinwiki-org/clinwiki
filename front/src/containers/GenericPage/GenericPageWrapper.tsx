@@ -49,18 +49,20 @@ export default function GenericPageWrapper(props: Props) {
 
   const getPageType = (val) => {
     switch (val) {
-      case 1:
-        return 'Study'
-      case 2:
-        return 'Search_Study'
-      case 3:
-        return 'Condition'
-      case 4:
-        return 'Search_Condition'
-      default:
-        return "N/A"
+        case 1:
+            return 'Study'
+        case 2:
+            return 'Search_Study'
+        case 3:
+            return 'Condition'
+        case 4:
+            return 'Search_Condition'
+        case 5:
+            return 'Admin'
+        default:
+            return 'Admin'
     }
-  }
+}
   //Currently making assumption anything diplayed in our search route is of pageType study 
   //Ideally should be set from PageView but was having issues , response was not saving 
   // const pageType = match.path == "/search/" ? "Search" : "Study"
@@ -103,7 +105,7 @@ export default function GenericPageWrapper(props: Props) {
     history.push(`/search?hash=${site.default_hash}&pv=${site.default_search_page}`)
     //window.location.reload()
   }
-  if (!data && pageType !=="N/A") {
+  if (!data && pageType !=="Admin") {
     return <BeatLoader />
   }
   // if (!props.arg && pageType == "Study") {

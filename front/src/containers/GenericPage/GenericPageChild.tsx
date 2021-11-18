@@ -25,13 +25,15 @@ import { fetchGenericPage, insertPageViewLog } from 'services/genericPage/action
 import LoginModal from 'components/LoginModal';
 import { uniq } from 'ramda';
 import useHandlebars from 'hooks/useHandlebars';
+import Unauthorized from 'components/ProtectedRoute/Unauthorized';
+import { isAdmin } from 'utils/auth';
 interface Props {
     url?: string;
     arg?: string;
     schemaTokens: any;
     template: any;
 }
-type Mode = 'Study' | 'Search_Study' | 'Condition' | 'Search_Condition';
+type Mode = 'Study' | 'Search_Study' | 'Condition' | 'Search_Condition' | 'Admin';
 
 function getClassForMode(mode: Mode) {
     switch (mode) {
@@ -60,6 +62,7 @@ export default function GenericPageChild(props: Props) {
     const data = useSelector((state: RootState) => state.search.searchResults);
     const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
     const suggestedLabels = useSelector((state: RootState) => state.study.suggestedLabels);
+    const user = useSelector((state: RootState) => state.user.current);
 
     const currentUser = useSelector((state: RootState) => state.user.current);
     const isFetchingCurrentUser = useSelector((state: RootState) => state.user.isLoading);
@@ -78,8 +81,10 @@ export default function GenericPageChild(props: Props) {
                 return 'Condition'
             case 4:
                 return 'Search_Condition'
+            case 5:
+                return 'Admin'
             default:
-                return "Search_Study"
+                return 'Admin'
         }
     }
 
@@ -338,7 +343,9 @@ export default function GenericPageChild(props: Props) {
     if (!currentPageData ) {
         return <BeatLoader />
     }
-
+    if (!isAdmin(user) && pageType == "Admin") {
+        return <Unauthorized />
+      }
 
     return (
 
