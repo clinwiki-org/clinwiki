@@ -41,6 +41,8 @@ export default function GenericPageWrapper(props: Props) {
   const site = useSelector((state: RootState) => state.site.hasuraPresentSiteProvider.sites[0]);
   const pageViewsData = useSelector((state: RootState) => state.study.pageViewsHasura);
   const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
+  const isFetchingPV = useSelector((state: RootState) => state.study.isFetchingPageViewHasura);
+  const isFetchingPVs = useSelector((state: RootState) => state.study.isFetchingPageViewsHasura);
   const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
   const data = useSelector((state: RootState) => state.search.searchResults);
   // const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
@@ -63,15 +65,7 @@ export default function GenericPageWrapper(props: Props) {
             return 'Admin'
     }
 }
-  //Currently making assumption anything diplayed in our search route is of pageType study 
-  //Ideally should be set from PageView but was having issues , response was not saving 
-  // const pageType = match.path == "/search/" ? "Search" : "Study"
   const pageType = getPageType(currentPage?.page_type);
-  /*   useEffect(() => {
-      dispatch(fetchHasuraPresentSiteProvider(undefined, params.sv));
-    }, [dispatch, params.sv])
-    console.log("SITE ID ON GenericPage Wrappp", site?.id)
-   */
 
 
   const url =
@@ -89,32 +83,18 @@ export default function GenericPageWrapper(props: Props) {
   }, [dispatch]);
   useEffect(() => {
     dispatch(fetchPageViewHasura(site?.id, params.pv || defaultPage() || urlFinal));
-  }, [dispatch, params.pv]);
+  }, [dispatch, params.pv, params.hash]);
   useEffect(() => {
     params.hash && dispatch(fetchSearchParams(params.hash));
   }, [dispatch, params.hash]);
 
   if (!currentPage) {
+     !isFetchingPV && history.push(`/search?hash=${site.default_hash}&pv=${site.default_search_page}`)
     return <BeatLoader />
-  }
-  if (!params.hash && pageType == "Search_Study") {
-    console.log("PUSHING")
-
-    // TO-DO THIS PUSH IS BREAKING ADMIN DASHBOARD when push to the route our old data is still in the store so hits conditional
-    // Seems like we need to invalidate/clear data (current page) before pushing 
-    history.push(`/search?hash=${site.default_hash}&pv=${site.default_search_page}`)
-    //window.location.reload()
   }
   if (!data && pageType !=="Admin") {
     return <BeatLoader />
   }
-  // if (!props.arg && pageType == "Study") {
-  //   return <h1>Missing NCTID in URL</h1>;
-  // }
-  // if (!params.pv && pageType == "Search_Study") {
-  //   return <h1>Missing PageView in URL</h1>;
-  // }
-
   const renderSchemaTokens = () => {
     return (
       <span>
