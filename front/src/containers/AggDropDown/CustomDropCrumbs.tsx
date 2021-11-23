@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { FieldDisplay } from '../../services/site/model/InputTypes';
 import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
+import { applyTemplate,compileTemplate } from '../../components/MailMerge/MailMergeView';
 import * as FontAwesome from 'react-fontawesome';
 import { AggBucket } from '../SearchPage/Types';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
@@ -9,6 +10,8 @@ import { BeatLoader } from 'react-spinners';
 import { updateSearchParamsAction } from 'services/search/actions'
 import { filter } from 'ramda';
 import { connect } from 'react-redux';
+import HtmlToReact from 'html-to-react';
+
 interface CustomDropCrumbsProps {
   field: SiteViewFragment_search_aggs_fields | any;
   isSelected: any;
@@ -17,6 +20,7 @@ interface CustomDropCrumbsProps {
   selectItem: any;
   searchResultData: any;
   updateSearchParamsAction: any;
+  buckets: any;
 
 }
 interface CustomDropCrumbsState {
@@ -70,12 +74,40 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
     this.props.updateSearchParamsAction(newParams);
 
   }
+  renderCrumbTemplate = (item) => {
+    let crumbContext = {
+      crumb: item.key,
+      docCount: item.docCount
+    };
 
+    const { crumbTemplate } = this.props.field;
+    console.log("Cookie crumb", crumbTemplate);
+
+    const DEFAULT_BUCKET_TEMPLATE = `<div className='select-box--crumb-container'>
+    <i class='fas fa-remove'></i> {{crumb}}
+    </div>`;
+
+    const compiled = compileTemplate(crumbTemplate || DEFAULT_BUCKET_TEMPLATE)
+
+    const raw = applyTemplate(compiled, crumbContext)
+    console.log(raw)
+    const parser = new HtmlToReact.Parser();
+    console.log(crumbContext)
+    const reactElementHelperText = parser.parse(raw)
+
+    return (
+      <span className={this.props.isSelected(item.key) ? "select-box--crumb-container-disabled-pointer" : "select-box--crumb-container-pointer"}
+        onClick={() => this.props.selectItem(item)}>
+        {reactElementHelperText}</span>
+
+    )
+
+  }
   render() {
     const { field } = this.props
 
 
-    if (this.props.selectedItems.length > 0) {
+    if (this.props.selectedItems.length > 0 && field.display !=="BTNCLOUD") {
       //console.log("CRUMBS PROPS", field.name, this.props.selectedItems)
       let displayedCrumbs: any[] = this.props.selectedItems.slice(0, field.maxCrumbs)
       let otherValues = { key: `... ${this.props.selectedItems.length - displayedCrumbs.length} others` }
@@ -181,8 +213,28 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
           )
         }
       });
-    } else {
-      //console.log("else", this.props.field.displayName)
+    }
+    
+    else if(field.display=="BTNCLOUD" && this.props.buckets){
+      console.log("ARRAY Buckets", this.props.buckets)
+      let arrayToSlice =   this.props.buckets
+      console.log("ARRAY TO SLICE", arrayToSlice)
+      let displayedCrumbs: any[] = arrayToSlice.slice(0, field.maxCrumbs);
+      console.log(displayedCrumbs)
+       
+      if(!displayedCrumbs.map){
+
+        return <span>BTN</span>
+      } else{
+         return displayedCrumbs.map((item,index)=>{
+            return this.renderCrumbTemplate(item)
+          }) 
+        // return <span>BTN2</span>
+      }
+    } 
+    
+    else {
+      console.log("else", this.props.field.displayName)
       return (<div className={"select-box--sublabel"}>{this.props.field.aggSublabel}</div>)
     }
   }

@@ -255,6 +255,39 @@ const SelectBoxBox = styled.div`
   color: ${props => props.theme.crumbs.crumbFont} !important;
   line-height: 1.1em;
 }
+.select-box--crumb-container-disabled{
+  border: 2px solid ${props => props.theme.buttonSecondary}!important;
+  border-radius: 4px;
+  padding: 0 5px 0 5px;
+  margin: 1px;
+  background: ${props => props.theme.buttonSecondary}!important;
+  color: ${props => props.theme.crumbs.crumbFont} !important;
+  line-height: 1.1em;
+}
+.select-box--crumb-container-pointer{
+  border: 2px solid ${props => props.theme.crumbs.crumbBackground};
+  border-radius: 4px;
+  cursor:pointer;
+  padding: 0 5px 0 5px;
+  margin: 1px;
+  background: ${props => props.theme.crumbs.crumbBackground};
+  color: ${props => props.theme.crumbs.crumbFont} !important;
+  line-height: 1.1em;
+}
+.select-box--crumb-container-pointer:hover{
+  border: 2px solid ${props => props.theme.buttonSecondary};
+
+}
+.select-box--crumb-container-disabled-pointer{
+  border: 2px solid ${props => props.theme.buttonSecondary}!important;
+  border-radius: 4px;
+  cursor:pointer;
+  padding: 0 5px 0 5px;
+  margin: 1px;
+  background: ${props => props.theme.buttonSecondary}!important;
+  color: ${props => props.theme.crumbs.crumbFont} !important;
+  line-height: 1.1em;
+}
 .select-item{
   min-height: 20px;
   padding: 1em;
@@ -498,11 +531,12 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
     const ThemedHeader = this.props.isPresearch ? ThemedPresearchHeader : ThemedFacetHeader
     //Find why this is not themedPresearchTitle 
     const ThemedTitle = this.props.isPresearch ? PresearchTitle : ThemedFacetTitle
-    let configuredLabel = this.props.field?.displayName || aggToField(this.props.field.name);
+    let configuredLabel = this.props.field?.displayName || "";
     const showAllowMissing = this.props.field.showAllowMissing;
 
     const parser = new HtmlToReact.Parser();
     const reactElementTitle = parser.parse(configuredLabel)
+console.log(configuredLabel)
 
     // Using the aggtoField function {capitalize(title)}
 
@@ -514,6 +548,33 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
       return <BeatLoader />
     }
     const icon = `chevron${this.state.showItems ? '-up' : '-down'}`;
+    if (this.props.field.display == "BTNCLOUD") {
+      console.log("HI")
+      return (<ThemedSelectBox>
+        {/* <ThemedContainer> */}
+
+
+          <div className='select-box--crumbs'>
+            <CustomDropCrumbs
+              field={this.props.field}
+              selectedItems={this.state.selectedItems}
+              isSelected={this.isSelected}
+              selectItem={this.selectItem}
+              buckets={this.props.buckets} />
+            {showAllowMissing && this.props.allowsMissing && (
+              <div className='select-box--crumb-container'>
+                {'Allow Missing'}
+                <FontAwesome
+                  className="remove crumb-icon"
+                  name="remove"
+                  onClick={() => this.props.updater.toggleAllowMissing()}
+                />
+              </div>
+            )}
+          </div>
+        {/* </ThemedContainer> */}
+      </ThemedSelectBox>)
+    }
     return (
       <ThemedSelectBox>
         <ThemedContainer>

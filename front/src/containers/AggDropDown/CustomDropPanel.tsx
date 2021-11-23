@@ -121,6 +121,9 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
       crowd_value_helper_text: helperText
     };
 
+
+    //TO-DO UPDATE bucketTemplate, this.props.field undefined all the time something is wrong 
+
     const { bucketTemplate } = this.props.field;
     const  DEFAULT_BUCKET_TEMPLATE = `${key} (${docCount})`;
     
