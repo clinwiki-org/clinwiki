@@ -1183,6 +1183,7 @@ type Mutation {
   upsertReview(input: UpsertReviewInput!): UpsertReviewPayload
   upsertWikiLabel(input: UpsertWikiLabelInput!): UpsertWikiLabelPayload
   upsertWikiTag(input: UpsertWikiTagInput!): UpsertWikiTagPayload
+  actionQuery(input: String): String
   reindexAll: String
   reindexStudy(input: String): String
   reindexDocument(primaryKey: String, primaryKeyList: String, indexName: String): String

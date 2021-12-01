@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
+import { find, propEq } from 'ramda'
 import {ThemedButton} from '../StyledComponents'
-
+import ListLookUp from './ListLookUp'
 const FormEditor = ({row, fields, isInsert, onSave}) => {
   console.log('the insert', fields)
   const [formState, setFormState] = useState([])
@@ -123,53 +124,161 @@ const FormEditor = ({row, fields, isInsert, onSave}) => {
   const renderUpdateForm = () => {
     return Object.entries(row).map(([key, value]) => {
       console.log('x update Form', key, value)
-      if (key =="created_at" || key == "updated_at") {
-        return
-      }
-      if (typeof value == "boolean") {
-        return <div key={key}>
-          <label>
-            <div>
-              {key}
+      const currentField = find(propEq('field_name', key))(fields);
+      console.log(currentField)
+      switch (currentField?.field_input_type) {
+        case 'Input_text':
+          return (
+            <div key={key}>
+              <label>
+                <div>
+                  {key}
+                </div>
+                <div>
+                  <textarea
+                    name={key}
+                    onChange={(e) => handleChange(e, key)}
+
+                    value={formState[key]}
+                  // disabled={!!(key == "id")}
+                  />
+                </div>
+              </label>
             </div>
-            <div>
-              True
-              <input
-                type="radio"
-                value={"true"}
-                checked={formState[key] == true}
-                onChange={(e) => handleChange(e, key, "checkbox")}
-              />
-              False
-              <input
-                type="radio"
-                value={"false"}
-                checked={formState[key] == false}
-                onChange={(e) => handleChange(e, key, "checkbox")}
-              />
+          )
+        case 'Input_text':
+          return (
+            <div key={key}>
+              <label>
+                <div>
+                  {key}
+                </div>
+                <div>
+                  <textarea
+                    name={key}
+                    onChange={(e) => handleChange(e, key)}
+
+                    value={formState[key]}
+                    disabled={true}
+                  />
+                </div>
+              </label>
             </div>
-          </label>
-        </div>
+          )
+        case 'View_Date':
+          return (
+            <div key={key}>
+              <label>
+                <div>
+                  {key}
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    name={key}
+                    // onChange={(e) => handleChange(e, key)}
+
+                    value={formState[key]}
+                    disabled={true}
+                  />
+                </div>
+              </label>
+            </div>
+          )
+        case 'JSON_text':
+          return (
+            <div key={key}>
+              {isInvalid && <div className="generic-error">Bad JSON object</div>}
+              <label>
+                <div>
+                  {key}
+                </div>
+                <div>
+                  <textarea
+                    name={key}
+                    onChange={(e) => handleChange(e, key)}
+
+                    value={formState[key]}
+                  // disabled={!!(key == "id")}
+                  />
+                </div>
+              </label>
+            </div>
+          )
+        case 'Boolean':
+          return (
+            <div key={key}>
+              <label>
+                <div>
+                  {key}
+                </div>
+                <div>
+                  True
+                  <input
+                    type="radio"
+                    value={"true"}
+                    checked={formState[key] == true}
+                    onChange={(e) => handleChange(e, key, "checkbox")}
+                  />
+                  False
+                  <input
+                    type="radio"
+                    value={"false"}
+                    checked={formState[key] == false}
+                    onChange={(e) => handleChange(e, key, "checkbox")}
+                  />
+                </div>
+              </label>
+            </div>
+          )
+        case "Dropdown":
+          // console.log("DD K", key)
+          // console.log(currentField["field_action_values"])
+          if (currentField["field_action"] == 'List_Lookup') {
+            return <ListLookUp label={key} action={currentField["field_action_values"]} currentValue={formState[key]} />
+          } else {
+            const field_action = JSON.parse(currentField["field_action_values"]);
+            return (
+              <label>
+                <div>
+                  {key}
+                </div>
+                <select name={key} id={key}>
+                  {field_action.map && field_action.map((item) => {
+                    return formState[key] == item ? <option key={item} value={item} selected>{item}</option> : <option key={item} value={item}>{item}</option>
+                  })}
+                </select>
+              </label>
+            )
+          }
+        case "Button":
+          return
+        case "Link":
+          return
+        case "Hidden":
+          return
+
+        default:
+          return (
+            <div key={key}>
+              {isInvalid && <div className="generic-error">Bad JSON object</div>}
+              <label>
+                <div>
+                  {key}
+                </div>
+                <div>
+                  <textarea
+                    name={key}
+                    onChange={(e) => handleChange(e, key)}
+
+                    value={formState[key]}
+                    disabled={!!(key == "id")}
+                  />
+                </div>
+              </label>
+            </div>
+          )
       }
-      return (
-        <div key={key}>
-        {isInvalid && <div className="generic-error">Bad JSON object</div>}
-        <label>
-          <div>
-            {key}
-          </div>
-          <div>
-            <textarea 
-                  name={key} 
-                  onChange={(e) => handleChange(e, key)}
-              
-                  value={formState[key]}
-                  disabled={!!(key == "id")}
-                  />    
-          </div>
-        </label>
-        </div>
-      )
     })
   }
 

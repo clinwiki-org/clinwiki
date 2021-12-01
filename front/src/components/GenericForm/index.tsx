@@ -127,7 +127,7 @@ const GenericForm = (props) => {
   const useForm = props.defaultToForm == "true";
   // const [fields, setFields] = useState([])
   const [row, setRow] = useState(0)
-  const [isInsert, setIsInsert] = useState(useForm)
+  const [isInsert, setIsInsert] = useState(false)
   const [shortFields, setShortFields] = useState([])
   const [activeTable, setActiveTable] = useState(props.table || ALL_TABLES)
   const [activeSchema, setActiveSchema] = useState({})
@@ -511,7 +511,7 @@ function schemaToInternal(schemaType: SchemaType) {
 
   useEffect(()=>{
     if(genericData){
-      const row = genericData[tableName].find(x => x.id == currentDoc)
+      const row = genericData[metaFields[0].table_name].find(x => x.id == currentDoc)
       setRow(row)
     }
   },[dispatch,genericData])
