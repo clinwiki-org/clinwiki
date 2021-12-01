@@ -14,6 +14,8 @@ import {ThemedButton} from '../StyledComponents'
 import { ToastContainer, toast } from 'react-toastify';
 import { parseSchemaIds, randomIdentifier } from 'components/MailMerge/MailMergeFragment';
 import { useRouteMatch } from 'react-router-dom';
+import useUrlParams from 'utils/UrlParamsProvider';
+
 import {
   IntrospectionType,
   IntrospectionOutputTypeRef,
@@ -118,18 +120,20 @@ const StyledGrid = styled.div`
 }
 
 `
-const ALL_TABLES = ['island_configs', 'sites', 'page_views', 'crowd_values', 'crowd_keys'];
 const GenericForm = (props) => {
   console.log(props)
-  const TABLES = props.table ? [props.table] : ALL_TABLES
-  const dispatch = useDispatch();
+  const queryString = useUrlParams();
+  
   const match = useRouteMatch();
+  // const ALL_TABLES =  ['island_configs', 'sites', 'page_views', 'crowd_values', 'crowd_keys'];
+  const dispatch = useDispatch();
+  const TABLES = props.table ? [props.table] : [queryString.form] 
   const useForm = props.defaultToForm == "true";
   // const [fields, setFields] = useState([])
   const [row, setRow] = useState(0)
   const [isInsert, setIsInsert] = useState(false)
   const [shortFields, setShortFields] = useState([])
-  const [activeTable, setActiveTable] = useState(props.table || ALL_TABLES)
+  const [activeTable, setActiveTable] = useState(props.table || queryString.form)
   const [activeSchema, setActiveSchema] = useState({})
   const tableName =  props.tableName || activeTable
   const [isForm, setIsForm] = useState(useForm)
@@ -162,7 +166,8 @@ const GenericForm = (props) => {
 
   
 useEffect(() => {
-  console.log('INTRO', introspection)
+  // console.log('INTRO', introspection)
+  // console.log('INTRO', metaFields)
   if (introspection && metaFields) {
     const metaFieldsTable = metaFields[0].table_name
     // console.log('meta', metaFields)

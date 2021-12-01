@@ -12,6 +12,9 @@ export default function useUrlParams() {
     q: new URLSearchParams(window.location.search)
       .getAll('q')
       ?.toString(),
+    form: new URLSearchParams(window.location.search)
+      .getAll('form')
+      ?.toString(),
 
   };
 }
