@@ -36,6 +36,7 @@ export interface RootState {
     introspection: any,
     hasuraSite: any,
     crowdKeys: any,
+    adminReducer: any,
     hasuraFacility: any,
     genericPage:any,
     genericForm:any

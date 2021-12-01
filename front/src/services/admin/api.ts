@@ -12,6 +12,9 @@ const NODE_ENDPOINT = getGraphQLMigrationURL();
 export const reindexAll = () => {
   return callGraphql(NODE_ENDPOINT, query.REINDEX_ALL_MUTATION, {});
 };
+export const actionQuery = (input: string, label) => {
+  return callGraphql(NODE_ENDPOINT, query.ACTION_QUERY, {input, label});
+};
 export const reindexAllDocuments = (primaryKey:string, indexName: string) => {
   return callGraphql(NODE_ENDPOINT, query.REINDEX_ALL_DOCUMENTS_MUTATION, {primaryKey, indexName});
 };

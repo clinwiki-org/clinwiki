@@ -12,6 +12,22 @@ export const reindexAllError = (errors: Array<string>) => ({
     type: types.REINDEX_ALL_ERROR,
     payload: errors
 });
+export const actionQuery = (query: string, label: string) => ({
+    type: types.ACTION_QUERY_SEND,
+    query,
+    label
+});
+
+export const actionQuerySuccess = (payload: any, label) => ({
+    type: types.ACTION_QUERY_SUCCESS,
+    payload,
+    label
+});
+
+export const actionQueryError = (errors: Array<string>) => ({
+    type: types.ACTION_QUERY_ERROR,
+    payload: errors
+});
 
 export const reindexStudy = (nctId : String) => ({
     type: types.REINDEX_STUDY_SEND,

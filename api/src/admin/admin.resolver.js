@@ -1,7 +1,19 @@
 import {isAdmin} from '../users/user.manager';
+import {query} from '../util/db';
 import {aactReindexAllJob,aactReindexSingleStudyJob, } from '../pipeline/jobs/aact.job';
 import { genericDocumentJob, allGenericDocumentsJob} from '../pipeline/jobs/indexDoc.job';
 const adminResolver = {
+    actionQuery: async (args, context) =>{
+        if(isAdmin(context.user)){
+            try{
+            let response = await query(args.input,[])    
+            return JSON.stringify(response);
+            }
+            catch(err){
+                return err
+            }
+        }
+    },
     reindexAll: async (args,context) => {
         if(isAdmin(context.user)) {
             await aactReindexAllJob();
