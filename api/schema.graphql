@@ -1185,6 +1185,7 @@ type Mutation {
   upsertWikiTag(input: UpsertWikiTagInput!): UpsertWikiTagPayload
   actionQuery(input: String): String
   reindexAll: String
+  reindexByDate(date: String): String
   reindexStudy(input: String): String
   reindexDocument(primaryKey: String, primaryKeyList: String, indexName: String): String
   reindexAllDocuments(primaryKey: String, indexName: String): String

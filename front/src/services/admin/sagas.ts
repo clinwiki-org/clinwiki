@@ -33,6 +33,21 @@ function* reindexAll(action) {
     yield put(actions.reindexAllError(err.message));
   }
 }
+function* reindexByDate(action) {
+  try {
+    let response = yield call(() => api.reindexByDate(action.date));
+    if (response) {
+      yield put(actions.reindexByDateSuccess(response.data));
+    } 
+    else {
+      yield put(actions.reindexByDateError(response.message));
+    }
+  } 
+  catch (err) {
+    console.log(err);
+    yield put(actions.reindexByDateError(err.message));
+  }
+}
 function* reindexAllDocuments(action) {
   console.log(action)
   try {
@@ -85,6 +100,7 @@ function* reindexDocument(action) {
 export default function* userSagas() {
   yield takeLatest(types.ACTION_QUERY_SEND, actionQuery);
   yield takeLatest(types.REINDEX_ALL_SEND, reindexAll);
+  yield takeLatest(types.REINDEX_BY_DATE_SEND, reindexByDate);
   yield takeLatest(types.REINDEX_ALL_DOCUMENT_SEND, reindexAllDocuments);
   yield takeLatest(types.REINDEX_STUDY_SEND, reindexStudy);
   yield takeLatest(types.REINDEX_DOCUMENT_SEND, reindexDocument);

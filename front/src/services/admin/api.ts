@@ -15,6 +15,9 @@ export const reindexAll = () => {
 export const actionQuery = (input: string, label) => {
   return callGraphql(NODE_ENDPOINT, query.ACTION_QUERY, {input, label});
 };
+export const reindexByDate = (date) => {
+  return callGraphql(NODE_ENDPOINT, query.REINDEX_BY_DATE_MUTATION, {date});
+};
 export const reindexAllDocuments = (primaryKey:string, indexName: string) => {
   return callGraphql(NODE_ENDPOINT, query.REINDEX_ALL_DOCUMENTS_MUTATION, {primaryKey, indexName});
 };
