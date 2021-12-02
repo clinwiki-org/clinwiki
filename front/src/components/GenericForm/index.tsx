@@ -80,7 +80,6 @@ const StyledGrid = styled.div`
 
   textarea, label {
     width: 100%;
-    min-height: 200px;
 }
 
 .form-row-selector {
