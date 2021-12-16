@@ -6,11 +6,10 @@ import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
 
 interface AllowMissingDropDownItemProps {
   buckets: AggBucket[] | null;
-  updater: AggFilterInputUpdater;
 }
 
 function AllowMissingDropDownItem(props: AllowMissingDropDownItemProps) {
-  const { buckets, updater } = props;
+  const { buckets } = props;
   let totalMissing: number = 0;
   (buckets || []).forEach(bucket => {
     if (bucketKeyIsMissing(bucket)) {

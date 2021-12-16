@@ -549,7 +549,6 @@ console.log(configuredLabel)
     }
     const icon = `chevron${this.state.showItems ? '-up' : '-down'}`;
     if (this.props.field.display == "BTNCLOUD") {
-      console.log("HI")
       return (<ThemedSelectBox>
         {/* <ThemedContainer> */}
 
@@ -560,17 +559,8 @@ console.log(configuredLabel)
               selectedItems={this.state.selectedItems}
               isSelected={this.isSelected}
               selectItem={this.selectItem}
-              buckets={this.props.buckets} />
-            {showAllowMissing && this.props.allowsMissing && (
-              <div className='select-box--crumb-container'>
-                {'Allow Missing'}
-                <FontAwesome
-                  className="remove crumb-icon"
-                  name="remove"
-                  onClick={() => this.props.updater.toggleAllowMissing()}
-                />
-              </div>
-            )}
+              buckets={this.props.buckets} 
+              showAllowMissing/>
           </div>
         {/* </ThemedContainer> */}
       </ThemedSelectBox>)
@@ -600,7 +590,8 @@ console.log(configuredLabel)
                     <FontAwesome
                       className="remove crumb-icon"
                       name="remove"
-                      onClick={() => this.props.updater.toggleAllowMissing()}
+                      onClick={() => this.selectItem({
+                        key: "-99999999999"})}
                     />
                   </div>
                 )}

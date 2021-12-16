@@ -265,7 +265,7 @@ const IslandAggChild = (props: Props) => {
     return true;
   }
   const addFilter = (value: string) => {
-    if (aggValues) {
+    if (aggValues && value !== '-99999999999') {
       aggValues.values = aggValues?.values
         ? [...aggValues.values, value]
         : [value];
@@ -274,10 +274,10 @@ const IslandAggChild = (props: Props) => {
 
       let newInput = {
         field: currentAgg.name,
-        values: [value],
+        values: value!=='-99999999999' ? [value] : [] ,
         gte: aggValues?.gte || null,
         lte: aggValues?.lte || null,
-        includeMissingFields: aggValues?.includeMissingFields || null,
+        includeMissingFields: value!=='-99999999999' ? aggValues?.includeMissingFields || null : true,
         zipcode: aggValues?.zipcode || null,
         radius: aggValues?.radius || null,
         lat: aggValues?.lat || null,
@@ -320,11 +320,14 @@ const IslandAggChild = (props: Props) => {
     if (aggValues === undefined) {
       return false;
     }
-    return contains(key as string, aggValues.values as Array<string>);
+    if(key=="-99999999999"){
+      return {...aggValues, includeMissingFields: false}
+    }else{
+      return contains(key as string, aggValues.values as Array<string>);
+    }
   }
 
   const toggleFilter = (key: string) => {
-
     isSelected(key) ? removeFilter(key) : addFilter(key);
   }
 
@@ -337,7 +340,7 @@ const IslandAggChild = (props: Props) => {
     }
     //Need to handle mutliselect functionality
     // updater &&  updater.toggleFilter(bucketKey);
-    toggleFilter(bucketKey)
+   toggleFilter(bucketKey)
 
   }
   const buckets = aggBuckets?.aggs[aggId!] || []

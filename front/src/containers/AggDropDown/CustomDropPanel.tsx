@@ -259,8 +259,7 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
       return (
         <>
           {showAllowMissing && (
-            // <div className="select-item allow-missing" onClick={() => this.props.updater.toggleAllowMissing()} >
-            <div className="select-item allow-missing" onClick={() => console.log("Need a new function, prev updater")} >
+            <div className="select-item allow-missing" onClick={()=>{this.props.selectItem({key: '-99999999999'})}}>
               <div className="item-content">
                 {this.props.allowsMissing ? <FontAwesome name='far fa-check-square check' className={`square-checkmark${this.props.isPresearch ? "" : "-facet"}`} /> : <div className={`check-outer${this.props.isPresearch ? "" : "-facet"}`}></div>}
 
