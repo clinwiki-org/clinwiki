@@ -133,6 +133,7 @@ const GenericForm = (props) => {
   const [isInsert, setIsInsert] = useState(false)
   const [shortFields, setShortFields] = useState([])
   const [activeTable, setActiveTable] = useState(props.table || queryString.form)
+  const [trueTableName, setTableName] = useState(props.table || "")
   const [activeSchema, setActiveSchema] = useState({})
   const tableName =  props.tableName || activeTable
   const [isForm, setIsForm] = useState(useForm)
@@ -190,6 +191,7 @@ useEffect(() => {
     console.log('META', templateSchemaTokens )
     setShortFields(orderFields(metaWithType))
     setTableColumns(tableColumns)
+    setTableName(metaFields[0].table_name)
     //@ts-ignore
     setActiveSchema(newSchema)
     const genericQuery = await genericQueryString(newSchema)
@@ -426,7 +428,7 @@ function schemaToInternal(schemaType: SchemaType) {
 
     return `
     mutation GenericTableMutation(${inputFields.replace(/\"|{|}/g, "")}) {
-      update_${tableName}(where: {id: {_eq: $id}}, _set: {${updateFields.replace(/\"|{|}/g, "")}}) {
+      update_${!props.tableName? trueTableName: tableName}(where: {id: {_eq: $id}}, _set: {${updateFields.replace(/\"|{|}/g, "")}}) {
         returning {
           ${fieldNames.join('\n')}
         }
@@ -438,9 +440,14 @@ function schemaToInternal(schemaType: SchemaType) {
     const fieldInput = {};
     const schema = isInsert ? shortFields : activeSchema
     Object.values(schema).map((field:any) => {
-      const key = field.name;
-      const type = `$${field.name}`
-      fieldInput[key] = type; 
+      const key = field.name ? field.name : field.field_name;
+      const type = `$${field.name ? field.name : field.field_name}`
+      if(!isInsert){
+        fieldInput[key] = type;
+      }
+      if(key !=='id' && key !=='created_at' && key !=='updated_at' ) fieldInput[key] = type;
+
+
     })
   return fieldInput
   }
@@ -449,9 +456,14 @@ function schemaToInternal(schemaType: SchemaType) {
     const fieldInput = {};
     const schema = isInsert ? shortFields : activeSchema
     Object.values(schema).map((field:any) => {
-      const key = `$${field.name}`;
+      const key = `$${field.name ? field.name : field.field_name}`;
       const type = field.type
-      fieldInput[key] = type;
+      if(!isInsert){
+        fieldInput[key] = type;
+      }
+      if(key !=='id' && key !=='created_at' && key !=='updated_at' ) fieldInput[key] = type;
+
+
     })
   return fieldInput
   }
@@ -464,7 +476,7 @@ function schemaToInternal(schemaType: SchemaType) {
     const fieldNames = Object.values(activeSchema).map((field => field.name))
     return `
     mutation GenericTableMutation(${inputFields.replace(/\"|{|}/g, "")}) {
-      insert_${tableName}(objects: {${updateFields.replace(/\"|{|}/g, "")}}) {
+      insert_${!props.tableName? trueTableName: tableName}(objects: {${updateFields.replace(/\"|{|}/g, "")}}) {
         returning {
           ${fieldNames.join('\n')}
         }
@@ -476,19 +488,19 @@ function schemaToInternal(schemaType: SchemaType) {
    e.preventDefault()
    console.log('submitting', formData)
    if (isInsert === true) {
-    const insertFields = Object.keys(formData).filter(key =>
+     const insertFields = Object.keys(formData).filter(key =>
       key !== 'created_at' && key !== "updated_at" && key !== "id").reduce((obj, key) =>
       {
-          obj[key] = formData[key];
-          return obj;
+        obj[key] = formData[key];
+        return obj;
       }, {}
-    );
-    const genericMutation = genericTableCreateMutation(insertFields)
-    dispatch(updateGeneric(insertFields, genericMutation))
-    setIsInsert(false)
-    setIsForm(false)
-   } else { 
-    const genericMutation = genericTableUpdateMutation(formData)
+      );
+      const genericMutation = genericTableCreateMutation(insertFields)
+      dispatch(updateGeneric(insertFields, genericMutation))
+      setIsInsert(false)
+      setIsForm(false)
+    } else {
+      const genericMutation = genericTableUpdateMutation(formData)
     dispatch(updateGeneric(formData, genericMutation))
     // const genericQuery = await genericQueryString(activeSchema)
     // dispatch(fetchGeneric(genericQuery))
