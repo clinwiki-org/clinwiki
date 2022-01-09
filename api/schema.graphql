@@ -809,6 +809,7 @@ type ElasticStudy implements Timestamps {
   baselinePopulation: String
   briefSummary: String
   briefTitle: String!
+  ctgovProdStudiesInterventionsName: [String]
   completionDate: DateTime
   conditions: String
   createdAt: DateTime!
@@ -823,6 +824,7 @@ type ElasticStudy implements Timestamps {
   expandedAccessTypeTreatment: String
   facilityStates: [String!]!
   hasExpandedAccess: String
+  indexedAt: DateTime!
   interventions: [String!]!
   interventionsMeshTerms: [String!]!
   ipdAccessCriteria: String
