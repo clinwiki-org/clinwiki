@@ -125,7 +125,6 @@ const IslandAggChild = (props: Props) => {
       aggIslandsCurrent.current.currentAggIsalnds = [...aggIslandsCurrent.current.currentAggIsalnds, key];
     }
   }
-  let uniqueAggIds = uniq(aggIslandsCurrent.current.currentAggIsalnds);
 
 
 
@@ -212,13 +211,11 @@ const IslandAggChild = (props: Props) => {
     );
 
     if (searchParams[grouping] && aggSettings) {
-
       const allButThisAgg = filter(
         (x) => x.field !== currentAgg.name,
         searchParams[grouping] || aggSettings
       );
       if (hasNoFilters()) {
-
         updateSearchParams({
           [grouping as string]: allButThisAgg,
         });
@@ -247,7 +244,7 @@ const IslandAggChild = (props: Props) => {
       (x) => x.field !== currentAgg.name,
       searchParams[grouping] || aggSettings
     );
-    updateSearchParams2({
+    updateSearchParams({
       [grouping as string]: allButThisAgg,
     });
   }
@@ -266,18 +263,22 @@ const IslandAggChild = (props: Props) => {
   }
   const addFilter = (value: string) => {
     if (aggValues) {
-      aggValues.values = aggValues?.values
-        ? [...aggValues.values, value]
-        : [value];
+      if(value !== '-99999999999'){
+        aggValues.values = aggValues?.values
+          ? [...aggValues.values, value]
+          : [value];
+      }
+      else{
+        aggValues.includeMissingFields = true
+      }
       onUpdateFilter();
     } else {
-
       let newInput = {
         field: currentAgg.name,
-        values: [value],
+        values: value!=='-99999999999' ? [value] : [] ,
         gte: aggValues?.gte || null,
         lte: aggValues?.lte || null,
-        includeMissingFields: aggValues?.includeMissingFields || null,
+        includeMissingFields: value!=='-99999999999' ? aggValues?.includeMissingFields || null : true,
         zipcode: aggValues?.zipcode || null,
         radius: aggValues?.radius || null,
         lat: aggValues?.lat || null,
@@ -297,16 +298,19 @@ const IslandAggChild = (props: Props) => {
 
   const removeFilter = (value: string) => {
     if (aggValues.values) {
+      if(value=='-99999999999'){
+        aggValues.includeMissingFields = false;
+      }
 
-      aggValues.values = filter(x => x !== value, aggValues.values)
-      if (aggValues.values.length > 0) {
+  aggValues.values = filter(x => x !== value, aggValues.values)
+      // if (aggValues.values.length > 0) {
 
         updateSearchParams2({
           [grouping as string]: aggValues,
         });
-      } else {
+      // } else {
         onUpdateFilter();
-      }
+      // }
     } else {
       aggValues.values = []
       onUpdateFilter();
@@ -316,15 +320,17 @@ const IslandAggChild = (props: Props) => {
 
   const isSelected = (key: string) => {
 
-
     if (aggValues === undefined) {
       return false;
     }
-    return contains(key as string, aggValues.values as Array<string>);
+    if(key=="-99999999999" && aggValues.includeMissingFields){
+      return true
+    }else{
+      return contains(key as string, aggValues.values as Array<string>);
+    }
   }
 
   const toggleFilter = (key: string) => {
-
     isSelected(key) ? removeFilter(key) : addFilter(key);
   }
 
@@ -337,7 +343,7 @@ const IslandAggChild = (props: Props) => {
     }
     //Need to handle mutliselect functionality
     // updater &&  updater.toggleFilter(bucketKey);
-    toggleFilter(bucketKey)
+   toggleFilter(bucketKey)
 
   }
   const buckets = aggBuckets?.aggs[aggId!] || []

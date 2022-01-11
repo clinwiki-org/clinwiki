@@ -21,6 +21,7 @@ interface CustomDropCrumbsProps {
   searchResultData: any;
   updateSearchParamsAction: any;
   buckets: any;
+  showAllowMissing: boolean;
 
 }
 interface CustomDropCrumbsState {
@@ -216,9 +217,12 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
     }
     
     else if(field.display=="BTNCLOUD" && this.props.buckets){
-      console.log("ARRAY Buckets", this.props.buckets)
+      // console.log("ARRAY Buckets", this.props.buckets)
       let arrayToSlice =   this.props.buckets
-      console.log("ARRAY TO SLICE", arrayToSlice)
+      if(!this.props.showAllowMissing){
+      arrayToSlice = filter((x)=>x.key !== "-99999999999", arrayToSlice)
+      }
+      // console.log("ARRAY TO SLICE", arrayToSlice)
       let displayedCrumbs: any[] = arrayToSlice.slice(0, field.maxCrumbs);
       console.log(displayedCrumbs)
        
@@ -227,7 +231,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
         return <span>BTN</span>
       } else{
          return displayedCrumbs.map((item,index)=>{
-            return this.renderCrumbTemplate(item)
+            return this.renderCrumbTemplate(item.key == "-99999999999"? {key:"Allow Missing"}: item)
           }) 
         // return <span>BTN2</span>
       }

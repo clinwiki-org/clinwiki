@@ -140,9 +140,9 @@ export async function openAggBuckets(args) {
             args.params,
             args.aggBucketsWanted
         );
-        console.log("TRANSLATED", translated)
+        // console.log("TRANSLATED"+ util.inspect(translated, false,null, true) )
         let esResults = process.env.DEFAULT_APPLICATION == "clinwiki" ? await elastic.query(translated, process.env.ELASTICSEARCH_INDEX) : await elastic.query(translated, process.env.ELASTICSEARCH_INDEX_DIS);
-        console.log("TRANSLATED OPEN AGG Buckets" + util.inspect(esResults.body.aggregations, true, null, false))
+        // console.log("TRANSLATED OPEN AGG Buckets" + util.inspect(esResults.body.aggregations, true, null, false))
         const studies = esResults.body.hits.hits.map(study =>
             esToGraphql(study)
         );

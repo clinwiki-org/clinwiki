@@ -20,7 +20,7 @@ query MyQuery {
 `
 const QUERY_ALL_NCT_IDS = `
 query MyQuery {
-  ctgov_prod_studies {
+  ctgov_prod_studies(order_by: {nct_id: desc}) {
     nct_id
   }
 }
