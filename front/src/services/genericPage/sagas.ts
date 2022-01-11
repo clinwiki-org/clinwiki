@@ -44,10 +44,10 @@ function* getMMSchemas(action) {
             api.fetchMMSchemas()
         );
         console.log(response)
-        if (response) {
+        if (response && response.data) {
             yield put(actions.fetchMMSchemasSuccess(response));
         } else {
-            yield put(actions.fetchMMSchemasError(response.message));
+            yield put(actions.fetchMMSchemasError(response));
         }
     } catch (err) {
         console.log(err);

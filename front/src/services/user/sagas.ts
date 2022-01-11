@@ -23,10 +23,11 @@ function* getUser(action) {
 function* getCurrentUser(action) {
   try {
     let response = yield call(() => api.fetchCurrentUser());
-    if (response) {
+    if (response && response.data.me) {
       yield put(actions.fetchCurrentUserSuccess(response.data.me));
     } else {
-      yield put(actions.fetchCurrentUserError([response.message]));
+      yield call(() => setLocalJwt(null));
+      yield put(actions.fetchCurrentUserError(['No User Found']));
     }
   } catch (err) {
     console.log(err);
