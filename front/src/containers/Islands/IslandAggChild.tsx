@@ -130,7 +130,7 @@ const IslandAggChild = (props: Props) => {
 
   const updateSearchParams = (value) => {
 
-    const currentRams = { ...searchParamsCurrent.current, value }
+    const currentRams = { ...searchParamsCurrent.current, ...value }
     !isUpdatingParams && dispatch(updateSearchParamsAction(currentRams));
   };
   const updateSearchParams2 = (value) => {
@@ -204,10 +204,9 @@ const IslandAggChild = (props: Props) => {
   const ACCEPTED_FIELDS = ['values', 'gte', 'lte', 'includeMissingFields', 'zipcode', 'radius', 'lat', 'long'];
 
   const onUpdateFilter = () => {
-
     const aggSettings = find(
       (x) => x.field == currentAgg.name,
-      searchParams
+      searchParamsCurrent.current 
     );
 
     if (searchParams[grouping] && aggSettings) {
@@ -244,9 +243,29 @@ const IslandAggChild = (props: Props) => {
       (x) => x.field !== currentAgg.name,
       searchParams[grouping] || aggSettings
     );
-    updateSearchParams({
-      [grouping as string]: allButThisAgg,
-    });
+
+    if(allButThisAgg.length ==0 && !aggValues.includeMissingFields){
+      updateSearchParams({
+        [grouping as string]: allButThisAgg,
+      });
+
+    }else{
+      let newInput = {
+        field: aggValues?.field,
+        values: aggValues?.values,
+        gte: aggValues?.gte || null,
+        lte: aggValues?.lte || null,
+        includeMissingFields: aggValues?.includeMissingFields || null,
+        zipcode: aggValues?.zipcode || null,
+        radius: aggValues?.radius || null,
+        lat: aggValues?.lat || null,
+        long: aggValues?.long || null
+      }
+      console.log(newInput)
+      updateSearchParams({
+        [grouping]: [...allButThisAgg, newInput],
+      });
+    }
   }
 
   const hasNoFilters = () => {
@@ -303,14 +322,14 @@ const IslandAggChild = (props: Props) => {
       }
 
   aggValues.values = filter(x => x !== value, aggValues.values)
-      // if (aggValues.values.length > 0) {
+      if (aggValues.values.length > 0) {
 
         updateSearchParams2({
           [grouping as string]: aggValues,
         });
-      // } else {
+      } else {
         onUpdateFilter();
-      // }
+      }
     } else {
       aggValues.values = []
       onUpdateFilter();
