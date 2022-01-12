@@ -172,6 +172,9 @@ query MyQuery(
         organization
         responsible_party_type
       }
+      ctgov_prod_studies_interventions {
+        name
+      }
     }
   }
   
