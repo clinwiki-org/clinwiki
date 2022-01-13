@@ -316,6 +316,9 @@ const IslandAggChild = (props: Props) => {
 
   const removeFilter = (value: string) => {
     if (aggValues.values) {
+      if(value=='-99999999999'){
+        aggValues.includeMissingFields = false;
+      }
 
   aggValues.values = filter(x => x !== value, aggValues.values)
       if (aggValues.values.length > 0) {
@@ -332,6 +335,7 @@ const IslandAggChild = (props: Props) => {
 
     }
   }
+
 
   const isSelected = (key: string) => {
 
