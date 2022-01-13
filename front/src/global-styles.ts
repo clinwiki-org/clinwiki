@@ -332,6 +332,8 @@ div.DraftEditor-editorContainer{
   border: 0px;
   padding: 0px;
   font-family:inherit;
+  white-space: pre-wrap;
+
 }
 .mail-merge pre code {
   font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
