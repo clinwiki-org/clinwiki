@@ -496,7 +496,7 @@ const getDocumentMapping = async (document, parentField) => {
   for (const [key, value] of Object.entries(document)) {
     // console.log("KEY", key)
     // console.log("VALUE", value)
-      // console.log("PARENT", parentField)
+    // console.log("PARENT", parentField)
 
     let parsedValue = parentField ? await parseDataType(graphqlToIndexMapping[`${parentField}.${key}`].fieldNameIndex, graphqlToIndexMapping[`${parentField}.${key}`].dataTypeToIndex, value, `${parentField}.${key}`) : await parseDataType(graphqlToIndexMapping[key].fieldNameIndex, graphqlToIndexMapping[key].dataTypeToIndex, value, key)
 
