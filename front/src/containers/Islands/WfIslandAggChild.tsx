@@ -148,6 +148,7 @@ function WfIslandAggChild(props: Props) {
       !user && dispatch(setShowLoginModal(true))
       return console.log(!user ? "Sorry, must be logged in to do this" : "Sorry still saving value")
     }
+    console.log("Check here", crowdKeyValueData);
     if (crowdKeyValueData.length === 1) {
       let idToUpdate = crowdKeyValueData[0].id
       //let updatedContent = richEditorText//.toString('markdown');
