@@ -9,6 +9,8 @@ import { push } from 'connected-react-router';
 
 const getCurrentSavedSearches = state =>
     state.search.savedSearches.data.saved_searches;
+const getCurrentSavedDocs = state =>
+    state.search.savedDocs.data.saved_documents;
 const getCurrentSearcheParams = state =>
     state.search.searchResults.data.searchParams;
 const getCurrentIslands = state => state.search.islandConfig;
@@ -341,6 +343,66 @@ function* deleteSavedSearch(action) {
     }
 }
 
+function* getSavedDocs(action) {
+    //console.log("SAGA get Saved Searches", action)
+    try {
+        let response = yield call(() => api.fetchSavedDocs(action.userId));
+        if (response) {
+            yield put(actions.fetchSavedDocsSuccess(response));
+            return response;
+        } else {
+            yield put(actions.fetchSavedDocsError(response.message));
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.fetchSavedDocsError(err.message));
+    }
+}
+
+function* createSavedDocument(action) {
+    try {
+
+        let createResponse = yield call(() =>
+            api.createSavedDocument(
+                action.document_id,
+                action.url,
+                action.userId,
+                action.nameLabel
+            )
+        );
+        if (createResponse.data.insert_saved_searches_one) {
+            let response = yield getSavedSearches(action);
+            yield put(actions.createSavedSearchSuccess(response));
+        } else {
+            yield put(actions.createSavedSearchError(createResponse.message));
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.createSavedSearchError(err.message));
+    }
+}
+
+function* deleteSavedDoc(action) {
+    // console.log("SAGA Delete Saved Search", action)
+    const currentSavedDocs = yield select(getCurrentSavedDocs);
+    try {
+        let response = yield call(() => api.deleteSavedDoc(action.id));
+        const { id } = response.data.delete_saved_searches_by_pk;
+        if (id === action.id) {
+            let newSavedDocs = currentSavedDocs.filter(
+                s => s.id !== id
+            );
+            //console.log('🚀 ~  ~ newSavedDocs', newSavedDocs);
+            yield put(actions.deleteSavedDocSuccess(newSavedDocs));
+        } else {
+            yield put(actions.deleteSavedDocError(response.message));
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.deleteSavedDocError(err.message));
+    }
+}
+
 
 function* getIslandConfig(action) {
     console.log(action)
@@ -497,6 +559,9 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_SAVED_SEARCHES_SEND, getSavedSearches);
     yield takeLatest(types.CREATE_SAVED_SEARCH_SEND, createSavedSearch);
     yield takeLatest(types.DELETE_SAVED_SEARCH_SEND, deleteSavedSearch);
+    yield takeLatest(types.FETCH_SAVED_DOCS_SEND, getSavedDocs);
+    yield takeLatest(types.CREATE_SAVED_DOCUMENT_SEND, createSavedDocument);
+    yield takeLatest(types.DELETE_SAVED_DOC_SEND, deleteSavedDoc);
     // yield takeLatest(types.FETCH_FACET_CONFIG_SEND, getFacetConfig);
     yield takeLatest(types.FETCH_ISLAND_CONFIG_SEND, getIslandConfig);
     yield takeLatest(

@@ -11,6 +11,7 @@ import EditsHistoryIsland from './EditsHistoryIsland';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import SearchWithin from './SearchWithin';
 import SaveSearchIsland from './SaveSearchIsland';
+import SaveDocumentIsland from './SaveDocumentIsland';
 import DownloadCSVIsland from './DownloadCSVIsland';
 import ResultSort from './ResultSort';
 import ResultLoader from './ResultLoader';
@@ -73,6 +74,9 @@ export const studyIslands: Record<string, IslandConstructor> = {
   ),
   wfagg: (attributes: Record<string, string>, context?: any) => (
     <IslandAggWrapper2 nctId={context?.nct_id} aggId={attributes['id']} />
+  ),
+  savedocument: (attributes: Record<string, string>, context?: any) => (
+    <SaveDocumentIsland />
   ),
 };
 export const searchIslands: Record<string, IslandConstructor> = {

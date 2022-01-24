@@ -22,6 +22,8 @@ const initialState: types.SearchState = {
     suggestions: [],
     isFetchingSavedSearches: false,
     savedSearches: undefined,
+    isFetchingSavedDocs: false,
+    savedDocs: undefined,
     isCreatingSavedSearch: false,
     isDeletingSavedSearch: false,
     isFetchingFacetConfig: false,
@@ -240,6 +242,22 @@ const searchReducer = (
                 isFetchingAutoSuggest: false,
             };
 
+        case types.FETCH_SAVED_DOCS_SEND:
+            return {
+                ...state,
+                isFetchingSavedDocs: true,
+            };
+        case types.FETCH_SAVED_DOCS_SUCCESS:
+            return {
+                ...state,
+                isFetchingSavedDocs: false,
+                savedDocs: action.payload,
+            };
+        case types.FETCH_SAVED_DOCS_ERROR:
+            return {
+                ...state,
+                isFetchingSavedDocs: false,
+            };
         case types.FETCH_SAVED_SEARCHES_SEND:
             return {
                 ...state,

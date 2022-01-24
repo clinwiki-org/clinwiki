@@ -59,6 +59,28 @@ export const CREATE_SAVED_SEARCH_MUTATION = `
   }
 `;
 
+export const HASURA_DELETE_SAVED_DOC = `
+mutation HasuraDeleteSavedDoc($id: Int!) {
+  delete_saved_documents_by_pk(id: $id) {
+    id
+    name_label
+    url
+    user_id
+  }
+}
+`;
+
+export const HASURA_CREATE_SAVED_DOCUMENT = `
+  mutation HasuraCreateSavedDocument( $document_id: String,  $url: String!, $userId: Int!, $nameLabel: String!) {
+  insert_saved_documents_one(object: {user_id: $userId, url: $url, name_label: $nameLabel, document_id: $document_id, is_subscribed: true}) {
+    user_id
+    url
+    name_label
+    is_subscribed
+  }
+}
+`;
+
 export const HASURA_DELETE_SAVED_SEARCH = `
 mutation HasuraDeleteSavedSearch($id: bigint!) {
   delete_saved_searches_by_pk(id: $id) {

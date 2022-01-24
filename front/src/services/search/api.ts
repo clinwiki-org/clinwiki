@@ -104,6 +104,31 @@ export const deleteSavedSearch = id => {
     });
 };
 
+export const fetchSavedDocs = (userId: any) => {
+    return callHasuraClinwiki(HASURA_CW, query.HASURA_SAVED_DOCS_QUERY, {
+        userId: userId,
+    });
+};
+
+export const createSavedDocument = (
+    document_id: string,
+    url: string,
+    userId: number,
+    nameLabel: string,
+) => {
+    return callHasuraClinwiki(HASURA_CW, mutate.HASURA_CREATE_SAVED_DOCUMENT, {
+        document_id: document_id,
+        url: url,
+        userId: userId,
+        nameLabel: nameLabel,
+    });
+};
+export const deleteSavedDoc = id => {
+    return callHasuraClinwiki(HASURA_CW, mutate.HASURA_DELETE_SAVED_DOC, {
+        id: id,
+    });
+};
+
 export const fetchIslandConfig = (idList) => {
     return callHasuraClinwiki(HASURA_CW, query.ISLAND_CONFIG_QUERY, {
         idList: idList
