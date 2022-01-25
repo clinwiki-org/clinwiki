@@ -75,32 +75,14 @@ function SaveDoc(props: SaveDocProps) {
 };
 
 
-
-
-interface Props {
-
-}
-
-function SaveDocumentIsland(props: Props) {
-  const dispatch = useDispatch();
+function SaveDocumentIsland() {
   const params = useUrlParams();
   const hash = params.hash
-
-  
-
-
 
   const data = useSelector((state: RootState) => state.search.searchResults);
   const searchParams = data?.data?.searchParams;
   const match = useRouteMatch();
   const user = useSelector((state: RootState) => state.user.current);
-  useEffect(() => {
-    match.path == "/search2/" && dispatch(fetchSearchParams(hash));
-  }, [dispatch]);
-
-
-  
-;
 
   if(!data || !searchParams){
     return <BeatLoader/>
@@ -108,7 +90,8 @@ function SaveDocumentIsland(props: Props) {
   return (
     <>
           <SaveDoc
-            id={'NCT10000'}
+          //@ts-ignore
+            id={match.params.docId}
             user={user}
           />
     </>
