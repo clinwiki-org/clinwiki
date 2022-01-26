@@ -122,10 +122,12 @@ export interface SearchState {
     suggestions: Array<any>;
     isFetchingSavedSearches: boolean;
     savedSearches: any | UserSavedSearchesQuery | undefined;
-    isFetchingSavedDocs: boolean;
-    savedDocs: any | UserSavedDocsQuery | undefined;
     isCreatingSavedSearch: boolean;
     isDeletingSavedSearch: boolean;
+    savedDocs: any | UserSavedDocsQuery | undefined;
+    isFetchingSavedDocs: boolean;
+    isDeletingSavedDocument: boolean;
+    isCreatingSavedDocument: boolean;
     isFetchingFacetConfig: boolean;
     islandConfig: IslandConfigQuery | undefined;
     isUpdatingFacetConfig: boolean;

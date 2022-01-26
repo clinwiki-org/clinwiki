@@ -35,7 +35,7 @@ export default function UserSavedDocs(props: userSavedDocsProps) {
 
   useEffect(() => {
     dispatch(fetchSavedDocs(userId));
-  }, [dispatch,userSavedDocs]);
+  }, [dispatch]);
 
   // console.log("🚀 ~ userSavedDocs ~ userSavedDocs", userSavedDocs);
 
@@ -54,7 +54,7 @@ export default function UserSavedDocs(props: userSavedDocsProps) {
             <a href={list.url}> {list?.name_label} </a>: {list?.document_id}
             <div style={{ float: 'right', margin: "1px 2px" }} >
               <LabeledButton
-                helperText={"Delete List"}
+                helperText={"Delete Study"}
                 theClick={handleDeleteSavedList(list?.id)}
                 iconName={"trash"}
               />

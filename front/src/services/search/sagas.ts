@@ -387,7 +387,7 @@ function* deleteSavedDoc(action) {
     const currentSavedDocs = yield select(getCurrentSavedDocs);
     try {
         let response = yield call(() => api.deleteSavedDoc(action.id));
-        const { id } = response.data.delete_saved_searches_by_pk;
+        const { id } = response.data.delete_saved_documents_by_pk;
         if (id === action.id) {
             let newSavedDocs = currentSavedDocs.filter(
                 s => s.id !== id

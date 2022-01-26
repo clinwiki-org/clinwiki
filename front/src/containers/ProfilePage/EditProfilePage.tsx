@@ -21,7 +21,7 @@ import ReviewsTable from './components/ReviewsTable';
 import * as FontAwesome from 'react-fontawesome';
 import UserSearchLogs from './components/UserSearchLogs';
 import UserSavedSearches from './components/UserSavedSearches';
-import UserSavedLists from './components/UserSavedLists';
+import UserSavedDocuments from './components/UserSavedDocuments';
 import { RootState } from 'reducers';
 import { fetchReactionsById } from './../../services/study/actions'
 interface EditProfilePageProps {
@@ -242,7 +242,7 @@ const EditProfilePage = (props: EditProfilePageProps) => {
       <h2>My Saved Studies</h2>
       <ThemedSearchContainer>
         <h4>Studies:</h4>
-        <UserSavedLists
+        <UserSavedDocuments
           user={user}
         />
       </ThemedSearchContainer>
