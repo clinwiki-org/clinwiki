@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { RootState } from 'reducers';
 import { BeatLoader } from 'react-spinners';
 import * as FontAwesome from 'react-fontawesome';
+import saved_study from 'images/saved_study.png';
 
 interface userSavedDocsProps {
   //@ts-ignore
@@ -96,9 +97,41 @@ export default function UserSavedDocs(props: userSavedDocsProps) {
         </div>
       </>
       :
-      <StyledProfileLabel>
-        No Saved Documents for user {props.user?.email}
-      </StyledProfileLabel>
+      <div className="container flex flex-col mx-auto w-full items-center justify-center bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div className="px-4 py-5 sm:px-6 border-b w-full">
+          <h3 className="font-bold text-2xl leading-6 font-medium text-gray-900 dark:text-white">
+            My Saved Studies
+          </h3>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500">
+            By saving a study you are subscribing to weekly updates and email notifications.
+          </p>
+        </div>
+        <ul className="flex flex-col divide divide-y w-full">
+          <li className="flex flex-row ">
+            <div className="select-none flex flex-1 items-center p-4">
+              <div className="flex-1 pl-1 mr-16">
+                <p>{'Subscribing to a search is as easy as pressing a button.  This button to be exact! ➡  '}
+                  <LabeledButton
+                    helperText={"Save Study"}
+                    theClick={() => window.alert("Nice Click! Lets try it on a Study next.")}
+                    iconName={"bookmark"}
+                  /> </p>
+                <p className='text-sm'>See Image below for some further guidance:</p>
+                <div className="font-medium dark:text-white">
+                  <img
+
+                    src={saved_study}
+                    alt="example"
+                  />
+                  <p>
+                    Once You are subscribed to some study you can come back to check them out. They will be listed for easy access and removal.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
 
   );
 }

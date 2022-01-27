@@ -4,6 +4,7 @@ import * as actions from './actions';
 import * as api from './api';
 import history from 'createHistory';
 import { setLocalJwt } from 'utils/localStorage';
+import { fetchSavedDocs, fetchSavedSearches } from 'services/search/actions';
 
 function* getUser(action) {
   try {
@@ -25,6 +26,9 @@ function* getCurrentUser(action) {
     let response = yield call(() => api.fetchCurrentUser());
     if (response && response.data.me) {
       yield put(actions.fetchCurrentUserSuccess(response.data.me));
+      //Added these two to have a marker on whether to show alert about saved study/search features
+      yield put(fetchSavedSearches(response.data.me.id)) 
+      yield put(fetchSavedDocs(response.data.me.id)) 
     } else {
       yield call(() => setLocalJwt(null));
       yield put(actions.fetchCurrentUserError(['No User Found']));
