@@ -245,7 +245,7 @@ const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps
           setDropdown(node);
         }}>
         <ThemedUserButton onClick={toggleMenuDropdown}>
-          {renderUserImage(user.pictureUrl)}
+          {renderUserImage(user.picture_url)}
           {/* <ContributionContainer>
             <ContributionCount>{user.contributions}</ContributionCount>
             <FontAwesome

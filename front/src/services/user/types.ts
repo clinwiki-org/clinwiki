@@ -152,9 +152,10 @@ export interface UpdatePasswordErrorAction {
 
 export interface EditProfileSendAction {
     type: typeof EDIT_PROFILE_SEND,
-    firstName: string,
-    lastName: string,
-    defaultQueryString: string
+    first_name: string,
+    last_name: string,
+    default_query_string: string,
+    email: string
 }
 
 export interface EditProfileSuccessAction {

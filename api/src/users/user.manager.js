@@ -19,6 +19,7 @@ const QUERY_USER_WIKI_CONTRIBUTIONS =
 const QUERY_NEW_USER =
     'insert into users (email,encrypted_password,default_query_string,picture_url) values ($1,$2,$3,$4)';
 const QUERY_UPDATE_PASSWORD ='update  users set encrypted_password = $1 where id=$2';
+const QUERY_UPDATE_PROFILE ='update  users set first_name = $1, last_name = $2, default_query_string = $3 where email=$4';
 const UPDATE_RESET_TOKEN ='update  users set reset_password_token = $1 where id=$2';
 const QUERY_USER_REACTIONS = 'select * from reactions where user_id=$1';
 const QUERY_USER_REACTIONS_COUNT =
@@ -267,6 +268,27 @@ export async function updatePassword(token, passwordOne, passwordTwo) {
         const encryptedPassword = await bcrypt.hash(passwordOne, 10);
         const results = await query(QUERY_UPDATE_PASSWORD, [encryptedPassword, user.id]);
         // console.log(results)
+        return {user:user, success: true}
+    }
+    catch (err) {
+        logger.error(err)
+        // return err
+        return { message: `${err}`, success: false  }
+    }
+
+}
+export async function updateProfile(firstName, lastName,defaultQueryString, email) {
+    try {
+        console.log(email)
+        // Query for user with given id, if none returned invalid id error thrown
+        const exists = await query(QUERY_USER, [email]);
+        if (exists.rows.length == 0) throw new Error("Invalid Email")
+        const user = exists.rows[0]
+        console.log("User", util.inspect(user, false, null, true));
+
+        // const encryptedPassword = await bcrypt.hash(passwordOne, 10);
+        const results = await query(QUERY_UPDATE_PROFILE, [firstName,lastName,defaultQueryString, email]);
+        console.log("RESULTS",util.inspect(results, false, null, true))
         return {user:user, success: true}
     }
     catch (err) {

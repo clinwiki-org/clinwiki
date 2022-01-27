@@ -136,13 +136,15 @@ function* editProfile(action) {
   try {
     let response = yield call(() =>
       api.editProfile(
-        action.firstName,
-        action.lastName,
-        action.defaultQueryString
+        action.first_name,
+        action.last_name,
+        action.default_query_string,
+        action.email
       )
     );
     if (response) {
       yield put(actions.editProfileSuccess(response));
+      yield put(actions.fetchCurrentUser())
     } else {
       yield put(actions.editProfileError([response.message]));
     }

@@ -1225,7 +1225,7 @@ type PublicUser {
   """
   First name
   """
-  firstName: String
+  first_name: String
 
   """
   Id
@@ -1235,8 +1235,8 @@ type PublicUser {
   """
   Last name
   """
-  lastName: String
-  pictureUrl: String
+  last_name: String
+  picture_url: String
   rank: String
 
   """
@@ -2122,10 +2122,10 @@ input UpdateProfileInput {
   """
   A unique identifier for the client performing the mutation.
   """
-  clientMutationId: String
-  defaultQueryString: String
-  firstName: String
-  lastName: String
+  email: String
+  default_query_string: String
+  first_name: String
+  last_name: String
 }
 
 """
@@ -2412,7 +2412,7 @@ type User {
   """
   Default query for user
   """
-  defaultQueryString: String
+  default_query_string: String
   dislikeCount: Int
   dislikedStudies: [Study!]
   editorSites: [Site!]!
@@ -2430,7 +2430,7 @@ type User {
   """
   First name
   """
-  firstName: String
+  first_name: String
 
   """
   Id
@@ -2440,11 +2440,11 @@ type User {
   """
   Last name
   """
-  lastName: String
+  last_name: String
   likeCount: Int
   likedStudies: [Study!]
   ownSites: [Site!]!
-  pictureUrl: String
+  picture_url: String
   rank: String
   reactions(limit: Int, nctId: String, offset: Int, reactionKindId: String): [Reaction!]
   reactionsCount: [ExpressionCount!]

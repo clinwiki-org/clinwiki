@@ -96,11 +96,12 @@ export const resetPasswordError = (errors: Array<string>) : types.UserActionType
     payload: errors
 });
 
-export const editProfile = (firstName: string, lastName: string, defaultQueryString: string) : types.UserActionTypes => ({
+export const editProfile = (first_name: string, last_name: string, default_query_string: string, email: string) : types.UserActionTypes => ({
     type: types.EDIT_PROFILE_SEND,
-    firstName,
-    lastName,
-    defaultQueryString
+    first_name,
+    last_name,
+    default_query_string,
+    email
 });
 
 export const editProfileSuccess = (payload: types.UserData) : types.UserActionTypes => ({

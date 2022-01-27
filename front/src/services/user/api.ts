@@ -53,8 +53,8 @@ export const resetPassword = email => {
   });
 };
 
-export const editProfile = (firstName, lastName, defaultQueryString) => {
+export const editProfile = (first_name, last_name, default_query_string, email) => {
   return callGraphql(NODE_ENDPOINT, query.EDIT_PROFILE_MUTATION, {
-    input: { firstName, lastName, defaultQueryString },
+    input: { first_name, last_name, default_query_string, email },
   });
 };

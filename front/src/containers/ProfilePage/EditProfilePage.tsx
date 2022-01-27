@@ -33,7 +33,7 @@ interface EditProfilePageProps {
   location: Location;
   match: match;
 }
-let editableFields = ['firstName', 'lastName', 'email', 'defaultQueryString'];
+let editableFields = ['first_name', 'last_name', 'email', 'default_query_string'];
 
 const ProfileInfo = ({ user, onToggle }) => {
   // let pictureUrl = user.pictureUrl || null; 
@@ -101,26 +101,42 @@ const ProfileInfo = ({ user, onToggle }) => {
 }
 const EditForm = ({ user, onToggle }) => {
   const dispatch = useDispatch();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [defaultQueryString, setDefaultQueryString] = useState('');
+  const [firstName, setFirstName] = useState(user.first_name || '');
+  const [lastName, setLastName] = useState(user.last_name || '');
+  const [defaultQueryString, setDefaultQueryString] = useState(user.default_query_string || '');
   const handleEditProfile = () => {
-    dispatch(editProfile(firstName, lastName, defaultQueryString));
+    dispatch(editProfile(firstName, lastName, defaultQueryString, user.email));
     onToggle();
   };
+  const returnStateValue = (field) => {
+    console.log(field)
+    // 'firstName', 'lastName', 'email','defaultQueryString'
+    switch (field) {
+      case 'first_name':
+        return firstName
+      case 'last_name':
+        return lastName
+      case 'email':
+        return user.email
+      case 'default_query_string':
+        return defaultQueryString
+      default:
+        return
+    }
+  }
   const handleFormInput = (field, input) => {
     console.log(field, input)
     // 'firstName', 'lastName', 'email','defaultQueryString'
     switch (field) {
-      case 'firstName':
+      case 'first_name':
         setFirstName(input);
-        return
-      case 'lastName':
+        return firstName
+      case 'last_name':
         setLastName(input);
         return
       case 'email':
         return
-      case 'defaultQueryString':
+      case 'default_query_string':
         setDefaultQueryString(input);
         return
       default:
@@ -143,7 +159,7 @@ const EditForm = ({ user, onToggle }) => {
         <div>
 
           {editableFields.map((field) => {
-            let userValue = user[field];
+            let userValue = returnStateValue(field);
 
             return (
 
