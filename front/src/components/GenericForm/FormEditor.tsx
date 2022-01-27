@@ -123,7 +123,18 @@ const FormEditor = ({ row, fields, isInsert, onSave }) => {
   }
 
   const renderUpdateForm = () => {
-    return Object.entries(row).map(([key, value]) => {
+//Some rudimentary sorting
+//Our fields are already sorted so use it as a basis to re-arrange obj
+    let sortedRow = {};
+    fields.map((field)=>{      
+      let currentField = field.field_name;
+      let currentValue = row[currentField]      
+      sortedRow[currentField] = currentValue; 
+    
+    });
+
+    console.log('the UPDATE', sortedRow)
+    return Object.entries(sortedRow).map(([key, value]) => {
       console.log('x update Form', key, value)
       const currentField = find(propEq('field_name', key))(fields);
       console.log(currentField)
