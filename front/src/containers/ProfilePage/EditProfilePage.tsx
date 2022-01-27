@@ -84,7 +84,7 @@ const ProfileInfo = ({ user, onToggle }) => {
               editableFields.map((field, i) => {
 
                 let userValue = user[field];
-                return !userValue && `${sentanceCaseFromCamelCase(field)} ${i + 1 < editableFields.length ? (',') : ('')}`
+                return !userValue && `${sentanceCaseFromCamelCase(field)}${i + 1 < editableFields.length ? (', ') : ('')}`
               })
 
             }</p>
