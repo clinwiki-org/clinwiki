@@ -1,5 +1,5 @@
 {
-  "resource_version": 18,
+  "resource_version": 83,
   "metadata": {
     "version": 3,
     "sources": [
@@ -2479,9 +2479,11 @@
                 "role": "contributor",
                 "permission": {
                   "columns": [
-                    "id",
                     "config",
-                    "island_type"
+                    "island_type",
+                    "id",
+                    "created_at",
+                    "updated_at"
                   ],
                   "filter": {}
                 }
@@ -2490,9 +2492,11 @@
                 "role": "indexer",
                 "permission": {
                   "columns": [
-                    "id",
                     "config",
-                    "island_type"
+                    "island_type",
+                    "id",
+                    "created_at",
+                    "updated_at"
                   ],
                   "filter": {}
                 }
@@ -2503,7 +2507,9 @@
                   "columns": [
                     "id",
                     "config",
-                    "island_type"
+                    "island_type",
+                    "created_at",
+                    "updated_at"
                   ],
                   "filter": {}
                 }
@@ -2515,6 +2521,95 @@
               "schema": "public",
               "name": "locations"
             }
+          },
+          {
+            "table": {
+              "schema": "public",
+              "name": "mail_merge_schemas"
+            },
+            "select_permissions": [
+              {
+                "role": "anonymous",
+                "permission": {
+                  "columns": [
+                    "end_point",
+                    "name",
+                    "options",
+                    "parentQuery",
+                    "pk_type",
+                    "pk_value",
+                    "id",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "contributor",
+                "permission": {
+                  "columns": [
+                    "end_point",
+                    "name",
+                    "options",
+                    "parentQuery",
+                    "pk_type",
+                    "pk_value",
+                    "id",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "end_point",
+                    "name",
+                    "options",
+                    "parentQuery",
+                    "pk_type",
+                    "pk_value",
+                    "id",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
+          },
+          {
+            "table": {
+              "schema": "public",
+              "name": "meta_fields"
+            },
+            "select_permissions": [
+              {
+                "role": "anonymous",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "form_name",
+                    "table_name",
+                    "field_name",
+                    "field_description",
+                    "field_order",
+                    "field_helper_text",
+                    "field_data_type",
+                    "field_input_type",
+                    "field_action",
+                    "field_action_values",
+                    "role_permissions",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                }
+              }
+            ]
           },
           {
             "table": {
@@ -2950,6 +3045,112 @@
               "schema": "public",
               "name": "roles"
             }
+          },
+          {
+            "table": {
+              "schema": "public",
+              "name": "saved_documents"
+            },
+            "insert_permissions": [
+              {
+                "role": "contributor",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "id",
+                    "user_id",
+                    "name_label",
+                    "is_subscribed",
+                    "document_id",
+                    "url",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "backend_only": false
+                }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "check": {},
+                  "columns": [
+                    "is_subscribed",
+                    "document_id",
+                    "name_label",
+                    "url",
+                    "id",
+                    "user_id",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "backend_only": false
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "contributor",
+                "permission": {
+                  "columns": [
+                    "is_subscribed",
+                    "document_id",
+                    "name_label",
+                    "url",
+                    "id",
+                    "user_id",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "indexer",
+                "permission": {
+                  "columns": [
+                    "is_subscribed",
+                    "document_id",
+                    "name_label",
+                    "url",
+                    "id",
+                    "user_id",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "is_subscribed",
+                    "document_id",
+                    "name_label",
+                    "url",
+                    "id",
+                    "user_id",
+                    "created_at",
+                    "updated_at"
+                  ],
+                  "filter": {}
+                }
+              }
+            ],
+            "delete_permissions": [
+              {
+                "role": "contributor",
+                "permission": {
+                  "filter": {}
+                }
+              },
+              {
+                "role": "user",
+                "permission": {
+                  "filter": {}
+                }
+              }
+            ]
           },
           {
             "table": {
