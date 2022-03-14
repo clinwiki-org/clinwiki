@@ -1,13 +1,13 @@
-import React,{useEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
-import {logout} from 'services/user/actions';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { logout } from 'services/user/actions';
 import styled, { keyframes } from 'styled-components';
 import { getStarColor } from 'utils/auth';
 import * as FontAwesome from 'react-fontawesome';
 import { History } from 'history';
 import withTheme from 'containers/ThemeProvider/ThemeProvider';
 import { UserFragment } from 'services/user/model/UserFragment';
-import {isAdmin} from 'utils/auth';
+import { isAdmin } from 'utils/auth';
 // import { AdminViewsProviderQuery } from 'services/site/model/AdminViewsProviderQuery';
 
 
@@ -160,12 +160,12 @@ interface UserProfileHeaderButtonProps {
 
   // data: AdminViewsProviderQuery | undefined;
 }
-const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps ) => {
+const UserProfileHeaderButton = ({ user, history }: UserProfileHeaderButtonProps) => {
 
   const dispatch = useDispatch();
-  const [showDropdown,setShowDropdown] = useState(false);
-  const [flashAnimation,setFlashAnimation] = useState(false);
-  const [dropDown,setDropdown] = useState(undefined);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [flashAnimation, setFlashAnimation] = useState(false);
+  const [dropDown, setDropdown] = useState(undefined);
 
   const toggleMenuDropdown = () => setShowDropdown(!showDropdown);
 
@@ -239,14 +239,14 @@ const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps
       </ThemedSignInButton>
     );
   }
-    return (
-      <div
-        ref={(node: any) => {
-          setDropdown(node);
-        }}>
-        <ThemedUserButton onClick={toggleMenuDropdown}>
-          {renderUserImage(user.picture_url)}
-          {/* <ContributionContainer>
+  return (
+    <div
+      ref={(node: any) => {
+        setDropdown(node);
+      }}>
+      <ThemedUserButton onClick={toggleMenuDropdown}>
+        {renderUserImage(user.picture_url)}
+        {/* <ContributionContainer>
             <ContributionCount>{user.contributions}</ContributionCount>
             <FontAwesome
               name="pencil"
@@ -288,33 +288,27 @@ const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps
                     {this.props.user?.email && `${this.props.user.email}`}
                   </b>
                 </DropDownEmail> */}
-            <ThemedDropDownItem onClick={handleSitesClick}>
-              Dashboard
-                  </ThemedDropDownItem>
             <ThemedDropDownItem onClick={handleProfileClick}>
               Profile
-                  </ThemedDropDownItem>
-            { isAdmin(user) ?  (
-                <>
-                <ThemedDropDownItem onClick={handleWorkflowsClick}>
-                  Workflows
-                </ThemedDropDownItem>
-                <ThemedDropDownItem onClick={handleAggIslandsClick}>
-                  Agg Islands
+            </ThemedDropDownItem>
+            {isAdmin(user) ? (
+              <>
+                <ThemedDropDownItem onClick={handleSitesClick}>
+                  Dashboard
                 </ThemedDropDownItem>
                 <ThemedDropDownItem onClick={() => {
                   closeMenuDropdown();
                   history.push('/reindex');
                 }}>Reindex</ThemedDropDownItem>
-                </>
-              ) : null}
+              </>
+            ) : null}
             {/* {renderAdminMenuItems(data?.site)} */}
             <ThemedDropDownItem onClick={() => {
               closeMenuDropdown();
               dispatch(logout());
-              }}>
+            }}>
               Log Out
-                  </ThemedDropDownItem>
+            </ThemedDropDownItem>
           </DropDownMenu>
         )}
       </div>
