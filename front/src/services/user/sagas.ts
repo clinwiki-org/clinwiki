@@ -4,7 +4,6 @@ import * as actions from './actions';
 import * as api from './api';
 import history from 'createHistory';
 import { setLocalJwt } from 'utils/localStorage';
-import { fetchSavedDocs, fetchSavedSearches } from 'services/search/actions';
 
 function* getUser(action) {
   try {
@@ -24,14 +23,10 @@ function* getUser(action) {
 function* getCurrentUser(action) {
   try {
     let response = yield call(() => api.fetchCurrentUser());
-    if (response && response.data.me) {
+    if (response) {
       yield put(actions.fetchCurrentUserSuccess(response.data.me));
-      //Added these two to have a marker on whether to show alert about saved study/search features
-      yield put(fetchSavedSearches(response.data.me.id)) 
-      yield put(fetchSavedDocs(response.data.me.id)) 
     } else {
-      yield call(() => setLocalJwt(null));
-      yield put(actions.fetchCurrentUserError(['No User Found']));
+      yield put(actions.fetchCurrentUserError([response.message]));
     }
   } catch (err) {
     console.log(err);
@@ -104,16 +99,14 @@ function* updatePassword(action) {
         action.passwordConfirmation
       )
     );
-    if (response.data.updatePassword.success) {
+    if (response) {
       yield put(actions.updatePasswordSuccess(response));
-      yield signIn({ email: response.data.updatePassword.user.email, password: action.password });
-      yield call(() => history.push('/'));
     } else {
-      yield put(actions.updatePasswordError([response.data.updatePassword.message]));
+      yield put(actions.updatePasswordError(response.message));
     }
   } catch (err) {
     console.log(err);
-    yield put(actions.updatePasswordError([`${err}`]));
+    yield put(actions.updatePasswordError([err.message]));
   }
 }
 
@@ -136,15 +129,13 @@ function* editProfile(action) {
   try {
     let response = yield call(() =>
       api.editProfile(
-        action.first_name,
-        action.last_name,
-        action.default_query_string,
-        action.email
+        action.firstName,
+        action.lastName,
+        action.defaultQueryString
       )
     );
     if (response) {
       yield put(actions.editProfileSuccess(response));
-      yield put(actions.fetchCurrentUser())
     } else {
       yield put(actions.editProfileError([response.message]));
     }

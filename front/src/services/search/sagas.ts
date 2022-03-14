@@ -9,8 +9,6 @@ import { push } from 'connected-react-router';
 
 const getCurrentSavedSearches = state =>
     state.search.savedSearches.data.saved_searches;
-const getCurrentSavedDocs = state =>
-    state.search.savedDocs.data.saved_documents;
 const getCurrentSearcheParams = state =>
     state.search.searchResults.data.searchParams;
 const getCurrentIslands = state => state.search.islandConfig;
@@ -158,7 +156,7 @@ function* getSearchPageOpenAggBuckets(action) {
 function* getSearchParams(action) {
     try {
         let response = yield call(() => api.fetchSearchParams(action.hash));
-        if (response && response.data?.searchParams?.searchParams) {
+        if (response) {
             let parsedParams = JSON.parse(
                 response.data.searchParams.searchParams
             );
@@ -263,21 +261,21 @@ function* updateSearchParams(action) {
     }
 }
 
-// function* getSearchAutoSuggest(action) {
-//     try {
-//         let response = yield call(() =>
-//             api.fetchSearchAutoSuggest(action.searchParams)
-//         );
-//         if (response) {
-//             yield put(actions.fetchSearchAutoSuggestSuccess(response));
-//         } else {
-//             yield put(actions.fetchSearchAutoSuggestError(response.message));
-//         }
-//     } catch (err) {
-//         console.log(err);
-//         yield put(actions.fetchSearchAutoSuggestError(err.message));
-//     }
-// }
+function* getSearchAutoSuggest(action) {
+    try {
+        let response = yield call(() =>
+            api.fetchSearchAutoSuggest(action.searchParams)
+        );
+        if (response) {
+            yield put(actions.fetchSearchAutoSuggestSuccess(response));
+        } else {
+            yield put(actions.fetchSearchAutoSuggestError(response.message));
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.fetchSearchAutoSuggestError(err.message));
+    }
+}
 
 function* getSavedSearches(action) {
     //console.log("SAGA get Saved Searches", action)
@@ -343,66 +341,6 @@ function* deleteSavedSearch(action) {
     }
 }
 
-function* getSavedDocs(action) {
-    //console.log("SAGA get Saved Searches", action)
-    try {
-        let response = yield call(() => api.fetchSavedDocs(action.userId));
-        if (response) {
-            yield put(actions.fetchSavedDocsSuccess(response));
-            return response;
-        } else {
-            yield put(actions.fetchSavedDocsError(response.message));
-        }
-    } catch (err) {
-        console.log(err);
-        yield put(actions.fetchSavedDocsError(err.message));
-    }
-}
-
-function* createSavedDocument(action) {
-    try {
-
-        let createResponse = yield call(() =>
-            api.createSavedDocument(
-                action.document_id,
-                action.url,
-                action.userId,
-                action.nameLabel
-            )
-        );
-        if (createResponse.data.insert_saved_searches_one) {
-            let response = yield getSavedSearches(action);
-            yield put(actions.createSavedSearchSuccess(response));
-        } else {
-            yield put(actions.createSavedSearchError(createResponse.message));
-        }
-    } catch (err) {
-        console.log(err);
-        yield put(actions.createSavedSearchError(err.message));
-    }
-}
-
-function* deleteSavedDoc(action) {
-    // console.log("SAGA Delete Saved Search", action)
-    const currentSavedDocs = yield select(getCurrentSavedDocs);
-    try {
-        let response = yield call(() => api.deleteSavedDoc(action.id));
-        const { id } = response.data.delete_saved_documents_by_pk;
-        if (id === action.id) {
-            let newSavedDocs = currentSavedDocs.filter(
-                s => s.id !== id
-            );
-            //console.log('🚀 ~  ~ newSavedDocs', newSavedDocs);
-            yield put(actions.deleteSavedDocSuccess(newSavedDocs));
-        } else {
-            yield put(actions.deleteSavedDocError(response.message));
-        }
-    } catch (err) {
-        console.log(err);
-        yield put(actions.deleteSavedDocError(err.message));
-    }
-}
-
 
 function* getIslandConfig(action) {
     console.log(action)
@@ -420,44 +358,44 @@ function* getIslandConfig(action) {
 }
 
 
-// function* getSearchExport(action) {
-//     //console.log("Search EXPORT", action)
-//     try {
-//         let response = yield call(() =>
-//             api.searchExport(action.searchExportId)
-//         );
-//         // console.log("🚀 ~ etSearchExport ~ response", response);
-//         if (response.data.searchExport.downloadUrl === null) {
-//             yield getSearchExport(action);
-//             return;
-//         }
-//         if (response) {
-//             yield put(actions.searchExportSuccess(response));
-//         } else {
-//             yield put(actions.searchExportError(response.message));
-//         }
-//     } catch (err) {
-//         console.log(err);
-//         yield put(actions.searchExportError(err.message));
-//     }
-// }
+function* getSearchExport(action) {
+    //console.log("Search EXPORT", action)
+    try {
+        let response = yield call(() =>
+            api.searchExport(action.searchExportId)
+        );
+        // console.log("🚀 ~ etSearchExport ~ response", response);
+        if (response.data.searchExport.downloadUrl === null) {
+            yield getSearchExport(action);
+            return;
+        }
+        if (response) {
+            yield put(actions.searchExportSuccess(response));
+        } else {
+            yield put(actions.searchExportError(response.message));
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.searchExportError(err.message));
+    }
+}
 
-// function* exportToCsv(action) {
-//     try {
-//         let exportResponse = yield call(() =>
-//             api.exportToCsv(action.searchHash, action.siteViewId)
-//         );
-//         //console.log("EXPORT RES", exportResponse)
-//         if (exportResponse.data.exportToCsv) {
-//             yield put(actions.exportToCsvSuccess(exportResponse));
-//         } else {
-//             yield put(actions.exportToCsvError(exportResponse.message));
-//         }
-//     } catch (err) {
-//         console.log(err);
-//         yield put(actions.exportToCsvError(err.message));
-//     }
-// }
+function* exportToCsv(action) {
+    try {
+        let exportResponse = yield call(() =>
+            api.exportToCsv(action.searchHash, action.siteViewId)
+        );
+        //console.log("EXPORT RES", exportResponse)
+        if (exportResponse.data.exportToCsv) {
+            yield put(actions.exportToCsvSuccess(exportResponse));
+        } else {
+            yield put(actions.exportToCsvError(exportResponse.message));
+        }
+    } catch (err) {
+        console.log(err);
+        yield put(actions.exportToCsvError(err.message));
+    }
+}
 function* toggleAgg(action) {
     try {
         // const variables = {
@@ -555,21 +493,18 @@ export default function* userSagas() {
     yield takeLatest(types.FETCH_SEARCH_PARAMS_SEND, getSearchParams);
     yield takeLatest(types.FETCH_SEARCH_STUDIES_SEND, getSearchStudies);
     yield takeLatest(types.UPDATE_SEARCH_PARAMS_SEND, updateSearchParams);
-    // yield takeLatest(types.FETCH_SEARCH_AUTOSUGGEST_SEND, getSearchAutoSuggest);
+    yield takeLatest(types.FETCH_SEARCH_AUTOSUGGEST_SEND, getSearchAutoSuggest);
     yield takeLatest(types.FETCH_SAVED_SEARCHES_SEND, getSavedSearches);
     yield takeLatest(types.CREATE_SAVED_SEARCH_SEND, createSavedSearch);
     yield takeLatest(types.DELETE_SAVED_SEARCH_SEND, deleteSavedSearch);
-    yield takeLatest(types.FETCH_SAVED_DOCS_SEND, getSavedDocs);
-    yield takeLatest(types.CREATE_SAVED_DOCUMENT_SEND, createSavedDocument);
-    yield takeLatest(types.DELETE_SAVED_DOC_SEND, deleteSavedDoc);
     // yield takeLatest(types.FETCH_FACET_CONFIG_SEND, getFacetConfig);
     yield takeLatest(types.FETCH_ISLAND_CONFIG_SEND, getIslandConfig);
     yield takeLatest(
         types.CONVERT_DISPLAY_NAME,
         convertIslandConfigDisplayName
     );
-    // yield takeLatest(types.SEARCH_EXPORT_SEND, getSearchExport);
-    // yield takeLatest(types.EXPORT_T0_CSV_SEND, exportToCsv);
+    yield takeLatest(types.SEARCH_EXPORT_SEND, getSearchExport);
+    yield takeLatest(types.EXPORT_T0_CSV_SEND, exportToCsv);
     yield takeLatest(types.TOGGLE_AGG, toggleAgg);
     yield takeLatest(types.BUCKET_FILTER, bucketFilter);
 }

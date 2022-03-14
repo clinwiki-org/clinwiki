@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import { Col } from 'react-bootstrap';
 import StyledFormControl from './StyledFormControl';
@@ -6,15 +6,20 @@ import StyledContainer from './StyledContainer';
 import ThemedButton from '../../components/StyledComponents';
 import { Link } from 'react-router-dom';
 import { History } from 'history';
+import StyledError from './StyledError';
 import StyledWrapper from './StyledWrapper';
 import {resetPassword} from 'services/user/actions';
-import { useDispatch, useSelector } from 'react-redux';
-import useUrlParams from 'utils/UrlParamsProvider';
-import { RootState } from 'reducers';
+import { connect } from 'react-redux';
 
 interface ResetPasswordPageProps {
   history: History;
   resetPassword: any;
+}
+interface ResetPasswordPageState {
+  form: {
+    email: string;
+  };
+  errors: string[];
 }
 
 const LinkContainer = styled.div`
@@ -25,32 +30,44 @@ const LinkContainer = styled.div`
     margin-right: 15px;
   }
 `;
-export default function ResetPasswordPage (props: ResetPasswordPageProps)
-
- {
-   const [email, setEmail] = useState('');
-   const dispatch = useDispatch();
-   const userMessage = useSelector((state: RootState) => state.user.message);
-
-
-const   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setEmail(e.target.value)
+class ResetPasswordPage extends React.Component<
+  ResetPasswordPageProps,
+  ResetPasswordPageState
+> {
+  state: ResetPasswordPageState = {
+    form: {
+      email: '',
+    },
+    errors: [],
   };
 
-  const handleResetPassword = ()  => {
-    dispatch(resetPassword(email));
-
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({
+      form: { ...this.state.form, [e.target.name as any]: e.target.value },
+    });
   };
 
-  const renderMessage = () => {
-    if (!userMessage) return
+  handleResetPassword = () => () => {
+    this.props.resetPassword(this.state.form.email);
+      this.setState({
+        errors: ['Password reset instructions have been sent to your email.'],
+      })
+      // this.setState({
+      //   errors: ['Instructions have been sent to your email'],
+      // });
+  };
+
+  renderErrors = () => {
     return (
       <div style={{ marginTop: 20 }}>
-        {userMessage}
+        {this.state.errors.map(error => (
+          <StyledError key={error}>{error}</StyledError>
+        ))}
       </div>
     );
   };
 
+  render() {
     return (
       <StyledWrapper>
         <Col md={12}>
@@ -59,13 +76,25 @@ const   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               name="email"
               type="email"
               placeholder="Email"
-              value={email}
-              onChange={handleInputChange}
+              value={this.state.form.email}
+              onChange={this.handleInputChange}
             />
-                <ThemedButton onClick={()=>handleResetPassword()}>
+            {/* <ResetPasswordMutationComponent
+              mutation={RESET_PASSWORD_MUTATION}
+              update={(cache, { data }) => {
+                if (data && data.resetPassword && data.resetPassword.success) {
+                  this.setState({
+                    errors: ['Instructions have been sent to your email'],
+                  });
+                }
+              }}>
+              {resetPassword => ( */}
+                <ThemedButton onClick={this.handleResetPassword()}>
                   Send Instructions
                 </ThemedButton>
-                {renderMessage()}
+              {/* )} */}
+            {/* </ResetPasswordMutationComponent> */}
+            {this.renderErrors()}
             <LinkContainer>
               <Link to="/sign_in">Sign in</Link>
               <Link to="/sign_up">Sign up</Link>
@@ -75,3 +104,10 @@ const   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       </StyledWrapper>
     );
   }
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  resetPassword: (email) => dispatch(resetPassword(email))
+})
+
+export default connect(null, mapDispatchToProps)(ResetPasswordPage);

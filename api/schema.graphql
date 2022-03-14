@@ -1185,7 +1185,6 @@ type Mutation {
   upsertReview(input: UpsertReviewInput!): UpsertReviewPayload
   upsertWikiLabel(input: UpsertWikiLabelInput!): UpsertWikiLabelPayload
   upsertWikiTag(input: UpsertWikiTagInput!): UpsertWikiTagPayload
-  actionQuery(input: String): String
   reindexAll: String
   reindexByDate(date: String): String
   reindexStudy(input: String): String
@@ -1225,7 +1224,7 @@ type PublicUser {
   """
   First name
   """
-  first_name: String
+  firstName: String
 
   """
   Id
@@ -1235,8 +1234,8 @@ type PublicUser {
   """
   Last name
   """
-  last_name: String
-  picture_url: String
+  lastName: String
+  pictureUrl: String
   rank: String
 
   """
@@ -1370,8 +1369,7 @@ type ResetPasswordPayload {
   A unique identifier for the client performing the mutation.
   """
   clientMutationId: String
-  success: Boolean!,
-  message: String,
+  success: Boolean!
 }
 
 type ResultButtonItems {
@@ -2110,9 +2108,7 @@ type UpdatePasswordPayload {
   Sign in token if no error
   """
   jwt: String
-  user: User
-  message: String
-  success: Boolean
+  user: User!
 }
 
 """
@@ -2122,10 +2118,10 @@ input UpdateProfileInput {
   """
   A unique identifier for the client performing the mutation.
   """
-  email: String
-  default_query_string: String
-  first_name: String
-  last_name: String
+  clientMutationId: String
+  defaultQueryString: String
+  firstName: String
+  lastName: String
 }
 
 """
@@ -2412,7 +2408,7 @@ type User {
   """
   Default query for user
   """
-  default_query_string: String
+  defaultQueryString: String
   dislikeCount: Int
   dislikedStudies: [Study!]
   editorSites: [Site!]!
@@ -2430,7 +2426,7 @@ type User {
   """
   First name
   """
-  first_name: String
+  firstName: String
 
   """
   Id
@@ -2440,11 +2436,11 @@ type User {
   """
   Last name
   """
-  last_name: String
+  lastName: String
   likeCount: Int
   likedStudies: [Study!]
   ownSites: [Site!]!
-  picture_url: String
+  pictureUrl: String
   rank: String
   reactions(limit: Int, nctId: String, offset: Int, reactionKindId: String): [Reaction!]
   reactionsCount: [ExpressionCount!]

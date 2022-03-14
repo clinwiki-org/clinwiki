@@ -11,7 +11,7 @@ export function getStudyQuery(name: string, frag: string) {
 `;
 }
 
-export function getSearchQuery(name: string, frag: string, parentQuery?: string) {
+export function getSearchQuery(name: string, frag: string) {
     frag = frag || `fragment ${name} on ElasticStudy { nctId }`;
     return `
   query Search${name}Query($params:SearchInput!) {
@@ -25,30 +25,6 @@ export function getSearchQuery(name: string, frag: string, parentQuery?: string)
   }
   ${frag}
   `;
-}
-
-export function getMyQuery(name: string, frag: string, schemaName: string, primaryKey: string, pkType:string, endPoint: string, options: string, parentQuery?: string) {
-  return frag ?  `
-  query My${name}Query${(!primaryKey? '{': '($'+primaryKey+':'+pkType+'){')}
-    ${endPoint}${ options? `(${options}){` : `{`} 
-      ${(parentQuery && parentQuery !== endPoint )?`${parentQuery}{
-        ...${name}
-      }`: `...${name}`
-     } 
-     ${( parentQuery && parentQuery !== endPoint ) ? 'recordsTotal': ''}
-    }
-
-  }
-  ${frag}
-  ` : 
-  // added the parentQuery!== crowd_values. Break in logic due to recordsTotal not existing in that schema 
-  `
-  query My${name}Query${(!primaryKey? '{': '($'+primaryKey+':'+pkType+'){')}
-    ${endPoint}${ options? `(${options}){` : `{`} 
-     ${parentQuery && parentQuery!== 'crowd_values' ? 'recordsTotal': 'id'}
-    }
-
-  }`;
 }
 export function getSearchQueryDIS(name: string, frag: string) {
     frag = frag || `fragment ${name} on ElasticStudyDIS { conditionId }`;

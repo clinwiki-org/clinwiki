@@ -1,0 +1,22 @@
+<script src="/assets/jquery.raty.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function() {
+        $(".star-rating").raty({
+           path: '/assets/',
+           readOnly: true,
+           score: function() {
+             return $(this).attr('data-score');
+           }
+        });
+    })
+</script>
+
+<div>
+  <dl>
+      <dd>
+        <div class="star-rating" data-score= <%= @study.average_rating %> ></div>
+        <p><%= "#{@study.reviews.length} reviews" %></p>
+      </dd>
+  </dl>
+</div>
+

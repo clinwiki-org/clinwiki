@@ -1,7 +1,6 @@
 // Import all the third party stuff
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import './index.css';
 import 'sanitize.css/sanitize.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 import * as FullStory from '@fullstory/browser';

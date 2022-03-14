@@ -1,16 +1,11 @@
 import {  getHasuraClinwikiURL } from './../../utils/graphqlUtil';
 import * as mutate from './mutations';
-import * as query from './queries';
 import {
-    callHasuraClinwiki, 
-    callGraphql,     
-    getGraphQLMigrationURL,
-
+    callHasuraClinwiki,
 } from 'utils/graphqlUtil';
-import {META_TABLE_QUERY} from './queries'
+
 const HASURA_CW = getHasuraClinwikiURL();
 
-const NODE_ENDPOINT = getGraphQLMigrationURL();
 
 export const InsertPageViewLog = (userId: number, url: string ) =>{
     return callHasuraClinwiki(HASURA_CW, mutate.INSERT_PAGE_VIEW_LOG,{
@@ -19,20 +14,3 @@ export const InsertPageViewLog = (userId: number, url: string ) =>{
     })
 }
 
-export const fetchGenericPage= (value: any, variable: any,  QUERY: any, useHasura:boolean) => {
-        let endPoint = useHasura ? HASURA_CW : NODE_ENDPOINT;
-        let object ={}
-        object[variable] = value
-    return variable == null ? callGraphql(endPoint, QUERY, undefined): callGraphql(endPoint, QUERY,object);
-};
-export const fetchMMSchemas= () => {
-        let endPoint = HASURA_CW 
-    return  callGraphql(endPoint, query.SCHEMA_TOKENS_QUERY, undefined);
-};
-
-export const fetchMetaFields = (formName: string) => {
-    //console.log("fetchSiteProviderHasura called in hasuraSite api")
-    return callHasuraClinwiki(HASURA_CW, META_TABLE_QUERY, {
-      formName
-    });
-  };
