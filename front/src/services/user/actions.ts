@@ -30,7 +30,7 @@ export const fetchCurrentUserError = (errors: Array<string>) : types.UserActionT
     payload: { errors }
 });
 
-export const signIn = (email: string, password: string, oAuthToken: string) : types.UserActionTypes => ({
+export const signIn = (email: string, password: string, oAuthToken: any) : types.UserActionTypes => ({
     type: types.SIGN_IN_SEND,
     email,
     password,
@@ -47,7 +47,7 @@ export const signInError = (errors: Array<string>) : types.UserActionTypes => ({
     payload: errors
 });
 
-export const signUp = (email: string, password: string, oAuthToken: string) : types.UserActionTypes => ({
+export const signUp = (email: string, password: string, oAuthToken: any) : types.UserActionTypes => ({
     type: types.SIGN_UP_SEND,
     email,
     password,
@@ -96,11 +96,12 @@ export const resetPasswordError = (errors: Array<string>) : types.UserActionType
     payload: errors
 });
 
-export const editProfile = (firstName: string, lastName: string, defaultQueryString: string) : types.UserActionTypes => ({
+export const editProfile = (first_name: string, last_name: string, default_query_string: string, email: string) : types.UserActionTypes => ({
     type: types.EDIT_PROFILE_SEND,
-    firstName,
-    lastName,
-    defaultQueryString
+    first_name,
+    last_name,
+    default_query_string,
+    email
 });
 
 export const editProfileSuccess = (payload: types.UserData) : types.UserActionTypes => ({

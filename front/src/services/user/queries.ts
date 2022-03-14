@@ -3,9 +3,9 @@ export const FETCH_USER_QUERY = '';
 const CURRENT_USER_FRAGMENT = `fragment UserFragment on User { 
     id
     email
-    firstName
-    lastName
-    defaultQueryString
+    first_name
+    last_name
+    default_query_string
     roles {
       id
       name
@@ -25,7 +25,7 @@ const CURRENT_USER_FRAGMENT = `fragment UserFragment on User {
       count
     }
     contributions
-    pictureUrl
+    picture_url
     rank
     reactions{
       id
@@ -72,19 +72,21 @@ export const FETCH_CURRENT_USER_QUERY = ` query CurrentUserQuery {
   export const UPDATE_PASSWORD_MUTATION = `
   mutation UpdatePasswordMutation($input: UpdatePasswordInput!) {
     updatePassword(input: $input) {
-      jwt
-      errors
+
       user {
-        ...UserFragment
+        id
+        email
       }
+      message
+      success
     }
   }
-  ${CURRENT_USER_FRAGMENT}`;
-
+`;
   export const RESET_PASSWORD_MUTATION = `
   mutation ResetPasswordMutation($input: ResetPasswordInput!) {
     resetPassword(input: $input) {
       success
+      message
     }
   }
   `;

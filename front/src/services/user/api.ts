@@ -1,19 +1,17 @@
 import * as query from './queries';
 import {
   callGraphql,
-  get_gql_url,
   getGraphQLMigrationURL,
 } from 'utils/graphqlUtil';
 
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
 // Once that is complete, all endpoint URLs should be pulled from a common constant
 
-const ENDPOINT = get_gql_url();
 const NODE_ENDPOINT = getGraphQLMigrationURL();
 
 export const fetchUser = (userId: number) => {
   console.log('fetchUser called, userId', userId);
-  return callGraphql(ENDPOINT, query.USER_QUERY, { userId: userId });
+  return callGraphql(NODE_ENDPOINT, query.USER_QUERY, { userId: userId });
 };
 
 export const fetchCurrentUser = () => {
@@ -44,19 +42,19 @@ export const updatePassword = (
   password,
   passwordConfirmation
 ) => {
-  return callGraphql(ENDPOINT, query.UPDATE_PASSWORD_MUTATION, {
+  return callGraphql(NODE_ENDPOINT, query.UPDATE_PASSWORD_MUTATION, {
     input: { resetPasswordToken, password, passwordConfirmation },
   });
 };
 
 export const resetPassword = email => {
-  return callGraphql(ENDPOINT, query.RESET_PASSWORD_MUTATION, {
+  return callGraphql(NODE_ENDPOINT, query.RESET_PASSWORD_MUTATION, {
     input: { email },
   });
 };
 
-export const editProfile = (firstName, lastName, defaultQueryString) => {
-  return callGraphql(ENDPOINT, query.EDIT_PROFILE_MUTATION, {
-    input: { firstName, lastName, defaultQueryString },
+export const editProfile = (first_name, last_name, default_query_string, email) => {
+  return callGraphql(NODE_ENDPOINT, query.EDIT_PROFILE_MUTATION, {
+    input: { first_name, last_name, default_query_string, email },
   });
 };

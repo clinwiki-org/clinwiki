@@ -8,7 +8,6 @@ interface Props extends Omit<ViewProps, 'context'> {
   schema: SchemaType;
   sample?: object;
   onTemplateChanged: (template: string) => void;
-  pageType?: any;
 }
 
 const defaultStyle: React.CSSProperties = {

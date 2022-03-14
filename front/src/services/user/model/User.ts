@@ -19,11 +19,11 @@ export interface User_user {
   /**
    * First name
    */
-  firstName: string | null;
+  first_name: string | null;
   /**
    * Last name
    */
-  lastName: string | null;
+  last_name: string | null;
   /**
    * Number of reviews the user has done
    */
@@ -31,7 +31,7 @@ export interface User_user {
   rank: string | null;
   reviews: User_user_reviews[];
   contributions: number;
-  pictureUrl: string | null;
+  picture_url: string | null;
 }
 
 export interface User {
@@ -42,5 +42,5 @@ export interface User {
 }
 
 export interface UserVariables {
-  userId: number;
+  user_id: number;
 }

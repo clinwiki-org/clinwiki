@@ -1,6 +1,9 @@
 export const REINDEX_ALL_MUTATION = `mutation {
   reindexAll
 }`;
+export const ACTION_QUERY = `mutation ActionQuery($input: String){
+  actionQuery(input:$input)
+}`;
 export const REINDEX_BY_DATE_MUTATION = `mutation ReindexByDate($date:String){
   reindexByDate(date:$date)
 }`;

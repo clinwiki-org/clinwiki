@@ -1,29 +1,19 @@
 import * as FontAwesome from 'react-fontawesome';
 import * as InfiniteScroll from 'react-infinite-scroller';
 import * as React from 'react';
-
-import {
-  find,
-  findIndex,
-  propEq
-} from 'ramda';
-
-import {
-  AggBucket,
-} from '../SearchPage/Types';
+import { applyTemplate,compileTemplate } from '../../components/MailMerge/MailMergeView';
+import { AggBucket } from '../SearchPage/Types';
 import AggFilterInputUpdater from 'containers/SearchPage/components/AggFilterInputUpdater';
 import AllowMissingDropDownItem from './AllowMissingDropDownItem';
 import BarChartComponent from './BarChart'
 import { BeatLoader } from 'react-spinners';
 import { FieldDisplay } from '../../services/site/model/InputTypes';
-import Handlebars from 'handlebars';
 import HtmlToReact from 'html-to-react';
 import LocationAgg from './LocationAgg';
 import RangeSelector from './RangeSelector';
 import { SiteViewFragment_search_aggs_fields } from 'services/site/model/SiteViewFragment';
 import TwoLevelPieChart from './TwoLevelPieChart';
 import bucketKeyIsMissing from 'utils/aggs/bucketKeyIsMissing';
-import styled from 'styled-components';
 import { withAggContext } from 'containers/SearchPage/components/AggFilterUpdateContext';
 
 interface CustomDropPanelProps {
@@ -93,27 +83,6 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
     }
     return null
   };
-
-  compileTemplate(template: string) {
-    try {
-      return Handlebars.compile(template);
-    } catch (e) {
-      const errMsg = `Template error: ${e}`;
-      return _ => errMsg;
-    }
-  }
-  applyTemplate(
-    template: HandlebarsTemplateDelegate<any>,
-    context?: object,
-  ) {
-    try {
-      context = { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
-      return template(context);
-    } catch (e) {
-      return `#Template apply error:\n   ${e}`;
-    }
-  }
-
   renderBucketTemplate = (key, docCount, helperText) => {
     let bucketContext = {
       docCount: docCount,
@@ -127,8 +96,8 @@ class CustomDropPanel extends React.Component<CustomDropPanelProps, CustomDropPa
     const { bucketTemplate } = this.props.field;
     const  DEFAULT_BUCKET_TEMPLATE = `${key} (${docCount})`;
     
-    const compiled =  this.compileTemplate(bucketTemplate || DEFAULT_BUCKET_TEMPLATE)
-    const raw = this.applyTemplate(compiled, bucketContext)
+    const compiled =  compileTemplate(bucketTemplate || DEFAULT_BUCKET_TEMPLATE)
+    const raw = applyTemplate(compiled, bucketContext)
 
     const parser = new HtmlToReact.Parser();
     const reactElementHelperText = parser.parse(raw)

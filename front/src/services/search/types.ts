@@ -6,7 +6,7 @@ import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQ
 import { SearchPageParamsQuery } from '../../services/search/model/SearchPageParamsQuery';
 import { SearchPageSearchQuery } from '../../services/search/model/SearchPageSearchQuery';
 import { UpdateFacetConfigInput } from './model/UpdateFacetConfigInput';
-import { UserSavedSearchesQuery } from 'services/search/model/UserSavedSearchesQuery';
+import { UserSavedSearchesQuery, UserSavedDocsQuery } from 'services/search/model/UserSavedSearchesQuery';
 
 export const FETCH_SEARCH_PAGE_AGGS_SEND = 'FETCH_SEARCH_PAGE_AGGS_SEND';
 export const FETCH_SEARCH_PAGE_AGGS_SUCCESS = 'FETCH_SEARCH_PAGE_AGGS_SUCCESS';
@@ -67,6 +67,18 @@ export const CREATE_SAVED_SEARCH_SEND = 'CREATE_SAVED_SEARCH_SEND';
 export const CREATE_SAVED_SEARCH_SUCCESS = 'CREATE_SAVED_SEARCH_SUCCESS';
 export const CREATE_SAVED_SEARCH_ERROR = 'CREATE_SAVED_SEARCH_ERROR';
 
+export const FETCH_SAVED_DOCS_SEND = 'FETCH_SAVED_DOCS_SEND';
+export const FETCH_SAVED_DOCS_SUCCESS = 'FETCH_SAVED_DOCS_SUCCESS';
+export const FETCH_SAVED_DOCS_ERROR = 'FETCH_SAVED_DOCS_ERROR';
+
+export const CREATE_SAVED_DOCUMENT_SEND = 'CREATE_SAVED_DOCUMENT_SEND';
+export const CREATE_SAVED_DOCUMENT_SUCCESS = 'CREATE_SAVED_DOCUMENT_SUCCESS';
+export const CREATE_SAVED_DOCUMENT_ERROR = 'CREATE_SAVED_DOCUMENT_ERROR';
+
+export const DELETE_SAVED_DOC_SEND = 'DELETE_SAVED_DOC_SEND';
+export const DELETE_SAVED_DOC_SUCCESS = 'DELETE_SAVED_DOC_SUCCESS';
+export const DELETE_SAVED_DOC_ERROR = 'DELETE_SAVED_DOC_ERROR';
+
 export const DELETE_SAVED_SEARCH_SEND = 'DELETE_SAVED_SEARCH_SEND';
 export const DELETE_SAVED_SEARCH_SUCCESS = 'DELETE_SAVED_SEARCH_SUCCESS';
 export const DELETE_SAVED_SEARCH_ERROR = 'DELETE_SAVED_SEARCH_ERROR';
@@ -112,6 +124,10 @@ export interface SearchState {
     savedSearches: any | UserSavedSearchesQuery | undefined;
     isCreatingSavedSearch: boolean;
     isDeletingSavedSearch: boolean;
+    savedDocs: any | UserSavedDocsQuery | undefined;
+    isFetchingSavedDocs: boolean;
+    isDeletingSavedDocument: boolean;
+    isCreatingSavedDocument: boolean;
     isFetchingFacetConfig: boolean;
     islandConfig: IslandConfigQuery | undefined;
     isUpdatingFacetConfig: boolean;
@@ -276,6 +292,7 @@ export interface FetchSavedSearchesErrorAction {
     payload: SearchDataError;
 }
 
+
 export interface CreateSavedSearchSendAction {
     type: typeof CREATE_SAVED_SEARCH_SEND;
     searchHash: string;
@@ -291,6 +308,54 @@ export interface CreateSavedSearchSuccessAction {
 
 export interface CreateSavedSearchErrorAction {
     type: typeof CREATE_SAVED_SEARCH_ERROR;
+    payload: SearchDataError;
+}
+
+export interface FetchSavedDocsSendAction {
+    type: typeof FETCH_SAVED_DOCS_SEND;
+    userId: number;
+}
+
+export interface FetchSavedDocsSuccessAction {
+    type: typeof FETCH_SAVED_DOCS_SUCCESS;
+    payload: UserSavedDocsQuery;
+}
+
+export interface FetchSavedDocsErrorAction {
+    type: typeof FETCH_SAVED_DOCS_ERROR;
+    payload: SearchDataError;
+}
+
+export interface CreateSavedDocumentSendAction {
+    type: typeof CREATE_SAVED_DOCUMENT_SEND;
+    document_id: string;
+    url: string;
+    userId: number;
+    nameLabel: string;
+}
+
+export interface CreateSavedDocumentSuccessAction {
+    type: typeof CREATE_SAVED_DOCUMENT_SUCCESS;
+    payload: UserSavedDocsQuery;
+}
+
+export interface CreateSavedDocumentErrorAction {
+    type: typeof CREATE_SAVED_DOCUMENT_ERROR;
+    payload: SearchDataError;
+}
+
+export interface DeleteSavedDocSendAction {
+    type: typeof DELETE_SAVED_DOC_SEND;
+    id: number;
+}
+
+export interface DeleteSavedDocSuccessAction {
+    type: typeof DELETE_SAVED_DOC_SUCCESS;
+    payload: UserSavedSearchesQuery;
+}
+
+export interface DeleteSavedDocErrorAction {
+    type: typeof DELETE_SAVED_DOC_ERROR;
     payload: SearchDataError;
 }
 
@@ -413,6 +478,15 @@ export type SearchActionTypes =
     | FetchSavedSearchesErrorAction
     | CreateSavedSearchSendAction
     | CreateSavedSearchSuccessAction
+    | FetchSavedDocsSendAction
+    | FetchSavedDocsSuccessAction
+    | FetchSavedDocsErrorAction
+    | CreateSavedDocumentSendAction
+    | CreateSavedDocumentSuccessAction
+    | CreateSavedDocumentErrorAction
+    | DeleteSavedDocSendAction
+    | DeleteSavedDocSuccessAction
+    | DeleteSavedDocErrorAction
     | CreateSavedSearchErrorAction
     | DeleteSavedSearchSendAction
     | DeleteSavedSearchSuccessAction

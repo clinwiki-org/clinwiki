@@ -4,7 +4,6 @@ import * as mutate from './mutations';
 // import AUTOSUGGEST_QUERY from 'queries/CrumbsSearchPageAggBucketsQuery';
 import {
     callGraphql,
-    get_gql_url,
     getGraphQLMigrationURL,
     getHasuraClinwikiURL,
     callHasuraClinwiki,
@@ -13,7 +12,6 @@ import {
 // This is a temporary measure to support different enpoints during the backend migration to NodeJS
 // Once that is complete, all endpoint URLs should be pulled from a common constant
 
-const ENDPOINT = get_gql_url();
 const NODE_ENDPOINT = getGraphQLMigrationURL();
 const HASURA_CW = getHasuraClinwikiURL();
 
@@ -71,9 +69,6 @@ export const updateSearchParams = searchParams => {
         searchParams.searchParams
     );
 };
-export const fetchSearchAutoSuggest = (searchParams: any) => {
-    return callGraphql(ENDPOINT, query.AUTOSUGGEST_QUERY, searchParams);
-};
 
 export const fetchSavedSearches = (userId: any) => {
     return callHasuraClinwiki(HASURA_CW, query.HASURA_SAVED_SEARCHES_QUERY, {
@@ -109,26 +104,47 @@ export const deleteSavedSearch = id => {
     });
 };
 
+export const fetchSavedDocs = (userId: any) => {
+    return callHasuraClinwiki(HASURA_CW, query.HASURA_SAVED_DOCS_QUERY, {
+        userId: userId,
+    });
+};
+
+export const createSavedDocument = (
+    document_id: string,
+    url: string,
+    userId: number,
+    nameLabel: string,
+) => {
+    return callHasuraClinwiki(HASURA_CW, mutate.HASURA_CREATE_SAVED_DOCUMENT, {
+        document_id: document_id,
+        url: url,
+        userId: userId,
+        nameLabel: nameLabel,
+    });
+};
+export const deleteSavedDoc = id => {
+    return callHasuraClinwiki(HASURA_CW, mutate.HASURA_DELETE_SAVED_DOC, {
+        id: id,
+    });
+};
+
 export const fetchIslandConfig = (idList) => {
     return callHasuraClinwiki(HASURA_CW, query.ISLAND_CONFIG_QUERY, {
         idList: idList
     });
 };
+//TO-DO THESE REFERENCED OLD 3000 ENDPOINT CHECK IF NODE COUNTERPART AVAILABLE/NEEDED
 
-export const updateFacetConfig = input => {
-    return callGraphql(ENDPOINT, mutate.UPDATE_FACET_CONFIG, {
-        input: input.input,
-    });
-};
-export const searchExport = (searchExportId: number) => {
-    return callGraphql(ENDPOINT, query.SEARCH_EXPORT_QUERY, {
-        searchExportId: searchExportId,
-    });
-};
+// export const searchExport = (searchExportId: number) => {
+//     return callGraphql(ENDPOINT, query.SEARCH_EXPORT_QUERY, {
+//         searchExportId: searchExportId,
+//     });
+// };
 
-export const exportToCsv = (searchHash: string, siteViewId: number) => {
-    return callGraphql(ENDPOINT, mutate.EXPORT_TO_CSV_MUTATION, {
-        searchHash: searchHash,
-        siteViewId: siteViewId,
-    });
-};
+// export const exportToCsv = (searchHash: string, siteViewId: number) => {
+//     return callGraphql(ENDPOINT, mutate.EXPORT_TO_CSV_MUTATION, {
+//         searchHash: searchHash,
+//         siteViewId: siteViewId,
+//     });
+// };

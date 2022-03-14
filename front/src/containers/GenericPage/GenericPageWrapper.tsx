@@ -3,12 +3,14 @@ import { useHistory, useRouteMatch } from 'react-router-dom';
 import { BeatLoader } from 'react-spinners';
 import useUrlParams from 'utils/UrlParamsProvider';
 import { find, propEq } from 'ramda';
-import { fetchPageViews, fetchPageView, fetchPageViewsHasura, fetchPageViewHasura } from 'services/study/actions';
+import { fetchPageViewsHasura, fetchPageViewHasura } from 'services/study/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'reducers';
-import { fetchPresentSiteProvider } from 'services/site/actions';
 import GenericPageChild from './GenericPageChild';
 import { fetchSearchParams } from 'services/search/actions';
+import { fetchMMSchemas } from 'services/genericPage/actions';
+import { parseSchemaIds, templateSplit } from 'components/MailMerge/MailMergeFragment';
+
 interface Props {
   url?: string;
   arg?: string;
@@ -39,18 +41,31 @@ export default function GenericPageWrapper(props: Props) {
   const site = useSelector((state: RootState) => state.site.hasuraPresentSiteProvider.sites[0]);
   const pageViewsData = useSelector((state: RootState) => state.study.pageViewsHasura);
   const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
+  const isFetchingPV = useSelector((state: RootState) => state.study.isFetchingPageViewHasura);
+  const isFetchingPVs = useSelector((state: RootState) => state.study.isFetchingPageViewsHasura);
   const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
   const data = useSelector((state: RootState) => state.search.searchResults);
+  // const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
+  const MMSchemas= useSelector((state: RootState) => state.genericPage.MMSchemas);
+  const templates = currentPage && currentPage.template && templateSplit(currentPage.template)
 
-  //Currently making assumption anything diplayed in our search route is of pageType study 
-  //Ideally should be set from PageView but was having issues , response was not saving 
-  const pageType = match.path == "/search/" ? "Search" : "Study"
-
-  /*   useEffect(() => {
-      dispatch(fetchHasuraPresentSiteProvider(undefined, params.sv));
-    }, [dispatch, params.sv])
-    console.log("SITE ID ON GenericPage Wrappp", site?.id)
-   */
+  const getPageType = (val) => {
+    switch (val) {
+        case 1:
+            return 'Study'
+        case 2:
+            return 'Search_Study'
+        case 3:
+            return 'Condition'
+        case 4:
+            return 'Search_Condition'
+        case 5:
+            return 'Admin'
+        default:
+            return 'Admin'
+    }
+}
+  const pageType = getPageType(currentPage?.page_type);
 
 
   const url =
@@ -63,33 +78,41 @@ export default function GenericPageWrapper(props: Props) {
   useEffect(() => {
     dispatch(fetchPageViewsHasura(site?.id));
   }, [dispatch, site.id]);
-
+  useEffect(() => {
+    dispatch(fetchMMSchemas());
+  }, [dispatch]);
   useEffect(() => {
     dispatch(fetchPageViewHasura(site?.id, params.pv || defaultPage() || urlFinal));
-  }, [dispatch, params.pv]);
+  }, [dispatch, params.pv, params.hash]);
   useEffect(() => {
-    dispatch(fetchSearchParams(params.hash));
+    params.hash && dispatch(fetchSearchParams(params.hash));
   }, [dispatch, params.hash]);
 
-  if (!params.hash && pageType == "Search") {
-    history.push(`/search?hash=${site.default_hash}&pv=${site.default_search_page}`)
-    //window.location.reload()
-  }
   if (!currentPage) {
+     !isFetchingPV && history.push(`/search?hash=${site.default_hash}&pv=${site.default_search_page}`)
     return <BeatLoader />
   }
-  if (!data) {
+  if (!data && pageType !=="Admin") {
     return <BeatLoader />
   }
-  if (!props.arg && pageType == "Study") {
-    return <h1>Missing NCTID in URL</h1>;
+  const renderSchemaTokens = () => {
+    return (
+      <span>
+        {templates.map(((template, i) => {
+ let schemaId = parseSchemaIds(template);
+ let schemaValues= MMSchemas.mail_merge_schemas.filter(x=>x.id==schemaId)
+ const templateTokens=schemaValues[0] && ['schema_id', schemaValues[0]['name'], schemaValues[0].pk_value, schemaValues[0].pk_type, schemaValues[0].end_point, schemaValues[0].options, schemaValues[0].parentQuery]
+          return templateTokens && templateTokens.length > 0 && <GenericPageChild key={i} arg={match.params['docId']} schemaTokens={templateTokens} template={template} />
+        }))}
+      </span>
+    )
   }
-  if (!params.pv && pageType == "Search") {
-    return <h1>Missing PageView in URL</h1>;
+  if(!MMSchemas){
+    return <BeatLoader/>
   }
-
   return (
-    <GenericPageChild
-      arg={props.arg} />
+    <span>
+      {renderSchemaTokens()}
+    </span>
   );
 }

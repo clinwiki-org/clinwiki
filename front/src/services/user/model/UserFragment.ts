@@ -68,15 +68,15 @@ export interface UserFragment {
   /**
    * First name
    */
-  firstName: string | null;
+  first_name: string | null;
   /**
    * Last name
    */
-  lastName: string | null;
+  last_name: string | null;
   /**
    * Default query for user
    */
-  defaultQueryString: string | null;
+  default_query_string: string | null;
   roles: string[];
   /**
    * Number of reviews the user has done
@@ -85,7 +85,7 @@ export interface UserFragment {
   reviews: UserFragment_reviews[];
   reactionsCount: UserFragment_reactionsCount[] | null;
   contributions: number;
-  pictureUrl: string | null;
+  picture_url: string | null;
   rank: string | null;
   reactions: UserFragment_reactions[] | null;
 }

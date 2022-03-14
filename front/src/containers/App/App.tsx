@@ -25,7 +25,6 @@ import BulkEditPage from 'containers/BulkEditPage';
 import withTheme from 'containers/ThemeProvider';
 import MMTest from 'components/MailMerge/MMTestComponentWrapper'
 import GenericPageWrapper from 'containers/GenericPage/GenericPageWrapper';
-import HasuraGenericPage from 'containers/HasuraGenericPage/HasuraGenericPage.';
 import Reindex from 'containers/Reindex';
 import ProtectedRoute from 'components/ProtectedRoute/ProtectedRoute';
 
@@ -57,20 +56,14 @@ class App extends React.PureComponent<AppProps> {
                 <Route exact path="/about" component={AboutPage} />
                 <Route exact path="/version" component={ReleaseNotes} />
                 <Route path="/search/" render={(props) => <GenericPageWrapper />} />
-                <Route path="/study/:nctId"
-                  render={(props) => <GenericPageWrapper arg={props.match.params.nctId} />}
+                <Route path="/study/:docId"
+                  render={(props) => <GenericPageWrapper arg={props.match.params.docId} />}
                 />
-                <Route path="/condition/:conditionId"
-                  render={(props) => <GenericPageWrapper arg={props.match.params.conditionId} />}
+                <Route path="/condition/:docId"
+                  render={(props) => <GenericPageWrapper arg={props.match.params.docId} />}
                 />
-                <Route path="/hasurastudy/:nctId"
-                  render={(props) => <HasuraGenericPage arg={props.match.params.nctId} />}
-                />
-                <Route path="/p/:page/:arg?"
-                  render={(props) => <GenericPageWrapper url={props.match.params.page} arg={props.match.params.arg} />}
-                />
-                <Route path="/p/:hasurapage/:arg?"
-                  render={(props) => <HasuraGenericPage url={props.match.params.page} arg={props.match.params.arg} />}
+                <Route path="/p/:docId?"
+                  render={(props) => <GenericPageWrapper url={props.match.params.page} arg={props.match.params.docId} />}
                 />
                 <ProtectedRoute path="/aggIslands" component={EditAggIslandsPage} />
                 <Route exact path="/profile" component={EditProfilePage} />
@@ -80,13 +73,15 @@ class App extends React.PureComponent<AppProps> {
                 <Route path="/sites/:id/edit" component={SitesEditPage} />
                 <Route path="/sites/new" component={SitesNewPage} />
                 <Route path="/sites" component={SitesPage} />
+                <Route exact path="/admin/"  component ={ GenericPageWrapper} />
+                <Route path="/admin/:docId"  render={(props) => <GenericPageWrapper arg={props.match.params.docId} />} />
                 <Route path="/reset_password" component={ResetPasswordPage} />
                 <Route path="/sign_in" component={SignInPage} />
                 <Route path="/sign_up" component={SignUpPage} />
                 <Route path="/not-configured" component={NotConfiguredPage} />
                 <Route path="/update_password" component={UpdatePassword} />
                 <Route exact path="/mmtest" component={MMTest} />
-                <Route exact path="/mmtest/:nctId" component={MMTest} />
+                <Route exact path="/mmtest/:docId" component={MMTest} />
                 <ProtectedRoute path="/reindex" component={Reindex} />
                 <Route component={NotFoundPage} />
               </Switch>

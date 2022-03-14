@@ -4,8 +4,13 @@ import logger from '../util/logger';
 import * as GoogleAPI from '../util/google';
 import jwt from 'jsonwebtoken';
 import config from '../../config';
+import { sendEmail } from '../broadcaster';
+import pug from 'pug';
+import path from 'path';
+
 
 const QUERY_USER = 'select * from users where email=$1';
+const QUERY_USER_BY_TOKEN = 'select * from users where reset_password_token=$1';
 const QUERY_USER_ROLES =
     'select * from roles where id in (select role_id from users_roles where user_id=$1)';
 const QUERY_USER_REVIEWS = 'select * from reviews where user_id=$1';
@@ -13,12 +18,17 @@ const QUERY_USER_WIKI_CONTRIBUTIONS =
     'select distinct wiki_page_id from wiki_page_edits where user_id=$1';
 const QUERY_NEW_USER =
     'insert into users (email,encrypted_password,default_query_string,picture_url) values ($1,$2,$3,$4)';
+const QUERY_UPDATE_PASSWORD ='update  users set encrypted_password = $1 where id=$2';
+const QUERY_UPDATE_PROFILE ='update  users set first_name = $1, last_name = $2, default_query_string = $3 where email=$4';
+const UPDATE_RESET_TOKEN ='update  users set reset_password_token = $1 where id=$2';
 const QUERY_USER_REACTIONS = 'select * from reactions where user_id=$1';
 const QUERY_USER_REACTIONS_COUNT =
     'select rk.name, count(r.id) from reactions r inner join reaction_kinds rk on rk.id=r.reaction_kind_id where r.user_id=$1 group by rk.name';
 
 const ROLE_SITE_OWNER = 'site_owner';
 const ROLE_ADMIN = 'admin';
+const util = require('util');
+const crypto = require('crypto');
 
 export async function authenticate(email, password, oAuthToken) {
     console.log('authenticate (signIn called');
@@ -246,6 +256,72 @@ async function createNewUser(email, password, defaultQueryString, pictureUrl) {
     //console.log(newUser.rows[0] !== null);
     return newUser.rows[0];
 }
+export async function updatePassword(token, passwordOne, passwordTwo) {
+    try {
+        // Query for user with given token, if none returned invalid token error thrown
+        const exists = await query(QUERY_USER_BY_TOKEN, [token]);
+        if (exists.rows.length == 0) throw new Error("Invalid token");
+        if (passwordOne !== passwordTwo) throw new Error('Passwords must match');
+        const user = exists.rows[0]
+        // console.log("User", util.inspect(user, false, null, true));
+
+        const encryptedPassword = await bcrypt.hash(passwordOne, 10);
+        const results = await query(QUERY_UPDATE_PASSWORD, [encryptedPassword, user.id]);
+        // console.log(results)
+        return {user:user, success: true}
+    }
+    catch (err) {
+        logger.error(err)
+        // return err
+        return { message: `${err}`, success: false  }
+    }
+
+}
+export async function updateProfile(firstName, lastName,defaultQueryString, email) {
+    try {
+        console.log(email)
+        // Query for user with given id, if none returned invalid id error thrown
+        const exists = await query(QUERY_USER, [email]);
+        if (exists.rows.length == 0) throw new Error("Invalid Email")
+        const user = exists.rows[0]
+        console.log("User", util.inspect(user, false, null, true));
+
+        // const encryptedPassword = await bcrypt.hash(passwordOne, 10);
+        const results = await query(QUERY_UPDATE_PROFILE, [firstName,lastName,defaultQueryString, email]);
+        console.log("RESULTS",util.inspect(results, false, null, true))
+        return {user:user, success: true}
+    }
+    catch (err) {
+        logger.error(err)
+        // return err
+        return { message: `${err}`, success: false  }
+    }
+
+}
+
+export async function requestPasswordReset(email) {
+    try {
+
+
+        const user = await getUserByEmail(email);
+        console.log("USER" + util.inspect(user, false, null, true))
+        if (!user) throw new Error("No user matches that email");
+        //create new token
+        let resetToken = crypto.randomBytes(32).toString("hex");
+        // Update token info in user table 
+        await query(UPDATE_RESET_TOKEN, [resetToken, user.id]);
+
+        let templateFunction = pug.compileFile(path.join(__dirname, '/views/passwordReset.pug'));
+        const link = `${config.webUrl}/update_password?token=${resetToken}&id=${user.id}`;
+        let body = templateFunction({ link });
+        sendEmail(user.email, "Password Reset Request", body);
+
+        return { message: `Password reset instructions sent to ${user.email}`, success: true };
+
+    } catch (err) {
+        return { message: `${err}`, success: false, }
+    }
+};
 
 export function isAdmin(user) {
     if(user && user.roles) {

@@ -5,18 +5,13 @@ import { BeatLoader } from 'react-spinners';
 import MailMerge from './MailMerge';
 import { GraphqlSchemaType } from './SchemaSelector';
 import { IslandConstructor } from './MailMergeView';
-import { useFragment } from './MailMergeFragment';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSampleStudy, fetchSampleStudyHasura } from 'services/study/actions';
-import { getHasuraSampleStudyQuery, getSampleStudyQuery } from '../../components/MailMerge/MailMergeUtils';
 import { RootState } from 'reducers';
-import { getStudyQuery, getSearchQuery, getHasuraStudyQuery, getSearchQueryDIS, getHasuraStudyQueryDIS } from 'components/MailMerge/MailMergeUtils';
-import { fetchHasuraIntrospection, fetchHasuraIntrospectionDIS, fetchIntrospection } from 'services/introspection/actions';
-import { fetchStudyPage, fetchSearchPageMM, fetchStudyPageHasura, fetchStudyPageHasuraDIS } from 'services/study/actions';
+import { fetchHasuraIntrospection, fetchHasuraIntrospectionDIS } from 'services/introspection/actions';
 
 //import { IntrospectionQuery, getIntrospectionQuery } from 'graphql';
 import { introspectionQuery } from 'graphql/utilities';
-import { useHasuraFragment } from './HasuraMMFragment';
+import { useFragment } from './MailMergeFragment';
 
 const StyledFormControl = styled(FormControl)`
     margin-bottom: 20px;
@@ -39,13 +34,6 @@ export default function HasuraMailMergeFormControl(props: HasuraMailMergeFormCon
     const [nctId, setNctId] = useState(default_nctid);
     const dispatch = useDispatch();
 
-    const [hasuraFragmentName, hasuraFragment] = useHasuraFragment('ctgov_prod_studies', props.template || '');
-    const HASURA_STUDY_QUERY = `${getHasuraStudyQuery(hasuraFragmentName, hasuraFragment)}`
-
-    const [hasuraFragmentNameDis, hasuraFragmentDis] = useHasuraFragment('disyii2_prod_20210704_2_tbl_conditions', props.template || '');
-    const HASURA_STUDY_QUERY_DIS = `${getHasuraStudyQueryDIS(hasuraFragmentNameDis, hasuraFragmentDis)}`
-
-
     const introspection = useSelector((state: RootState) => state.introspection.hasuraIntrospection);
     const QUERY = introspectionQuery  //`${gql(ge tIntrospectionQuery({ descriptions: false }))}`
 
@@ -65,8 +53,7 @@ export default function HasuraMailMergeFormControl(props: HasuraMailMergeFormCon
     }, [dispatch]);
 
     const study = useSelector((state: RootState) => state.study.hasuraSampleStudy);
-    console.log('HI from HMMAILMERGE')
-    if (!introspection) {
+    if (!study || !introspection) {
         return <BeatLoader />;
     }
 

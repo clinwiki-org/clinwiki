@@ -4,12 +4,11 @@ import { RootState } from 'reducers';
 import InfiniteScroll from 'react-infinite-scroller';
 import { BeatLoader } from 'react-spinners';
 import HtmlToReact from 'html-to-react';
-import Handlebars from 'handlebars';
 import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import { useRouteMatch } from 'react-router-dom';
 import { getSearchQuery } from 'components/MailMerge/MailMergeUtils';
 import { fetchSearchPageStudy } from 'services/study/actions';
-
+import  { applyTemplate, compileTemplate } from 'components/MailMerge/MailMergeView';
 
 type Mode = 'Study' | 'Search';
 
@@ -44,25 +43,6 @@ export default function StudyInfiniteScroll() {
   const recordsTotal = useSelector((state: RootState) => state.study.studyPage?.data.search.recordsTotal)
 
   const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
-
-  const compileTemplate = (template: string) => {
-    try {
-      return Handlebars.compile(template);
-    } catch (e) {
-      const errMsg = `Template error: ${e}`;
-      return _ => errMsg;
-    }
-  }
-
-  const applyTemplate = (template: HandlebarsTemplateDelegate<any>,
-    context?: object) => {
-    try {
-      context = { ...context, hash: 'hash', siteViewUrl: "siteViewUrl", pageViewUrl: 'pageViewUrl', q: 'q', ALL: 'ALL' }
-      return template(context);
-    } catch (e) {
-      return `#Template apply error:\n   ${e}`;
-    }
-  }
 
   const renderStudyTemplate = (study) => {
 

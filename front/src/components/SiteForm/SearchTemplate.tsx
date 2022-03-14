@@ -3,10 +3,10 @@ import { MailMergeEditor } from 'components/MailMerge';
 import { FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
 import { BeatLoader } from 'react-spinners';
-import { useFragment } from '../MailMerge/MailMergeFragment'
+import { useFragment } from '../MailMerge/MailMergeFragment';
 import { getStudyQuery } from '../MailMerge/MailMergeUtils';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchIntrospection } from 'services/introspection/actions';
+import { fetchHasuraIntrospection } from 'services/introspection/actions';
 import { RootState } from 'reducers';
 import { introspectionQuery } from 'graphql/utilities';
 import { fetchStudyPage } from 'services/study/actions';
@@ -36,7 +36,7 @@ function SearchTemplate(props: Props) {
 
   useEffect(()=>{
     const QUERY = introspectionQuery 
-    dispatch(fetchIntrospection(QUERY));
+    dispatch(fetchHasuraIntrospection(QUERY));
   },[dispatch]);
 
   useEffect(()=>{

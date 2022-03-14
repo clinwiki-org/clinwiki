@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import ThemedButton from 'components/StyledComponents';
-import QUERY from 'queries/SearchStudyPageQuery';
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { BeatLoader, PulseLoader } from 'react-spinners';
 import StudyPageCounter from '../StudyPage/components/StudyPageCounter'

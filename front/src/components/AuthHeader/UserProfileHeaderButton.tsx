@@ -173,7 +173,7 @@ const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps
 
   const handleSitesClick = () => {
     closeMenuDropdown();
-    history.push('/sites');
+    history.push('/admin?&pv=dashboard');
   };
 
   const handleProfileClick = () => {
@@ -245,7 +245,7 @@ const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps
           setDropdown(node);
         }}>
         <ThemedUserButton onClick={toggleMenuDropdown}>
-          {renderUserImage(user.pictureUrl)}
+          {renderUserImage(user.picture_url)}
           {/* <ContributionContainer>
             <ContributionCount>{user.contributions}</ContributionCount>
             <FontAwesome
@@ -289,7 +289,7 @@ const UserProfileHeaderButton = ({ user, history} : UserProfileHeaderButtonProps
                   </b>
                 </DropDownEmail> */}
             <ThemedDropDownItem onClick={handleSitesClick}>
-              Sites
+              Dashboard
                   </ThemedDropDownItem>
             <ThemedDropDownItem onClick={handleProfileClick}>
               Profile

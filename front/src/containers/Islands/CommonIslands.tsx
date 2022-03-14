@@ -11,6 +11,7 @@ import EditsHistoryIsland from './EditsHistoryIsland';
 import CollapsiblePanel from 'components/CollapsiblePanel';
 import SearchWithin from './SearchWithin';
 import SaveSearchIsland from './SaveSearchIsland';
+import SaveDocumentIsland from './SaveDocumentIsland';
 import DownloadCSVIsland from './DownloadCSVIsland';
 import ResultSort from './ResultSort';
 import ResultLoader from './ResultLoader';
@@ -19,7 +20,7 @@ import IslandAggWrapper from './IslandAggWrappper';
 import IslandAggWrapper2 from './WfIslandAggWrappper';
 import CrumbsBarIsland from './CrumbsBarIsland';
 import RandNumberLoader from './RandNumberLoader';
-
+import GenericForm from 'components/GenericForm';
 /*
   Common island configuration for MailMerge pages
 */
@@ -32,6 +33,15 @@ export const commonIslands = {
         collapsed={attributes['collapsed'] == 'true'}>
         {children}
       </CollapsiblePanel>
+    );
+  },
+  genericform: (attributes: Record<string, string>, context, children) => {
+   console.log("ATRIBS", attributes)
+    return (
+      <GenericForm
+        table={attributes['table']}
+        defaultToForm={attributes['defaulttoform']}
+        />
     );
   },
 };
@@ -64,6 +74,9 @@ export const studyIslands: Record<string, IslandConstructor> = {
   ),
   wfagg: (attributes: Record<string, string>, context?: any) => (
     <IslandAggWrapper2 nctId={context?.nct_id} aggId={attributes['id']} />
+  ),
+  savedocument: (attributes: Record<string, string>, context?: any) => (
+    <SaveDocumentIsland />
   ),
 };
 export const searchIslands: Record<string, IslandConstructor> = {
