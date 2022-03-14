@@ -65,12 +65,9 @@ export const updateGenericError = (payload: any) : types.HasuraSiteActionTypes =
     payload
 });
 
-export const fetchGeneric = (params: any,primaryKey:any,  QUERY: any, useHasura: boolean) : types.HasuraSiteActionTypes => ({
+export const fetchGeneric = (payload: any) : types.HasuraSiteActionTypes => ({
     type: types.FETCH_GENERIC,
-    params,
-    primaryKey,
-    QUERY, 
-    useHasura
+    payload
 });
 
 export const fetchGenericSuccess = (payload: any) : types.HasuraSiteActionTypes => ({

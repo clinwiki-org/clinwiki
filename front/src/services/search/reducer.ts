@@ -1,6 +1,6 @@
 import * as types from './types';
 
-// import { exportToCsv, searchExport } from './api';
+import { exportToCsv, searchExport } from './api';
 
 import { IslandConfigQuery } from './model/IslandConfigQuery';
 import { filter } from 'ramda';
@@ -21,10 +21,6 @@ const initialState: types.SearchState = {
     isFetchingAutoSuggest: false,
     suggestions: [],
     isFetchingSavedSearches: false,
-    savedDocs: undefined,
-    isFetchingSavedDocs: false,
-    isCreatingSavedDocument: false,
-    isDeletingSavedDocument: false,
     savedSearches: undefined,
     isCreatingSavedSearch: false,
     isDeletingSavedSearch: false,
@@ -244,63 +240,6 @@ const searchReducer = (
                 isFetchingAutoSuggest: false,
             };
 
-        case types.FETCH_SAVED_DOCS_SEND:
-            return {
-                ...state,
-                isFetchingSavedDocs: true,
-            };
-        case types.FETCH_SAVED_DOCS_SUCCESS:
-            return {
-                ...state,
-                isFetchingSavedDocs: false,
-                savedDocs: action.payload,
-            };
-        case types.FETCH_SAVED_DOCS_ERROR:
-            return {
-                ...state,
-                isFetchingSavedDocs: false,
-            };
-
-        case types.CREATE_SAVED_DOCUMENT_SEND:
-            return {
-                ...state,
-                isCreatingSavedDocument: true,
-            };
-        case types.CREATE_SAVED_DOCUMENT_SUCCESS:
-            return {
-                ...state,
-                isCreatingSavedDocument: false,
-                savedDocs: action.payload,
-            };
-        case types.CREATE_SAVED_DOCUMENT_ERROR:
-            return {
-                ...state,
-                isCreatingSavedDocument: false,
-            };
-
-        case types.DELETE_SAVED_DOC_SEND:
-            return {
-                ...state,
-                isDeletingSavedSearch: true,
-            };
-        case types.DELETE_SAVED_DOC_SUCCESS:
-            return {
-                ...state,
-                isDeletingSavedSearch: false,
-                savedDocs: {
-                    ...state.savedDocs,
-                    data: {
-                        ...state.savedDocs.data,
-                        saved_documents: action.payload,
-                    },
-                },
-            };
-        case types.DELETE_SAVED_SEARCH_ERROR:
-            return {
-                ...state,
-                isDeletingSavedSearch: false,
-            };
-
         case types.FETCH_SAVED_SEARCHES_SEND:
             return {
                 ...state,
@@ -396,6 +335,47 @@ const searchReducer = (
                     [action.islandId]: newConfig,
                 },
             };
+        case types.CREATE_SAVED_SEARCH_SEND:
+            return {
+                ...state,
+                isCreatingSavedSearch: true,
+            };
+        case types.CREATE_SAVED_SEARCH_SUCCESS:
+            return {
+                ...state,
+                isCreatingSavedSearch: false,
+                savedSearches: action.payload,
+            };
+        case types.CREATE_SAVED_SEARCH_ERROR:
+            return {
+                ...state,
+                isCreatingSavedSearch: false,
+            };
+
+        case types.DELETE_SAVED_SEARCH_SEND:
+            return {
+                ...state,
+                isDeletingSavedSearch: true,
+            };
+        case types.DELETE_SAVED_SEARCH_SUCCESS:
+            console.log('REDUCER after delete search', action.payload);
+            return {
+                ...state,
+                isDeletingSavedSearch: false,
+                savedSearches: {
+                    ...state.savedSearches,
+                    data: {
+                        ...state.savedSearches.data,
+                        saved_searches: action.payload,
+                    },
+                },
+            };
+        case types.DELETE_SAVED_SEARCH_ERROR:
+            return {
+                ...state,
+                isDeletingSavedSearch: false,
+            };
+
         case types.SEARCH_EXPORT_SEND:
             return {
                 ...state,

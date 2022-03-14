@@ -1,0 +1,2 @@
+class FacilityLocation < ApplicationRecord
+end

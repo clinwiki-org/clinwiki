@@ -5,7 +5,6 @@ import userReducer from 'services/user/reducer';
 import siteReducer from 'services/site/reducer';
 import hasuraSiteReducer from 'services/hasuraSite/reducer';
 import searchReducer from 'services/search/reducer';
-import genericPageReducer from 'services/genericPage/reducer';
 import studyReducer from 'services/study/reducer';
 import introspectionReducer from 'services/introspection/reducer';
 import crowdKeysReducer from 'services/crowdKeys/reducer';
@@ -17,12 +16,10 @@ const rootReducer = (history : History) => combineReducers({
     site: siteReducer,
     search: searchReducer,
     study: studyReducer,
-    genericPage: genericPageReducer,
     introspection: introspectionReducer,
     hasuraSite: hasuraSiteReducer,
     crowdKeys: crowdKeysReducer,
-    adminReducer: adminReducer,
-    genericForm: genericPageReducer
+    adminReducer: adminReducer
 });
 
 export default rootReducer;
@@ -36,10 +33,7 @@ export interface RootState {
     introspection: any,
     hasuraSite: any,
     crowdKeys: any,
-    adminReducer: any,
     hasuraFacility: any,
-    genericPage:any,
-    genericForm:any
 };
 
 //export type RootState = ReturnType<typeof rootReducer>;

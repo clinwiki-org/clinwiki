@@ -3,21 +3,6 @@ import * as types from './types';
 import * as actions from './actions';
 import * as api from './api';
 
-function* actionQuery(action) {
-  try {
-    let response = yield call(() => api.actionQuery(action.query, action.label));
-    if (response) {
-      yield put(actions.actionQuerySuccess(response.data,action.label));
-    } 
-    else {
-      yield put(actions.actionQueryError(response.message));
-    }
-  } 
-  catch (err) {
-    console.log(err);
-    yield put(actions.actionQueryError(err.message));
-  }
-}
 function* reindexAll(action) {
   try {
     let response = yield call(() => api.reindexAll());
@@ -98,7 +83,6 @@ function* reindexDocument(action) {
 }
 
 export default function* userSagas() {
-  yield takeLatest(types.ACTION_QUERY_SEND, actionQuery);
   yield takeLatest(types.REINDEX_ALL_SEND, reindexAll);
   yield takeLatest(types.REINDEX_BY_DATE_SEND, reindexByDate);
   yield takeLatest(types.REINDEX_ALL_DOCUMENT_SEND, reindexAllDocuments);

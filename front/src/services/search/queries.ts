@@ -425,20 +425,6 @@ query HasuraSavedSearchesQuery($userId: bigint!) {
 }
 `;
 
-export const HASURA_SAVED_DOCS_QUERY = `
-query HasuraSavedDocsQuery($userId: Int!) {
-  saved_documents(where: {user_id: {_eq: $userId}}) {
-    id
-    name_label
-    document_id
-    is_subscribed
-    url
-    created_at
-    updated_at
-  }
-}
-`;
-
 export const FIND_SHORT_LINK = `
   query findShortLink($searchHash: String){
     short_links(where: {short: {_eq: $searchHash}}) {

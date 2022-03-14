@@ -104,10 +104,7 @@ export interface UpdateGenericErrorAction {
 
 export interface FetchGeneric {
     type: typeof FETCH_GENERIC,
-    params: any;
-    primaryKey:any;
-    QUERY: any;
-    useHasura: boolean;
+    payload: any 
 };
 export interface FetchGenericSuccessAction {
     type: typeof FETCH_GENERIC_SUCCESS,

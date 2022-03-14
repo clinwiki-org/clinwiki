@@ -34,7 +34,6 @@ export const LOGOUT_ERROR = 'LOGOUT_ERROR';
 
 export interface UserState {
     user: any | undefined,
-    message: any | undefined,
     isFetchingUser: boolean,
     current: UserFragment | null,
     isLoading: boolean,
@@ -115,7 +114,7 @@ export interface SignUpSuccessAction {
 
 export interface SignUpErrorAction {
     type: typeof SIGN_UP_ERROR,
-    payload: any
+    payload: Array<String>
 };
 
 export interface ResetPasswordSendAction {
@@ -125,12 +124,12 @@ export interface ResetPasswordSendAction {
 
 export interface ResetPasswordSuccessAction {
     type: typeof RESET_PASSWORD_SUCCESS,
-    payload: any
+    payload: string
 };
 
 export interface ResetPasswordErrorAction {
     type: typeof RESET_PASSWORD_ERROR,
-    payload: any
+    payload: Array<string>
 };
 
 export interface UpdatePasswordSendAction {
@@ -142,20 +141,19 @@ export interface UpdatePasswordSendAction {
 
 export interface UpdatePasswordSuccessAction {
     type: typeof UPDATE_PASSWORD_SUCCESS,
-    payload: any
+    payload: UserData
 };
 
 export interface UpdatePasswordErrorAction {
     type: typeof UPDATE_PASSWORD_ERROR,
-    payload: any
+    payload: Array<string>
 };
 
 export interface EditProfileSendAction {
     type: typeof EDIT_PROFILE_SEND,
-    first_name: string,
-    last_name: string,
-    default_query_string: string,
-    email: string
+    firstName: string,
+    lastName: string,
+    defaultQueryString: string
 }
 
 export interface EditProfileSuccessAction {

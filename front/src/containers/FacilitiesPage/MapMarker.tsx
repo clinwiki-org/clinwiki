@@ -121,9 +121,7 @@ class MapMarker extends React.PureComponent<Props> {
   };
 
   render() {
-    const { geoStatus } = this.props
-
-    if (geoStatus === 'good' || geoStatus == "Country_Only") {
+    if (this.props.geoStatus === 'good') {
       return (
         <MarkerContainer onClick={this.markerClicked}>
           {this.props.$hover || this.state.clicked ? (
@@ -161,7 +159,7 @@ class MapMarker extends React.PureComponent<Props> {
         </MarkerContainer>
       );
     }
-    if (geoStatus === 'zip') {
+    if (this.props.geoStatus === 'zip') {
       return (
         <MarkerContainer onClick={() => this.markerClicked()}>
           {this.props.$hover || this.state.clicked ? (

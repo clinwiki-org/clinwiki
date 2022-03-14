@@ -1,53 +1,5 @@
 import { useMemo, useState } from 'react';
-
-
-export function parseSchemaIds(input: string) {
-    let tokens: any[] = [];
-
-    const yeet = (t: string) => {
-        let tempArray : string[]=[];
-        if (t !== ''){
-            const parts = t.split(/\s/).filter(id => id);
-            for(const each of parts ){
-               each !== 'schema_id' && tempArray.push(each);
-            }
-            tokens.push(tempArray)
-        }
-    };
-    let current = '';
-    let last = '';
-    let inside = false;
-    for (const ch of input) {
-        if (ch === '[' && last !== '[') {
-            // Begin {{
-            inside = true;
-            current = ch;
-        } else if (last === '[' && ch !== '[') {
-            // Begin inside token
-            current = ch;
-
-        } else if (ch === ']' && last !== ']') {
-            inside = false;
-            // Begin }}
-            //Ignore closing tag
-            current !== '/schema_id' && yeet(current);
-            current = ch;
-        } else if (ch === ']' && last == ']') {
-            current = '';
-        } else {
-            current += ch;
-        }
-        last = ch;
-    }
-    return tokens[0];
-}
-export function templateSplit(fullPageTemplate:string){
-    let templateArray = fullPageTemplate.split('[[/schema_id]]');
-
-    console.log(templateArray)
-    return templateArray
-    // let 
-}
+import { type } from 'remeda';
 
 function mustacheTokens(input: string) {
     let tokens: string[] = [];
@@ -78,10 +30,8 @@ function mustacheTokens(input: string) {
     return tokens;
 }
 
-
-
 type Marker = 'x';
-function tokensToGraphQLOb(tags: string[], tagToSkip:string) {
+function tokensToGraphQLOb(tags: string[]) {
     let result: Record<string, object | Marker> = {};
     let scope = result;
     let stack = [result];
@@ -108,8 +58,7 @@ function tokensToGraphQLOb(tags: string[], tagToSkip:string) {
             scope[propName] = 'x';
             popScope();
         }
-        // REMOVES RECORDSTOTAL AND THIS FROM FRAGMENT
-        // RECORDSTOTAL IS HARDCODED IN THE QUERY
+
         if (name == 'this' || name == 'recordsTotal') {
             console.log(name);
         } else {
@@ -124,15 +73,13 @@ function tokensToGraphQLOb(tags: string[], tagToSkip:string) {
             const parts = t.split(/\s/).filter(id => id);
             if (parts.length > 1) {
                 const name = parts[1];
-                //LIST OF THINGS TO SKIP (SPECIFIC TO MM WITH # , ie. #EACH, #IF )
                 if (
-                    parts[0] == '#with' && parts[1] == '$schema_id' ||
-                    parts[0] == '#each' && parts[1] == tagToSkip ||
-                    parts[0] == '#if' && parts.length > 2
+                    parts[0] == '#$RenderEach' ||
+                    (parts[0] == '#each' && parts[1] == 'studies') ||
+                    (parts[0] == '#each' && parts[1] == 'diseases')
                 ) {
-                } else if (parts[0] == '#each' && parts.length > 2) {
-                    let index = parts.length - 2;
-                    pushScope(parts[index]);
+                } else if (parts[0] == '#if' && parts.length > 2) {
+                    //
                 } else {
                     pushScope(name);
                 }
@@ -152,11 +99,10 @@ function tokensToGraphQLOb(tags: string[], tagToSkip:string) {
                     parts[0] == '$LEFT' ||
                     parts[0] == '$RIGHT' ||
                     parts[0] == '$TRUNCATE' ||
+                    parts[0] == '$RenderEach' ||
                     parts[0] == 'formatDate' ||
                     parts[0] == 'else' ||
-                    parts[0] == 'runConditional'
-                    ||
-                    // WAS IN MM BUT NOT CERTAIN WHAT IT DOES 
+                    parts[0] == 'runConditional' ||
                     typeof parts[0] == typeof 1
                 ) {
                 } else {
@@ -204,88 +150,30 @@ function toFragment(name: string, className: string, body: string) {
         return '';
     }
 }
-export function islandTokens(input: string) {
-    let tokens: any[] = [];
-    const yeet = (t: string) => {
-        //replace() to remove any line breaks \n
-        if (t !== '') {
-            t = t.replace(/[\r\n]+/gm, "");
-            if (t.startsWith('<')) {
-                const parts = t.split(/\s/).filter(id => id);
-                let object = {}
-                if (parts.length > 1) {
-                    object['name'] = parts[0].slice(1)
-                    let attributesArray = parts[1].split("=")
-                    let attributes = {};
-                    attributes[attributesArray[0]] = attributesArray[1] ?
-                        attributesArray[1]
-                            .replace(/\"/g, "")
-                            .replace(/\'/g, "") : attributesArray[1]
-                    object['attribs'] = attributes
-                    tokens.push(object)
-                } else {
-                    object['name'] = parts[0].slice(1)
-                    tokens.push(object)
-                }
 
-            }
-
-        }
-    };
-    let current = '';
-    let last = '';
-    let inside = false;
-    for (const ch of input) {
-        if (ch === '<') {
-            // Begin <
-            inside = true;
-            current = ch;
-        } else if (ch === '>' && current[1] !== '/') {
-            inside = false;
-            // Begin >
-            yeet(current);
-            current = ch;
-        } else {
-            current += ch;
-        }
-        last = ch;
-    }
-    return tokens;
-}
-export function removeSchemaValues(template){
-    var prevTemplate;
-    let cleanedTemplate =  template
-    do {
-        prevTemplate = cleanedTemplate;
-        cleanedTemplate = cleanedTemplate.replace(/\[[^\)\(]*\]/, "");
-    } while (prevTemplate != cleanedTemplate);
-    return cleanedTemplate
-}
 export function compileFragment(
     fragmentName: string,
     className: string,
-    template: string,
-    schemaValues:any
+    template: string
 ) {
-    let cleanedTemplate = removeSchemaValues(template)
-    const tokens = mustacheTokens(cleanedTemplate);
-    const json = schemaValues && tokensToGraphQLOb(tokens,schemaValues[6] &&  schemaValues[6]) || "" ;
+    const tokens = mustacheTokens(template);
+    const json = tokensToGraphQLOb(tokens);
     const fragmentBody = jsonToFragmentBody(json);
     return toFragment(fragmentName, className, fragmentBody);
 }
 
-export function randomIdentifier() {
+function randomIdentifier() {
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
     const randomChar = () => chars[Math.floor(Math.random() * chars.length)];
     return Array.from({ length: 12 }, randomChar).join('');
 }
 
-export function useFragment(className: string, template: string, schema?:any) {
+export function useFragment(className: string, template: string) {
     const [fragmentName, _] = useState<string>(randomIdentifier());
     return useMemo(
         () => [
             fragmentName,
-            compileFragment(fragmentName, className, template, schema),
+            compileFragment(fragmentName, className, template),
         ],
         [fragmentName, className, template]
     );

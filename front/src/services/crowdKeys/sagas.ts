@@ -11,7 +11,6 @@ const getCurrentSuggestedLabels = state => state.study.suggestedLabels;
 function* insertCrowdKeyValueId(action) {
     const currentLabels = yield select(getCurrentSuggestedLabels);
     const currentKeys = currentLabels.data.crowd_keys;
-    const currentValues = currentLabels.data.crowd_key_value_ids;
     try {
         //console.log("insertCrowdKeyValueId called in hasiraSite/sagas", action);
         let updateResponse = yield call(() =>
@@ -26,7 +25,7 @@ function* insertCrowdKeyValueId(action) {
         );
         //console.log(action)
         if (updateResponse?.data?.insert_crowd_key_value_ids) {
-            let crowdKeysArray = currentValues.map(a => a.crowd_key).concat(currentKeys.map(a=>a.crowd_key));
+            let crowdKeysArray = currentKeys.map(a => a.crowd_key);
 //TO-DO revisit and check why this fetch suggested label is here, was sending empty crowdKeysArray and clearing our data in store 
             yield crowdKeysArray[0] && put(
                 fetchSuggestedLabels(action.crowdKeyValueId, crowdKeysArray)
@@ -46,7 +45,6 @@ function* insertCrowdKeyValueId(action) {
 }
 function* deleteCrowdKeyValueId(action) {
     const currentLabels = yield select(getCurrentSuggestedLabels);
-    const currentValues = currentLabels.data.crowd_key_value_ids;
     const currentKeys = currentLabels.data.crowd_keys;
     try {
         // console.log("deleteCrowdKeyValueId called in hasiraSite/sagas", action);
@@ -59,7 +57,7 @@ function* deleteCrowdKeyValueId(action) {
         );
         //console.log('response = ', updateResponse);
         if (updateResponse?.data?.delete_crowd_key_value_ids) {
-            let crowdKeysArray = currentValues.map(a => a.crowd_key).concat(currentKeys.map(a=>a.crowd_key));
+            let crowdKeysArray = currentKeys.map(a => a.crowd_key);
             yield put(
                 fetchSuggestedLabels(action.crowdKeyValueId, crowdKeysArray)
             );
@@ -80,7 +78,6 @@ function* deleteCrowdKeyValueId(action) {
 function* updateCrowdKeyValueId(action) {
     const currentLabels = yield select(getCurrentSuggestedLabels);
     const currentKeys = currentLabels.data.crowd_keys;
-    const currentValues = currentLabels.data.crowd_key_value_ids;
     try {
         //console.log("updateCrowdKeyValueId called in hasiraSite/sagas", action);
         let updateResponse = yield call(() =>
@@ -91,7 +88,7 @@ function* updateCrowdKeyValueId(action) {
         );
         console.log('update CKVID res', updateResponse);
         if (updateResponse?.data?.update_crowd_key_value_ids_by_pk) {
-            let crowdKeysArray = currentValues.map(a => a.crowd_key).concat(currentKeys.map(a=>a.crowd_key));
+            let crowdKeysArray = currentKeys.map(a => a.crowd_key);
 //TO-DO revisit and check why this fetch suggested label is here, was sending empty crowdKeysArray and clearing our data in store 
             yield  crowdKeysArray[0] && put(
                 fetchSuggestedLabels(action.crowdKeyValueId, crowdKeysArray)

@@ -1,0 +1,27 @@
+<div class='sidebar'>
+  <dl>
+      <dd><%= @study.study_type %></dd>
+      <dd><%= @study.overall_status %></dd>
+      <% if !@study.phase.include? 'N/A' %>
+        <dd><%= @study.phase %></dd>
+      <% end %>
+      <br>
+      <dt>Primary Completion Date</dt>
+        <% if !@study.primary_completion_date.blank? %>
+          <dd><%= @study.primary_completion_date %> (<%= @study.primary_completion_date_type %>)</dd>
+        <% else %>
+          <dd>not available</dd>
+        <% end %>
+        <dt>Enrollment
+        </dt>
+        <% if !@study.enrollment.blank? %>
+            <dd><%= @study.enrollment %> (<%= @study.enrollment_type %>)</dd>
+        <% else %>
+          <dd>not provided</dd>
+        <% end %>
+        <dt>Source</dt>
+        <dd><%= @study.source %></dd>
+  </dl>
+
+  <%= render 'shared/bottom_sidebar',  :locals => {:nct_id => @nct_id} %>
+</div>

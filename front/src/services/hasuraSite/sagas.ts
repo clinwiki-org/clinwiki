@@ -1,3 +1,4 @@
+import { getSitesPage } from '../site/sagas'
 import { call, put, takeLatest } from 'redux-saga/effects';
 import * as api from './api';
 import * as actions from './actions';
@@ -11,8 +12,8 @@ function* updateSiteHasura(action) {
         //console.log("updateSiteHasura called in hasiraSite/sagas", action);
         let updateResponse = yield call(() => api.updateSiteHasura(action.input));
         //console.log('response = ', updateResponse);
-        if (updateResponse.data){ 
-            let response = yield getSitesPageHasura(action);
+        if (updateResponse.data.updateSitehasura.errors === null){ 
+            let response = yield getSitesPage(action);
             yield put(actions.updateSiteHasuraSuccess(response.data));
         }
         else {
@@ -80,7 +81,7 @@ function* getSiteProviderHasura(action) {
 export function* getGeneric(action) {
     //console.log("getSitesPageHasura called in hasuraSites sagas");
     try {
-        let response = yield call(() => api.fetchGeneric(action.params, action.primaryKey, action.QUERY, action.useHasura));
+        let response = yield call(() => api.fetchGeneric(action.payload));
     	// console.log(response);
         const genericData = response.data
         console.log('SAGA GENERIC FETCH', genericData);

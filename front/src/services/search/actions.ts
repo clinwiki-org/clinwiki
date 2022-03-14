@@ -5,7 +5,7 @@ import { SearchPageAggsQuery } from './model/SearchPageAggsQuery';
 import { SearchPageCrowdAggBucketsQuery } from 'types/SearchPageCrowdAggBucketsQuery';
 import { SearchPageSearchQuery } from '../../services/search/model/SearchPageSearchQuery';
 import { UpdateFacetConfigInput } from './model/UpdateFacetConfigInput';
-import { UserSavedSearchesQuery, UserSavedDocsQuery } from 'services/search/model/UserSavedSearchesQuery';
+import { UserSavedSearchesQuery } from 'services/search/model/UserSavedSearchesQuery';
 
 export const fetchSearchPageAggs = (
     searchParams: any
@@ -266,72 +266,6 @@ export const createSavedSearchError = (
     payload: { message },
 });
 
-export const fetchSavedDocs = (
-    userId: number
-): types.SearchActionTypes => ({
-    type: types.FETCH_SAVED_DOCS_SEND,
-    userId,
-});
-
-export const fetchSavedDocsSuccess = (
-    payload: UserSavedDocsQuery
-): types.SearchActionTypes => ({
-    type: types.FETCH_SAVED_DOCS_SUCCESS,
-    payload,
-});
-
-export const fetchSavedDocsError = (
-    message: string
-): types.SearchActionTypes => ({
-    type: types.FETCH_SAVED_DOCS_ERROR,
-    payload: { message },
-});
-
-export const createSavedDocument = (
-    document_id: string,
-    url: string,
-    userId: number,
-    nameLabel: string
-): types.SearchActionTypes => ({
-    type: types.CREATE_SAVED_DOCUMENT_SEND,
-    document_id,
-    url,
-    userId,
-    nameLabel,
-});
-
-export const createSavedDocumentSuccess = (
-    payload: UserSavedDocsQuery
-): types.SearchActionTypes => ({
-    type: types.CREATE_SAVED_DOCUMENT_SUCCESS,
-    payload,
-});
-
-export const createSavedDocumentError = (
-    message: string
-): types.SearchActionTypes => ({
-    type: types.CREATE_SAVED_DOCUMENT_ERROR,
-    payload: { message },
-});
-
-export const deleteSavedDoc = (id: number): types.SearchActionTypes => ({
-    type: types.DELETE_SAVED_DOC_SEND,
-    id,
-});
-
-export const deleteSavedDocSuccess = (
-    payload: UserSavedSearchesQuery
-): types.SearchActionTypes => ({
-    type: types.DELETE_SAVED_DOC_SUCCESS,
-    payload,
-});
-
-export const deleteSavedDocError = (
-    message: string
-): types.SearchActionTypes => ({
-    type: types.DELETE_SAVED_DOC_ERROR,
-    payload: { message },
-});
 export const deleteSavedSearch = (id: number): types.SearchActionTypes => ({
     type: types.DELETE_SAVED_SEARCH_SEND,
     id,

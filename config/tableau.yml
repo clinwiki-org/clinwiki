@@ -1,0 +1,13 @@
+
+# the client_ip parameter isn't necessary to send in the POST unless you have
+# wgserver.extended_trusted_ip_checking enabled (it's disabled by default)
+
+development:
+  server: http://10.0.1.11:6789
+  require_client_ip: false
+production:
+  server: http://10.0.1.11:6789
+  require_client_ip: false
+test:
+  server: http://10.0.1.11:6789
+  require_client_ip: false

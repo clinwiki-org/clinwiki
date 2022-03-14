@@ -1,8 +1,17 @@
 import * as FontAwesome from 'react-fontawesome';
 import * as React from 'react';
-import { StyledProfileLogValue } from 'components/StyledComponents';
+import {
+  StyledProfileForm,
+  StyledProfileLabel,
+  StyledProfileLogValue,
+  StyledProfileValue,
+  ThemedMainContainer,
+  ThemedSearchContainer,
+} from 'components/StyledComponents';
+import QUERY from 'queries/UserSearchLogsQuery';
 import { ThemedButton } from '../../LoginPage/StyledButton';
 import { UserFragment } from 'services/user/model/UserFragment';
+import { UserSearchLogsQuery } from 'types/UserSearchLogsQuery';
 
 
 interface UserSearchLogsProps {

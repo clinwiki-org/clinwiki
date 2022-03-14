@@ -18,7 +18,7 @@ const SignUpPage = (props) => {
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [passwordConfirmation,setPasswordConfirmation] = useState('');
-  const [oAuthToken,setOAuthToken] = useState(null);
+  const [oAuthToken,setOAuthToken] = useState('');
   const [error,setError] = useState('');
   const dispatch = useDispatch();
   const signUpErrors = useSelector( (state:RootState) => state.user.signUpErrors);
@@ -28,7 +28,6 @@ const SignUpPage = (props) => {
       console.log(`${password === passwordConfirmation}`);
       if (password === passwordConfirmation) {
       dispatch(signUp(email,password,oAuthToken));
-      
     }
     else {
       setError("Password confirmation doesn't match");

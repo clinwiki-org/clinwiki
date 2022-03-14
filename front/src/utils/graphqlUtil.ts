@@ -10,23 +10,20 @@ export const callGraphql = (
     operationName?: string
 ) => {
    
-    // console.log("callGraphql called");
-    // console.log(`endpoint = ${endpoint}`);
-    // //console.log(query);
-    // console.log("variables = ",variables);
-    // console.log(`operationName = ${operationName}`);
-    // console.log(`auth = ${getLocalJwt()}`);
-    const headers = {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-    }
-    if(getLocalJwt()){
-           headers['Authorization'] = `Bearer ${getLocalJwt()}`;
-    }
+    /*console.log("callGraphql called");
+    console.log(`endpoint = ${endpoint}`);
+    //console.log(query);
+    console.log("variables = ",variables);
+    console.log(`operationName = ${operationName}`);
+    console.log(`auth = ${getLocalJwt()}`);*/
     //console.log('endpoint being hit', endpoint);
     const abc = fetch(endpoint, {
         method: 'POST',
-        headers: headers,
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: getLocalJwt() ? `Bearer ${getLocalJwt()}` : "",
+        },
         body: JSON.stringify({
             query,
             variables,
@@ -37,15 +34,15 @@ export const callGraphql = (
     return abc;
 };
 
-// export const get_gql_url = () => {
-//     if (
-//         typeof window === 'undefined' ||
-//         window.location.hostname.includes('localhost')
-//     ) {
-//         return `https://${window.location.hostname}:3000/graphql`;
-//     }
-//     return '/graphql';
-// };
+export const get_gql_url = () => {
+    if (
+        typeof window === 'undefined' ||
+        window.location.hostname.includes('localhost')
+    ) {
+        return `https://${window.location.hostname}:3000/graphql`;
+    }
+    return '/graphql';
+};
 
 export const getGraphQLMigrationURL = () => {
     //console.log(window.location.hostname.includes('localhost'));

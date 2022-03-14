@@ -1,5 +1,4 @@
 import * as UserManager from './user.manager';
-const util = require('util');
 
 const userResolver = {
     me: (args,context) => {
@@ -14,24 +13,6 @@ const userResolver = {
         //console.log("signUp called in resolver");
 	const payload = await UserManager.signUp(args.input.email,args.input.password,args.input.oAuthToken);
         //console.log('payload', payload);
-	return payload;
-    },
-    resetPassword: async (args,context) => {
-        //console.log("signUp called in resolver");
-	const payload = await UserManager.requestPasswordReset(args.input.email);
-        //console.log('payload', payload);
-	return payload;
-    },
-    updatePassword: async (args,context) => {
-        // console.log("updatePassword called in resolver");
-	const payload = await UserManager.updatePassword(args.input.resetPasswordToken,args.input.password, args.input.passwordConfirmation);
-        console.log('payload', payload);
-	return payload;
-    },
-    updateProfile: async (args,context) => {
-        console.log("updatePassword called in resolver", util.inspect(args,false, null, true));
-	const payload = await UserManager.updateProfile(args.input.first_name,args.input.last_name, args.input.default_query_string, args.input.email);
-        console.log('payload', payload);
 	return payload;
     }
     
