@@ -87,7 +87,9 @@
     "rimraf": "^3.0.2",
     "styled-components": "^5.1.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
-    "typescript": "~3.9.2"
+    "typescript": "~3.9.2",
+    "autoprefixer": "^9.8.8",
+    "postcss": "^7.0.39"
   },
   "resolutions": {
     "graphql": "14.6.0"
@@ -120,9 +122,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "autoprefixer": "^9.8.8",
-    "postcss": "^7.0.39"
   }
 }
