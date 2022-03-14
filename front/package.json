@@ -86,6 +86,7 @@
     "remeda": "^0.0.20",
     "rimraf": "^3.0.2",
     "styled-components": "^5.1.0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
     "typescript": "~3.9.2"
   },
   "resolutions": {
@@ -123,6 +124,5 @@
   "devDependencies": {
     "autoprefixer": "^9.8.8",
     "postcss": "^7.0.39",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17"
   }
 }
