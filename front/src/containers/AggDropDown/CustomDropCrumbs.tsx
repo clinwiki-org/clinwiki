@@ -238,7 +238,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
     } 
     
     else {
-      console.log("else", this.props.field.displayName)
+      // console.log("else", this.props.field.displayName)
       return (<div className={"select-box--sublabel"}>{this.props.field.aggSublabel}</div>)
     }
   }

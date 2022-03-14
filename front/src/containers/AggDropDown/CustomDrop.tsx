@@ -536,7 +536,7 @@ class CustomDropDown extends React.Component<CustomDropDownProps, CustomDropDown
 
     const parser = new HtmlToReact.Parser();
     const reactElementTitle = parser.parse(configuredLabel)
-console.log(configuredLabel)
+// console.log(configuredLabel)
 
     // Using the aggtoField function {capitalize(title)}
 
