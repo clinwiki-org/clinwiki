@@ -43,7 +43,7 @@ function* getMMSchemas(action) {
         let response = yield call(() =>
             api.fetchMMSchemas()
         );
-        console.log(response)
+        // console.log(response)
         if (response && response.data) {
             yield put(actions.fetchMMSchemasSuccess(response));
         } else {

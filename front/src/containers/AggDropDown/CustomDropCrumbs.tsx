@@ -82,7 +82,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
     };
 
     const { crumbTemplate } = this.props.field;
-    console.log("Cookie crumb", crumbTemplate);
+    // console.log("Cookie crumb", crumbTemplate);
 
     const DEFAULT_BUCKET_TEMPLATE = `<div className='select-box--crumb-container'>
     <i class='fas fa-remove'></i> {{crumb}}
@@ -91,9 +91,9 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
     const compiled = compileTemplate(crumbTemplate || DEFAULT_BUCKET_TEMPLATE)
 
     const raw = applyTemplate(compiled, crumbContext)
-    console.log(raw)
+    // console.log(raw)
     const parser = new HtmlToReact.Parser();
-    console.log(crumbContext)
+    // console.log(crumbContext)
     const reactElementHelperText = parser.parse(raw)
 
     return (
@@ -224,7 +224,7 @@ class CustomDropCrumbs extends React.Component<CustomDropCrumbsProps, CustomDrop
       }
       // console.log("ARRAY TO SLICE", arrayToSlice)
       let displayedCrumbs: any[] = arrayToSlice.slice(0, field.maxCrumbs);
-      console.log(displayedCrumbs)
+      // console.log(displayedCrumbs)
        
       if(!displayedCrumbs.map){
 

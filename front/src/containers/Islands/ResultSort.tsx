@@ -69,7 +69,7 @@ function ResultSort(props: Props) {
     dispatch(updateSearchParamsAction({ ...searchParamsCurrent.current, sorts, page: 0 }));
   };
   let currentIsland = getCurrentIsland();
-  console.log(currentIsland)
+  
   
   let itemsArray = currentIsland ? currentIsland?.sortables : DEFAULT_CONFIG.sortables
   let currentSort = () => {

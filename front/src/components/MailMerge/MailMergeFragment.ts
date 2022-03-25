@@ -44,7 +44,7 @@ export function parseSchemaIds(input: string) {
 export function templateSplit(fullPageTemplate:string){
     let templateArray = fullPageTemplate.split('[[/schema_id]]');
 
-    console.log(templateArray)
+    // console.log(templateArray)
     return templateArray
     // let 
 }

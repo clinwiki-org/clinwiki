@@ -33,7 +33,7 @@ function* getSearchPageAggs(action) {
 }
 
 function* getSearchPageAggBuckets(action) {
-    console.log('SAGA SP Agg Buckets', action);
+    // console.log('SAGA SP Agg Buckets', action);
     let currentBuckets = [];
     const allBuckets = yield select(getCurrentAggBuckets);
 
