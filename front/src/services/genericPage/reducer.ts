@@ -25,7 +25,7 @@ const genericPageReducer = (
             return {
                 ...state,
                 isFetchingGenericPage: false,
-                genericPageData: tempObject,
+                genericPageData: {...tempObject, currentPage: action.name},
             };
         case types.FETCH_GENERIC_PAGE_ERROR:
             return {

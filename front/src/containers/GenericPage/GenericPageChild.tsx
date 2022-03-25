@@ -101,7 +101,7 @@ export default function GenericPageChild(props: Props) {
     const templateSchemaTokens = props.schemaTokens
 
     const [fragmentName, fragment] = useFragment(templateSchemaTokens[1], props.template, templateSchemaTokens );
-    const GENERIC_QUERY = `${getMyQuery(fragmentName, fragment, templateSchemaTokens[1], templateSchemaTokens[2], templateSchemaTokens[3], templateSchemaTokens[4], templateSchemaTokens[5], templateSchemaTokens[6] && templateSchemaTokens[6])}`
+    const GENERIC_QUERY = `${getMyQuery(fragmentName, fragment, templateSchemaTokens[1], templateSchemaTokens[2], templateSchemaTokens[3], templateSchemaTokens[4], templateSchemaTokens[5], templateSchemaTokens[6] && templateSchemaTokens[6])}`;
     const currentPageData = genericPageData && genericPageData[fragmentName]?.data; 
     useEffect(() => {
         let searchParams = { ...data?.data?.searchParams };

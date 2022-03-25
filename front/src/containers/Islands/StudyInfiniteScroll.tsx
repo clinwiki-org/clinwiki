@@ -4,11 +4,10 @@ import { RootState } from 'reducers';
 import InfiniteScroll from 'react-infinite-scroller';
 import { BeatLoader } from 'react-spinners';
 import HtmlToReact from 'html-to-react';
-import { useFragment } from 'components/MailMerge/MailMergeFragment';
 import { useRouteMatch } from 'react-router-dom';
-import { getSearchQuery } from 'components/MailMerge/MailMergeUtils';
-import { fetchSearchPageStudy } from 'services/study/actions';
 import  { applyTemplate, compileTemplate } from 'components/MailMerge/MailMergeView';
+import { templateSplit } from 'components/MailMerge/MailMergeFragment';
+import { updateSearchParamsAction } from 'services/search/actions'
 
 type Mode = 'Study' | 'Search';
 
@@ -21,28 +20,28 @@ function getClassForMode(mode: Mode) {
   }
 }
 
-export default function StudyInfiniteScroll() {
+ function StudyInfiniteScroll() {
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const pageViewData = useSelector((state: RootState) => state.study.pageViewHasura);
-  const pageType = match.path == "/search/" ? "Search" : "Study"
-  const schemaType = getClassForMode(pageType);
   const currentPage = pageViewData ? pageViewData?.data?.page_views[0] : null;
-  const template = currentPage.template
+  const currentPageFragName = useSelector((state:RootState) => state.genericPage.genericPageData?.currentPage)
+  const templatePreSplit = templateSplit(currentPage.template);
+  const template = templatePreSplit[0]
   const beginCardsTemplate = template.search('<div class="cards-container"')
   const endCardsTemplate = template.search("'></studyinfinitescroll>")
   const cardsTemplate = template.slice(beginCardsTemplate, endCardsTemplate).replace('{{#each studies }} ', '').replace('{{/each }} ', '')
-  const [fragmentName, fragment] = useFragment(schemaType, cardsTemplate || '');
-  const beginFragment = fragment.search('{') + 1
-  const endFragment = fragment.search('}')
-  const itemFragment = fragment.slice(beginFragment, endFragment).split("\n")
-  const finalFragment = itemFragment.slice(1, itemFragment.length - 1).join(", ")
+  // const [fragmentName, fragment] = useFragment('search', currentPage.template|| '');
 
+  // const beginFragment = fragment.search('{') + 1
+  // const endFragment = fragment.search('}')
+  // const itemFragment = fragment.slice(beginFragment, endFragment).split("\n")
+  // const finalFragment = itemFragment.slice(1, itemFragment.length - 1).join(", ")
   const data = useSelector((state: RootState) => state.search.searchResults);
-  const studyData = useSelector((state: RootState) => state.study.studyPage?.data.search.studies)
-  const recordsTotal = useSelector((state: RootState) => state.study.studyPage?.data.search.recordsTotal)
+  const studyData = useSelector((state: RootState) => state.genericPage.genericPageData[currentPageFragName]?.data.search.studies) ;
+  const recordsTotal = useSelector((state: RootState) => state.genericPage.genericPageData[currentPageFragName]?.data.search.recordsTotal)
 
-  const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
+  // const SEARCH_QUERY = `${getSearchQuery(fragmentName, fragment)}`
 
   const renderStudyTemplate = (study) => {
 
@@ -60,7 +59,9 @@ export default function StudyInfiniteScroll() {
       pageSize: Math.floor(page * 25),
       page: 1,
     };
-    dispatch(fetchSearchPageStudy(variables, SEARCH_QUERY));
+     dispatch(updateSearchParamsAction(variables));
+
+    // dispatch(fetchSearchPageStudy(variables, SEARCH_QUERY));
   }
 
   const InfiniteScrollContainer = document.querySelector('.InfiniteScrollContainer');
@@ -84,7 +85,7 @@ export default function StudyInfiniteScroll() {
     return () => {
       InfiniteScrollContainer?.scrollTo(0, 0)
     }
-  }, [studyData.length])
+  }, [studyData?.length])
 
   const hasMoreHelper = () => {
     if (studyData.length % 25 !== 0 && studyData.length > 25) {
@@ -116,7 +117,7 @@ export default function StudyInfiniteScroll() {
         </div>}
         useWindow={false}
       >
-        <div>{studyData.map((study, index) => {
+        <div>{studyData.map && studyData.map((study, index) => {
           return (<div key={index}>
             {renderStudyTemplate(study)
             }
@@ -128,3 +129,5 @@ export default function StudyInfiniteScroll() {
     </div>
   );
 }
+
+export default React.memo(StudyInfiniteScroll)
