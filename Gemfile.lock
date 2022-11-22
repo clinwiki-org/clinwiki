@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/mimemagicrb/mimemagic.git
+  remote: https://github.com/mimemagicrb/mimemagic.git
   revision: 01f92d86d15d85cfd0f20dabd025dcbd36a8a60f
   ref: 01f92d86d15d85cfd0f20dabd025dcbd36a8a60f
   specs:
@@ -103,7 +103,7 @@ GEM
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.5)
-    dalli (2.7.9)
+    dalli (3.2.3)
     database_cleaner (1.8.4)
     database_cleaner-active_record (1.8.0)
       activerecord
