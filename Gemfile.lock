@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/mimemagicrb/mimemagic.git
+  remote: https://github.com/mimemagicrb/mimemagic.git
   revision: 01f92d86d15d85cfd0f20dabd025dcbd36a8a60f
   ref: 01f92d86d15d85cfd0f20dabd025dcbd36a8a60f
   specs:
@@ -98,7 +98,7 @@ GEM
     coffee-script-source (1.12.2)
     composite_primary_keys (11.2.0)
       activerecord (~> 5.2.1)
-    concurrent-ruby (1.1.5)
+    concurrent-ruby (1.1.10)
     connection_pool (2.2.2)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -153,8 +153,8 @@ GEM
       et-orbi (~> 1.1, >= 1.1.7)
       raabro (~> 1.1)
     geocoder (1.6.1)
-    globalid (0.4.2)
-      activesupport (>= 4.2.0)
+    globalid (1.0.1)
+      activesupport (>= 5.0)
     gon (6.2.1)
       actionpack (>= 3.0)
       multi_json
@@ -175,7 +175,7 @@ GEM
     httparty (0.16.3)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
-    i18n (1.7.0)
+    i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     jaro_winkler (1.5.2)
     jbuilder (2.8.0)
@@ -213,7 +213,7 @@ GEM
     mini_portile2 (2.4.0)
     mini_racer (0.2.4)
       libv8 (>= 6.3)
-    minitest (5.13.0)
+    minitest (5.17.0)
     msgpack (1.2.6)
     multi_json (1.14.1)
     multi_xml (0.6.0)
@@ -394,7 +394,7 @@ GEM
     turbolinks (5.2.0)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
-    tzinfo (1.2.5)
+    tzinfo (1.2.10)
       thread_safe (~> 0.1)
     uglifier (4.1.20)
       execjs (>= 0.3.0, < 3)
